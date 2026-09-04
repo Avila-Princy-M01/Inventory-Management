@@ -255,6 +255,44 @@ def load_demo():
     return Response(payload, status=200, mimetype="application/json")
 
 
+# ── Background Email & Dispatch Endpoints ─────────────────────────────────────
+if BACKEND_DIR not in sys.path:
+    sys.path.insert(0, BACKEND_DIR)
+import email_service
+
+
+@app.route("/api/email/status", methods=["GET"])
+def email_status():
+    """Returns the current background scheduler status, next run, and recent logs."""
+    return jsonify(email_service.get_status()), 200
+
+
+@app.route("/api/email/dispatch", methods=["POST"])
+def dispatch_email_endpoint():
+    """
+    On-demand email dispatch trigger.
+    Can be used to test dispatch or manually push the Monday briefing.
+    Optional JSON body: { "recipients": ["user@domain.com"] }
+    """
+    recipients = None
+    if request.is_json and request.json:
+        recipients = request.json.get("recipients")
+    try:
+        res = email_service.dispatch_email(recipients=recipients)
+        return jsonify(res), 200
+    except Exception as exc:
+        return jsonify({"error": "DISPATCH_FAILED", "detail": str(exc)}), 500
+
+
+@app.route("/api/email/recipients", methods=["POST"])
+def update_recipients_endpoint():
+    """Updates recipient email list."""
+    if not request.is_json or "recipients" not in request.json:
+        return jsonify({"error": "INVALID_PAYLOAD", "detail": "Missing 'recipients' field"}), 400
+    new_recs = email_service.update_recipients(request.json["recipients"])
+    return jsonify({"success": True, "recipients": new_recs}), 200
+
+
 # ── Entry point ────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     # Verify expected directories exist before starting.
@@ -268,6 +306,13 @@ if __name__ == "__main__":
             f"[server] WARNING: dashboard_data.json not found at {DASHBOARD_DATA_PATH}",
             file=sys.stderr,
         )
+
+    # Start the automated Monday 08:00 AM Background Email Dispatcher
+    try:
+        email_service.start_scheduler()
+        print("[server] Autonomous Monday 08:00 AM Email Scheduler: ACTIVE")
+    except Exception as exc:
+        print(f"[server] WARNING: Failed to start email scheduler: {exc}", file=sys.stderr)
 
     print(f"[server] Project root   : {PROJECT_ROOT}")
     print(f"[server] Parent dir     : {PARENT_DIR}")

@@ -49,6 +49,7 @@ venv.bak/
 *.tmp
 *.temp
 *.bak
+*.jsonl
 scratch/
 .tempmediaStorage/
 .system_generated/

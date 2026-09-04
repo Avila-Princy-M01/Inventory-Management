@@ -107,12 +107,29 @@ export function initBriefingCharts(data) {
   const btnPDF = document.getElementById('btn-export-pdf');
   if (btnPDF) btnPDF.addEventListener('click', () => window.print());
 
+  async function refreshEmailStatus() {
+    try {
+      const res = await fetch('/api/email/status');
+      if (res.ok) {
+        const info = await res.json();
+        const schedEl = document.getElementById('email-schedule-text');
+        if (schedEl && info.status) {
+          const recCount = (info.config && info.config.recipients && info.config.recipients.length) || 3;
+          schedEl.textContent = `Target: ${info.status.next_scheduled_run_local || 'Monday 08:00 AM'} · ${recCount} Planner Inboxes (Live Scheduler)`;
+        }
+      }
+    } catch (e) {
+      console.log('[email] Status check skipped');
+    }
+  }
+
   const btnEmail = document.getElementById('btn-email-digest');
   if (btnEmail) btnEmail.addEventListener('click', () => {
     const modal = document.getElementById('email-modal');
     const pre   = document.getElementById('email-text');
     if (pre) pre.textContent = (data.simulated_email || 'No email data available.');
     if (modal) modal.style.display = 'flex';
+    refreshEmailStatus();
   });
 
   const btnCloseModal = document.getElementById('btn-close-modal');
@@ -126,4 +143,45 @@ export function initBriefingCharts(data) {
     const text = data.simulated_email || '';
     if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => { btnCopy.textContent = 'COPIED ✓'; setTimeout(()=>{ btnCopy.textContent='COPY TO CLIPBOARD'; },2000); });
   });
+
+  // Wire instant dispatch trigger button
+  const btnTestDispatch = document.getElementById('btn-test-dispatch');
+  const dispatchToast   = document.getElementById('dispatch-toast');
+  if (btnTestDispatch) {
+    btnTestDispatch.addEventListener('click', async () => {
+      btnTestDispatch.disabled = true;
+      btnTestDispatch.innerHTML = '<span>DISPATCHING…</span>';
+      try {
+        const res = await fetch('/api/email/dispatch', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({})
+        });
+        const result = await res.json();
+        if (res.ok && result.success) {
+          btnTestDispatch.innerHTML = '<span>DISPATCHED ✓</span>';
+          btnTestDispatch.classList.add('btn-action--success');
+          if (dispatchToast) {
+            dispatchToast.textContent = `Sent to ${result.recipients.length} inboxes (${result.delivery_mode})`;
+            dispatchToast.style.display = 'inline-block';
+          }
+          refreshEmailStatus();
+          setTimeout(() => {
+            btnTestDispatch.disabled = false;
+            btnTestDispatch.classList.remove('btn-action--success');
+            btnTestDispatch.innerHTML = '<span>⚡ DISPATCH TO INBOXES NOW</span>';
+          }, 3500);
+        } else {
+          throw new Error(result.error || 'Failed');
+        }
+      } catch (err) {
+        btnTestDispatch.disabled = false;
+        btnTestDispatch.innerHTML = '<span>RETRY DISPATCH</span>';
+        if (dispatchToast) {
+          dispatchToast.textContent = `Notice: Local simulation log created (${err.message})`;
+          dispatchToast.style.display = 'inline-block';
+        }
+      }
+    });
+  }
 }

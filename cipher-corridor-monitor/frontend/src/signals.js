@@ -4,11 +4,11 @@
  */
 
 export const BADGE_MAP = [
-  { prefix: 'ACTIVE CRISIS',      cls: 'badge--crisis',   label: 'ACTIVE CRISIS',      borderColor: '#E61919' },
-  { prefix: 'EMERGENCY EXPEDITE', cls: 'badge--expedite',  label: 'EMERGENCY EXPEDITE', borderColor: '#F59E0B' },
-  { prefix: 'STANDARD PO',        cls: 'badge--po',        label: 'STANDARD PO',        borderColor: '#2563EB' },
-  { prefix: 'ADVISORY',           cls: 'badge--advisory',  label: 'ADVISORY',           borderColor: '#9CA3AF' },
-  { prefix: 'EXCESS HOLDING',     cls: 'badge--excess',    label: 'EXCESS HOLDING',     borderColor: '#7C3AED' },
+  { prefix: 'ACTIVE CRISIS', cls: 'badge--crisis', label: 'ACTIVE CRISIS', borderColor: '#E61919' },
+  { prefix: 'EMERGENCY EXPEDITE', cls: 'badge--expedite', label: 'EMERGENCY EXPEDITE', borderColor: '#F59E0B' },
+  { prefix: 'STANDARD PO', cls: 'badge--po', label: 'STANDARD PO', borderColor: '#2563EB' },
+  { prefix: 'ADVISORY', cls: 'badge--advisory', label: 'ADVISORY', borderColor: '#9CA3AF' },
+  { prefix: 'EXCESS HOLDING', cls: 'badge--excess', label: 'EXCESS HOLDING', borderColor: '#7C3AED' },
 ];
 
 export function getBadgeConfig(raw) {
@@ -21,7 +21,7 @@ export function getBadgeConfig(raw) {
 }
 
 function esc(str) {
-  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 function fmtNum(n) {
@@ -38,12 +38,12 @@ export function renderSignalCards(signals, approvedSignals = {}) {
   }
 
   grid.innerHTML = signals.map((sig, i) => {
-    const badge   = getBadgeConfig(sig.action_type);
+    const badge = getBadgeConfig(sig.action_type);
     const isCrisis = badge.label === 'ACTIVE CRISIS';
     const approved = Boolean(approvedSignals[sig.row_id]);
-    const prs      = Number(sig.prs_score || 0);
+    const prs = Number(sig.prs_score || 0);
     const showWarn = sig.supply_certainty !== undefined && sig.supply_certainty !== null && sig.supply_certainty < 0.5;
-    const rank     = String(i + 1).padStart(2, '0');
+    const rank = String(i + 1).padStart(2, '0');
 
     const actionArea = approved
       ? `<div class="card-approved">■ APPROVED — GxP LOGGED</div>`
@@ -63,7 +63,7 @@ export function renderSignalCards(signals, approvedSignals = {}) {
       </div>
       <div class="card-identity">
         <div class="card-brand">${esc(sig.brand)} · ${esc(sig.country)}</div>
-        <div class="card-country">${esc(sig.region)} · ${esc((sig.product_group||'').split('|')[1] || sig.mrp || '')}</div>
+        <div class="card-country">${esc(sig.region)} · ${esc((sig.product_group || '').split('|')[1] || sig.mrp || '')}</div>
       </div>
       <div class="prs-row">
         <div class="prs-track"><div class="prs-fill" style="width:${prs}%;background:${badge.borderColor}"></div></div>

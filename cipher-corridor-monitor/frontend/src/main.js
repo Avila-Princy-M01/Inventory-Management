@@ -18,9 +18,9 @@ if (typeof crypto === 'undefined' || typeof crypto.randomUUID !== 'function') {
 }
 
 // ── Module-level state ──────────────────────────────────────────
-window.DATA             = null;
+window.DATA = null;
 window._approvedSignals = {};
-window.briefingDone     = false;
+window.briefingDone = false;
 
 // GxP audit log — Proxy triggers renderAuditTable on every push
 const _rawLog = [];
@@ -28,7 +28,7 @@ export const auditLog = new Proxy(_rawLog, {
   set(target, prop, value) {
     target[prop] = value;
     if (prop !== 'length') {
-      try { renderAuditTable(); } catch(e) { console.error('[Proxy]', e); }
+      try { renderAuditTable(); } catch (e) { console.error('[Proxy]', e); }
     }
     return true;
   }
@@ -188,7 +188,7 @@ function updateKPI(data) {
   const sigs = data.top_signals || [];
 
   // Active crises
-  const crises = sigs.filter(s => (s.action_type||'').toUpperCase().startsWith('ACTIVE CRISIS')).length;
+  const crises = sigs.filter(s => (s.action_type || '').toUpperCase().startsWith('ACTIVE CRISIS')).length;
   const cEl = document.getElementById('crises-value');
   if (cEl) { cEl.textContent = crises; cEl.style.color = crises > 0 ? '#9F2F2D' : '#346538'; }
 
@@ -232,11 +232,11 @@ export function animateCHIDial(targetValue, dur = 1200) {
     const e = 1 - Math.pow(1 - p, 3); // ease-out cubic
     const v = +(e * target).toFixed(1);
     el.textContent = v.toFixed(1);
-    el.style.color  = v >= 90 ? '#346538' : v >= 80 ? '#956400' : '#9F2F2D';
+    el.style.color = v >= 90 ? '#346538' : v >= 80 ? '#956400' : '#9F2F2D';
     if (p < 1) requestAnimationFrame(tick);
     else {
       el.textContent = target.toFixed(1);
-      el.style.color  = target >= 90 ? '#346538' : target >= 80 ? '#956400' : '#9F2F2D';
+      el.style.color = target >= 90 ? '#346538' : target >= 80 ? '#956400' : '#9F2F2D';
     }
   }
   requestAnimationFrame(tick);
