@@ -1,0 +1,12 @@
+{
+  "week": 31,
+  "snapshot_timestamp": "2026-08-28T10:00:00Z",
+  "global_chi": 85.6,
+  "active_crises": 3,
+  "capital_at_risk_inr": 1093000000,
+  "actual_otif": 98.2,
+  "top_signals_count": 15,
+  "resolved_crises_count": 3,
+  "new_crises_count": 2,
+  "chronic_series_count": 379
+}

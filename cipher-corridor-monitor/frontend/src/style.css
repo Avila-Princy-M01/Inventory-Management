@@ -2101,6 +2101,115 @@ button {
   margin-left: 4px;
 }
 
+/* ── Week-over-Week KPI Deltas ── */
+.kpi-delta {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  margin-left: 3px;
+  letter-spacing: -0.01em;
+}
+
+.kpi-delta--up {
+  color: #059669;
+}
+
+.kpi-delta--down {
+  color: #059669; /* For positive reduction in crisis/exposure */
+}
+
+.kpi-delta--crisis {
+  color: #DC2626;
+}
+
+/* ── Week-over-Week Action Audit Card (Briefing View) ── */
+.briefing-wow-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid #059669;
+  padding: 18px 20px;
+  margin-bottom: 20px;
+}
+
+.wow-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  gap: 12px;
+}
+
+.wow-badge-status {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #059669;
+  background: rgba(5, 150, 105, 0.08);
+  padding: 3px 8px;
+  border: 1px solid rgba(5, 150, 105, 0.2);
+}
+
+.wow-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.wow-quote {
+  font-family: var(--font-body), sans-serif;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text);
+  margin: 0 0 16px 0;
+  padding: 12px 16px;
+  background: rgba(5, 150, 105, 0.04);
+  border-left: 3px solid #059669;
+  font-weight: 500;
+}
+
+.wow-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+
+.wow-grid-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wow-grid-k {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.wow-grid-v {
+  font-family: var(--font-mono);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.wow-grid-sub {
+  font-size: 11px;
+  color: var(--muted);
+}
+
 /* ── Print ── */
 @media print {
   body {

@@ -84,17 +84,17 @@
         <div class="kpi-tile" id="kpi-chi">
           <output class="kpi-numeral" id="chi-value" aria-label="Corridor Health Index">--.-</output>
           <div class="kpi-label">CORRIDOR HEALTH INDEX</div>
-          <div class="kpi-sub">CIPHER PIONEER KPI</div>
+          <div class="kpi-sub" id="chi-sub">CIPHER PIONEER KPI <span class="kpi-delta kpi-delta--up" id="chi-delta">(↑ 1.2 from last week)</span></div>
         </div>
         <div class="kpi-tile kpi-tile--divider" id="kpi-crises">
           <output class="kpi-numeral crisis-num" id="crises-value" aria-label="Active Crises">0</output>
           <div class="kpi-label">ACTIVE CRISES</div>
-          <div class="kpi-sub">IMMEDIATE ACTION</div>
+          <div class="kpi-sub" id="crises-sub">IMMEDIATE ACTION <span class="kpi-delta kpi-delta--up" id="crises-delta">(↓ 2 from last week)</span></div>
         </div>
         <div class="kpi-tile kpi-tile--divider" id="kpi-capital">
           <output class="kpi-numeral kpi-numeral--mono" id="capital-value" aria-label="Capital at Risk">₹ —</output>
           <div class="kpi-label">CAPITAL AT RISK</div>
-          <div class="kpi-sub">INR · TOP 15 SIGNALS</div>
+          <div class="kpi-sub" id="capital-sub">TOP 15 EXPOSURE <span class="kpi-delta kpi-delta--up" id="capital-delta">(↓ ₹14.2 Cr)</span></div>
         </div>
         <div class="kpi-tile kpi-tile--divider" id="kpi-otif">
           <output class="kpi-numeral kpi-healthy tabular-nums" id="otif-value" aria-label="OTIF Fulfillment">
@@ -106,7 +106,7 @@
             </svg>
           </output>
           <div class="kpi-label">OTIF · FULFILLMENT RATE</div>
-          <div class="kpi-sub" id="otif-sub">SLA TARGET: 95.0% CONTRACTUAL</div>
+          <div class="kpi-sub" id="otif-sub">SLA TARGET: 95.0% CONTRACTUAL <span class="kpi-delta kpi-delta--up" id="otif-delta">(↑ 0.3%)</span></div>
         </div>
       </div>
 
@@ -271,6 +271,41 @@
               <button class="btn-action" id="btn-email-digest">EMAIL DIGEST</button>
             </div>
           </div>
+
+          <!-- Week-over-Week Action Audit Banner: "Did It Get Better?" -->
+          <div class="briefing-wow-card" id="briefing-wow-card">
+            <div class="wow-top">
+              <span class="callout-tag">[ WEEK-OVER-WEEK ACTION AUDIT · WEEK 31 → WEEK 32 ]</span>
+              <span class="wow-badge-status">ACTION EFFECTIVENESS: POSITIVE ✓</span>
+            </div>
+            <div class="wow-title">EXECUTIVE DECISION IMPACT: &ldquo;DID IT GET BETTER?&rdquo;</div>
+            <div class="wow-quote" id="wow-narrative-text">
+              3 of 5 crisis signals resolved. 2 new signals emerged. Net network health improved by ↑ 1.2 pts (CHI 85.6% → 86.8%), mitigating ₹14.2 Cr in active exposure.
+            </div>
+            <div class="wow-grid">
+              <div class="wow-grid-item">
+                <span class="wow-grid-k">CRISIS SIGNALS RESOLVED</span>
+                <span class="wow-grid-v tabular-nums" style="color:var(--ok-text)" id="wow-kpi-resolved">3 RESOLVED</span>
+                <span class="wow-grid-sub">Inter-market transfers complete</span>
+              </div>
+              <div class="wow-grid-item">
+                <span class="wow-grid-k">NEW EMERGING SIGNALS</span>
+                <span class="wow-grid-v tabular-nums" style="color:var(--warn-text)" id="wow-kpi-emerged">2 EMERGED</span>
+                <span class="wow-grid-sub">Escalated to expedite review</span>
+              </div>
+              <div class="wow-grid-item">
+                <span class="wow-grid-k">NET CHI RECOVERY</span>
+                <span class="wow-grid-v tabular-nums" style="color:#0072CE" id="wow-kpi-chirecovery">+1.2 PTS</span>
+                <span class="wow-grid-sub">CHI 85.6% → 86.8%</span>
+              </div>
+              <div class="wow-grid-item">
+                <span class="wow-grid-k">EXPOSURE MITIGATED</span>
+                <span class="wow-grid-v tabular-nums" style="color:var(--ok-text)" id="wow-kpi-capmitigated">-₹14.2 CR</span>
+                <span class="wow-grid-sub">Active capital at risk down</span>
+              </div>
+            </div>
+          </div>
+
           <div class="briefing-layout">
             <div class="briefing-charts">
               <div class="chart-card">

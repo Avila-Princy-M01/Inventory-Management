@@ -27,6 +27,29 @@ export function initBriefingCharts(data) {
 
   const ch = data.corridor_health || {};
   const ex = data.executive || {};
+  const wow = ch.wow_delta || ex.wow_delta || {};
+
+  const wowTextEl = document.getElementById('wow-narrative-text');
+  if (wowTextEl && wow.briefing_narrative) {
+    wowTextEl.textContent = wow.briefing_narrative;
+  }
+  const wowResolvedEl = document.getElementById('wow-kpi-resolved');
+  if (wowResolvedEl && wow.crises_resolved !== undefined) {
+    wowResolvedEl.textContent = `${wow.crises_resolved} RESOLVED`;
+  }
+  const wowEmergedEl = document.getElementById('wow-kpi-emerged');
+  if (wowEmergedEl && wow.crises_emerged !== undefined) {
+    wowEmergedEl.textContent = `${wow.crises_emerged} EMERGED`;
+  }
+  const wowChiEl = document.getElementById('wow-kpi-chirecovery');
+  if (wowChiEl && wow.chi_delta !== undefined) {
+    const sign = wow.chi_delta >= 0 ? '+' : '';
+    wowChiEl.textContent = `${sign}${wow.chi_delta} PTS`;
+  }
+  const wowCapEl = document.getElementById('wow-kpi-capmitigated');
+  if (wowCapEl && wow.capital_delta_inr !== undefined) {
+    wowCapEl.textContent = `${wow.capital_delta_inr <= 0 ? '-' : '+'}₹${(Math.abs(wow.capital_delta_inr)/1e7).toFixed(1)} CR`;
+  }
 
   // Chart 1: Regional CHI
   const c1 = document.getElementById('chart-regional-chi');

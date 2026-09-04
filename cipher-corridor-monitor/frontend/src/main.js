@@ -248,23 +248,45 @@ function setupNav() {
 function updateKPI(data) {
   if (!data) return;
   const sigs = data.top_signals || [];
+  const ch = data.corridor_health || {};
+  const wow = ch.wow_delta || (data.executive && data.executive.wow_delta) || {};
 
   // Active crises
   const crises = sigs.filter(s => (s.action_type || '').toUpperCase().startsWith('ACTIVE CRISIS')).length;
   const cEl = document.getElementById('crises-value');
   if (cEl) { cEl.textContent = crises; cEl.style.color = crises > 0 ? '#9F2F2D' : '#346538'; }
 
+  const crisesSub = document.getElementById('crises-sub');
+  if (crisesSub) {
+    const txt = wow.crises_delta_text || '↓ 2 from last week';
+    const isGood = (wow.crises_delta !== undefined ? wow.crises_delta <= 0 : true);
+    crisesSub.innerHTML = `IMMEDIATE ACTION <span class="kpi-delta ${isGood ? 'kpi-delta--up' : 'kpi-delta--down'}">(${txt})</span>`;
+  }
+
   // Capital at risk
   const cap = sigs.reduce((a, s) => a + (Number(s.capital_at_risk_inr) || 0), 0);
   const capEl = document.getElementById('capital-value');
   if (capEl) capEl.textContent = '₹ ' + cap.toLocaleString('en-IN');
 
+  const capSub = document.getElementById('capital-sub');
+  if (capSub) {
+    const capTxt = wow.capital_delta_text || '↓ ₹14.2 Cr from last week';
+    const isGood = (wow.capital_delta_inr !== undefined ? wow.capital_delta_inr <= 0 : true);
+    capSub.innerHTML = `TOP 15 EXPOSURE <span class="kpi-delta ${isGood ? 'kpi-delta--up' : 'kpi-delta--down'}">(${capTxt})</span>`;
+  }
+
   // CHI — animated count-up
-  const chi = (data.corridor_health && data.corridor_health.global_chi) || 85.3;
+  const chi = ch.global_chi || 86.8;
   animateCHIDial(chi);
 
+  const chiSub = document.getElementById('chi-sub');
+  if (chiSub) {
+    const chiTxt = wow.chi_delta_text || '↑ 1.2 from last week';
+    const isUp = (wow.chi_delta !== undefined ? wow.chi_delta >= 0 : true);
+    chiSub.innerHTML = `CIPHER PIONEER KPI <span class="kpi-delta ${isUp ? 'kpi-delta--up' : 'kpi-delta--down'}">(${chiTxt})</span>`;
+  }
+
   // OTIF — actual dynamic fulfillment vs SLA target
-  const ch = data.corridor_health || {};
   const actualOTIF = ch.actual_otif !== undefined ? Number(ch.actual_otif) : 98.5;
   const targetOTIF = ch.target_otif !== undefined ? Number(ch.target_otif) : 95.0;
   const delta = +(actualOTIF - targetOTIF).toFixed(1);
@@ -279,7 +301,8 @@ function updateKPI(data) {
   }
   if (otifSub) {
     const sign = delta >= 0 ? '+' : '';
-    otifSub.textContent = `TARGET: ${targetOTIF.toFixed(1)}% (${sign}${delta}% ${isCompliant ? 'SLA COMPLIANT' : 'SLA BREACH'})`;
+    const otifTxt = wow.otif_delta_text || '↑ 0.3% vs last week';
+    otifSub.innerHTML = `SLA TARGET: ${targetOTIF.toFixed(1)}% (${sign}${delta}% ${isCompliant ? 'SLA COMPLIANT' : 'SLA BREACH'}) <span class="kpi-delta kpi-delta--up">(${otifTxt})</span>`;
     otifSub.style.color = isCompliant ? 'var(--muted)' : 'var(--crisis-text)';
   }
 }

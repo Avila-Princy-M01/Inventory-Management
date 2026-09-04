@@ -256,6 +256,24 @@ except Exception as exc:
     fail(f"Could not read chi_lookup_matrix: {exc}")
     failures.append(str(exc))
 
+# 8. Week-over-Week delta validation
+try:
+    wow_ch = data["corridor_health"].get("wow_delta", {})
+    wow_exec = data["executive"].get("wow_delta", {})
+    wow_valid = (
+        "chi_delta" in wow_ch
+        and "crises_delta" in wow_ch
+        and "briefing_narrative" in wow_exec
+    )
+    assert_check(
+        wow_valid,
+        f"Week-over-Week delta present (CHI delta: {wow_ch.get('chi_delta_text')}, Crises delta: {wow_ch.get('crises_delta_text')})",
+        "Week-over-Week delta missing or incomplete in corridor_health / executive",
+    )
+except Exception as exc:
+    fail(f"Could not validate wow_delta: {exc}")
+    failures.append(str(exc))
+
 # ---------------------------------------------------------------------------
 # Summary
 # ---------------------------------------------------------------------------

@@ -224,6 +224,14 @@ class TestCorridorHealth(unittest.TestCase):
             self.assertGreaterEqual(chi, 0)
             self.assertLessEqual(chi, 100)
 
+    def test_wow_delta_present_and_valid(self):
+        wow = self.health.get("wow_delta")
+        self.assertIsNotNone(wow, "wow_delta is missing from corridor_health")
+        self.assertIn("chi_delta", wow)
+        self.assertIn("crises_delta", wow)
+        self.assertIn("capital_delta_inr", wow)
+        self.assertIn("otif_delta", wow)
+
 
 class TestExecutiveBlock(unittest.TestCase):
     """Assertions against the executive block."""
@@ -232,6 +240,13 @@ class TestExecutiveBlock(unittest.TestCase):
     def setUpClass(cls):
         cls.data = _load_data()
         cls.executive = cls.data.get("executive", {})
+
+    def test_executive_wow_delta_present(self):
+        wow = self.executive.get("wow_delta")
+        self.assertIsNotNone(wow, "wow_delta is missing from executive")
+        self.assertIn("briefing_narrative", wow)
+        self.assertIn("crises_resolved", wow)
+        self.assertIn("crises_emerged", wow)
 
     # --- Requirement 7.1: seasonality has 12 entries ------------------------
 
