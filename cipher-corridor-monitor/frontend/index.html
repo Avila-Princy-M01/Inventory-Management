@@ -201,61 +201,56 @@
 
         <!-- VIEW 1: Signal Console -->
         <section id="view-signals" class="view-section">
-          <div class="view-header">
-            <div>
-              <h1 class="view-title">STRATEGIC SIGNAL CONSOLE</h1>
-              <p class="view-subtitle">Top 15 priority supply-chain exceptions ranked by Priority Risk Score (PRS) · 0 false alarm noise</p>
+          <!-- STRATEGIC SIGNAL CONSOLE INDUSTRIAL HEADER -->
+          <div class="console-hero-header">
+            <div class="console-hero-titles">
+              <div class="console-hero-tag">[ TACTICAL EXCEPTION ENGINE · NOVO NORDISK GBS ]</div>
+              <h1 class="view-title console-main-title">STRATEGIC SIGNAL CONSOLE</h1>
+              <p class="view-subtitle console-main-subtitle">Top 15 priority supply-chain exceptions ranked by Priority Risk Score (PRS) · 0 false alarm noise</p>
             </div>
-            <div class="view-actions">
-              <button class="btn-action" id="btn-signal-email-digest" title="Open executive email briefing summary">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="0"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                <span>EMAIL DIGEST</span>
+            <div class="console-hero-actions">
+              <button class="btn-console-action btn-email-trigger" id="btn-header-email-digest" title="Open executive Monday briefing email digest">
+                <span class="live-dot-pulse">●</span> EMAIL DIGEST
               </button>
-              <button class="btn-action btn-action--crisis" id="btn-approve-crises" title="Approve all 5 Active Crises with GxP electronic signature">
-                <span>⚡ APPROVE ALL CRISES</span>
+              <button class="btn-console-action btn-batch-crisis" id="btn-batch-approve-crises" title="Batch approve and sign all active crises">
+                <span class="lightning-bolt">⚡</span> APPROVE ALL CRISES
               </button>
-              <span class="count-badge" id="signal-count-badge">15 ACTIVE SIGNALS</span>
+              <div class="count-badge-industrial" id="signal-count-badge">15 ACTIVE SIGNALS</div>
             </div>
           </div>
 
-          <!-- Calm Triage & Rapid Filter Toolbar (Anti-Noise) -->
-          <div class="triage-toolbar">
-            <div class="filter-pills" role="tablist" aria-label="Filter signals by urgency">
-              <button class="filter-pill active" data-filter="ALL" id="filter-pill-all">
-                <span>ALL</span>
-                <span class="pill-count" id="count-all">15</span>
+          <!-- TACTICAL TRIAGE & FILTER TOOLBAR -->
+          <div class="triage-toolbar-industrial">
+            <div class="filter-pill-group" id="filter-pill-group">
+              <button class="filter-pill-ind active" data-filter="ALL" id="filter-pill-all">
+                ALL <span class="pill-count" id="pill-count-all">15</span>
               </button>
-              <button class="filter-pill filter-pill--crisis" data-filter="ACTIVE CRISIS" id="filter-pill-crisis">
-                <span class="pill-dot">●</span>
-                <span>CRITICAL</span>
-                <span class="pill-count" id="count-crisis">5</span>
+              <span class="pill-divider">●</span>
+              <button class="filter-pill-ind filter-pill-ind--crisis" data-filter="ACTIVE CRISIS" id="filter-pill-crisis">
+                CRITICAL <span class="pill-count" id="pill-count-crisis">2</span>
               </button>
-              <button class="filter-pill filter-pill--expedite" data-filter="EMERGENCY EXPEDITE" id="filter-pill-expedite">
-                <span class="pill-dot">●</span>
-                <span>EXPEDITE</span>
-                <span class="pill-count" id="count-expedite">2</span>
+              <span class="pill-divider">●</span>
+              <button class="filter-pill-ind filter-pill-ind--expedite" data-filter="EMERGENCY EXPEDITE" id="filter-pill-expedite">
+                EXPEDITE <span class="pill-count" id="pill-count-expedite">4</span>
               </button>
-              <button class="filter-pill filter-pill--po" data-filter="STANDARD PO" id="filter-pill-po">
-                <span class="pill-dot">●</span>
-                <span>STANDARD PO</span>
-                <span class="pill-count" id="count-po">5</span>
+              <span class="pill-divider">●</span>
+              <button class="filter-pill-ind filter-pill-ind--po" data-filter="STANDARD PO" id="filter-pill-po">
+                STANDARD PO <span class="pill-count" id="pill-count-po">4</span>
               </button>
-              <button class="filter-pill filter-pill--excess" data-filter="EXCESS HOLDING" id="filter-pill-excess">
-                <span class="pill-dot">●</span>
-                <span>EXCESS</span>
-                <span class="pill-count" id="count-excess">3</span>
+              <span class="pill-divider">●</span>
+              <button class="filter-pill-ind filter-pill-ind--excess" data-filter="EXCESS HOLDING" id="filter-pill-excess">
+                EXCESS <span class="pill-count" id="pill-count-excess">4</span>
               </button>
-              <button class="filter-pill filter-pill--approved" data-filter="APPROVED" id="filter-pill-approved">
-                <span class="pill-dot">✓</span>
-                <span>APPROVED</span>
-                <span class="pill-count" id="count-approved">0</span>
+              <span class="pill-divider">✓</span>
+              <button class="filter-pill-ind filter-pill-ind--approved" data-filter="APPROVED" id="filter-pill-approved">
+                APPROVED <span class="pill-count" id="pill-count-approved">0</span>
               </button>
             </div>
 
-            <div class="search-wrap">
-              <span class="search-icon">🔍</span>
-              <input type="text" id="signal-search-input" class="search-input" placeholder="Filter by Brand, Country, Region..." aria-label="Filter signals by brand, country or region">
-              <button id="btn-clear-search" class="btn-clear-search" style="display:none" title="Clear filter">✕</button>
+            <div class="search-box-industrial">
+              <span class="search-icon-ind">🔍</span>
+              <input type="text" id="signal-search-input" class="search-input-ind" placeholder="Filter by Brand, Country, Region..." autocomplete="off" spellcheck="false">
+              <button class="search-clear-btn-ind" id="search-clear-btn" style="display:none;" title="Clear search">✕</button>
             </div>
           </div>
 
@@ -449,7 +444,8 @@
 
       <div class="modal-footer">
         <div class="modal-footer-left">
-          <button class="btn-action btn-action--dispatch" id="btn-test-dispatch" title="Trigger instant email dispatch to planners">
+          <button class="btn-action btn-action--dispatch" id="btn-test-dispatch"
+            title="Trigger instant email dispatch to planners">
             <span>⚡ DISPATCH TO INBOXES NOW</span>
           </button>
           <span class="dispatch-toast" id="dispatch-toast" style="display:none"></span>

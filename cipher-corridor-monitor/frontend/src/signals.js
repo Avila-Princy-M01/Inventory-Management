@@ -82,6 +82,11 @@ export function renderSignalCards(signals, approvedSignals = {}) {
   signals.forEach(sig => {
     const card = grid.querySelector(`[data-rid="${sig.row_id}"]`);
     if (!card) return;
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('.btn-po')) return;
+      window._openDetailDrawer && window._openDetailDrawer(sig);
+    });
     const btnD = card.querySelector('.btn-detail');
     if (btnD) btnD.addEventListener('click', e => { e.stopPropagation(); window._openDetailDrawer && window._openDetailDrawer(sig); });
     const btnP = card.querySelector('.btn-po');

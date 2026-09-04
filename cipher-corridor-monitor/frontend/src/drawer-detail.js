@@ -71,6 +71,13 @@ export function openDetailDrawer(sig, approvedSignals) {
         <div class="detail-meta-item"><span class="detail-meta-key">52W OTIF RATE</span><span class="detail-meta-val tabular-nums" style="color:${(sig.otif_pct !== undefined ? sig.otif_pct : 98.5) >= 95 ? 'var(--ok-text)' : 'var(--crisis-text)'}">${sig.otif_pct !== undefined ? sig.otif_pct : 98.5}% (SLA: 95.0%)</span></div>
       </div>
     </div>
+    <div class="narrative-box" id="narrative-container">
+      <div class="narrative-header">
+        <div class="detail-section-label" style="margin-bottom:0;">EXECUTIVE STRATEGIC DOSSIER</div>
+        <span class="narrative-badge" id="narrative-badge-status">${approved ? 'APPROVED & SIGNED ✓' : 'SYNTHESIZED ✓'}</span>
+      </div>
+      <div class="narrative-dossier" id="narrative-dossier"></div>
+    </div>
     <div>
       <div class="detail-section-label">52-WEEK INVENTORY TRAJECTORY</div>
       <div class="chart-container"><canvas id="detail-chart"></canvas></div>
@@ -111,10 +118,83 @@ export function openDetailDrawer(sig, approvedSignals) {
 
   renderChart(sig, approved);
 
+  const narrativeDossierEl = document.getElementById('narrative-dossier');
+  if (narrativeDossierEl) {
+    renderDossier(sig, narrativeDossierEl, false);
+  }
+
   const btnApprove = document.getElementById('btn-approve');
   if (btnApprove && !approved) {
     btnApprove.addEventListener('click', () => handleApproval(sig, btnApprove));
   }
+}
+
+function generateDossier(sig) {
+  const brand = sig.brand || 'Product';
+  const country = sig.country || 'Global';
+  const breachLen = sig.breach_length_weeks || Math.max(3, sig.delta_t_weeks || 4);
+  const cert = Math.round((sig.supply_certainty || 0.8) * 100);
+  const unconfirmedPct = 100 - cert;
+  const recQty = Number(sig.recommended_qty_units || 0).toLocaleString('en-IN');
+  const capRisk = `₹${Number(sig.capital_at_risk_inr || 0).toLocaleString('en-IN')}`;
+  const recoveryWks = sig.recovery_weeks || 2;
+  const standardWks = Math.round(recoveryWks * 2.5);
+  const action = sig.action_type === 'ACTIVE CRISIS' ? 'inter-market transfer and expediting' :
+                 sig.action_type === 'EMERGENCY EXPEDITE' ? 'emergency air-freight expedite' :
+                 sig.action_type === 'EXCESS HOLDING' ? 'deferral of inbound purchase orders' :
+                 'standard replenishment purchase order';
+
+  return [
+    { label: 'DIAGNOSIS', text: `Brand ${brand} in ${country} is ${breachLen} weeks below safety stock floor.` },
+    { label: 'SUPPLY BOTTLENECK', text: `Pipeline is ${unconfirmedPct}% unconfirmed. Standard sea-freight arrives post-stockout.` },
+    { label: 'RECOMMENDED ACTION', text: `Recommend ${action} of ${recQty} units to restore corridor equilibrium.`, highlight: true },
+    { label: 'CAPITAL AT RISK', text: `${capRisk} potential inventory exposure and stockout penalty.` },
+    { label: 'PROJECTED OUTCOME', text: `Estimated recovery: ${recoveryWks} weeks with expedite (vs. ${standardWks} weeks without).` }
+  ];
+}
+
+function renderDossier(sig, containerEl, animate = false) {
+  if (!containerEl) return;
+  const items = generateDossier(sig);
+  containerEl.innerHTML = '';
+
+  items.forEach((item, idx) => {
+    const row = document.createElement('div');
+    row.className = `dossier-row ${item.highlight ? 'dossier-row--highlight' : ''}`;
+    row.innerHTML = `
+      <span class="dossier-label">${item.label}</span>
+      <span class="dossier-text" id="dossier-text-${idx}"></span>
+    `;
+    containerEl.appendChild(row);
+
+    const textEl = row.querySelector(`#dossier-text-${idx}`);
+    if (animate) {
+      setTimeout(() => {
+        typeChars(item.text, textEl);
+      }, idx * 220);
+    } else {
+      textEl.textContent = item.text;
+    }
+  });
+}
+
+function typeChars(text, el) {
+  if (!el) return;
+  let i = 0;
+  const cursor = document.createElement('span');
+  cursor.className = 'narrative-cursor';
+  el.appendChild(cursor);
+
+  function tick() {
+    if (i < text.length) {
+      cursor.insertAdjacentText('beforebegin', text.charAt(i));
+      i++;
+      setTimeout(tick, 9);
+    } else {
+      setTimeout(() => cursor.remove(), 1200);
+    }
+  }
+  tick();
 }
 
 function renderChart(sig, approved) {
@@ -180,6 +260,14 @@ function handleApproval(sig, btn) {
   if (_chart) {
     _chart.data.datasets.push(buildRecovery(sig));
     _chart.update();
+  }
+
+  // Update dossier status & trigger typewriter animation
+  const badgeStatus = document.getElementById('narrative-badge-status');
+  if (badgeStatus) badgeStatus.textContent = 'APPROVED & SIGNED ✓';
+  const narrativeDossierEl = document.getElementById('narrative-dossier');
+  if (narrativeDossierEl) {
+    renderDossier(sig, narrativeDossierEl, true);
   }
 
   // Construct AuditEntry

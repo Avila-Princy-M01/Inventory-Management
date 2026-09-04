@@ -49,7 +49,6 @@ venv.bak/
 *.tmp
 *.temp
 *.bak
-*.jsonl
 scratch/
 .tempmediaStorage/
 .system_generated/
@@ -84,3 +83,4 @@ Thumbs.db
 .settings/
 *.sublime-project
 *.sublime-workspace
+*.jsonl

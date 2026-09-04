@@ -40,10 +40,70 @@ export function pushAudit(entry) {
 }
 window._pushAudit = pushAudit;
 
+let _currentFilter = 'ALL';
+let _searchQuery = '';
+
+export function updatePillCounts() {
+  if (!window.DATA || !window.DATA.top_signals) return;
+  const sigs = window.DATA.top_signals;
+  const cAll = sigs.length;
+  const cCrisis = sigs.filter(s => (s.action_type || '').toUpperCase().startsWith('ACTIVE CRISIS')).length;
+  const cExpedite = sigs.filter(s => (s.action_type || '').toUpperCase().startsWith('EMERGENCY EXPEDITE')).length;
+  const cPo = sigs.filter(s => (s.action_type || '').toUpperCase().startsWith('STANDARD PO')).length;
+  const cExcess = sigs.filter(s => (s.action_type || '').toUpperCase().startsWith('EXCESS HOLDING')).length;
+  const cApproved = sigs.filter(s => Boolean(window._approvedSignals[s.row_id])).length;
+
+  const elAll = document.getElementById('pill-count-all');
+  if (elAll) elAll.textContent = cAll;
+  const elCrisis = document.getElementById('pill-count-crisis');
+  if (elCrisis) elCrisis.textContent = cCrisis;
+  const elExpedite = document.getElementById('pill-count-expedite');
+  if (elExpedite) elExpedite.textContent = cExpedite;
+  const elPo = document.getElementById('pill-count-po');
+  if (elPo) elPo.textContent = cPo;
+  const elExcess = document.getElementById('pill-count-excess');
+  if (elExcess) elExcess.textContent = cExcess;
+  const elApproved = document.getElementById('pill-count-approved');
+  if (elApproved) elApproved.textContent = cApproved;
+}
+
+export function updateFilteredSignals() {
+  if (!window.DATA || !window.DATA.top_signals) return;
+  let list = window.DATA.top_signals;
+
+  // Category filter
+  if (_currentFilter === 'APPROVED') {
+    list = list.filter(s => Boolean(window._approvedSignals[s.row_id]));
+  } else if (_currentFilter !== 'ALL') {
+    list = list.filter(s => (s.action_type || '').toUpperCase().startsWith(_currentFilter));
+  }
+
+  // Search query
+  if (_searchQuery) {
+    const q = _searchQuery.toLowerCase();
+    list = list.filter(s => {
+      const b = (s.brand || '').toLowerCase();
+      const c = (s.country || '').toLowerCase();
+      const r = (s.region || '').toLowerCase();
+      const pg = (s.product_group || '').toLowerCase();
+      const at = (s.action_type || '').toLowerCase();
+      return b.includes(q) || c.includes(q) || r.includes(q) || pg.includes(q) || at.includes(q);
+    });
+  }
+
+  renderSignalCards(list, window._approvedSignals);
+
+  const badge_el = document.getElementById('signal-count-badge');
+  if (badge_el) {
+    badge_el.textContent = `${list.length} ACTIVE SIGNALS`;
+  }
+}
+
 export function setApproved(rowId) {
   window._approvedSignals[rowId] = true;
   if (window.DATA && window.DATA.top_signals) {
-    renderSignalCards(window.DATA.top_signals, window._approvedSignals);
+    updateFilteredSignals();
+    updatePillCounts();
   }
 }
 window._setApproved = setApproved;
@@ -67,7 +127,8 @@ export function replaceData(newData) {
   window.DATA = newData;
   window.briefingDone = false;
   updateKPI(newData);
-  renderSignalCards(newData.top_signals || [], window._approvedSignals);
+  updatePillCounts();
+  updateFilteredSignals();
   initMasterdata(newData);
 }
 window._replaceData = replaceData;
@@ -103,7 +164,8 @@ export function activateDashboard(data) {
 
   // 3. Populate KPI Banner & Signal Console
   updateKPI(data);
-  renderSignalCards(data.top_signals || [], window._approvedSignals);
+  updatePillCounts();
+  updateFilteredSignals();
   initMasterdata(data);
 
   // 4. Smoothly switch to Signal Console view (01)
@@ -258,9 +320,140 @@ function showError(msg) {
   `;
 }
 
+// ── Strategic Signal Console Triage Toolbar ─────────────────────
+function setupTriageToolbar() {
+  // Filter pills
+  const pillGroup = document.getElementById('filter-pill-group');
+  if (pillGroup) {
+    pillGroup.querySelectorAll('.filter-pill-ind').forEach(btn => {
+      btn.addEventListener('click', () => {
+        pillGroup.querySelectorAll('.filter-pill-ind').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        _currentFilter = btn.dataset.filter || 'ALL';
+        updateFilteredSignals();
+      });
+    });
+  }
+
+  // Search input
+  const searchInput = document.getElementById('signal-search-input');
+  const clearBtn = document.getElementById('search-clear-btn');
+  if (searchInput) {
+    searchInput.addEventListener('input', e => {
+      _searchQuery = e.target.value.trim();
+      if (clearBtn) clearBtn.style.display = _searchQuery ? 'block' : 'none';
+      updateFilteredSignals();
+    });
+  }
+
+  if (clearBtn && searchInput) {
+    clearBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      _searchQuery = '';
+      clearBtn.style.display = 'none';
+      searchInput.focus();
+      updateFilteredSignals();
+    });
+  }
+
+  // Email digest header button
+  const btnEmailDigest = document.getElementById('btn-header-email-digest');
+  if (btnEmailDigest) {
+    btnEmailDigest.addEventListener('click', () => {
+      const modal = document.getElementById('email-modal');
+      const pre = document.getElementById('email-text');
+      if (pre && window.DATA) {
+        pre.textContent = window.DATA.simulated_email || 'No email digest generated yet.';
+      }
+      if (modal) modal.style.display = 'flex';
+    });
+  }
+
+  // Batch approve crises button
+  const btnBatchCrises = document.getElementById('btn-batch-approve-crises');
+  if (btnBatchCrises) {
+    btnBatchCrises.addEventListener('click', () => {
+      if (!window.DATA || !window.DATA.top_signals) return;
+      const crises = window.DATA.top_signals.filter(s =>
+        (s.action_type || '').toUpperCase().startsWith('ACTIVE CRISIS') && !window._approvedSignals[s.row_id]
+      );
+      if (crises.length === 0) {
+        btnBatchCrises.textContent = '✓ ALL CRISES SIGNED';
+        setTimeout(() => { btnBatchCrises.innerHTML = '<span class="lightning-bolt">⚡</span> APPROVE ALL CRISES'; }, 2000);
+        return;
+      }
+
+      crises.forEach(sig => {
+        const id = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `batch-${Date.now()}-${Math.random()}`;
+        const entry = {
+          id,
+          timestamp_utc: new Date().toISOString(),
+          row_id: sig.row_id,
+          sku: `${sig.brand}|${sig.country}`,
+          action_type: 'ACTIVE CRISIS',
+          approved_qty: sig.recommended_qty_units || 0,
+          reason_code: 'Batch Crisis Protocol',
+          signature: 'Analyst Batch Authorization — GxP Verified'
+        };
+        window._pushAudit && window._pushAudit(entry);
+        window._approvedSignals[sig.row_id] = true;
+      });
+
+      updatePillCounts();
+      updateFilteredSignals();
+
+      btnBatchCrises.textContent = `✓ ${crises.length} CRISES APPROVED`;
+      setTimeout(() => {
+        btnBatchCrises.innerHTML = '<span class="lightning-bolt">⚡</span> APPROVE ALL CRISES';
+      }, 2500);
+    });
+  }
+
+  // Instant dispatch trigger button in email modal
+  const btnTestDispatch = document.getElementById('btn-test-dispatch');
+  const dispatchToast = document.getElementById('dispatch-toast');
+  if (btnTestDispatch) {
+    btnTestDispatch.addEventListener('click', async () => {
+      btnTestDispatch.disabled = true;
+      btnTestDispatch.innerHTML = '<span>DISPATCHING…</span>';
+      try {
+        const res = await fetch('/api/email/dispatch', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({})
+        });
+        const result = await res.json();
+        if (res.ok && result.success) {
+          btnTestDispatch.innerHTML = '<span>DISPATCHED ✓</span>';
+          btnTestDispatch.classList.add('btn-action--success');
+          if (dispatchToast) {
+            dispatchToast.textContent = `Sent to ${result.recipients.length} inboxes (${result.delivery_mode})`;
+            dispatchToast.style.display = 'inline-block';
+          }
+          setTimeout(() => {
+            btnTestDispatch.disabled = false;
+            btnTestDispatch.classList.remove('btn-action--success');
+            btnTestDispatch.innerHTML = '<span>⚡ DISPATCH TO INBOXES NOW</span>';
+          }, 3500);
+        } else {
+          throw new Error(result.error || 'Failed');
+        }
+      } catch (err) {
+        btnTestDispatch.disabled = false;
+        btnTestDispatch.innerHTML = '<span>RETRY DISPATCH</span>';
+        if (dispatchToast) {
+          dispatchToast.textContent = `Local simulation logged (${err.message})`;
+          dispatchToast.style.display = 'inline-block';
+        }
+      }
+    });
+  }
+}
+
 // ── Bootstrap ─────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
   setupNav();
+  setupTriageToolbar();
   initAuditTable(auditLog);
   initUploader({ activateDashboard, replaceData });
 
@@ -270,9 +463,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (res.ok) {
       const existingData = await res.json();
       if (existingData && existingData.top_signals) {
-        // Data is ready; initialize in background so demo/instant load is ready
-        window.DATA = existingData;
-        console.log('[boot] Dashboard data detected. Ready for manual ingestion or instant exploration.');
+        // Data is ready; activate immediately so instant load is live
+        activateDashboard(existingData);
+        console.log('[boot] Dashboard data detected & activated.');
       }
     }
   } catch (err) {
