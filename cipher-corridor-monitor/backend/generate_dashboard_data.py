@@ -349,6 +349,7 @@ def layer1_load_and_signals(panel):
             "capital_at_risk_inr": None,
             "supply_certainty":    None,
             "otif_pct": round(float((1.0 - (sum(lost_demand) / max(sum(dem_arr), 1))) * 100.0), 1) if sum(dem_arr) > 0 else 100.0,
+            "fill_rate_pct": round(float((1.0 - (sum(lost_demand) / max(sum(dem_arr), 1))) * 100.0), 1) if sum(dem_arr) > 0 else 100.0,
         })
 
     return signals, pure_chronic, series_meta
@@ -381,10 +382,12 @@ def layer2_action_types(signals, panel):
         series_data = panel[panel["row_id"] == rid]
         mean_doh_ssd = (series_data[DOH] / series_data[SSD].replace(0, np.nan)).mean()
 
-        # EXCESS HOLDING per plan spec: DOH > Ceiling / elevated DOH/SSD ratio and rising inventory
-        if trend > 500 and (mean_doh_ssd is not None and float(mean_doh_ssd) > 1.8):
+        # EXCESS HOLDING per plan spec: DOH > Ceiling with upward stock accumulation
+        ceil_days = np.maximum(series_data[SSD] + 1.0, CEILING_MULT * series_data[SSD])
+        has_ceiling_breach = (series_data[DOH] > ceil_days).any()
+        if (has_ceiling_breach or (mean_doh_ssd is not None and float(mean_doh_ssd) >= 1.8)) and trend > 0:
             action_type = AT_EXCESS
-            action_desc = "Inventory trending up with elevated DOH/SSD ratio. Defer or reallocate inbound supply to avoid overstock scrapping."
+            action_desc = "Inventory exceeds corridor ceiling (DOH > Ceiling) with upward stock trend. Defer or reallocate inbound supply to avoid overstock scrapping."
         elif delta_t <= 0:
             action_type = AT_CRISIS
             action_desc = "Corridor breach active this week. Immediate inter-market re-allocation required."

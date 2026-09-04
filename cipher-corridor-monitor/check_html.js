@@ -15,7 +15,7 @@ while ((m = viewRe.exec(html)) !== null) viewMatches.push(m[1]);
 console.log('View section IDs:', viewMatches);
 
 // Check match
-const allMatch = navMatches.every(v => viewMatches.includes(v));
+const allMatch = navMatches.every(v => viewMatches.includes('view-' + v));
 console.log('All nav data-view match a view id?', allMatch);
 
 // upload container

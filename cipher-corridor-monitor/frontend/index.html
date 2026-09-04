@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;600;700&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="src/style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -294,9 +294,8 @@
               <div class="callout-block">
                 <div class="callout-tag">[ TEAM CIPHER ORIGINAL KPI ]</div>
                 <div class="callout-heading">CORRIDOR HEALTH INDEX (CHI)</div>
-                <p class="callout-body">Novel inventory corridor integrity metric developed for the Novo Nordisk GBS
-                  Supply Chain Hackathon 2026. Baseline evaluated over 260,000+ SKU-week records.</p>
-                <code class="callout-formula">CHI = 100 × (1 − Breach Weeks / Total Weeks)</code>
+                <p class="callout-body">Novel inventory corridor integrity metric based on Weighted Severity Penalty (WSP) evaluated over 260,000+ SKU-week records.</p>
+                <code class="callout-formula">CHI = max(0, 100 × (1 − Σ WSPₜ / (N × 1.5)))</code>
               </div>
               <div class="table-card">
                 <div class="table-card-label">TOP 10 HIGH-EXPOSURE MARKETS</div>

@@ -139,17 +139,23 @@ function generateDossier(sig) {
   const capRisk = `₹${Number(sig.capital_at_risk_inr || 0).toLocaleString('en-IN')}`;
   const recoveryWks = sig.recovery_weeks || 2;
   const standardWks = Math.round(recoveryWks * 2.5);
-  const action = sig.action_type === 'ACTIVE CRISIS' ? 'inter-market transfer and expediting' :
+  const rc = sig.root_cause || {};
+  const primaryCause = rc.primary_cause || 'Supply Deficit';
+  const supDeficit = rc.supply_deficit_pct !== undefined ? `${rc.supply_deficit_pct}%` : '50%';
+  const demSurge = rc.demand_surge_pct !== undefined ? `${rc.demand_surge_pct}%` : '30%';
+  const mrpInfo = sig.mrp ? ` [MRP: ${sig.mrp}]` : '';
+
+  const action = sig.action_type === 'ACTIVE CRISIS' ? 'inter-market transfer and emergency expediting' :
                  sig.action_type === 'EMERGENCY EXPEDITE' ? 'emergency air-freight expedite' :
                  sig.action_type === 'EXCESS HOLDING' ? 'deferral of inbound purchase orders' :
                  'standard replenishment purchase order';
 
   return [
-    { label: 'DIAGNOSIS', text: `Brand ${brand} in ${country} is ${breachLen} weeks below safety stock floor.` },
-    { label: 'SUPPLY BOTTLENECK', text: `Pipeline is ${unconfirmedPct}% unconfirmed. Standard sea-freight arrives post-stockout.` },
-    { label: 'RECOMMENDED ACTION', text: `Recommend ${action} of ${recQty} units to restore corridor equilibrium.`, highlight: true },
-    { label: 'CAPITAL AT RISK', text: `${capRisk} potential inventory exposure and stockout penalty.` },
-    { label: 'PROJECTED OUTCOME', text: `Estimated recovery: ${recoveryWks} weeks with expedite (vs. ${standardWks} weeks without).` }
+    { label: 'DIAGNOSIS', text: `Brand ${brand} in ${country}${mrpInfo} faces ${primaryCause} (${supDeficit} supply deficit, ${demSurge} surge) with ${breachLen} weeks below safety corridor floor.` },
+    { label: 'SUPPLY BOTTLENECK', text: `Pipeline certainty is ${cert}% (${unconfirmedPct}% unconfirmed / in-transit risk). Arrival target week: W${sig.arrival_target_week || 4}.` },
+    { label: 'RECOMMENDED ACTION', text: `Recommend ${action} of ${recQty} units to rebalance stock and prevent stockout penalties.`, highlight: true },
+    { label: 'CAPITAL AT RISK', text: `${capRisk} exposure across ${country} market inventory.` },
+    { label: 'PROJECTED OUTCOME', text: `Estimated corridor recovery in ${recoveryWks} weeks with expedite (vs. ${standardWks} weeks standard lead time).` }
   ];
 }
 
@@ -216,7 +222,7 @@ function renderChart(sig, approved) {
       if (!xPos || isNaN(xPos)) return;
       ctx.save();
       ctx.setLineDash([4, 3]);
-      ctx.strokeStyle = '#E61919';
+      ctx.strokeStyle = '#DC2626';
       ctx.lineWidth = 1.5;
       ctx.beginPath(); ctx.moveTo(xPos, top); ctx.lineTo(xPos, bottom); ctx.stroke();
       ctx.fillStyle = '#9F2F2D';
@@ -232,6 +238,18 @@ function renderChart(sig, approved) {
     { label: 'Ceiling', data: traj.ceiling || [], borderColor: '#9CA3AF', borderWidth: 1.5, borderDash: [4, 3], pointRadius: 0, fill: false, yAxisID: 'y' },
     { type: 'bar', label: 'Demand', data: traj.demand || [], backgroundColor: 'rgba(0,0,0,0.05)', borderWidth: 0, yAxisID: 'y1', barPercentage: 0.8 },
   ];
+  if (traj.lost_patient_demand && traj.lost_patient_demand.some(v => v > 0)) {
+    datasets.push({
+      type: 'bar',
+      label: 'Lost Demand (Stockout)',
+      data: traj.lost_patient_demand,
+      backgroundColor: 'rgba(220, 38, 38, 0.45)',
+      borderColor: '#DC2626',
+      borderWidth: 1,
+      yAxisID: 'y1',
+      barPercentage: 0.8
+    });
+  }
   if (approved) datasets.push(buildRecovery(sig));
 
   _chart = new Chart(canvas, {

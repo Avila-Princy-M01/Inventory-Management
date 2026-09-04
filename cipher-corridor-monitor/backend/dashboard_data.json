@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated_utc": "2026-09-04T20:29:25.210862+00:00",
+    "generated_utc": "2026-09-04T20:39:33.168573+00:00",
     "current_week": 32,
     "total_series": 5000,
     "total_evaluated_records": 215280,
@@ -616,7 +616,8 @@
       },
       "capital_at_risk_inr": 19761000,
       "supply_certainty": 0.858,
-      "otif_pct": 43.4
+      "otif_pct": 43.4,
+      "fill_rate_pct": 43.4
     },
     {
       "row_id": 3581,
@@ -638,7 +639,7 @@
       "midpoint_target_units": 36914,
       "recommended_qty_units": 36756,
       "action_type": "EXCESS HOLDING",
-      "action_desc": "Inventory trending up with elevated DOH/SSD ratio. Defer or reallocate inbound supply to avoid overstock scrapping.",
+      "action_desc": "Inventory exceeds corridor ceiling (DOH > Ceiling) with upward stock trend. Defer or reallocate inbound supply to avoid overstock scrapping.",
       "badge_color": "#7C3AED",
       "root_cause": {
         "primary_cause": "Supply Deficit",
@@ -1082,7 +1083,8 @@
       },
       "capital_at_risk_inr": 73512000,
       "supply_certainty": 0.858,
-      "otif_pct": 46.9
+      "otif_pct": 46.9,
+      "fill_rate_pct": 46.9
     },
     {
       "row_id": 1976,
@@ -1104,7 +1106,7 @@
       "midpoint_target_units": 47637,
       "recommended_qty_units": 46807,
       "action_type": "EXCESS HOLDING",
-      "action_desc": "Inventory trending up with elevated DOH/SSD ratio. Defer or reallocate inbound supply to avoid overstock scrapping.",
+      "action_desc": "Inventory exceeds corridor ceiling (DOH > Ceiling) with upward stock trend. Defer or reallocate inbound supply to avoid overstock scrapping.",
       "badge_color": "#7C3AED",
       "root_cause": {
         "primary_cause": "Supply Deficit",
@@ -1548,7 +1550,8 @@
       },
       "capital_at_risk_inr": 84252600,
       "supply_certainty": 0.819,
-      "otif_pct": 63.1
+      "otif_pct": 63.1,
+      "fill_rate_pct": 63.1
     },
     {
       "row_id": 4082,
@@ -2014,7 +2017,8 @@
       },
       "capital_at_risk_inr": 47270000,
       "supply_certainty": 0.788,
-      "otif_pct": 61.7
+      "otif_pct": 61.7,
+      "fill_rate_pct": 61.7
     },
     {
       "row_id": 2497,
@@ -2480,7 +2484,8 @@
       },
       "capital_at_risk_inr": 104310000,
       "supply_certainty": 0.783,
-      "otif_pct": 69.6
+      "otif_pct": 69.6,
+      "fill_rate_pct": 69.6
     },
     {
       "row_id": 4868,
@@ -2502,7 +2507,7 @@
       "midpoint_target_units": 20666,
       "recommended_qty_units": 11816,
       "action_type": "EXCESS HOLDING",
-      "action_desc": "Inventory trending up with elevated DOH/SSD ratio. Defer or reallocate inbound supply to avoid overstock scrapping.",
+      "action_desc": "Inventory exceeds corridor ceiling (DOH > Ceiling) with upward stock trend. Defer or reallocate inbound supply to avoid overstock scrapping.",
       "badge_color": "#7C3AED",
       "root_cause": {
         "primary_cause": "Supply Deficit",
@@ -2946,7 +2951,8 @@
       },
       "capital_at_risk_inr": 9452800,
       "supply_certainty": 0.899,
-      "otif_pct": 100.0
+      "otif_pct": 100.0,
+      "fill_rate_pct": 100.0
     },
     {
       "row_id": 4966,
@@ -2967,9 +2973,9 @@
       "is_early_order": false,
       "midpoint_target_units": 194798,
       "recommended_qty_units": 162080,
-      "action_type": "ACTIVE CRISIS",
-      "action_desc": "Corridor breach active this week. Immediate inter-market re-allocation required.",
-      "badge_color": "#DC2626",
+      "action_type": "EXCESS HOLDING",
+      "action_desc": "Inventory exceeds corridor ceiling (DOH > Ceiling) with upward stock trend. Defer or reallocate inbound supply to avoid overstock scrapping.",
+      "badge_color": "#7C3AED",
       "root_cause": {
         "primary_cause": "Supply Deficit",
         "supply_deficit_pct": 1.0,
@@ -3412,7 +3418,8 @@
       },
       "capital_at_risk_inr": 291744000,
       "supply_certainty": 0.805,
-      "otif_pct": 100.0
+      "otif_pct": 100.0,
+      "fill_rate_pct": 100.0
     },
     {
       "row_id": 4985,
@@ -3434,7 +3441,7 @@
       "midpoint_target_units": 92697,
       "recommended_qty_units": 79941,
       "action_type": "EXCESS HOLDING",
-      "action_desc": "Inventory trending up with elevated DOH/SSD ratio. Defer or reallocate inbound supply to avoid overstock scrapping.",
+      "action_desc": "Inventory exceeds corridor ceiling (DOH > Ceiling) with upward stock trend. Defer or reallocate inbound supply to avoid overstock scrapping.",
       "badge_color": "#7C3AED",
       "root_cause": {
         "primary_cause": "Supply Deficit",
@@ -3878,7 +3885,8 @@
       },
       "capital_at_risk_inr": 143893800,
       "supply_certainty": 0.883,
-      "otif_pct": 97.7
+      "otif_pct": 97.7,
+      "fill_rate_pct": 97.7
     },
     {
       "row_id": 2340,
@@ -4344,7 +4352,8 @@
       },
       "capital_at_risk_inr": 12240000,
       "supply_certainty": 0.832,
-      "otif_pct": 100.0
+      "otif_pct": 100.0,
+      "fill_rate_pct": 100.0
     },
     {
       "row_id": 1577,
@@ -4810,7 +4819,8 @@
       },
       "capital_at_risk_inr": 28326000,
       "supply_certainty": 0.778,
-      "otif_pct": 96.6
+      "otif_pct": 96.6,
+      "fill_rate_pct": 96.6
     },
     {
       "row_id": 995,
@@ -5276,7 +5286,8 @@
       },
       "capital_at_risk_inr": 18061200,
       "supply_certainty": 0.863,
-      "otif_pct": 100.0
+      "otif_pct": 100.0,
+      "fill_rate_pct": 100.0
     },
     {
       "row_id": 1245,
@@ -5742,7 +5753,8 @@
       },
       "capital_at_risk_inr": 8767200,
       "supply_certainty": 0.862,
-      "otif_pct": 100.0
+      "otif_pct": 100.0,
+      "fill_rate_pct": 100.0
     },
     {
       "row_id": 2480,
@@ -6208,7 +6220,8 @@
       },
       "capital_at_risk_inr": 3585600,
       "supply_certainty": 0.842,
-      "otif_pct": 100.0
+      "otif_pct": 100.0,
+      "fill_rate_pct": 100.0
     },
     {
       "row_id": 4915,
@@ -6674,7 +6687,8 @@
       },
       "capital_at_risk_inr": 15726600,
       "supply_certainty": 0.792,
-      "otif_pct": 100.0
+      "otif_pct": 100.0,
+      "fill_rate_pct": 100.0
     },
     {
       "row_id": 1918,
@@ -7140,7 +7154,8 @@
       },
       "capital_at_risk_inr": 323992800,
       "supply_certainty": 0.863,
-      "otif_pct": 100.0
+      "otif_pct": 100.0,
+      "fill_rate_pct": 100.0
     }
   ],
   "executive": {
@@ -11833,7 +11848,7 @@
       ]
     }
   },
-  "simulated_email": "CORRIDOR HEALTH MONITOR \u2014 WEEKLY EXECUTIVE BRIEFING\nNovo Nordisk GBS \u00b7 Supply Chain Corridor Intelligence \u00b7 Week 32, 2026\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\n\ud83d\udd34 CRITICAL \u2014 Immediate Action Required\n1. Brand Beacon | Country 013 | Category 02\n   Status: Below safety stock floor since Week 1\n   Lead Time: Standard sea-freight arriving post-stockout\n   Recommended: Air-freight expedite & stock re-allocation \u2014 13,174 units\n   Capital at Risk: \u20b91.98 Cr\n\n2. Brand Ember | Country 097 | Category 02\n   Status: Below safety stock floor since Week 1\n   Lead Time: Standard sea-freight arriving post-stockout\n   Recommended: Air-freight expedite & stock re-allocation \u2014 162,080 units\n   Capital at Risk: \u20b929.17 Cr\n\n\u26a0\ufe0f ACTIONABLE \u2014 Review This Week\n3. Brand Aster | Country 089 | Category 01\n   Status: Corridor breach risk at Week 2\n   Recommended: Emergency air expedite \u2014 23,635 units (Exposure: \u20b94.73 Cr)\n\n4. Brand Ember | Country 050 | Category 02\n   Status: Corridor breach risk at Week 2\n   Recommended: Emergency air expedite \u2014 57,950 units (Exposure: \u20b910.43 Cr)\n\n5. Brand Delta | Country 045 | Category 01\n   Status: Corridor breach risk at Week 3\n   Recommended: Emergency air expedite \u2014 15,300 units (Exposure: \u20b91.22 Cr)\n\n6. Brand Aster | Country 038 | Category 01\n   Status: Corridor breach risk at Week 3\n   Recommended: Emergency air expedite \u2014 14,163 units (Exposure: \u20b92.83 Cr)\n\n7. Brand Ember | Country 020 | Category 02\n   Status: Corridor breach risk at Week 5\n   Recommended: Standard PO raise \u2014 10,034 units (Exposure: \u20b91.81 Cr)\n\n8. Brand Crest | Country 025 | Category 03\n   Status: Corridor breach risk at Week 5\n   Recommended: Standard PO raise \u2014 7,306 units (Exposure: \u20b987.7L)\n\n9. Brand Ember | Country 049 | Category 02\n   Status: Corridor breach risk at Week 5\n   Recommended: Standard PO raise \u2014 1,992 units (Exposure: \u20b935.9L)\n\n10. Brand Aster | Country 079 | Category 01\n   Status: Corridor breach risk at Week 1\n   Recommended: Defer / re-allocate inbound supply \u2014 36,756 units (Exposure: \u20b97.35 Cr)\n\n11. Brand Ember | Country 038 | Category 02\n   Status: Corridor breach risk at Week 1\n   Recommended: Defer / re-allocate inbound supply \u2014 46,807 units (Exposure: \u20b98.43 Cr)\n\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\ud83d\udcca Network Health: CHI 86.8% (OTIF Rate: 98.5% \u00b7 SLA Compliant)\n\ud83d\udcc5 Next review: Week 33, 2026\n\ud83d\udd17 Open Corridor Signal Console: http://localhost:8000/#view-signals\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nGenerated automatically by CIPHER for Novo Nordisk Global Business Services.\nGxP Session Logged \u00b7 21 CFR Part 11 Compliant Signature System.",
+  "simulated_email": "CORRIDOR HEALTH MONITOR \u2014 WEEKLY EXECUTIVE BRIEFING\nNovo Nordisk GBS \u00b7 Supply Chain Corridor Intelligence \u00b7 Week 32, 2026\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\n\ud83d\udd34 CRITICAL \u2014 Immediate Action Required\n1. Brand Beacon | Country 013 | Category 02\n   Status: Below safety stock floor since Week 1\n   Lead Time: Standard sea-freight arriving post-stockout\n   Recommended: Air-freight expedite & stock re-allocation \u2014 13,174 units\n   Capital at Risk: \u20b91.98 Cr\n\n\u26a0\ufe0f ACTIONABLE \u2014 Review This Week\n2. Brand Aster | Country 089 | Category 01\n   Status: Corridor breach risk at Week 2\n   Recommended: Emergency air expedite \u2014 23,635 units (Exposure: \u20b94.73 Cr)\n\n3. Brand Ember | Country 050 | Category 02\n   Status: Corridor breach risk at Week 2\n   Recommended: Emergency air expedite \u2014 57,950 units (Exposure: \u20b910.43 Cr)\n\n4. Brand Delta | Country 045 | Category 01\n   Status: Corridor breach risk at Week 3\n   Recommended: Emergency air expedite \u2014 15,300 units (Exposure: \u20b91.22 Cr)\n\n5. Brand Aster | Country 038 | Category 01\n   Status: Corridor breach risk at Week 3\n   Recommended: Emergency air expedite \u2014 14,163 units (Exposure: \u20b92.83 Cr)\n\n6. Brand Ember | Country 020 | Category 02\n   Status: Corridor breach risk at Week 5\n   Recommended: Standard PO raise \u2014 10,034 units (Exposure: \u20b91.81 Cr)\n\n7. Brand Crest | Country 025 | Category 03\n   Status: Corridor breach risk at Week 5\n   Recommended: Standard PO raise \u2014 7,306 units (Exposure: \u20b987.7L)\n\n8. Brand Ember | Country 049 | Category 02\n   Status: Corridor breach risk at Week 5\n   Recommended: Standard PO raise \u2014 1,992 units (Exposure: \u20b935.9L)\n\n9. Brand Aster | Country 079 | Category 01\n   Status: Corridor breach risk at Week 1\n   Recommended: Defer / re-allocate inbound supply \u2014 36,756 units (Exposure: \u20b97.35 Cr)\n\n10. Brand Ember | Country 038 | Category 02\n   Status: Corridor breach risk at Week 1\n   Recommended: Defer / re-allocate inbound supply \u2014 46,807 units (Exposure: \u20b98.43 Cr)\n\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\ud83d\udcca Network Health: CHI 86.8% (OTIF Rate: 98.5% \u00b7 SLA Compliant)\n\ud83d\udcc5 Next review: Week 33, 2026\n\ud83d\udd17 Open Corridor Signal Console: http://localhost:8000/#view-signals\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nGenerated automatically by CIPHER for Novo Nordisk Global Business Services.\nGxP Session Logged \u00b7 21 CFR Part 11 Compliant Signature System.",
   "chi_matrix": [
     [
       71.8,

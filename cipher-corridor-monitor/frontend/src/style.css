@@ -27,6 +27,7 @@
   --muted-bg: #F3F4F6;
   --muted-text: #6B7280;
   --font-head: 'Outfit', 'Helvetica Neue', sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
   --h: 48px;
   /* header height */
@@ -44,7 +45,7 @@
 }
 
 body {
-  font-family: var(--font-mono);
+  font-family: var(--font-body), var(--font-mono);
   font-size: 12px;
   line-height: 1.5;
   color: var(--text);
@@ -1989,16 +1990,39 @@ button {
 
 /* ── Print ── */
 @media print {
+  body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
   .sidebar,
   .app-header,
   .drawer,
   .drawer-overlay,
   .modal-wrap,
-  .triage-toolbar-industrial {
+  .triage-toolbar-industrial,
+  .upload-dropzone,
+  .btn-action,
+  button {
     display: none !important;
   }
 
   .main-col {
     margin-left: 0 !important;
+    width: 100% !important;
+  }
+
+  .view-section {
+    display: block !important;
+    page-break-after: auto;
   }
 }
