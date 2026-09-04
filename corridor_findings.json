@@ -1,0 +1,517 @@
+{
+  "recursion": {
+    "candidates": {
+      "Inv[t-1] + Supply[t] - Demand[t]": {
+        "n": 255000,
+        "match_within_0_01_pct": 100.0,
+        "median_abs_err": 0.0
+      },
+      "Inv[t-1] + Movement[t]": {
+        "n": 255000,
+        "match_within_0_01_pct": 100.0,
+        "median_abs_err": 0.0
+      },
+      "Inv[t-1] + Supply[t-1] - Demand[t-1]": {
+        "n": 255000,
+        "match_within_0_01_pct": 52.9443,
+        "median_abs_err": 0.001
+      }
+    },
+    "confirmed": "Inv[t-1] + Supply[t] - Demand[t]"
+  },
+  "movement_identity": {
+    "rule": "Inventory Movement = Total Supply - Demand For Week",
+    "exact_match_pct": 99.9846,
+    "within_0_01_pct": 100.0
+  },
+  "doh_formula": {
+    "rule": "Days On Hand = Inventory / (Demand For Week / 7), capped at 9999",
+    "variants": {
+      "calc": {
+        "n": 260000,
+        "within_0_01_pct": 99.5992,
+        "within_0_5_pct": 99.5992,
+        "spearman": 1.0
+      },
+      "calc_capped": {
+        "n": 260000,
+        "within_0_01_pct": 99.9938,
+        "within_0_5_pct": 99.9938,
+        "spearman": 1.0
+      }
+    },
+    "sentinel_rows": 1026
+  },
+  "label": {
+    "dtype": "text",
+    "distinct_values": [
+      "In Stock",
+      "Stock Out"
+    ],
+    "stock_out_weeks": 4029,
+    "total_weeks": 260000,
+    "stock_out_pct": 1.5496,
+    "equivalence_tests": {
+      "Inventory < 0": 100.0,
+      "Inventory <= 0": 100.0,
+      "DOH < 0": 100.0,
+      "DOH <= 0": 99.9996,
+      "DOH < Safety Stock Days": 72.1496
+    },
+    "exact_equivalents": [
+      "Inventory < 0",
+      "Inventory <= 0",
+      "DOH < 0",
+      "DOH <= 0"
+    ],
+    "is_reactive": true
+  },
+  "naive_alert": {
+    "breach_weeks": 76440,
+    "breach_rate_pct": 29.4,
+    "stock_out_weeks": 4029,
+    "stock_out_rate_pct": 1.5496,
+    "precision_pct": 5.2708,
+    "recall_pct": 100.0,
+    "alerts_per_real_event": 18.97245,
+    "safety_stock_days_min": 14,
+    "recall_is_tautological": true,
+    "tautology_note": "Safety Stock Days is always > 0 and a stock-out implies Inventory < 0, hence DOH < 0 < SSD. 100% recall is therefore an algebraic identity, not evidence that the rule works. Only precision is informative."
+  },
+  "permanent_breach": {
+    "series_in_breach_every_week": 860,
+    "of_which_ever_stock_out": 481,
+    "interpretation": "Series that sit below the corridor floor for the entire horizon yet never stock out indicate the floor is mis-parameterised for them. Such series generate perpetual noise and must be separated from genuine risk."
+  },
+  "ratio_separator": {
+    "definition": "per-series median Days On Hand / Safety Stock Days",
+    "bands": [
+      {
+        "band": "(-inf, 0.25]",
+        "series": 321,
+        "pct_ever_stock_out": 96.88
+      },
+      {
+        "band": "(0.25, 0.5]",
+        "series": 302,
+        "pct_ever_stock_out": 57.62
+      },
+      {
+        "band": "(0.5, 0.75]",
+        "series": 391,
+        "pct_ever_stock_out": 21.23
+      },
+      {
+        "band": "(0.75, 1.0]",
+        "series": 385,
+        "pct_ever_stock_out": 2.6
+      },
+      {
+        "band": "(1.0, 1.5]",
+        "series": 1687,
+        "pct_ever_stock_out": 0.0
+      },
+      {
+        "band": "(1.5, 2.0]",
+        "series": 1323,
+        "pct_ever_stock_out": 0.0
+      },
+      {
+        "band": "(2.0, inf]",
+        "series": 591,
+        "pct_ever_stock_out": 0.0
+      }
+    ],
+    "interpretation": "The ratio separates risk strongly and monotonically, so it is a usable prioritisation feature where the raw breach flag is not."
+  },
+  "lead_time": {
+    "method": "Per stock-out episode, measured from the onset of the contiguous corridor breach run active immediately before it.",
+    "caveat": "These figures are NOT evidence of predictive skill and must not be quoted without this qualification. A stock-out implies Inventory < 0, hence DOH < 0, and Safety Stock Days is always >= 14, so the breach flag is already true at the onset of every stock-out as a matter of algebra. 'Episodes without warning' is therefore approximately zero by construction, and a long lead time mostly reflects how long a series has been sitting below the floor rather than a signal that anticipated the event.",
+    "episodes": 757,
+    "episodes_with_prior_breach": 757,
+    "episodes_without_warning": 0,
+    "pct_without_warning": 0.0,
+    "all_episodes": {
+      "n": 757,
+      "median_weeks": 22.0,
+      "mean_weeks": 22.593131,
+      "p25_weeks": 12.0,
+      "p75_weeks": 32.0,
+      "max_weeks": 51.0
+    },
+    "excluding_permanently_breaching_series": {
+      "n": 121,
+      "median_weeks": 14.0,
+      "mean_weeks": 16.677686,
+      "p25_weeks": 9.0,
+      "p75_weeks": 25.0,
+      "max_weeks": 49.0
+    },
+    "permanently_breaching_series": 860,
+    "interpretation": "The lead time excluding permanently-breaching series is the only informative variant, since for those series the breach flag never resets and so cannot distinguish a developing problem from a standing condition."
+  },
+  "episode_length": {
+    "episodes": 757,
+    "median_weeks": 4.0,
+    "mean_weeks": 5.322325,
+    "max_weeks": 23
+  },
+  "shape": {
+    "source_file": "Inventry_Corridor_Alert_Weekly_Aug2026_Jul2027.xlsx",
+    "sheet": "Export",
+    "series": 5000,
+    "weeks": 52,
+    "sku_week_records": 260000,
+    "metrics_per_week": 13,
+    "metric_names": [
+      "Confirmed Orders",
+      "Days On Hands (in days)",
+      "Demand For Week",
+      "In-transit Orders",
+      "Inventory",
+      "Inventory Movement",
+      "Packed Orders",
+      "Purchase Requisition",
+      "Ready for ship Orders",
+      "Safety Stock Days",
+      "Total Supply",
+      "Unconfirmed Orders",
+      "Expected Stock Out"
+    ],
+    "horizon_start": "Aug 2026 (wk 32)",
+    "horizon_end": "Jul 2027 (wk 30)",
+    "is_forward_looking": true
+  },
+  "cardinality": {
+    "Region": 10,
+    "Brand": 5,
+    "Country": 100,
+    "MRP": 5,
+    "Product Group": 50
+  },
+  "grain_unique": true,
+  "safety_stock": {
+    "constant_within_series": false,
+    "series_with_varying_ssd": 4060,
+    "min_days": 14,
+    "max_days": 91,
+    "distinct_value_count": 12
+  },
+  "supply_pipeline": {
+    "pipeline_columns": [
+      "Confirmed Orders",
+      "Packed Orders",
+      "Ready for ship Orders",
+      "In-transit Orders",
+      "Unconfirmed Orders",
+      "Purchase Requisition"
+    ],
+    "reconciliation": {
+      "components_tested": [
+        "Confirmed Orders",
+        "Packed Orders",
+        "Ready for ship Orders",
+        "In-transit Orders"
+      ],
+      "exact_match_pct": 4.87,
+      "median_abs_diff": 1489.9735,
+      "reconciles": false
+    },
+    "open_question": "Whether Total Supply is the sum of the order-pipeline stages or an independent figure determines whether supply certainty can be weighted by stage. This requires confirmation from the mentor."
+  },
+  "data_quality": {
+    "null_counts_by_metric": {
+      "Inventory": 0,
+      "Demand For Week": 0,
+      "Inventory Movement": 0,
+      "Total Supply": 0,
+      "Confirmed Orders": 0,
+      "Packed Orders": 0,
+      "Ready for ship Orders": 0,
+      "In-transit Orders": 0,
+      "Unconfirmed Orders": 0,
+      "Purchase Requisition": 0,
+      "Days On Hands (in days)": 0,
+      "Safety Stock Days": 0
+    },
+    "metrics_with_nulls": {},
+    "any_nulls": false,
+    "doh_sentinel_rows": 1026,
+    "doh_negative_rows": 4029,
+    "inventory_negative_rows": 4029,
+    "zero_demand_weeks": 0,
+    "zero_supply_weeks": 12663,
+    "zero_supply_pct": 4.8704,
+    "id_nulls": {
+      "Region": 0,
+      "Brand": 0,
+      "Country": 0,
+      "MRP": 0,
+      "Product Group": 0
+    },
+    "label_nulls": 0
+  },
+  "concentration": {
+    "by_dimension": {
+      "Region": [
+        {
+          "value": "Synthetic Region 09",
+          "stock_out_pct": 2.323,
+          "breach_pct": 33.07,
+          "stock_out_weeks": 604
+        },
+        {
+          "value": "Synthetic Region 05",
+          "stock_out_pct": 1.762,
+          "breach_pct": 31.51,
+          "stock_out_weeks": 458
+        },
+        {
+          "value": "Synthetic Region 04",
+          "stock_out_pct": 1.704,
+          "breach_pct": 29.1,
+          "stock_out_weeks": 443
+        },
+        {
+          "value": "Synthetic Region 08",
+          "stock_out_pct": 1.692,
+          "breach_pct": 29.21,
+          "stock_out_weeks": 440
+        },
+        {
+          "value": "Synthetic Region 07",
+          "stock_out_pct": 1.669,
+          "breach_pct": 28.87,
+          "stock_out_weeks": 434
+        },
+        {
+          "value": "Synthetic Region 03",
+          "stock_out_pct": 1.442,
+          "breach_pct": 30.1,
+          "stock_out_weeks": 375
+        },
+        {
+          "value": "Synthetic Region 02",
+          "stock_out_pct": 1.408,
+          "breach_pct": 29.25,
+          "stock_out_weeks": 366
+        },
+        {
+          "value": "Synthetic Region 06",
+          "stock_out_pct": 1.323,
+          "breach_pct": 28.58,
+          "stock_out_weeks": 344
+        },
+        {
+          "value": "Synthetic Region 01",
+          "stock_out_pct": 1.219,
+          "breach_pct": 29.73,
+          "stock_out_weeks": 317
+        },
+        {
+          "value": "Synthetic Region 10",
+          "stock_out_pct": 0.954,
+          "breach_pct": 24.58,
+          "stock_out_weeks": 248
+        }
+      ],
+      "Brand": [
+        {
+          "value": "Synthetic Brand Delta",
+          "stock_out_pct": 1.742,
+          "breach_pct": 31.21,
+          "stock_out_weeks": 906
+        },
+        {
+          "value": "Synthetic Brand Aster",
+          "stock_out_pct": 1.679,
+          "breach_pct": 29.28,
+          "stock_out_weeks": 873
+        },
+        {
+          "value": "Synthetic Brand Crest",
+          "stock_out_pct": 1.56,
+          "breach_pct": 29.25,
+          "stock_out_weeks": 811
+        },
+        {
+          "value": "Synthetic Brand Ember",
+          "stock_out_pct": 1.404,
+          "breach_pct": 28.4,
+          "stock_out_weeks": 730
+        },
+        {
+          "value": "Synthetic Brand Beacon",
+          "stock_out_pct": 1.363,
+          "breach_pct": 28.87,
+          "stock_out_weeks": 709
+        }
+      ],
+      "MRP": [
+        {
+          "value": "MRP - Method E",
+          "stock_out_pct": 1.765,
+          "breach_pct": 29.75,
+          "stock_out_weeks": 918
+        },
+        {
+          "value": "MRP - Method A",
+          "stock_out_pct": 1.692,
+          "breach_pct": 30.24,
+          "stock_out_weeks": 880
+        },
+        {
+          "value": "MRP - Method D",
+          "stock_out_pct": 1.612,
+          "breach_pct": 29.11,
+          "stock_out_weeks": 838
+        },
+        {
+          "value": "MRP - Method C",
+          "stock_out_pct": 1.419,
+          "breach_pct": 29.66,
+          "stock_out_weeks": 738
+        },
+        {
+          "value": "MRP - Method B",
+          "stock_out_pct": 1.26,
+          "breach_pct": 28.24,
+          "stock_out_weeks": 655
+        }
+      ]
+    },
+    "countries_total": 100,
+    "countries_with_zero_stock_outs": 1,
+    "worst_countries": [
+      {
+        "country": "Synthetic Country 086",
+        "stock_out_weeks": 112
+      },
+      {
+        "country": "Synthetic Country 077",
+        "stock_out_weeks": 96
+      },
+      {
+        "country": "Synthetic Country 050",
+        "stock_out_weeks": 94
+      },
+      {
+        "country": "Synthetic Country 034",
+        "stock_out_weeks": 93
+      },
+      {
+        "country": "Synthetic Country 029",
+        "stock_out_weeks": 93
+      },
+      {
+        "country": "Synthetic Country 082",
+        "stock_out_weeks": 85
+      },
+      {
+        "country": "Synthetic Country 020",
+        "stock_out_weeks": 79
+      },
+      {
+        "country": "Synthetic Country 079",
+        "stock_out_weeks": 77
+      },
+      {
+        "country": "Synthetic Country 017",
+        "stock_out_weeks": 77
+      },
+      {
+        "country": "Synthetic Country 068",
+        "stock_out_weeks": 75
+      }
+    ],
+    "pareto_share_pct": {
+      "worst_5_countries": 12.1122,
+      "worst_10_countries": 21.8665,
+      "worst_20_countries": 38.1981,
+      "worst_30_countries": 50.8563,
+      "worst_50_countries": 71.4569
+    }
+  },
+  "seasonality": [
+    {
+      "month": "Mar",
+      "stock_outs": 535,
+      "breaches": 6839,
+      "median_doh": 62.3065
+    },
+    {
+      "month": "Nov",
+      "stock_outs": 533,
+      "breaches": 8166,
+      "median_doh": 57.2595
+    },
+    {
+      "month": "Feb",
+      "stock_outs": 468,
+      "breaches": 6099,
+      "median_doh": 59.345
+    },
+    {
+      "month": "Jan",
+      "stock_outs": 438,
+      "breaches": 6617,
+      "median_doh": 57.0635
+    },
+    {
+      "month": "May",
+      "stock_outs": 408,
+      "breaches": 6648,
+      "median_doh": 63.7505
+    },
+    {
+      "month": "Dec",
+      "stock_outs": 384,
+      "breaches": 6742,
+      "median_doh": 56.3995
+    },
+    {
+      "month": "Apr",
+      "stock_outs": 357,
+      "breaches": 5260,
+      "median_doh": 63.9305
+    },
+    {
+      "month": "Oct",
+      "stock_outs": 344,
+      "breaches": 6103,
+      "median_doh": 59.4495
+    },
+    {
+      "month": "Jun",
+      "stock_outs": 238,
+      "breaches": 5668,
+      "median_doh": 61.738
+    },
+    {
+      "month": "Sep",
+      "stock_outs": 152,
+      "breaches": 5543,
+      "median_doh": 62.6965
+    },
+    {
+      "month": "Aug",
+      "stock_outs": 86,
+      "breaches": 6616,
+      "median_doh": 63.845
+    },
+    {
+      "month": "Jul",
+      "stock_outs": 86,
+      "breaches": 6139,
+      "median_doh": 59.1385
+    }
+  ],
+  "is_synthetic": true,
+  "_meta": {
+    "generated_utc": "2026-08-26 10:58:44Z",
+    "pipeline": "corridor_pipeline.py",
+    "pandas": "2.3.3",
+    "numpy": "2.5.1",
+    "note": "Regenerate with: python corridor_pipeline.py --rebuild"
+  }
+}

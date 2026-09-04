@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CORRIDOR HEALTH MONITOR — NOVO NORDISK GBS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="src/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- ── HEADER ── -->
+  <header class="app-header">
+    <div class="header-brand">
+      <span class="header-mark">[ CHM ]</span>
+      <span class="header-title">CORRIDOR HEALTH MONITOR</span>
+    </div>
+    <div class="header-meta">
+      <span class="header-tag">NOVO NORDISK GBS</span>
+      <span class="header-sep">·</span>
+      <span class="header-tag">TEAM CIPHER</span>
+      <span class="header-sep">·</span>
+      <span class="header-tag">W32 · AUG 2026</span>
+      <span class="header-sep">·</span>
+      <span class="status-pill" id="status-gxp-pill">● AWAITING DATASET</span>
+      <button class="btn-header-ingest" id="btn-header-ingest" title="Upload or change Excel dataset">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <span>INGEST WORKBOOK</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ── SHELL ── -->
+  <div class="app-shell">
+
+    <!-- ── SIDEBAR NAV ── -->
+    <aside class="sidebar" role="navigation" aria-label="Main Navigation">
+      <nav class="nav-list">
+        <button class="nav-item active" data-view="ingest" id="nav-item-ingest">
+          <span class="nav-index">00</span>
+          <span class="nav-label">DATA INGESTION</span>
+        </button>
+        <button class="nav-item is-disabled" data-view="signals" id="nav-item-signals">
+          <span class="nav-index">01</span>
+          <span class="nav-label">SIGNAL CONSOLE</span>
+        </button>
+        <button class="nav-item is-disabled" data-view="briefing" id="nav-item-briefing">
+          <span class="nav-index">02</span>
+          <span class="nav-label">MON BRIEFING</span>
+        </button>
+        <button class="nav-item is-disabled" data-view="masterdata" id="nav-item-masterdata">
+          <span class="nav-index">03</span>
+          <span class="nav-label">MASTER DATA</span>
+        </button>
+        <button class="nav-item is-disabled" data-view="audit" id="nav-item-audit">
+          <span class="nav-index">04</span>
+          <span class="nav-label">GxP AUDIT LOG</span>
+        </button>
+      </nav>
+      <div class="nav-footer">
+        <button class="btn-scenario" id="btn-open-scenario" disabled>
+          ⚙ SCENARIO MODELLER
+        </button>
+      </div>
+    </aside>
+
+    <!-- ── MAIN COLUMN ── -->
+    <div class="main-col">
+
+      <!-- ── KPI BANNER ── -->
+      <div class="kpi-banner" id="kpi-banner">
+        <div class="kpi-tile" id="kpi-chi">
+          <output class="kpi-numeral" id="chi-value" aria-label="Corridor Health Index">--.-</output>
+          <div class="kpi-label">CORRIDOR HEALTH INDEX</div>
+          <div class="kpi-sub">CIPHER PIONEER KPI</div>
+        </div>
+        <div class="kpi-tile kpi-tile--divider" id="kpi-crises">
+          <output class="kpi-numeral crisis-num" id="crises-value" aria-label="Active Crises">0</output>
+          <div class="kpi-label">ACTIVE CRISES</div>
+          <div class="kpi-sub">IMMEDIATE ACTION</div>
+        </div>
+        <div class="kpi-tile kpi-tile--divider" id="kpi-capital">
+          <output class="kpi-numeral kpi-numeral--mono" id="capital-value" aria-label="Capital at Risk">₹ —</output>
+          <div class="kpi-label">CAPITAL AT RISK</div>
+          <div class="kpi-sub">INR · TOP 15 SIGNALS</div>
+        </div>
+        <div class="kpi-tile kpi-tile--divider" id="kpi-otif">
+          <output class="kpi-numeral kpi-healthy tabular-nums" id="otif-value" aria-label="OTIF Fulfillment">
+            --.-%
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="0"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </output>
+          <div class="kpi-label">OTIF · FULFILLMENT RATE</div>
+          <div class="kpi-sub" id="otif-sub">SLA TARGET: 95.0% CONTRACTUAL</div>
+        </div>
+      </div>
+
+      <!-- ── VIEW CONTENT ── -->
+      <main class="view-content">
+
+        <!-- Error block (hidden by default) -->
+        <div id="app-error" class="error-block" style="display:none"></div>
+
+        <!-- VIEW 0: Data Ingestion Landing (Active by Default) -->
+        <section id="view-ingest" class="view-section active">
+          <div id="upload-container" class="upload-container ingest-container">
+            <div class="ingest-card">
+              <div class="ingest-header">
+                <div class="ingest-eyebrow">[ PIPELINE TELEMETRY · GxP INGESTION ]</div>
+                <h1 class="ingest-headline">PHARMA INVENTORY CORRIDOR EXTRACTION</h1>
+                <p class="ingest-description">
+                  Ingest the 52-week SAP / OMP weekly corridor export (<span class="mono-tag">.xlsx</span>).
+                  The local Python backend extracts all 260,000 SKU-week records, computes corridor boundary breaches, scores Priority Risk (PRS), and synthesises the Corridor Health Index (CHI).
+                </p>
+              </div>
+
+              <!-- Drag & Drop Zone -->
+              <div class="ingest-dropzone" id="main-dropzone" role="button" tabindex="0" aria-label="Upload Excel File">
+                <input type="file" id="main-file-input" accept=".xlsx" style="display:none" aria-label="Choose Excel file">
+                <div class="dropzone-icon">
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="12" y1="18" x2="12" y2="12"/>
+                    <polyline points="9 15 12 12 15 15"/>
+                  </svg>
+                </div>
+                <div class="dropzone-text">
+                  <span class="dropzone-primary">DRAG &amp; DROP EXCEL WORKBOOK (.XLSX) HERE</span>
+                  <span class="dropzone-secondary">or click to browse local filesystem · requires 'Export' tab</span>
+                </div>
+                <div class="file-chosen-preview" id="file-chosen-preview" style="display: none;">
+                  <span class="file-name mono-text" id="chosen-file-name">--</span>
+                  <span class="file-size mono-text" id="chosen-file-size">--</span>
+                </div>
+              </div>
+
+              <!-- Action Bar -->
+              <div class="ingest-actions">
+                <button class="btn-ingest-run" id="btn-run-pipeline" disabled>
+                  <span>EXTRACT &amp; RUN PIPELINE</span>
+                  <span class="btn-arrow-wrap">→</span>
+                </button>
+                <div class="action-divider">OR</div>
+                <button class="btn-ingest-demo" id="btn-load-demo">
+                  <span>⚡ LOAD HACKATHON BENCHMARK (AUG 2026 – JUL 2027)</span>
+                </button>
+              </div>
+
+              <!-- Telemetry Stepper (Visible during extraction) -->
+              <div class="extraction-stepper" id="extraction-stepper" style="display: none;">
+                <div class="stepper-title">PIPELINE EXECUTION TELEMETRY</div>
+                <div class="stepper-steps">
+                  <div class="step-row" id="step-1">
+                    <span class="step-num mono-text">[1/5]</span>
+                    <span class="step-desc">VALIDATING WORKBOOK INTEGRITY &amp; 'EXPORT' TAB STRUCTURE</span>
+                    <span class="step-status mono-text status-wait">WAITING</span>
+                  </div>
+                  <div class="step-row" id="step-2">
+                    <span class="step-num mono-text">[2/5]</span>
+                    <span class="step-desc">EXTRACTING 260,000 SKU-WEEK METRICS (INV, DEM, SUP, DOH, SSD)</span>
+                    <span class="step-status mono-text status-wait">WAITING</span>
+                  </div>
+                  <div class="step-row" id="step-3">
+                    <span class="step-num mono-text">[3/5]</span>
+                    <span class="step-desc">EVALUATING RECURSION &amp; DETECTING CORRIDOR BREACH EPISODES</span>
+                    <span class="step-status mono-text status-wait">WAITING</span>
+                  </div>
+                  <div class="step-row" id="step-4">
+                    <span class="step-num mono-text">[4/5]</span>
+                    <span class="step-desc">COMPUTING PRIORITY RISK SCORES (PRS) &amp; NORMALISING BADGES</span>
+                    <span class="step-status mono-text status-wait">WAITING</span>
+                  </div>
+                  <div class="step-row" id="step-5">
+                    <span class="step-num mono-text">[5/5]</span>
+                    <span class="step-desc">SYNTHESISING CORRIDOR HEALTH INDEX (CHI) &amp; ACTIVATING CONSOLE</span>
+                    <span class="step-status mono-text status-wait">WAITING</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 1: Signal Console -->
+        <section id="view-signals" class="view-section">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">STRATEGIC SIGNAL CONSOLE</h1>
+              <p class="view-subtitle">Top 15 priority supply-chain exceptions ranked by Priority Risk Score (PRS)</p>
+            </div>
+            <div class="view-actions">
+              <span class="count-badge" id="signal-count-badge">15 ACTIVE SIGNALS</span>
+            </div>
+          </div>
+          <div class="signal-grid" id="signal-grid">
+            <!-- Populated by signals.js -->
+          </div>
+        </section>
+
+        <!-- VIEW 2: Executive Briefing -->
+        <section id="view-briefing" class="view-section">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">EXECUTIVE MONDAY BRIEFING</h1>
+              <p class="view-subtitle">Systemic risk posture, brand/region CHI, and 52-week seasonality</p>
+            </div>
+            <div class="view-actions">
+              <button class="btn-action" id="btn-export-pdf">PDF EXPORT</button>
+              <button class="btn-action" id="btn-email-digest">EMAIL DIGEST</button>
+            </div>
+          </div>
+          <div class="briefing-layout">
+            <div class="briefing-charts">
+              <div class="chart-card">
+                <div class="chart-card-label">REGIONAL CORRIDOR HEALTH INDEX</div>
+                <div class="chart-wrap"><canvas id="chart-regional-chi"></canvas></div>
+              </div>
+              <div class="chart-card">
+                <div class="chart-card-label">BRAND CORRIDOR HEALTH INDEX</div>
+                <div class="chart-wrap"><canvas id="chart-brand-chi"></canvas></div>
+              </div>
+              <div class="chart-card">
+                <div class="chart-card-label">SYSTEMIC RISK CONCENTRATION (PARETO)</div>
+                <div class="chart-wrap"><canvas id="chart-pareto"></canvas></div>
+              </div>
+              <div class="chart-card">
+                <div class="chart-card-label">MONTHLY STOCKOUT SEASONALITY</div>
+                <div class="chart-wrap"><canvas id="chart-seasonality"></canvas></div>
+              </div>
+            </div>
+            <aside class="briefing-meta">
+              <div class="callout-block">
+                <div class="callout-tag">[ TEAM CIPHER ORIGINAL KPI ]</div>
+                <div class="callout-heading">CORRIDOR HEALTH INDEX (CHI)</div>
+                <p class="callout-body">Novel inventory corridor integrity metric developed for the Novo Nordisk GBS Supply Chain Hackathon 2026. Baseline evaluated over 260,000+ SKU-week records.</p>
+                <code class="callout-formula">CHI = 100 × (1 − Breach Weeks / Total Weeks)</code>
+              </div>
+              <div class="table-card">
+                <div class="table-card-label">TOP 10 HIGH-EXPOSURE MARKETS</div>
+                <table class="dense-table" id="table-worst-countries">
+                  <thead><tr><th>COUNTRY</th><th class="text-right">STOCKOUTS</th><th class="text-right">SHARE %</th></tr></thead>
+                  <tbody id="tbody-worst-countries"><tr><td colspan="3" class="empty-cell">Loading…</td></tr></tbody>
+                </table>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <!-- VIEW 3: Master Data -->
+        <section id="view-masterdata" class="view-section">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">MASTER DATA PARAMETER REVIEW</h1>
+              <p class="view-subtitle">Chronic false-alert series flagged for SAP/OMP safety stock recalibration</p>
+            </div>
+            <div class="view-actions">
+              <button class="btn-action" id="btn-export-masterdata">EXPORT CSV</button>
+            </div>
+          </div>
+          <div class="masterdata-callout">
+            <span id="masterdata-summary-stats" class="tabular-nums">Loading chronic series data…</span>
+          </div>
+          <div class="table-wrap">
+            <table class="dense-table full-table" id="table-masterdata">
+              <thead>
+                <tr>
+                  <th>ID</th><th>REGION</th><th>BRAND</th><th>COUNTRY</th>
+                  <th>PRODUCT GROUP</th><th class="text-right">DOH</th>
+                  <th class="text-right">SSD</th><th class="text-right">DOH/SSD</th>
+                  <th>ACTION</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-masterdata"><tr><td colspan="9" class="empty-cell">Loading…</td></tr></tbody>
+            </table>
+          </div>
+          <div class="table-footer-row">
+            <button class="btn-text-toggle" id="btn-toggle-masterdata">SHOW ALL 379 SERIES ↓</button>
+          </div>
+        </section>
+
+        <!-- VIEW 4: GxP Audit Log -->
+        <section id="view-audit" class="view-section">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">GxP AUDIT LOG</h1>
+              <p class="view-subtitle">Electronic signature ledger of all approved supply-chain corrective actions</p>
+            </div>
+            <div class="view-actions">
+              <button class="btn-action" id="btn-export-audit">EXPORT AUDIT CSV</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="dense-table full-table" id="table-audit">
+              <thead>
+                <tr>
+                  <th>TIMESTAMP UTC</th><th>ACTION ID</th><th>SKU</th>
+                  <th>ACTION TYPE</th><th class="text-right">APPROVED QTY</th>
+                  <th>REASON CODE</th><th>ELECTRONIC SIGNATURE</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-audit">
+                <tr><td colspan="7" class="audit-empty">[ NO ACTIONS LOGGED ]</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ── DRAWER: Signal Detail (520px) ── -->
+  <aside id="drawer-detail" class="drawer" aria-hidden="true">
+    <div class="drawer-header">
+      <div class="drawer-title" id="detail-title">SIGNAL DETAIL</div>
+      <button class="drawer-close" id="btn-close-detail" aria-label="Close">✕</button>
+    </div>
+    <div class="drawer-body" id="detail-body"><!-- populated by drawer-detail.js --></div>
+  </aside>
+
+  <!-- ── DRAWER: Scenario Modeller (400px) ── -->
+  <aside id="drawer-scenario" class="drawer" aria-hidden="true">
+    <div class="drawer-header">
+      <div class="drawer-title">SCENARIO MODELLER</div>
+      <button class="drawer-close" id="btn-close-scenario" aria-label="Close">✕</button>
+    </div>
+    <div class="drawer-body" id="scenario-body"><!-- populated by drawer-scenario.js --></div>
+  </aside>
+
+  <!-- ── OVERLAY ── -->
+  <div id="drawer-overlay" class="drawer-overlay"></div>
+
+  <!-- ── EMAIL MODAL ── -->
+  <div id="email-modal" class="modal-wrap" style="display:none">
+    <div class="modal-card">
+      <div class="modal-header">
+        <span class="modal-title">EXECUTIVE BRIEFING EMAIL DIGEST</span>
+        <button class="drawer-close" id="btn-close-modal">✕</button>
+      </div>
+      <pre class="email-pre" id="email-text"></pre>
+      <div class="modal-footer">
+        <button class="btn-primary" id="btn-copy-email">COPY TO CLIPBOARD</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
