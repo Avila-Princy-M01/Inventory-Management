@@ -100,12 +100,19 @@ export function renderSignalCards(signals, approvedSignals = {}) {
          </div>`
       : '';
 
+    const staleParam = sig.stale_parameter || {};
+    const isStale = Boolean(sig.is_stale_parameter || staleParam.is_stale);
+    const staleTag = isStale
+      ? `<span class="card-stale-tag" title="Safety Stock Days unchanged for 52W while demand pattern shifted ${staleParam.demand_shift_pct > 0 ? '+' : ''}${staleParam.demand_shift_pct}%">⚠️ STALE SSD (${staleParam.demand_shift_pct > 0 ? '+' : ''}${Math.round(staleParam.demand_shift_pct)}%)</span>`
+      : '';
+
     return `<div class="signal-card ${isCrisis ? 'signal-card--crisis' : ''} ${isSnoozed ? 'signal-card--snoozed' : ''}" style="--i:${i}; --index:${i};" data-rid="${sig.row_id}">
       <div class="card-row1">
         <span class="card-rank tabular-nums">#${rank}</span>
-        <div style="display:flex;align-items:center;gap:6px">
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
           ${ownerTag}
           ${slaTag}
+          ${staleTag}
           ${mktTag}
           <span class="badge ${badge.cls}">${badge.label}</span>
         </div>

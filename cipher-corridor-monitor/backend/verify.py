@@ -201,6 +201,30 @@ except (KeyError, TypeError) as exc:
     fail(f"Could not read sample_series: {exc}")
     failures.append(str(exc))
 
+# 6b. Section 6.4: Stale Parameter Detection verification
+try:
+    total_stale = data["executive"]["chronic_summary"].get("total_stale_parameters", 0)
+    assert_check(
+        total_stale > 0,
+        f"Section 6.4 Stale Parameter Engine: {total_stale} of 379 chronic series flagged (shift >= 30%)",
+        f"Expected total_stale_parameters > 0, got {total_stale}",
+    )
+    first_stale = next((s for s in sample if s.get("is_stale")), None)
+    assert_check(
+        first_stale is not None and "demand_shift_pct" in first_stale and "stale_status" in first_stale,
+        "sample_series records contain required stale parameter audit fields",
+        "sample_series missing required stale parameter fields (is_stale, demand_shift_pct, stale_status)",
+    )
+    sig_stale_count = sum(1 for s in signals if s.get("is_stale_parameter"))
+    assert_check(
+        sig_stale_count > 0,
+        f"Top signals contain {sig_stale_count} corridors with stale master data parameters",
+        f"Expected at least one top signal with stale parameter, got {sig_stale_count}",
+    )
+except (KeyError, TypeError) as exc:
+    fail(f"Could not verify stale parameter metrics: {exc}")
+    failures.append(str(exc))
+
 # 7. executive.seasonality length = 12
 try:
     seasonality = data["executive"]["seasonality"]

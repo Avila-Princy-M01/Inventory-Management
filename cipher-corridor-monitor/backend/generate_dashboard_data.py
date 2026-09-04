@@ -328,6 +328,33 @@ def layer1_load_and_signals(panel):
         primary = "Supply Deficit" if supply_deficit_pct >= max(demand_surge_pct, floor_shock_pct) else \
                   "Demand Surge" if demand_surge_pct >= max(supply_deficit_pct, floor_shock_pct) else "Floor Shock"
 
+        # Section 6.4: Stale Parameter Detection (SSD static while rolling demand shifted >= 30%)
+        sig_base_dem = max(float(sum(dem_arr) / max(len(dem_arr), 1)), 1.0)
+        sig_dem_s = pd.Series(dem_arr)
+        sig_r13 = sig_dem_s.rolling(13, min_periods=1).mean()
+        sig_shift_pct = round(float((sig_r13.max() - sig_r13.min()) / sig_base_dem * 100.0), 1)
+
+        sig_ssd_vals = [s for s in ssd_arr if s is not None]
+        sig_ssd_min = int(min(sig_ssd_vals)) if sig_ssd_vals else 42
+        sig_ssd_max = int(max(sig_ssd_vals)) if sig_ssd_vals else 42
+        sig_static_ssd = (sig_ssd_max - sig_ssd_min) <= 7
+
+        is_stale_sig = bool((sig_shift_pct >= 30.0) and sig_static_ssd)
+        sig_med_ssd = int(round(float(row["ssd_med"])))
+        stale_param_obj = {
+            "is_stale": is_stale_sig,
+            "demand_shift_pct": sig_shift_pct,
+            "ssd_static": sig_static_ssd,
+            "current_ssd": sig_med_ssd,
+            "ssd_range": [sig_ssd_min, sig_ssd_max],
+            "trigger": "DEMAND_SHIFT_30PCT_STATIC_SSD" if is_stale_sig else None,
+            "narrative": (
+                f"Safety Stock Days frozen at {sig_med_ssd}d while rolling demand shifted {sig_shift_pct:+.1f}%. "
+                f"Safety buffer is uncalibrated in SAP/OMP."
+                if is_stale_sig else "Safety stock parameter dynamically aligned with demand velocity."
+            ),
+        }
+
         signals.append({
             "row_id": int(rid), "rank": rank + 1,
             "prs_score": round(float(row["prs_score"]), 1),
@@ -353,6 +380,8 @@ def layer1_load_and_signals(panel):
                 "demand_surge_pct":   demand_surge_pct,
                 "floor_shock_pct":    floor_shock_pct,
             },
+            "is_stale_parameter": is_stale_sig,
+            "stale_parameter":    stale_param_obj,
             "trajectory": {
                 "weeks":               weeks_list,
                 "inventory":           inv_arr,
@@ -696,6 +725,26 @@ def layer4_health_and_executive(panel, signals, pure_chronic, series_meta, price
     chronic_panel = panel[panel["row_id"].isin(chronic_ids)]
     chronic_min = chronic_panel.groupby("row_id")[DOH].min().rename("doh_min")
 
+    # Section 6.4: Precompute rolling 13-week demand shift & SSD stability for all chronic series
+    chronic_stale_map = {}
+    for c_rid, c_grp in chronic_panel.groupby("row_id"):
+        c_dem = c_grp[DEM]
+        c_r13 = c_dem.rolling(13, min_periods=1).mean()
+        c_base = max(float(c_dem.mean()), 1.0)
+        c_shift = round(float((c_r13.max() - c_r13.min()) / c_base * 100.0), 1)
+
+        c_ssd_s = c_grp[SSD]
+        c_ssd_min = int(c_ssd_s.min())
+        c_ssd_max = int(c_ssd_s.max())
+        c_is_static = (c_ssd_max - c_ssd_min) <= 7
+        c_is_stale = (c_shift >= 30.0) and c_is_static
+        chronic_stale_map[c_rid] = {
+            "demand_shift_pct": c_shift,
+            "is_stale": bool(c_is_stale),
+            "stale_status": "STALE (SHIFT >=30%)" if c_is_stale else "MONITORED",
+            "ssd_static": bool(c_is_static),
+        }
+
     chronic_meta = series_meta[series_meta["row_id"].isin(chronic_ids)].copy().set_index("row_id")
     chronic_merged = chronic_meta.join(chronic_min)
 
@@ -724,7 +773,16 @@ def layer4_health_and_executive(panel, signals, pure_chronic, series_meta, price
         doh_ssd_ratio = round(float(med_doh / current_ssd) if current_ssd > 0 else 0.0, 3)
         country_clean = str(r["country"]).replace("Synthetic Country ", "Country ")
 
+        stale_info = chronic_stale_map.get(rid, {"demand_shift_pct": 0.0, "is_stale": False, "stale_status": "MONITORED", "ssd_static": True})
+        is_stale = stale_info["is_stale"]
+        shift_pct = stale_info["demand_shift_pct"]
+        stale_tag = "STALE (SHIFT >=30%)" if is_stale else "FLOOR MISMATCH"
+
         directive = f"Reduce SSD from {current_ssd} → {rec_ssd} days. Eliminates 52 false alerts/yr and frees ₹{cap_freed/1e5:.1f}L in frozen capital."
+        stale_narrative = (
+            f"SSD frozen at {current_ssd}d for 52W while rolling demand pattern shifted {shift_pct:+.1f}%. Recalibrate in SAP/OMP."
+            if is_stale else f"Observed floor ({min_doh}d) lower than safety buffer ({current_ssd}d); demand pattern within allowable range."
+        )
 
         sample_series.append({
             "row_id": int(rid),
@@ -744,8 +802,15 @@ def layer4_health_and_executive(panel, signals, pure_chronic, series_meta, price
             "doh_ssd_ratio": doh_ssd_ratio,
             "action": f"REDUCE SSD {current_ssd}→{rec_ssd}D",
             "audit_directive": directive,
+            "is_stale": is_stale,
+            "stale_status": stale_info["stale_status"],
+            "stale_tag": stale_tag,
+            "demand_shift_pct": shift_pct,
+            "stale_narrative": stale_narrative,
         })
     total_pure = len(sample_series)
+    total_stale = sum(1 for s in sample_series if s.get("is_stale"))
+    stale_cap_freed = sum(s.get("freed_capital_inr", 0) for s in sample_series if s.get("is_stale"))
 
     # Seasonality (12 months)
     month_order = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
@@ -777,6 +842,10 @@ def layer4_health_and_executive(panel, signals, pure_chronic, series_meta, price
     executive = {
         "chronic_summary": {
             "total_pure_calibration_series": total_pure,
+            "total_stale_parameters": total_stale,
+            "total_floor_mismatches": total_pure - total_stale,
+            "stale_parameter_pct": round(total_stale / max(total_pure, 1) * 100, 1),
+            "stale_capital_freed_inr": stale_cap_freed,
             "total_capital_freed_inr": total_cap_freed,
             "total_false_alerts_eliminated": total_pure * 52,
             "featured_audit_insight": (
@@ -785,9 +854,10 @@ def layer4_health_and_executive(panel, signals, pure_chronic, series_meta, price
             ),
             "narrative": (
                 f"{total_pure} series remain permanently below the safety stock corridor floor "
-                "across the full 52-week horizon without ever stocking out. The Parameter Audit Engine "
-                f"identifies ₹{total_cap_freed/1e7:.1f} Cr in frozen capital and eliminates {total_pure*52:,} "
-                "false alerts per year by recalibrating SAP/OMP Safety Stock Days to observed operational floors."
+                f"across the full 52-week horizon without ever stocking out ({total_stale} flagged with frozen SSD "
+                f"despite ≥30% demand pattern shifts). The Parameter Audit Engine identifies ₹{total_cap_freed/1e7:.1f} Cr "
+                f"in frozen capital and eliminates {total_pure*52:,} false alerts per year by recalibrating SAP/OMP "
+                "Safety Stock Days to observed operational floors."
             ),
             "sample_series": sample_series,
         },

@@ -344,5 +344,39 @@ class TestTopLevelStructure(unittest.TestCase):
         self.assertGreater(len(email.strip()), 0, "'simulated_email' is an empty string")
 
 
+class TestStaleParameterDetection(unittest.TestCase):
+    """Section 6.4: Stale Parameter Detection test suite."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.data = _load_data()
+        cls.chronic = cls.data.get("executive", {}).get("chronic_summary", {})
+        cls.sample = cls.chronic.get("sample_series", [])
+        cls.signals = cls.data.get("top_signals", [])
+
+    def test_stale_parameters_identified(self):
+        total_stale = self.chronic.get("total_stale_parameters", 0)
+        self.assertGreater(total_stale, 0, "Must identify at least one stale parameter series")
+        self.assertLessEqual(total_stale, len(self.sample), "Stale series cannot exceed sample series count")
+
+    def test_sample_series_stale_schema(self):
+        stale_records = [s for s in self.sample if s.get("is_stale")]
+        self.assertGreater(len(stale_records), 0, "Must have stale records in sample_series")
+        for rec in stale_records:
+            self.assertTrue(rec.get("is_stale"))
+            self.assertEqual(rec.get("stale_status"), "STALE (SHIFT >=30%)")
+            self.assertGreaterEqual(abs(rec.get("demand_shift_pct", 0)), 30.0)
+            self.assertIn("frozen", rec.get("stale_narrative", "").lower())
+
+    def test_top_signals_stale_flags(self):
+        stale_sigs = [s for s in self.signals if s.get("is_stale_parameter")]
+        self.assertGreater(len(stale_sigs), 0, "Must have at least one top signal with stale parameter")
+        for s in stale_sigs:
+            sp = s.get("stale_parameter", {})
+            self.assertTrue(sp.get("is_stale"))
+            self.assertGreaterEqual(abs(sp.get("demand_shift_pct", 0)), 30.0)
+            self.assertEqual(sp.get("trigger"), "DEMAND_SHIFT_30PCT_STATIC_SSD")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

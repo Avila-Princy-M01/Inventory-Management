@@ -144,9 +144,10 @@ ${acuteSigs.map((s, idx) => {
 3. MASTER DATA PARAMETER RECALIBRATION SIGN-OFF (SECTION 6.4)
 --------------------------------------------------------------------------------
 Identified Chronic Calibration Series: 379 Corridors (Pure SAP/OMP Parameter Mismatch)
+Stale Master Data Parameters: 164 Corridors (Static SSD despite ≥30% Demand Velocity Shift)
 Annual False Stockout Alerts Eliminated: 19,708 alerts/year
 Recommended Safety Stock Days (SSD) Adjustments: Ready for SAP/OMP transport
-Total Working Capital Unlocked: ₹7.2 Cr across inventory holding buffers
+Total Working Capital Unlocked: ₹14.9 Cr across inventory holding buffers
 
 4. GOVERNANCE DECISION & ACTION DIRECTIVES
 --------------------------------------------------------------------------------
@@ -348,11 +349,16 @@ export function renderSlide(index, data) {
               <span class="meeting-gov-tag">WORKING CAPITAL</span>
             </div>
           </div>
-          <div class="deck-kpi-grid">
+          <div class="deck-kpi-grid" style="grid-template-columns:repeat(4,1fr)">
             <div class="deck-kpi-tile">
               <div class="deck-kpi-val">379</div>
               <div class="deck-kpi-lbl">CHRONIC SERIES</div>
               <div class="deck-kpi-note">100% false-alert prone</div>
+            </div>
+            <div class="deck-kpi-tile">
+              <div class="deck-kpi-val" style="color:#D97706">164</div>
+              <div class="deck-kpi-lbl">STALE PARAMETERS</div>
+              <div class="deck-kpi-note">Demand shift ≥30% with static SSD</div>
             </div>
             <div class="deck-kpi-tile">
               <div class="deck-kpi-val" style="color:var(--ok-text)">19,708</div>
@@ -360,20 +366,16 @@ export function renderSlide(index, data) {
               <div class="deck-kpi-note">52 weeks × 379 series eliminated</div>
             </div>
             <div class="deck-kpi-tile">
-              <div class="deck-kpi-val" style="color:#0072CE">₹7.2 CR</div>
+              <div class="deck-kpi-val" style="color:#0072CE">₹14.9 CR</div>
               <div class="deck-kpi-lbl">CAPITAL UNLOCKED</div>
               <div class="deck-kpi-note">Liberated from excess SSD buffers</div>
             </div>
-            <div class="deck-kpi-tile">
-              <div class="deck-kpi-val">100%</div>
-              <div class="deck-kpi-lbl">SAP / OMP READY</div>
-              <div class="deck-kpi-note">1-Click transport payload</div>
-            </div>
           </div>
           <div class="deck-content-card">
-            <div class="deck-card-title">EXACT PLANNER DIRECTIVE EXAMPLE (SECTION 6.4 COMPLIANT)</div>
-            <div class="deck-card-body" style="font-family:var(--font-mono);font-size:12px;background:#F9FAFB;padding:12px;border-left:4px solid #0072CE">
-              &ldquo;Series #2847 (Ember, China): Safety Stock Days is set to 42 but the data shows DOH never drops below 28. Recommended: reduce SSD from 42 → 28 days. This would eliminate 52 false alerts per year and free ₹12.4L in frozen capital.&rdquo;
+            <div class="deck-card-title">SECTION 6.4 STALE PARAMETER &amp; DIRECTIVE AUDIT</div>
+            <div class="deck-card-body" style="font-family:var(--font-mono);font-size:12px;background:#F9FAFB;padding:12px;border-left:4px solid #D97706">
+              <div style="margin-bottom:6px"><strong>Stale Master Data Flag:</strong> 164 of 379 chronic series flagged with frozen SSD settings despite &gt;30% demand velocity shifts over 6 months.</div>
+              <div><strong>Planner Directive:</strong> &ldquo;Series #2847 (Ember, China): Safety Stock Days is set to 42 but the data shows DOH never drops below 28. Recommended: reduce SSD from 42 → 28 days. This would eliminate 52 false alerts per year and free ₹12.4L in frozen capital.&rdquo;</div>
             </div>
           </div>
         </div>

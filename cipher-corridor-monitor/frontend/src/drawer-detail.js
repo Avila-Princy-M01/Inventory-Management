@@ -252,9 +252,28 @@ export function openDetailDrawer(sig, approvedSignals) {
     </div>
   `;
 
+  const staleParam = sig.stale_parameter || {};
+  const isStale = Boolean(sig.is_stale_parameter || staleParam.is_stale);
+  const staleAlertHtml = isStale ? `
+    <div class="stale-param-alert-box" id="stale-param-alert">
+      <div class="stale-param-top">
+        <span class="stale-alert-badge">⚠️ STALE MASTER DATA DETECTED · SECTION 6.4</span>
+        <span class="stale-alert-tag">DEMAND SHIFT ${staleParam.demand_shift_pct > 0 ? '+' : ''}${staleParam.demand_shift_pct}%</span>
+      </div>
+      <div class="stale-param-title">Safety Stock Days Static at ${staleParam.current_ssd || 42}d with Significant Demand Velocity Drift</div>
+      <p class="stale-param-desc">
+        The master planning parameter (SSD) in SAP/OMP has remained frozen at <strong>${staleParam.current_ssd || 42} days</strong> while observed rolling demand shifted by <strong>${staleParam.demand_shift_pct > 0 ? '+' : ''}${staleParam.demand_shift_pct}%</strong> across the horizon. This static configuration creates uncalibrated safety buffers, driving artificial corridor alarms.
+      </p>
+      <div class="stale-param-action">
+        <strong>Recommended Master Data Recalibration:</strong> Initiate master data recalibration ticket in SAP/OMP to align corridor SSD with observed demand velocity.
+      </div>
+    </div>
+  ` : '';
+
   body.innerHTML = `
     ${slaBannerHtml}
     ${cliffBannerHtml}
+    ${staleAlertHtml}
     ${transferCardHtml}
     <div>
       <div class="detail-section-label">SIGNAL METADATA</div>

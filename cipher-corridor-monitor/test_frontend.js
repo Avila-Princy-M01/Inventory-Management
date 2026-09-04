@@ -427,6 +427,32 @@ test('Unit: Section 6.6 Meeting-Specific Executive Minutes Generation', () => {
   assert(soeEmail.includes('WEEKLY TIER-3 S&OE OPERATIONS STANDUP'), 'Must contain SOE title');
 });
 
+// ── Unit Tests: Section 6.4 Stale Parameter Detection ─────────────
+test('Unit: Section 6.4 Stale Parameter Detection & Master Data Segmentation', () => {
+  const dashData = JSON.parse(fs.readFileSync('backend/dashboard_data.json', 'utf8'));
+  const cs = dashData.executive.chronic_summary;
+  assert(cs.total_stale_parameters > 0, `Expected total_stale_parameters > 0, got ${cs.total_stale_parameters}`);
+  assert(cs.total_floor_mismatches > 0, `Expected total_floor_mismatches > 0, got ${cs.total_floor_mismatches}`);
+  assert(cs.total_stale_parameters + cs.total_floor_mismatches === cs.total_pure_calibration_series, 'Stale + floor mismatch must sum to 379 total');
+
+  const staleRecords = cs.sample_series.filter(s => s.is_stale);
+  assert(staleRecords.length === cs.total_stale_parameters, `Filtered stale count (${staleRecords.length}) must match summary (${cs.total_stale_parameters})`);
+
+  staleRecords.forEach(s => {
+    assert(s.stale_status === 'STALE (SHIFT >=30%)', `Expected stale_status tag, got ${s.stale_status}`);
+    assert(Math.abs(s.demand_shift_pct) >= 30.0, `Expected demand_shift_pct >= 30, got ${s.demand_shift_pct}`);
+    assert(s.stale_narrative && s.stale_narrative.includes('frozen'), 'Stale narrative must mention frozen/static parameter');
+  });
+
+  const staleSignals = dashData.top_signals.filter(s => s.is_stale_parameter);
+  assert(staleSignals.length > 0, `Expected top signals to identify stale parameters, got ${staleSignals.length}`);
+  staleSignals.forEach(s => {
+    assert(s.stale_parameter && s.stale_parameter.is_stale, 'stale_parameter object must have is_stale=true');
+    assert(s.stale_parameter.trigger === 'DEMAND_SHIFT_30PCT_STATIC_SSD', 'Trigger must be demand shift 30% with static SSD');
+    assert(Math.abs(s.stale_parameter.demand_shift_pct) >= 30.0, 'Shift pct must be >= 30%');
+  });
+});
+
 console.log(`\n=== TEST SUMMARY ===`);
 console.log(`Total Passed: ${passedCount}`);
 console.log(`Total Failed: ${failedCount}`);

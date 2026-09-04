@@ -399,6 +399,11 @@
                 <span class="param-kpi-sub">100% false-alert prone</span>
               </div>
               <div class="param-kpi-item">
+                <span class="param-kpi-label">STALE MASTER DATA PARAMETERS</span>
+                <span class="param-kpi-val tabular-nums" id="audit-kpi-stale" style="color:#D97706">164 CORRIDORS</span>
+                <span class="param-kpi-sub">SSD static with demand shift ≥30%</span>
+              </div>
+              <div class="param-kpi-item">
                 <span class="param-kpi-label">ANNUAL FALSE ALERTS ELIMINATED</span>
                 <span class="param-kpi-val tabular-nums" id="audit-kpi-alerts" style="color:var(--ok-text)">19,708 ALERTS / YR</span>
                 <span class="param-kpi-sub">52 weeks × 379 series</span>
@@ -408,6 +413,16 @@
                 <span class="param-kpi-val tabular-nums" id="audit-kpi-capital" style="color:#0072CE">₹1,498.7 CR</span>
                 <span class="param-kpi-sub">Across 379 recalibration targets</span>
               </div>
+            </div>
+          </div>
+
+          <!-- Parameter Audit Filters Bar -->
+          <div class="audit-filter-bar">
+            <span class="audit-filter-label">AUDIT SEGMENTATION:</span>
+            <div class="audit-filter-pills">
+              <button class="btn-filter-pill active" id="filter-audit-all">ALL CHRONIC (379)</button>
+              <button class="btn-filter-pill" id="filter-audit-stale">⚠️ STALE PARAMETERS (DEMAND SHIFT ≥30%) (<span id="count-filter-stale">164</span>)</button>
+              <button class="btn-filter-pill" id="filter-audit-floor">CHRONIC FLOOR MISMATCH (<span id="count-filter-floor">215</span>)</button>
             </div>
           </div>
 
@@ -422,6 +437,8 @@
                   <th>REGION</th>
                   <th>BRAND</th>
                   <th>COUNTRY</th>
+                  <th>STALE STATUS</th>
+                  <th class="text-right">DEMAND SHIFT</th>
                   <th>PRODUCT GROUP</th>
                   <th class="text-right">CURRENT SSD</th>
                   <th class="text-right">MIN DOH</th>
@@ -432,7 +449,7 @@
               </thead>
               <tbody id="tbody-masterdata">
                 <tr>
-                  <td colspan="10" class="empty-cell">Loading…</td>
+                  <td colspan="12" class="empty-cell">Loading…</td>
                 </tr>
               </tbody>
             </table>
