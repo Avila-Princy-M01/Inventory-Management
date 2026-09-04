@@ -270,9 +270,23 @@
               <p class="view-subtitle">Systemic risk posture, brand/region CHI, and 52-week seasonality</p>
             </div>
             <div class="view-actions">
+              <button class="btn-action btn-action--deck" id="btn-presentation-deck">📊 PRESENTATION SLIDES</button>
               <button class="btn-action" id="btn-export-pdf">PDF EXPORT</button>
               <button class="btn-action" id="btn-email-digest">EMAIL DIGEST</button>
             </div>
+          </div>
+
+          <!-- Meeting-Specific Governance Review Selector (Section 6.6) -->
+          <div class="meeting-selector-bar">
+            <div class="meeting-selector-top">
+              <div class="meeting-selector-label">GOVERNANCE REVIEW / MEETING FORMAT (SECTION 6.6):</div>
+              <div class="meeting-selector-tabs" id="meeting-selector-tabs">
+                <button class="meeting-tab active" data-meeting="SOP_MONTHLY">🏢 GLOBAL S&amp;OP EXECUTIVE REVIEW</button>
+                <button class="meeting-tab" data-meeting="SOE_WEEKLY">⚡ WEEKLY TIER-3 S&amp;OE STANDUP</button>
+                <button class="meeting-tab" data-meeting="RISK_COMMITTEE">📋 RISK &amp; ALLOCATION COMMITTEE</button>
+              </div>
+            </div>
+            <div class="meeting-governance-dossier" id="meeting-governance-dossier"></div>
           </div>
 
           <!-- Week-over-Week Action Audit Banner: "Did It Get Better?" -->
@@ -519,6 +533,33 @@
           <span class="dispatch-toast" id="dispatch-toast" style="display:none"></span>
         </div>
         <button class="btn-primary" id="btn-copy-email">COPY TO CLIPBOARD</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── S&OP PRESENTATION SLIDE DECK MODAL (SECTION 6.6) ── -->
+  <div id="slide-deck-modal" class="modal-wrap" style="display:none">
+    <div class="modal-card deck-modal-card">
+      <div class="modal-header">
+        <div class="modal-header-left">
+          <span class="modal-title" id="deck-modal-title">NOVO NORDISK GLOBAL S&amp;OP EXECUTIVE REVIEW</span>
+          <span class="modal-tag" id="deck-slide-indicator">[ SLIDE 1 OF 5 ]</span>
+        </div>
+        <button class="drawer-close" id="btn-close-deck">✕</button>
+      </div>
+      <div class="deck-stage" id="deck-stage">
+        <!-- Rendered dynamically by briefing.js -->
+      </div>
+      <div class="modal-footer deck-footer">
+        <div class="modal-footer-left">
+          <button class="btn-action" id="btn-deck-prev">← PREVIOUS</button>
+          <button class="btn-action" id="btn-deck-next">NEXT →</button>
+          <span class="deck-keyboard-hint">Use ← / → arrow keys</span>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn-action" id="btn-deck-print">🖨️ PRINT SLIDES</button>
+          <button class="btn-primary" id="btn-deck-close">CLOSE DECK</button>
+        </div>
       </div>
     </div>
   </div>

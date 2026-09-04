@@ -394,6 +394,39 @@ test('Unit: Section 6.2 24-Hour escalation countdown SLA calculation', () => {
   assert(approvedSla.compliant === true, 'Approved crisis must be compliant');
 });
 
+// ── Unit Tests: Section 6.6 Meeting-Specific Formatting ───────────
+const { MEETING_FORMATS, generateMeetingEmail } = require('./frontend/src/briefing.js');
+
+test('Unit: Section 6.6 Novo Nordisk Meeting Formats Structure & Agenda Integrity', () => {
+  const meetingKeys = ['SOP_MONTHLY', 'SOE_WEEKLY', 'RISK_COMMITTEE'];
+  meetingKeys.forEach(k => {
+    const m = MEETING_FORMATS[k];
+    assert(m, `Meeting format ${k} must exist in MEETING_FORMATS`);
+    assert(m.title && m.title.includes('NOVO NORDISK') || m.title.includes('S&OE') || m.title.includes('COMMITTEE'), 'Title must be professional');
+    assert(m.docId && m.docId.startsWith('NN-'), `Document ID ${m.docId} must follow Novo Nordisk standard`);
+    assert(m.sections && m.sections.length === 4, `Meeting ${k} must have 4 structured agenda sections`);
+    m.sections.forEach(s => {
+      assert(s.num && s.title && s.desc, `Agenda section ${s.num} must have title and description`);
+    });
+  });
+});
+
+test('Unit: Section 6.6 Meeting-Specific Executive Minutes Generation', () => {
+  const dashData = JSON.parse(fs.readFileSync('backend/dashboard_data.json', 'utf8'));
+  const sopEmail = generateMeetingEmail('SOP_MONTHLY', dashData);
+  assert(sopEmail.includes('NOVO NORDISK GLOBAL SUPPLY CHAIN EXECUTIVE MINUTES'), 'Must contain executive header');
+  assert(sopEmail.includes('NN-GSC-SOP-2026-M09'), 'Must contain S&OP document ID');
+  assert(sopEmail.includes('1. EXECUTIVE POSTURE & NETWORK EQUILIBRIUM'), 'Must include Section 1 Posture');
+  assert(sopEmail.includes('2. ACUTE CORRIDOR EXCEPTIONS & DIRECTIVES'), 'Must include Section 2 Acute Exceptions');
+  assert(sopEmail.includes('3. MASTER DATA PARAMETER RECALIBRATION SIGN-OFF'), 'Must include Section 3 Parameter Recalibration');
+  assert(sopEmail.includes('379 Corridors'), 'Must mention 379 chronic calibration corridors');
+  assert(sopEmail.includes('4. GOVERNANCE DECISION & ACTION DIRECTIVES'), 'Must include Section 4 Governance Scorecard');
+
+  const soeEmail = generateMeetingEmail('SOE_WEEKLY', dashData);
+  assert(soeEmail.includes('NN-OPS-SOE-2026-W32'), 'Must contain SOE document ID');
+  assert(soeEmail.includes('WEEKLY TIER-3 S&OE OPERATIONS STANDUP'), 'Must contain SOE title');
+});
+
 console.log(`\n=== TEST SUMMARY ===`);
 console.log(`Total Passed: ${passedCount}`);
 console.log(`Total Failed: ${failedCount}`);
