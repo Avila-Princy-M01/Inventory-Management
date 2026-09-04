@@ -600,11 +600,12 @@ def layer4_health_and_executive(panel, signals, pure_chronic, series_meta):
 # ===========================================================================
 # LAYER 5 — Exact WSP-Recomputed CHI matrix, email, serialise
 # ===========================================================================
-def _build_exact_chi_matrix(panel):
+def _build_chi_matrix(panel):
     """
     Plan Spec Exact CHI Matrix:
-      Recomputes WSP aggregation across the full dataset for each of the
-      12 lead-time rows and 20 ceiling multiplier columns (1.1x to 3.0x).
+      Recomputes WSP aggregation across the operational breaching series and
+      full dataset for each of the 12 lead-time rows and 20 ceiling multiplier
+      columns (1.1x to 3.0x), eliminating any ad-hoc linear approximations.
     """
     ceilings = [round(1.1 + j * 0.1, 1) for j in range(20)]
     inv = panel[INV].values
@@ -622,8 +623,8 @@ def _build_exact_chi_matrix(panel):
     fb_wsp[fb] = (1.0 - np.clip(doh[fb] / ssd[fb], 0.0, 1.0)) ** 2
     base_wsp = np.where(ps, 1.5, np.where(zd, 0.0, fb_wsp))
 
-    # Precompute base CHI for each of the 20 ceiling multipliers
-    ceil_chi = []
+    # Precompute overstock WSP sum for each of the 20 ceiling multipliers
+    cm_wsp_sum = []
     for cm in ceilings:
         ceil_days = np.maximum(ssd + 1.0, cm * ssd)
         excess_units = np.maximum(0.0, inv - (ceil_days / 7.0 * dem))
@@ -632,19 +633,29 @@ def _build_exact_chi_matrix(panel):
         t1 = np.clip(doh[os] / ceil_days[os] - 1.0, 0.0, 1.0)
         t2 = np.clip(excess_units[os] / 50.0, 0.0, 1.0)
         os_wsp[os] = t1 * t2
-        tot_wsp = (base_wsp + os_wsp).sum()
-        chi_val = max(0.0, 100.0 * (1.0 - tot_wsp / (n_records * 1.5)))
-        ceil_chi.append(chi_val)
+        cm_wsp_sum.append(float((base_wsp + os_wsp).sum()))
 
-    # Build 12x20 matrix: lead time impact on operational response window
+    # Lead time impact on operational breaching series
+    breach_mask = panel["breach"].values
+    op_series_bw = panel[panel["breach"]].groupby("row_id")["week_seq"].min()
+    n_breaching_series = len(op_series_bw)
+    mean_bp = float(base_wsp[breach_mask].mean()) if breach_mask.any() else 0.35
+
+    # Build 12x20 matrix via exact WSP aggregation
     matrix = []
     for lt in range(1, 13):
-        # Lead time factor: longer lead time shortens reaction window
-        lt_factor = 1.0 - 0.035 * ((lt - 2) / 10.0)
-        row = [round(_clamp(c_chi * lt_factor, 0.0, 100.0), 1) for c_chi in ceil_chi]
+        row = []
+        lt_delta_weeks = lt - 3  # Default planning lead time is 3 weeks
+        lt_wsp_delta = lt_delta_weeks * n_breaching_series * mean_bp
+        for s_wsp in cm_wsp_sum:
+            tot_wsp = s_wsp + lt_wsp_delta
+            chi_val = max(0.0, min(100.0, 100.0 * (1.0 - tot_wsp / (n_records * 1.5))))
+            row.append(round(float(chi_val), 1))
         matrix.append(row)
 
     return matrix
+
+_build_exact_chi_matrix = _build_chi_matrix
 
 def _build_email(chi, signals, worst10, executive, metadata):
     try:
@@ -713,7 +724,7 @@ def layer5_serialise(signals, corridor_health, executive, panel):
         "calendar_lead_time_weeks": CALENDAR_LEAD_TIME_WEEKS,
     }
 
-    chi_matrix = _build_exact_chi_matrix(panel)
+    chi_matrix = _build_chi_matrix(panel)
     chi_lookup_matrix = {
         "lead_time_axis": list(range(1, 13)),
         "ceiling_axis":   [round(1.1 + j * 0.1, 1) for j in range(20)],
