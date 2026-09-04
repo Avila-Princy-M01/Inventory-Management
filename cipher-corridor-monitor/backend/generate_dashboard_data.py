@@ -551,16 +551,22 @@ def layer5_serialise(signals, corridor_health, executive, panel):
     }
 
     chi_matrix = _build_chi_matrix(corridor_health["global_chi"])
+    chi_lookup_matrix = {
+        "lead_time_axis": list(range(1, 13)),
+        "ceiling_axis":   [round(1.1 + j * 0.1, 1) for j in range(20)],
+        "values":         chi_matrix,
+    }
     worst10    = executive.get("worst_10_countries", [])
     email      = _build_email(corridor_health["global_chi"], signals, worst10, executive, metadata)
 
     out = {
-        "metadata":        metadata,
-        "corridor_health": corridor_health,
-        "top_signals":     signals,
-        "executive":       executive,
-        "simulated_email": email,
-        "chi_matrix":      chi_matrix,
+        "metadata":          metadata,
+        "corridor_health":   corridor_health,
+        "top_signals":       signals,
+        "executive":         executive,
+        "simulated_email":   email,
+        "chi_matrix":        chi_matrix,
+        "chi_lookup_matrix": chi_lookup_matrix,
     }
 
     # Assertions
