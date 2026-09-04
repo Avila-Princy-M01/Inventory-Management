@@ -226,7 +226,70 @@ test('Unit: Master data DOH/SSD ratio threshold coloring', () => {
   assert(getRatioClass(1.2) === 'ratio-ok', '1.2 must be ok');
 });
 
+// ── Unit Tests: Per-Market Lead Time & Cliff Feasibility ───────
+const { getMarketLeadTime, getMarketConfig, setMarketLeadTime, resetMarketLeadTimes } = require('./frontend/src/drawer-scenario.js');
+
+test('Unit: Per-market lead time corridor configuration & resolution', () => {
+  resetMarketLeadTimes();
+  assert(getMarketLeadTime('China') === 36, 'China default must be 36 weeks');
+  assert(getMarketLeadTime('Country 013') === 36, 'Country 013 (China) must be 36 weeks');
+  assert(getMarketLeadTime('Brazil') === 8, 'Brazil default must be 8 weeks');
+  assert(getMarketLeadTime('Country 017') === 8, 'Country 017 (Brazil) must be 8 weeks');
+  assert(getMarketLeadTime('Japan') === 4, 'Japan default must be 4 weeks');
+  assert(getMarketLeadTime('Country 053') === 4, 'Country 053 (Japan) must be 4 weeks');
+  assert(getMarketLeadTime('Unknown Market') === 3, 'Unknown market must fallback to 3 weeks');
+
+  // Test custom override
+  setMarketLeadTime('China', 2, 'Air Expedite');
+  assert(getMarketLeadTime('China') === 2, 'Overridden China must be 2 weeks');
+  resetMarketLeadTimes();
+  assert(getMarketLeadTime('China') === 36, 'Reset must restore 36 weeks');
+});
+
+test('Unit: Irrecoverable sea freight cliff breach detection (China W14 vs 36W)', () => {
+  resetMarketLeadTimes();
+  const testSignals = [
+    {
+      row_id: 2847,
+      brand: 'Ember',
+      country: 'China',
+      breach_week: 14,
+      delta_t_weeks: 13,
+      severity: 0.8,
+      recommended_qty_units: 5000
+    },
+    {
+      row_id: 1001,
+      brand: 'Aster',
+      country: 'Japan',
+      breach_week: 6,
+      delta_t_weeks: 5,
+      severity: 0.5,
+      recommended_qty_units: 2000
+    }
+  ];
+
+  // With per-market mode active:
+  const scored = recomputeSignalScores(testSignals, 3, 2.0, null, true);
+  const chinaSig = scored.find(s => s.country === 'China');
+  assert(chinaSig, 'China signal must be present in recomputed output');
+  assert(chinaSig.market_lead_time === 36, 'China lead time must be 36 weeks');
+  assert(chinaSig.is_late_for_sea === true, 'China with breach W14 < 36W lead time must trigger is_late_for_sea');
+  assert(
+    chinaSig.freight_callout.includes('China breach at week 14') &&
+    chinaSig.freight_callout.includes('ALREADY TOO LATE for sea freight') &&
+    chinaSig.freight_callout.includes('Only air freight can save this'),
+    `Expected exact freight callout, got: ${chinaSig.freight_callout}`
+  );
+
+  const japanSig = scored.find(s => s.country === 'Japan');
+  assert(japanSig, 'Japan signal must be present');
+  assert(japanSig.market_lead_time === 4, 'Japan lead time must be 4 weeks');
+  assert(japanSig.is_late_for_sea === false, 'Japan with breach W6 >= 4W must be on cadence');
+});
+
 console.log(`\n=== TEST SUMMARY ===`);
 console.log(`Total Passed: ${passedCount}`);
 console.log(`Total Failed: ${failedCount}`);
 if (failedCount > 0) process.exit(1);
+

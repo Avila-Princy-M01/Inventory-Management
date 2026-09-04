@@ -2210,6 +2210,399 @@ button {
   color: var(--muted);
 }
 
+/* ── Per-Market Lead Time Configuration & Feasibility Engine ── */
+.btn-market-lt-trigger {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 6px 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.btn-market-lt-trigger:hover:not(:disabled) {
+  border-color: #0072CE;
+  color: #0072CE;
+}
+
+.btn-market-lt-trigger:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.scenario-tab-bar {
+  display: flex;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 18px;
+  gap: 4px;
+}
+
+.scenario-tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  padding: 8px 10px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.scenario-tab-btn:hover {
+  color: var(--text);
+}
+
+.scenario-tab-btn.active {
+  color: #0072CE;
+  border-bottom-color: #0072CE;
+  font-weight: 700;
+}
+
+.market-admin-header-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 14px 16px;
+  margin-bottom: 14px;
+}
+
+.market-admin-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.market-admin-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+
+.market-admin-desc {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+/* Industrial Toggle Switch */
+.switch-industrial {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.switch-industrial input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switch-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--border);
+  transition: 0.2s ease;
+  border: 1px solid var(--border-dark, #ccc);
+}
+
+.switch-slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.2s ease;
+}
+
+.switch-industrial input:checked + .switch-slider {
+  background-color: #059669;
+  border-color: #047857;
+}
+
+.switch-industrial input:checked + .switch-slider:before {
+  transform: translateX(20px);
+}
+
+.market-active-indicator {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.market-active-indicator--on {
+  color: #059669;
+}
+
+.market-quote-card {
+  background: rgba(220, 38, 38, 0.04);
+  border: 1px solid rgba(220, 38, 38, 0.25);
+  border-left: 3px solid #DC2626;
+  padding: 10px 12px;
+  margin-bottom: 14px;
+}
+
+.market-quote-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #DC2626;
+  margin-bottom: 4px;
+}
+
+.market-quote-text {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text);
+}
+
+.market-preset-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.btn-preset-sm {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  text-align: left;
+  padding: 6px 10px;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-preset-sm:hover {
+  border-color: #0072CE;
+  color: #0072CE;
+  background: rgba(0, 114, 206, 0.04);
+}
+
+.market-table-container {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.market-config-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.market-config-table th {
+  background: var(--bg);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.market-config-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.market-config-table tr:last-child td {
+  border-bottom: none;
+}
+
+.mkt-name {
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.mkt-code {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.mkt-mode-btn {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 3px 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.mkt-mode-btn--sea {
+  color: #0072CE;
+  border-color: rgba(0, 114, 206, 0.3);
+  background: rgba(0, 114, 206, 0.05);
+}
+
+.mkt-mode-btn--air {
+  color: #DC2626;
+  border-color: rgba(220, 38, 38, 0.3);
+  background: rgba(220, 38, 38, 0.05);
+}
+
+.mkt-lt-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mkt-lt-input {
+  width: 44px;
+  padding: 3px 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  text-align: right;
+}
+
+.mkt-lt-unit {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.feasibility-tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 2px 6px;
+  display: inline-block;
+}
+
+.feasibility-tag--cliff {
+  background: rgba(220, 38, 38, 0.1);
+  color: #DC2626;
+  border: 1px solid rgba(220, 38, 38, 0.3);
+}
+
+.feasibility-tag--ok {
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+/* Card market lead-time tags */
+.card-mkt-lt-tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--muted);
+  background: rgba(0, 0, 0, 0.04);
+  padding: 1px 5px;
+  border: 1px solid var(--border);
+}
+
+.card-mkt-cliff-tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  color: #DC2626;
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  padding: 1px 5px;
+}
+
+.card-cliff-alert {
+  background: rgba(220, 38, 38, 0.06);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  padding: 6px 8px;
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cliff-alert-badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #DC2626;
+}
+
+.cliff-alert-text {
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--text);
+}
+
+/* Detail Drawer Cliff Banner */
+.detail-cliff-banner {
+  background: rgba(220, 38, 38, 0.06);
+  border: 1px solid #DC2626;
+  border-left: 4px solid #DC2626;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+}
+
+.cliff-banner-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #DC2626;
+  margin-bottom: 4px;
+}
+
+.cliff-banner-quote {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text);
+  font-weight: 500;
+}
+
 /* ── Print ── */
 @media print {
   body {

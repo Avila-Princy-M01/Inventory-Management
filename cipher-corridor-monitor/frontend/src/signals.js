@@ -56,10 +56,26 @@ export function renderSignalCards(signals, approvedSignals = {}) {
       ? `<div class="supply-warn">[ LOW SUPPLY CERTAINTY — UNCONFIRMED ORDERS &gt;50% ]</div>`
       : '';
 
+    const ltVal = sig.market_lead_time || 3;
+    const isLateForSea = Boolean(sig.is_late_for_sea);
+    const mktTag = isLateForSea
+      ? `<span class="card-mkt-cliff-tag" title="${esc(sig.freight_callout || 'Late for Sea Freight')}">⚠️ LATE FOR SEA (${ltVal}W)</span>`
+      : `<span class="card-mkt-lt-tag">LT: ${ltVal}W</span>`;
+
+    const cliffHtml = isLateForSea
+      ? `<div class="card-cliff-alert">
+           <span class="cliff-alert-badge">🚨 AIR FREIGHT ONLY</span>
+           <span class="cliff-alert-text">Breach at W${sig.breach_week} &lt; ${ltVal}W sea transit window</span>
+         </div>`
+      : '';
+
     return `<div class="signal-card ${isCrisis ? 'signal-card--crisis' : ''}" style="--i:${i}; --index:${i};" data-rid="${sig.row_id}">
       <div class="card-row1">
         <span class="card-rank tabular-nums">#${rank}</span>
-        <span class="badge ${badge.cls}">${badge.label}</span>
+        <div style="display:flex;align-items:center;gap:6px">
+          ${mktTag}
+          <span class="badge ${badge.cls}">${badge.label}</span>
+        </div>
       </div>
       <div class="card-identity">
         <div class="card-brand">${esc(sig.brand)} · ${esc(sig.country)}</div>
@@ -73,6 +89,7 @@ export function renderSignalCards(signals, approvedSignals = {}) {
         <span>BREACH <strong>WK ${sig.breach_week}</strong></span>
         <span>REC QTY <strong>${fmtNum(sig.recommended_qty_units)}</strong></span>
       </div>
+      ${cliffHtml}
       ${warnHtml}
       ${actionArea}
     </div>`;

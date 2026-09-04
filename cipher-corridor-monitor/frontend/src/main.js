@@ -154,6 +154,8 @@ export function activateDashboard(data) {
   });
   const scBtn = document.getElementById('btn-open-scenario');
   if (scBtn) scBtn.removeAttribute('disabled');
+  const mktBtn = document.getElementById('btn-header-market-lt');
+  if (mktBtn) mktBtn.removeAttribute('disabled');
 
   // 2. Update Header Status Pill
   const pill = document.getElementById('status-gxp-pill');
@@ -242,6 +244,13 @@ function setupNav() {
   // Scenario drawer trigger
   const btnSc = document.getElementById('btn-open-scenario');
   if (btnSc) btnSc.addEventListener('click', () => openScenarioDrawer(window.DATA));
+
+  const btnMktLt = document.getElementById('btn-header-market-lt');
+  if (btnMktLt) btnMktLt.addEventListener('click', () => openScenarioDrawer(window.DATA, { defaultTab: 'market' }));
+
+  window.addEventListener('market-lt-mode-changed', () => {
+    updateFilteredSignals();
+  });
 }
 
 // ── KPI Banner ─────────────────────────────────────────────────

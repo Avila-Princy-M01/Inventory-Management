@@ -22,7 +22,7 @@ function getApprovalLabel(actionType, qty) {
 function buildRecovery(sig) {
   const data = window.DATA || {};
   const curWk = (data.metadata && data.metadata.current_week) || 32;
-  const leadWks = (data.metadata && data.metadata.calendar_lead_time_weeks) || 2;
+  const leadWks = sig.market_lead_time || (data.metadata && data.metadata.calendar_lead_time_weeks) || 2;
   const inv = (sig.trajectory || {}).inventory || [];
   const ssd = (sig.trajectory || {}).ssd || [];
   const startInv = inv[curWk - 1] || 0;
@@ -60,12 +60,27 @@ export function openDetailDrawer(sig, approvedSignals) {
 
   if (title) title.textContent = `${(sig.brand || '').toUpperCase()} · ${(sig.country || '').toUpperCase()}`;
 
+  const leadWks = sig.market_lead_time || (window.DATA && window.DATA.metadata && window.DATA.metadata.calendar_lead_time_weeks) || 3;
+  const modeName = sig.market_mode || 'Sea Freight';
+  const isLateForSea = Boolean(sig.is_late_for_sea);
+  const countryDisplayName = sig.market_name || sig.country || 'China';
+  const freightCallout = sig.freight_callout || `${countryDisplayName} breach at week ${sig.breach_week} — with ${leadWks}-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this.`;
+
+  const cliffBannerHtml = isLateForSea
+    ? `<div class="detail-cliff-banner">
+         <div class="cliff-banner-badge">🚨 IRRECOVERABLE SEA FREIGHT CLIFF</div>
+         <div class="cliff-banner-quote">&ldquo;${freightCallout}&rdquo;</div>
+       </div>`
+    : '';
+
   body.innerHTML = `
+    ${cliffBannerHtml}
     <div>
       <div class="detail-section-label">SIGNAL METADATA</div>
       <div class="detail-meta-grid">
         <div class="detail-meta-item"><span class="detail-meta-key">ACTION</span><span class="badge ${badge.cls}" style="display:inline-block;margin-top:2px">${badge.label}</span></div>
         <div class="detail-meta-item"><span class="detail-meta-key">BREACH HORIZON</span><span class="detail-meta-val" style="color:var(--crisis-text)">WEEK ${sig.breach_week}</span></div>
+        <div class="detail-meta-item"><span class="detail-meta-key">MARKET LEAD TIME</span><span class="detail-meta-val tabular-nums" style="color:${isLateForSea ? 'var(--crisis-text)' : 'inherit'}">${leadWks} WEEKS (${modeName.split(' ')[0]})</span></div>
         <div class="detail-meta-item"><span class="detail-meta-key">RECOMMENDED QTY</span><span class="detail-meta-val tabular-nums">${Number(sig.recommended_qty_units || 0).toLocaleString('en-IN')} UNITS</span></div>
         <div class="detail-meta-item"><span class="detail-meta-key">CAPITAL AT RISK</span><span class="detail-meta-val tabular-nums">₹${Number(sig.capital_at_risk_inr || 0).toLocaleString('en-IN')}</span></div>
         <div class="detail-meta-item"><span class="detail-meta-key">52W OTIF / FULFILLMENT</span><span class="detail-meta-val tabular-nums" style="color:${(sig.otif_pct !== undefined ? sig.otif_pct : 98.5) >= 95 ? 'var(--ok-text)' : 'var(--crisis-text)'}">${sig.otif_pct !== undefined ? sig.otif_pct : 98.5}% (SLA: 95.0%)</span></div>
@@ -163,14 +178,17 @@ function generateDossier(sig) {
 
   // Context-specific strategic action
   let actionText = '';
-  if (sig.action_type === 'ACTIVE CRISIS') {
+  const leadWks = sig.market_lead_time || 3;
+  if (sig.is_late_for_sea) {
+    actionText = `Authorize Emergency Air-Freight Procurement: ${country} breach at week ${sig.breach_week || 1} — with ${leadWks}-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this. Inject ${recQty} units via priority charter directly into ${country} hub by W${sig.arrival_target_week || 4}.`;
+  } else if (sig.action_type === 'ACTIVE CRISIS') {
     actionText = `Execute Immediate Inter-Affiliate Stock Transfer & Emergency Air Expedite: Authorize priority dispatch of ${recQty} units to prevent imminent stockout and avoid clinical non-fulfillment penalties.`;
   } else if (sig.action_type === 'EMERGENCY EXPEDITE') {
     actionText = `Authorize Priority Air-Freight Procurement: Advance inbound shipment schedule to inject ${recQty} units directly into the ${country} regional depot by W${sig.arrival_target_week || 4}.`;
   } else if (sig.action_type === 'EXCESS HOLDING') {
     actionText = `Halt Inbound PO Commitments & Reallocate Quota: Suppress planned purchase orders to absorb excess working capital (${capRisk}) and burn down inventory toward corridor ceiling.`;
   } else if (sig.action_type === 'STANDARD PO') {
-    actionText = `Release Scheduled Corridor Replenishment PO: Standard purchase order for ${recQty} units to re-establish nominal corridor equilibrium within normal lead-time.`;
+    actionText = `Release Scheduled Corridor Replenishment PO: Standard purchase order for ${recQty} units to re-establish nominal corridor equilibrium within normal lead-time (${leadWks}W).`;
   } else {
     actionText = `Maintain Monitored Buffer: Continue corridor tracking for ${brand} (${country}) with no immediate capital deployment required.`;
   }
