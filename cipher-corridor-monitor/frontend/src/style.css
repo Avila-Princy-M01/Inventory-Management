@@ -882,11 +882,11 @@ button { font-family: inherit; cursor: pointer; }
   margin-bottom: 16px;
 }
 
-/* ── Clinical Executive Narrative (Winner Feature) ── */
+/* ── Clinical Executive Narrative (Winner Feature: Structured Dossier) ── */
 .narrative-box {
   background: #FFFFFF;
   border: 1px solid var(--ink);
-  padding: 16px 18px;
+  padding: 14px 16px;
   margin-top: 14px;
   box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.08);
   animation: fadeIn 0.3s ease;
@@ -895,6 +895,8 @@ button { font-family: inherit; cursor: pointer; }
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
   margin-bottom: 8px;
 }
 .narrative-badge {
@@ -906,17 +908,51 @@ button { font-family: inherit; cursor: pointer; }
   padding: 2px 6px;
   letter-spacing: 0.06em;
 }
-.narrative-text {
+.narrative-dossier {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.dossier-row {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  align-items: baseline;
+  gap: 10px;
+  padding: 6px 10px;
+  background: #FAF9F5;
+  border-left: 2px solid var(--border);
+  transition: all 0.2s ease;
+}
+.dossier-row--highlight {
+  background: #EDF3EC;
+  border-left: 3px solid #346538;
+}
+.dossier-label {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.dossier-row--highlight .dossier-label {
+  color: #346538;
+}
+.dossier-text {
   font-family: var(--font-body);
-  font-size: 13px;
-  line-height: 1.65;
+  font-size: 12.5px;
+  line-height: 1.45;
   color: var(--ink);
   font-weight: 500;
 }
+.dossier-row--highlight .dossier-text {
+  color: #1A3D1D;
+  font-weight: 600;
+}
 .narrative-cursor {
   display: inline-block;
-  width: 7px;
-  height: 13px;
+  width: 6px;
+  height: 12px;
   background: #346538;
   margin-left: 2px;
   animation: blink 0.8s infinite;

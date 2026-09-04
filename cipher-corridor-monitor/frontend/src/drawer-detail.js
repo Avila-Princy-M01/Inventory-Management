@@ -103,10 +103,10 @@ export function openDetailDrawer(sig, approvedSignals) {
     </div>
     <div class="narrative-box" id="narrative-container" style="display: ${approved ? 'block' : 'none'};">
       <div class="narrative-header">
-        <div class="detail-section-label" style="margin-bottom:0;">AI STRATEGIC DECISION NARRATIVE</div>
+        <div class="detail-section-label" style="margin-bottom:0;">EXECUTIVE STRATEGIC DOSSIER</div>
         <span class="narrative-badge">SYNTHESIZED ✓</span>
       </div>
-      <div class="narrative-text" id="narrative-text"></div>
+      <div class="narrative-dossier" id="narrative-dossier"></div>
     </div>
   `;
 
@@ -116,9 +116,9 @@ export function openDetailDrawer(sig, approvedSignals) {
 
   renderChart(sig, approved);
 
-  const narrativeTextEl = document.getElementById('narrative-text');
-  if (approved && narrativeTextEl) {
-    narrativeTextEl.textContent = generateNarrative(sig);
+  const narrativeDossierEl = document.getElementById('narrative-dossier');
+  if (approved && narrativeDossierEl) {
+    renderDossier(sig, narrativeDossierEl, false);
   }
 
   const btnApprove = document.getElementById('btn-approve');
@@ -127,7 +127,7 @@ export function openDetailDrawer(sig, approvedSignals) {
   }
 }
 
-function generateNarrative(sig) {
+function generateDossier(sig) {
   const brand = sig.brand || 'Product';
   const country = sig.country || 'Global';
   const breachLen = sig.breach_length_weeks || Math.max(3, sig.delta_t_weeks || 4);
@@ -141,24 +141,54 @@ function generateNarrative(sig) {
                  sig.action_type === 'EXCESS HOLDING' ? 'deferral of inbound purchase orders' :
                  'standard replenishment order';
 
-  return `Brand ${brand} in ${country} is ${breachLen} weeks below safety stock floor. Supply pipeline is ${unconfirmedPct}% unconfirmed. With standard sea-freight lead time, a standard PO arrives too late. Recommend ${action} of ${recQty} units. Capital at risk: ${capRisk}. Estimated recovery: ${recoveryWks} weeks with expedite, ${standardWks} weeks without.`;
+  return [
+    { label: 'DIAGNOSIS', text: `Brand ${brand} in ${country} is ${breachLen} weeks below safety stock floor.` },
+    { label: 'SUPPLY BOTTLENECK', text: `Pipeline is ${unconfirmedPct}% unconfirmed. Standard sea-freight arrives post-stockout.` },
+    { label: 'RECOMMENDED ACTION', text: `Recommend ${action} of ${recQty} units to restore corridor equilibrium.`, highlight: true },
+    { label: 'CAPITAL AT RISK', text: `${capRisk} potential inventory exposure and stockout penalty.` },
+    { label: 'PROJECTED OUTCOME', text: `Estimated recovery: ${recoveryWks} weeks with expedite (vs. ${standardWks} weeks without).` }
+  ];
 }
 
-function typeNarrative(text, containerEl) {
+function renderDossier(sig, containerEl, animate = false) {
   if (!containerEl) return;
+  const items = generateDossier(sig);
   containerEl.innerHTML = '';
+
+  items.forEach((item, idx) => {
+    const row = document.createElement('div');
+    row.className = `dossier-row ${item.highlight ? 'dossier-row--highlight' : ''}`;
+    row.innerHTML = `
+      <span class="dossier-label">${item.label}</span>
+      <span class="dossier-text" id="dossier-text-${idx}"></span>
+    `;
+    containerEl.appendChild(row);
+
+    const textEl = row.querySelector(`#dossier-text-${idx}`);
+    if (animate) {
+      setTimeout(() => {
+        typeChars(item.text, textEl);
+      }, idx * 260);
+    } else {
+      textEl.textContent = item.text;
+    }
+  });
+}
+
+function typeChars(text, el) {
+  if (!el) return;
   let i = 0;
   const cursor = document.createElement('span');
   cursor.className = 'narrative-cursor';
-  containerEl.appendChild(cursor);
+  el.appendChild(cursor);
 
   function tick() {
     if (i < text.length) {
       cursor.insertAdjacentText('beforebegin', text.charAt(i));
       i++;
-      setTimeout(tick, 14);
+      setTimeout(tick, 9);
     } else {
-      setTimeout(() => cursor.remove(), 2500);
+      setTimeout(() => cursor.remove(), 1200);
     }
   }
   tick();
@@ -229,12 +259,12 @@ function handleApproval(sig, btn) {
     _chart.update();
   }
 
-  // Reveal narrative box and trigger typewriter stream
+  // Reveal dossier box and trigger staggered typewriter stream
   const narrativeContainer = document.getElementById('narrative-container');
-  const narrativeTextEl = document.getElementById('narrative-text');
-  if (narrativeContainer && narrativeTextEl) {
+  const narrativeDossierEl = document.getElementById('narrative-dossier');
+  if (narrativeContainer && narrativeDossierEl) {
     narrativeContainer.style.display = 'block';
-    typeNarrative(generateNarrative(sig), narrativeTextEl);
+    renderDossier(sig, narrativeDossierEl, true);
   }
 
   // Construct AuditEntry
