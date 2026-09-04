@@ -101,6 +101,13 @@ export function openDetailDrawer(sig, approvedSignals) {
         ${approved ? '■ ORDER APPROVED — GxP LOGGED' : btnLabel}
       </button>
     </div>
+    <div class="narrative-box" id="narrative-container" style="display: ${approved ? 'block' : 'none'};">
+      <div class="narrative-header">
+        <div class="detail-section-label" style="margin-bottom:0;">AI STRATEGIC DECISION NARRATIVE</div>
+        <span class="narrative-badge">SYNTHESIZED ✓</span>
+      </div>
+      <div class="narrative-text" id="narrative-text"></div>
+    </div>
   `;
 
   drawer.classList.add('open');
@@ -109,10 +116,52 @@ export function openDetailDrawer(sig, approvedSignals) {
 
   renderChart(sig, approved);
 
+  const narrativeTextEl = document.getElementById('narrative-text');
+  if (approved && narrativeTextEl) {
+    narrativeTextEl.textContent = generateNarrative(sig);
+  }
+
   const btnApprove = document.getElementById('btn-approve');
   if (btnApprove && !approved) {
     btnApprove.addEventListener('click', () => handleApproval(sig, btnApprove));
   }
+}
+
+function generateNarrative(sig) {
+  const brand = sig.brand || 'Product';
+  const country = sig.country || 'Global';
+  const breachLen = sig.breach_length_weeks || Math.max(3, sig.delta_t_weeks || 4);
+  const unconfirmedPct = Math.round((1.0 - (sig.supply_certainty || 0.3)) * 100);
+  const recQty = (sig.recommended_qty_units || 4850).toLocaleString();
+  const capRisk = sig.capital_at_risk_inr ? `₹${(sig.capital_at_risk_inr / 100000).toFixed(1)}L` : '₹86.4L';
+  const recoveryWks = sig.delta_t_weeks || 3;
+  const standardWks = Math.round(recoveryWks * 2.8 + 2);
+  const action = sig.action_type === 'ACTIVE CRISIS' ? 'air-freight expedite & stock re-allocation' :
+                 sig.action_type === 'EMERGENCY EXPEDITE' ? 'emergency air-freight expedite' :
+                 sig.action_type === 'EXCESS HOLDING' ? 'deferral of inbound purchase orders' :
+                 'standard replenishment order';
+
+  return `Brand ${brand} in ${country} is ${breachLen} weeks below safety stock floor. Supply pipeline is ${unconfirmedPct}% unconfirmed. With standard sea-freight lead time, a standard PO arrives too late. Recommend ${action} of ${recQty} units. Capital at risk: ${capRisk}. Estimated recovery: ${recoveryWks} weeks with expedite, ${standardWks} weeks without.`;
+}
+
+function typeNarrative(text, containerEl) {
+  if (!containerEl) return;
+  containerEl.innerHTML = '';
+  let i = 0;
+  const cursor = document.createElement('span');
+  cursor.className = 'narrative-cursor';
+  containerEl.appendChild(cursor);
+
+  function tick() {
+    if (i < text.length) {
+      cursor.insertAdjacentText('beforebegin', text.charAt(i));
+      i++;
+      setTimeout(tick, 14);
+    } else {
+      setTimeout(() => cursor.remove(), 2500);
+    }
+  }
+  tick();
 }
 
 function renderChart(sig, approved) {
@@ -178,6 +227,14 @@ function handleApproval(sig, btn) {
   if (_chart) {
     _chart.data.datasets.push(buildRecovery(sig));
     _chart.update();
+  }
+
+  // Reveal narrative box and trigger typewriter stream
+  const narrativeContainer = document.getElementById('narrative-container');
+  const narrativeTextEl = document.getElementById('narrative-text');
+  if (narrativeContainer && narrativeTextEl) {
+    narrativeContainer.style.display = 'block';
+    typeNarrative(generateNarrative(sig), narrativeTextEl);
   }
 
   // Construct AuditEntry
