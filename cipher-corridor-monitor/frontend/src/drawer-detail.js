@@ -138,24 +138,52 @@ function generateDossier(sig) {
   const recQty = Number(sig.recommended_qty_units || 0).toLocaleString('en-IN');
   const capRisk = `₹${Number(sig.capital_at_risk_inr || 0).toLocaleString('en-IN')}`;
   const recoveryWks = sig.recovery_weeks || 2;
-  const standardWks = Math.round(recoveryWks * 2.5);
+  const standardWks = Math.max(recoveryWks + 2, Math.round(recoveryWks * 2.5));
   const rc = sig.root_cause || {};
   const primaryCause = rc.primary_cause || 'Supply Deficit';
   const supDeficit = rc.supply_deficit_pct !== undefined ? `${rc.supply_deficit_pct}%` : '50%';
   const demSurge = rc.demand_surge_pct !== undefined ? `${rc.demand_surge_pct}%` : '30%';
+  const floorShock = rc.floor_shock_pct !== undefined ? `${rc.floor_shock_pct}%` : '20%';
   const mrpInfo = sig.mrp ? ` [MRP: ${sig.mrp}]` : '';
 
-  const action = sig.action_type === 'ACTIVE CRISIS' ? 'inter-market transfer and emergency expediting' :
-                 sig.action_type === 'EMERGENCY EXPEDITE' ? 'emergency air-freight expedite' :
-                 sig.action_type === 'EXCESS HOLDING' ? 'deferral of inbound purchase orders' :
-                 'standard replenishment purchase order';
+  // Dynamic clinical diagnosis based on the exact root cause mechanism
+  let diagnosisText = '';
+  if (primaryCause === 'Supply Deficit') {
+    diagnosisText = `Critical pipeline disruption: Upstream supply shortfall (${supDeficit} deficit component) triggers corridor breach at W${sig.breach_week || 1}. Unhedged deficit threatens product continuity for ${brand} in ${country}${mrpInfo}.`;
+  } else if (primaryCause === 'Demand Surge') {
+    diagnosisText = `Demand-driven corridor erosion: Commercial acceleration (+${demSurge} above baseline run-rate) outpaces replenishment cadence for ${brand} in ${country}${mrpInfo}, projecting a ${breachLen}-week corridor deficit.`;
+  } else {
+    diagnosisText = `Dynamic safety floor recalibration: Variable demand patterns triggered a ${floorShock} floor-shock shift for ${brand} in ${country}${mrpInfo}, elevating safety stock requirements above active inventory coverage.`;
+  }
+
+  // Pipeline bottleneck assessment
+  const bottleneckText = cert < 70
+    ? `Severe supply pipeline fragility: Pipeline certainty at ${cert}% (${unconfirmedPct}% uncommitted / in-transit risk). Inbound deliveries insufficient without expedited allocation prior to W${sig.arrival_target_week || 4}.`
+    : `Pipeline commitments verified at ${cert}% (${unconfirmedPct}% pending transit confirmation). Optimal replenishment arrival window targets W${sig.arrival_target_week || 4}.`;
+
+  // Context-specific strategic action
+  let actionText = '';
+  if (sig.action_type === 'ACTIVE CRISIS') {
+    actionText = `Execute Immediate Inter-Affiliate Stock Transfer & Emergency Air Expedite: Authorize priority dispatch of ${recQty} units to prevent imminent stockout and avoid clinical non-fulfillment penalties.`;
+  } else if (sig.action_type === 'EMERGENCY EXPEDITE') {
+    actionText = `Authorize Priority Air-Freight Procurement: Advance inbound shipment schedule to inject ${recQty} units directly into the ${country} regional depot by W${sig.arrival_target_week || 4}.`;
+  } else if (sig.action_type === 'EXCESS HOLDING') {
+    actionText = `Halt Inbound PO Commitments & Reallocate Quota: Suppress planned purchase orders to absorb excess working capital (${capRisk}) and burn down inventory toward corridor ceiling.`;
+  } else if (sig.action_type === 'STANDARD PO') {
+    actionText = `Release Scheduled Corridor Replenishment PO: Standard purchase order for ${recQty} units to re-establish nominal corridor equilibrium within normal lead-time.`;
+  } else {
+    actionText = `Maintain Monitored Buffer: Continue corridor tracking for ${brand} (${country}) with no immediate capital deployment required.`;
+  }
+
+  // Projected clinical and financial outcome
+  const outcomeText = `Expedited deployment achieves corridor equilibrium within ${recoveryWks} weeks (saving ${standardWks - recoveryWks} weeks vs. standard lead time), restoring CHI ≥ 95% and safeguarding patient availability.`;
 
   return [
-    { label: 'DIAGNOSIS', text: `Brand ${brand} in ${country}${mrpInfo} faces ${primaryCause} (${supDeficit} supply deficit, ${demSurge} surge) with ${breachLen} weeks below safety corridor floor.` },
-    { label: 'SUPPLY BOTTLENECK', text: `Pipeline certainty is ${cert}% (${unconfirmedPct}% unconfirmed / in-transit risk). Arrival target week: W${sig.arrival_target_week || 4}.` },
-    { label: 'RECOMMENDED ACTION', text: `Recommend ${action} of ${recQty} units to rebalance stock and prevent stockout penalties.`, highlight: true },
-    { label: 'CAPITAL AT RISK', text: `${capRisk} exposure across ${country} market inventory.` },
-    { label: 'PROJECTED OUTCOME', text: `Estimated corridor recovery in ${recoveryWks} weeks with expedite (vs. ${standardWks} weeks standard lead time).` }
+    { label: 'DIAGNOSIS', text: diagnosisText },
+    { label: 'SUPPLY BOTTLENECK', text: bottleneckText },
+    { label: 'RECOMMENDED ACTION', text: actionText, highlight: true },
+    { label: 'CAPITAL AT RISK', text: `${capRisk} total working capital exposure across ${country} corridor inventory.` },
+    { label: 'PROJECTED OUTCOME', text: outcomeText }
   ];
 }
 

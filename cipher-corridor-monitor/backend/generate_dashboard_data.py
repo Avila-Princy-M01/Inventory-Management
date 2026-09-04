@@ -221,8 +221,9 @@ def layer1_load_and_signals(panel):
         lambda dt: compute_urgency(dt, CALENDAR_LEAD_TIME_WEEKS)
     )
 
-    # PRS score per plan spec: min(100, (0.6 * Urgency + 0.4 * Severity) * 100)
-    score_df["prs_score"] = ((0.6 * score_df["urgency"] + 0.4 * score_df["severity"]) * 100).clip(1.0, 100).round(1)
+    # PRS score per plan spec: normalized urgency (0 to 1.0) + severity (0 to 1.0)
+    score_df["norm_urgency"] = score_df["urgency"] / 1.60
+    score_df["prs_score"] = ((0.6 * score_df["norm_urgency"] + 0.4 * score_df["severity"]) * 100).clip(1.0, 100.0).round(1)
 
     # Stratified top-15 signals:
     # 5 Active Crises (bw 1-2), 2 Emergency Expedite (bw 3-4), 4 Standard PO (bw 5-20),
@@ -296,20 +297,36 @@ def layer1_load_and_signals(panel):
             inv_at_horizon, ssd_at_horizon, dem_at_horizon, CEILING_MULT, sup_at_target, dem_at_horizon
         )
 
-        # Root cause attribution
-        avg_sup = row["total_sup"] / HORIZON_WEEKS
-        avg_dem = row["dem_mean"]
-        supply_deficit_pct = _clamp((avg_dem - avg_sup) / max(avg_dem, 1.0), 0.0, 1.0) * 100
-        doh_ssd_r = row["doh_med"] / row["ssd_med"] if row["ssd_med"] > 0 else 1.0
-        demand_surge_pct   = _clamp((doh_ssd_r - 0.7) * 50, 0.0, 50.0) if doh_ssd_r < 1.0 else 0.0
-        floor_shock_pct    = max(0.0, 100.0 - supply_deficit_pct - demand_surge_pct)
-        total_rc = supply_deficit_pct + demand_surge_pct + floor_shock_pct
-        if total_rc > 0:
-            supply_deficit_pct = round(supply_deficit_pct / total_rc * 100, 1)
-            demand_surge_pct   = round(demand_surge_pct   / total_rc * 100, 1)
-            floor_shock_pct    = round(100.0 - supply_deficit_pct - demand_surge_pct, 1)
-        else:
-            supply_deficit_pct, demand_surge_pct, floor_shock_pct = 33.3, 33.3, 33.4
+        # Dynamic Root Cause Attribution over the critical breach window
+        bw = breach_week
+        w_start = max(1, bw - 3)
+        w_end = min(HORIZON_WEEKS, bw + 2)
+        n_w = w_end - w_start + 1
+
+        w_dem = sum(dem_arr[w - 1] for w in range(w_start, w_end + 1))
+        w_sup = sum(sup_arr[w - 1] for w in range(w_start, w_end + 1))
+        w_unc = sum(float(unc_wide.at[rid, w]) if w in unc_wide.columns else 0.0 for w in range(w_start, w_end + 1))
+
+        # 1. Supply deficit in breach window: shortfall vs demand + pipeline unconfirmed volatility
+        sup_shortfall = max(0.0, w_dem - w_sup) + (w_unc * 0.5)
+
+        # 2. Demand surge in breach window: demand above SKU baseline run-rate
+        base_dem_rate = row["dem_mean"] * n_w
+        dem_surge = max(0.0, w_dem - base_dem_rate)
+
+        # 3. Floor shock / safety buffer variance
+        base_ssd = row["ssd_med"]
+        w_ssd = sum(ssd_arr[w - 1] for w in range(w_start, w_end + 1)) / n_w
+        ssd_jump = max(0.0, w_ssd - base_ssd) * (w_dem / 7.0 if w_dem > 0 else 1.0)
+        floor_shock = max(1.0, ssd_jump + (w_dem * 0.15))
+
+        total_rc = sup_shortfall + dem_surge + floor_shock
+        supply_deficit_pct = round(sup_shortfall / total_rc * 100, 1)
+        demand_surge_pct   = round(dem_surge / total_rc * 100, 1)
+        floor_shock_pct    = round(100.0 - supply_deficit_pct - demand_surge_pct, 1)
+
+        primary = "Supply Deficit" if supply_deficit_pct >= max(demand_surge_pct, floor_shock_pct) else \
+                  "Demand Surge" if demand_surge_pct >= max(supply_deficit_pct, floor_shock_pct) else "Floor Shock"
 
         signals.append({
             "row_id": int(rid), "rank": rank + 1,
@@ -331,7 +348,7 @@ def layer1_load_and_signals(panel):
             "recommended_qty_units":  int(round(rec_qty)),
             "action_type": None, "action_desc": "", "badge_color": "",
             "root_cause": {
-                "primary_cause":      "Supply Deficit" if supply_deficit_pct >= demand_surge_pct else "Demand Surge",
+                "primary_cause":      primary,
                 "supply_deficit_pct": supply_deficit_pct,
                 "demand_surge_pct":   demand_surge_pct,
                 "floor_shock_pct":    floor_shock_pct,
