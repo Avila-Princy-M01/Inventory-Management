@@ -4,9 +4,9 @@
  */
 
 export const BADGE_MAP = [
-  { prefix: 'ACTIVE CRISIS', cls: 'badge--crisis', label: 'ACTIVE CRISIS', borderColor: '#E61919' },
+  { prefix: 'ACTIVE CRISIS', cls: 'badge--crisis', label: 'ACTIVE CRISIS', borderColor: '#DC2626' },
   { prefix: 'EMERGENCY EXPEDITE', cls: 'badge--expedite', label: 'EMERGENCY EXPEDITE', borderColor: '#F59E0B' },
-  { prefix: 'STANDARD PO', cls: 'badge--po', label: 'STANDARD PO', borderColor: '#2563EB' },
+  { prefix: 'STANDARD PO', cls: 'badge--po', label: 'STANDARD PO', borderColor: '#0072CE' },
   { prefix: 'ADVISORY', cls: 'badge--advisory', label: 'ADVISORY', borderColor: '#9CA3AF' },
   { prefix: 'EXCESS HOLDING', cls: 'badge--excess', label: 'EXCESS HOLDING', borderColor: '#7C3AED' },
 ];

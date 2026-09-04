@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated_utc": "2026-09-04T20:24:42.847776+00:00",
+    "generated_utc": "2026-09-04T20:29:25.210862+00:00",
     "current_week": 32,
     "total_series": 5000,
     "total_evaluated_records": 215280,
@@ -173,7 +173,7 @@
       "recommended_qty_units": 13174,
       "action_type": "ACTIVE CRISIS",
       "action_desc": "Corridor breach active this week. Immediate inter-market re-allocation required.",
-      "badge_color": "#E61919",
+      "badge_color": "#DC2626",
       "root_cause": {
         "primary_cause": "Supply Deficit",
         "supply_deficit_pct": 0.0,
@@ -2969,7 +2969,7 @@
       "recommended_qty_units": 162080,
       "action_type": "ACTIVE CRISIS",
       "action_desc": "Corridor breach active this week. Immediate inter-market re-allocation required.",
-      "badge_color": "#E61919",
+      "badge_color": "#DC2626",
       "root_cause": {
         "primary_cause": "Supply Deficit",
         "supply_deficit_pct": 1.0,
@@ -4833,7 +4833,7 @@
       "recommended_qty_units": 10034,
       "action_type": "STANDARD PO",
       "action_desc": "Breach forecast in week 5. Standard purchase order recommended.",
-      "badge_color": "#2563EB",
+      "badge_color": "#0072CE",
       "root_cause": {
         "primary_cause": "Supply Deficit",
         "supply_deficit_pct": 5.1,
@@ -5299,7 +5299,7 @@
       "recommended_qty_units": 7306,
       "action_type": "STANDARD PO",
       "action_desc": "Breach forecast in week 5. Standard purchase order recommended.",
-      "badge_color": "#2563EB",
+      "badge_color": "#0072CE",
       "root_cause": {
         "primary_cause": "Demand Surge",
         "supply_deficit_pct": 4.6,
@@ -5765,7 +5765,7 @@
       "recommended_qty_units": 1992,
       "action_type": "STANDARD PO",
       "action_desc": "Breach forecast in week 5. Standard purchase order recommended.",
-      "badge_color": "#2563EB",
+      "badge_color": "#0072CE",
       "root_cause": {
         "primary_cause": "Demand Surge",
         "supply_deficit_pct": 0.0,
@@ -6231,7 +6231,7 @@
       "recommended_qty_units": 8737,
       "action_type": "STANDARD PO",
       "action_desc": "Breach forecast in week 5. Standard purchase order recommended.",
-      "badge_color": "#2563EB",
+      "badge_color": "#0072CE",
       "root_cause": {
         "primary_cause": "Demand Surge",
         "supply_deficit_pct": 0.5,

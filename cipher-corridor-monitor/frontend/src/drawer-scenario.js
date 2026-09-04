@@ -35,28 +35,55 @@ export function lookupCHI(leadTimeWeeks, ceilMult, dynamicMatrix = null) {
   return matrix[rowIdx][colIdx];
 }
 
+/**
+ * Piecewise exponential urgency with lead-time cliff per plan specification:
+ *   - dt <= 0: urgency = 1.60
+ *   - 0 < dt < L: urgency = min(1.60, 1.00 + (0.60 / L) * (L - dt))
+ *   - dt == L: urgency = 1.00
+ *   - dt > L: urgency = exp(-(dt - L) / 4.0)
+ */
+export function computeUrgency(dt, leadTimeWeeks = 3) {
+  const L = Math.max(1, Number(leadTimeWeeks) || 3);
+  if (dt <= 0) {
+    return 1.60;
+  } else if (dt < L) {
+    return Math.min(1.60, 1.00 + (0.60 / L) * (L - dt));
+  } else if (dt === L) {
+    return 1.00;
+  } else {
+    return Math.exp(-(dt - L) / 4.0);
+  }
+}
+
 export function recomputeSignalScores(signals, leadTimeWeeks, ceilMult) {
   if (!Array.isArray(signals)) return [];
-  const ltDiff = leadTimeWeeks - 3;
+  const lt = Math.max(1, Number(leadTimeWeeks) || 3);
+  const ltDiff = lt - 3;
   return signals.map(sig => {
-    const adjDelta = Math.max(1, (sig.delta_t_weeks || 0) - ltDiff);
-    const urgency  = clamp(1 - adjDelta / 52, 0, 1);
+    const origDt = sig.delta_t_weeks !== undefined ? sig.delta_t_weeks : (sig.breach_week ? Math.max(0, sig.breach_week - 1) : 0);
+    const adjDelta = Math.max(0, origDt - ltDiff);
+    const rawUrgency = computeUrgency(adjDelta, lt);
+    // PRS bounded in [0, 100], normalizing max urgency 1.60 to 1.00 for 60% weight
+    const normUrgency = clamp(rawUrgency / 1.60, 0, 1);
     const severity = clamp(sig.severity || 0.5, 0, 1);
-    const prs      = +clamp((0.6 * urgency + 0.4 * severity) * 100, 0, 100).toFixed(1);
+    const prs      = +clamp((0.6 * normUrgency + 0.4 * severity) * 100, 0, 100).toFixed(1);
 
     let qty = sig.recommended_qty_units || 0;
     const traj = sig.trajectory;
     if (traj && traj.inventory && traj.ssd) {
-      const idx = clamp(adjDelta - 1, 0, 51);
+      const idx = clamp(adjDelta > 0 ? adjDelta - 1 : 0, 0, 51);
       const inv = traj.inventory[idx] || 0;
       const ssd = traj.ssd[idx] || 0;
+      const dem = (traj.demand && traj.demand[idx]) || 0;
+      const sup = (traj.supply && traj.supply[idx]) || 0;
       const mid = ssd * (1 + ceilMult) / 2;
-      qty = Math.max(0, Math.round(mid - inv));
+      qty = Math.max(0, Math.round(mid - inv - sup + dem));
     }
 
     return {
       ...sig,
       prs_score: prs,
+      urgency: +rawUrgency.toFixed(4),
       delta_t_weeks: adjDelta,
       breach_week: adjDelta + 1,
       recommended_qty_units: qty

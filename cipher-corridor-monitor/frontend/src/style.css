@@ -487,7 +487,7 @@ button {
 .badge--crisis {
   background: var(--crisis-bg);
   color: var(--crisis-text);
-  border-color: #E61919;
+  border-color: #DC2626;
 }
 
 .badge--expedite {
@@ -499,7 +499,7 @@ button {
 .badge--po {
   background: var(--info-bg);
   color: var(--info-text);
-  border-color: #2563EB;
+  border-color: #0072CE;
 }
 
 .badge--advisory {
@@ -1833,8 +1833,8 @@ button {
 }
 
 .filter-pill-ind--po.active {
-  background: #2563EB;
-  border-color: #2563EB;
+  background: #0072CE;
+  border-color: #0072CE;
   color: #FFFFFF;
 }
 

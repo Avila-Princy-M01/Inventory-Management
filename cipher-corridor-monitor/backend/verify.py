@@ -236,10 +236,16 @@ except (KeyError, TypeError) as exc:
 
 # 9. chi_lookup_matrix structured object validation
 try:
+    assert_check(
+        "chi_lookup_matrix" in data,
+        "chi_lookup_matrix key present in dashboard_data.json",
+        "chi_lookup_matrix key missing from dashboard_data.json",
+    )
     clm = data.get("chi_lookup_matrix", {})
     lt_len = len(clm.get("lead_time_axis", []))
     ceil_len = len(clm.get("ceiling_axis", []))
-    val_rows = len(clm.get("values", []))
+    matrix_vals = clm.get("values") or clm.get("matrix") or []
+    val_rows = len(matrix_vals)
     clm_ok = lt_len == 12 and ceil_len == 20 and val_rows == 12
     assert_check(
         clm_ok,

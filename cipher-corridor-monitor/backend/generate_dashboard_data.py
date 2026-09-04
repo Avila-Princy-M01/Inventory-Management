@@ -405,7 +405,7 @@ def layer2_action_types(signals, panel):
         sig["action_type"] = action_type
         sig["action_desc"] = action_desc
         sig["badge_color"] = {
-            AT_CRISIS: "#E61919", AT_EXPEDITE: "#F59E0B", AT_PO: "#2563EB",
+            AT_CRISIS: "#DC2626", AT_EXPEDITE: "#F59E0B", AT_PO: "#0072CE",
             AT_ADVISORY: "#9CA3AF", AT_EXCESS: "#7C3AED",
         }[action_type]
 
