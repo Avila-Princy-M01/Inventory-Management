@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated_utc": "2026-09-04T19:45:32.015577+00:00",
+    "generated_utc": "2026-09-04T20:10:54.554782+00:00",
     "current_week": 32,
     "total_series": 5000,
     "total_evaluated_records": 215280,
@@ -11812,8 +11812,26 @@
         "share_pct": 1.86
       }
     ],
+    "top_5_share_pct": 12.11,
+    "top_10_share_pct": 21.87,
     "top_20_share_pct": 38.2,
-    "top_50_share_pct": 71.46
+    "top_50_share_pct": 71.46,
+    "pareto": {
+      "labels": [
+        "TOP 5",
+        "TOP 10",
+        "TOP 20",
+        "TOP 50",
+        "ALL"
+      ],
+      "cumulative_share": [
+        12.11,
+        21.87,
+        38.2,
+        71.46,
+        100.0
+      ]
+    }
   },
   "simulated_email": "CORRIDOR HEALTH MONITOR \u2014 WEEKLY EXECUTIVE BRIEFING\nNovo Nordisk GBS \u00b7 Supply Chain Corridor Intelligence \u00b7 Week 32, 2026\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\n\ud83d\udd34 CRITICAL \u2014 Immediate Action Required\n1. Brand Beacon | Country 013 | Category 02\n   Status: Below safety stock floor since Week 1\n   Lead Time: Standard sea-freight arriving post-stockout\n   Recommended: Air-freight expedite & stock re-allocation \u2014 13,174 units\n   Capital at Risk: \u20b91.98 Cr\n\n2. Brand Ember | Country 097 | Category 02\n   Status: Below safety stock floor since Week 1\n   Lead Time: Standard sea-freight arriving post-stockout\n   Recommended: Air-freight expedite & stock re-allocation \u2014 162,080 units\n   Capital at Risk: \u20b929.17 Cr\n\n\u26a0\ufe0f ACTIONABLE \u2014 Review This Week\n3. Brand Aster | Country 089 | Category 01\n   Status: Corridor breach risk at Week 2\n   Recommended: Emergency air expedite \u2014 23,635 units (Exposure: \u20b94.73 Cr)\n\n4. Brand Ember | Country 050 | Category 02\n   Status: Corridor breach risk at Week 2\n   Recommended: Emergency air expedite \u2014 57,950 units (Exposure: \u20b910.43 Cr)\n\n5. Brand Delta | Country 045 | Category 01\n   Status: Corridor breach risk at Week 3\n   Recommended: Emergency air expedite \u2014 15,300 units (Exposure: \u20b91.22 Cr)\n\n6. Brand Aster | Country 038 | Category 01\n   Status: Corridor breach risk at Week 3\n   Recommended: Emergency air expedite \u2014 14,163 units (Exposure: \u20b92.83 Cr)\n\n7. Brand Ember | Country 020 | Category 02\n   Status: Corridor breach risk at Week 5\n   Recommended: Standard PO raise \u2014 10,034 units (Exposure: \u20b91.81 Cr)\n\n8. Brand Crest | Country 025 | Category 03\n   Status: Corridor breach risk at Week 5\n   Recommended: Standard PO raise \u2014 7,306 units (Exposure: \u20b987.7L)\n\n9. Brand Ember | Country 049 | Category 02\n   Status: Corridor breach risk at Week 5\n   Recommended: Standard PO raise \u2014 1,992 units (Exposure: \u20b935.9L)\n\n10. Brand Aster | Country 079 | Category 01\n   Status: Corridor breach risk at Week 1\n   Recommended: Defer / re-allocate inbound supply \u2014 36,756 units (Exposure: \u20b97.35 Cr)\n\n11. Brand Ember | Country 038 | Category 02\n   Status: Corridor breach risk at Week 1\n   Recommended: Defer / re-allocate inbound supply \u2014 46,807 units (Exposure: \u20b98.43 Cr)\n\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\ud83d\udcca Network Health: CHI 86.8% (OTIF Rate: 98.5% \u00b7 SLA Compliant)\n\ud83d\udcc5 Next review: Week 33, 2026\n\ud83d\udd17 Open Corridor Signal Console: http://localhost:8000/#view-signals\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nGenerated automatically by CIPHER for Novo Nordisk Global Business Services.\nGxP Session Logged \u00b7 21 CFR Part 11 Compliant Signature System.",
   "chi_matrix": [

@@ -71,10 +71,47 @@ export function initBriefingCharts(data) {
         ctx.restore();
       }
     };
+    const paretoLabels = (ex.pareto && ex.pareto.labels) || ['TOP 5', 'TOP 10', 'TOP 20', 'TOP 50', 'ALL'];
+    const paretoValues = (ex.pareto && ex.pareto.cumulative_share) || [
+      ex.top_5_share_pct !== undefined ? ex.top_5_share_pct : 12.11,
+      ex.top_10_share_pct !== undefined ? ex.top_10_share_pct : 21.87,
+      ex.top_20_share_pct !== undefined ? ex.top_20_share_pct : 38.2,
+      ex.top_50_share_pct !== undefined ? ex.top_50_share_pct : 71.46,
+      100.0
+    ];
+
     new Chart(c3, {
       type: 'line',
-      data: { labels: ['TOP 5', 'TOP 10', 'TOP 20', 'TOP 50', 'ALL'], datasets: [{ label: 'Cumulative Risk Share %', data: [38.2, 54.1, 72.8, 88.5, 100], borderColor: '#111111', borderWidth: 2, backgroundColor: 'rgba(0,0,0,0.03)', fill: true, pointRadius: 3, tension: 0.2 }] },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { min: 20, max: 100, grid: { color: '#EAEAEA' }, ticks: { callback: v => v + '%', font: { family: MONO, size: 9 }, color: '#787774' } }, x: { grid: { display: false }, ticks: { font: { family: MONO, size: 9 }, color: '#111111' } } } },
+      data: {
+        labels: paretoLabels,
+        datasets: [{
+          label: 'Cumulative Risk Share %',
+          data: paretoValues,
+          borderColor: '#111111',
+          borderWidth: 2,
+          backgroundColor: 'rgba(0,0,0,0.03)',
+          fill: true,
+          pointRadius: 3,
+          tension: 0.2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: {
+            min: 0,
+            max: 100,
+            grid: { color: '#EAEAEA' },
+            ticks: { callback: v => v + '%', font: { family: MONO, size: 9 }, color: '#787774' }
+          },
+          x: {
+            grid: { display: false },
+            ticks: { font: { family: MONO, size: 9 }, color: '#111111' }
+          }
+        }
+      },
       plugins: [annPlugin]
     });
   }

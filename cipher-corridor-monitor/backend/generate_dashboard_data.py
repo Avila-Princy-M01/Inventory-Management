@@ -563,8 +563,10 @@ def layer4_health_and_executive(panel, signals, pure_chronic, series_meta):
         for _, r in ctry.head(10).iterrows()
     ]
 
-    top20_share = float(ctry.head(20)["stockouts"].sum() / max(total_so,1) * 100)
-    top50_share = float(ctry.head(50)["stockouts"].sum() / max(total_so,1) * 100)
+    top5_share  = float(ctry.head(5)["stockouts"].sum()  / max(total_so, 1) * 100)
+    top10_share = float(ctry.head(10)["stockouts"].sum() / max(total_so, 1) * 100)
+    top20_share = float(ctry.head(20)["stockouts"].sum() / max(total_so, 1) * 100)
+    top50_share = float(ctry.head(50)["stockouts"].sum() / max(total_so, 1) * 100)
 
     executive = {
         "chronic_summary": {
@@ -578,8 +580,20 @@ def layer4_health_and_executive(panel, signals, pure_chronic, series_meta):
         },
         "seasonality": seasonality,
         "worst_10_countries": worst_10,
+        "top_5_share_pct": round(top5_share, 2),
+        "top_10_share_pct": round(top10_share, 2),
         "top_20_share_pct": round(top20_share, 2),
         "top_50_share_pct": round(top50_share, 2),
+        "pareto": {
+            "labels": ["TOP 5", "TOP 10", "TOP 20", "TOP 50", "ALL"],
+            "cumulative_share": [
+                round(top5_share, 2),
+                round(top10_share, 2),
+                round(top20_share, 2),
+                round(top50_share, 2),
+                100.0,
+            ],
+        },
     }
     return corridor_health, executive
 
