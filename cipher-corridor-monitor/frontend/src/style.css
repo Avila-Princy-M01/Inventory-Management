@@ -2603,6 +2603,210 @@ button {
   font-weight: 500;
 }
 
+/* ── Inter-Market Stock Re-Allocation Corridor (Section 6.3) ── */
+.card-transfer-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 114, 206, 0.08);
+  border: 1px solid rgba(0, 114, 206, 0.25);
+  padding: 4px 8px;
+  margin-top: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: #0072CE;
+}
+
+.transfer-pill-icon {
+  font-size: 11px;
+}
+
+.transfer-pill-text {
+  letter-spacing: -0.01em;
+}
+
+.transfer-corridor-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid #0072CE;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.transfer-corridor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  gap: 8px;
+}
+
+.transfer-badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #0072CE;
+  background: rgba(0, 114, 206, 0.08);
+  padding: 3px 8px;
+  border: 1px solid rgba(0, 114, 206, 0.25);
+}
+
+.transfer-visualizer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 16px;
+  background: var(--bg);
+  padding: 12px;
+  border: 1px solid var(--border);
+}
+
+.transfer-node {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 8px 10px;
+}
+
+.transfer-node--donor {
+  border-left: 3px solid #059669;
+}
+
+.transfer-node--recipient {
+  border-left: 3px solid #DC2626;
+}
+
+.transfer-node-role {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.transfer-node-market {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.transfer-node-sub {
+  font-size: 10px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  margin-top: 2px;
+}
+
+.transfer-arrow-block {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1.2;
+  justify-content: center;
+}
+
+.transfer-arrow-line {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  border-bottom: 2px dashed #0072CE;
+  padding-bottom: 4px;
+  width: 100%;
+}
+
+.transfer-arrow-pill {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: #0072CE;
+  background: rgba(0, 114, 206, 0.1);
+  padding: 2px 6px;
+}
+
+.transfer-arrow-mode {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--muted);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.transfer-arrow-head {
+  color: #0072CE;
+  font-size: 12px;
+  margin-left: -4px;
+}
+
+.transfer-impact-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.transfer-impact-item {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.transfer-impact-k {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.transfer-impact-v {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.transfer-impact-sub {
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.3;
+}
+
+.btn-transfer-execute {
+  width: 100%;
+  background: #0072CE !important;
+  border-color: #00569c !important;
+  color: #FFFFFF !important;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-transfer-execute:hover:not(:disabled) {
+  background: #005FA8 !important;
+}
+
+.btn-transfer-execute:disabled {
+  background: var(--border) !important;
+  color: var(--muted) !important;
+  border-color: var(--border) !important;
+  cursor: not-allowed;
+}
+
 /* ── Print ── */
 @media print {
   body {

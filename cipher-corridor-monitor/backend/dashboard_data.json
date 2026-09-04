@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated_utc": "2026-09-04T21:06:33.730662+00:00",
+    "generated_utc": "2026-09-04T21:21:47.569055+00:00",
     "current_week": 32,
     "total_series": 5000,
     "total_evaluated_records": 215280,
@@ -172,7 +172,7 @@
       "otif_current": 98.5,
       "otif_delta": 0.3,
       "otif_delta_text": "\u2191 0.3% vs last week",
-      "briefing_narrative": "3 of 4 crisis signals resolved. 2 new signals emerged. Net network health improved by \u2191 1.2 pts."
+      "briefing_narrative": "3 of 5 crisis signals resolved. 2 new signals emerged. Net network health improved by \u2191 1.2 pts."
     }
   },
   "top_signals": [
@@ -641,7 +641,22 @@
       "capital_at_risk_inr": 19761000,
       "supply_certainty": 0.858,
       "otif_pct": 43.4,
-      "fill_rate_pct": 43.4
+      "fill_rate_pct": 43.4,
+      "intermarket_transfer": {
+        "has_transfer": true,
+        "donor_country": "Country 059",
+        "donor_region": "Region 06",
+        "donor_inventory": 1296553,
+        "donor_pre_doh": 342.0,
+        "donor_ssd": 84.0,
+        "donor_post_doh": 338.6,
+        "transfer_qty": 13174,
+        "transit_mode": "Priority Air Freight Charter",
+        "transit_days": 4,
+        "capital_saved_inr": 19761000,
+        "feasibility": "FEASIBLE \u2014 Donor remains at 338.6 DOH (safely > 84.0d SSD floor)",
+        "narrative": "Transfer 13,174 units of Beacon from Country 059 (Region 06) \u2192 Country 013. Resolves W1 stockout in 4 days via Priority Air Freight Charter, saving \u20b91.98 Cr in stockout non-fulfillment penalties without emergency manufacturing."
+      }
     },
     {
       "row_id": 3581,
@@ -1108,7 +1123,22 @@
       "capital_at_risk_inr": 73512000,
       "supply_certainty": 0.858,
       "otif_pct": 46.9,
-      "fill_rate_pct": 46.9
+      "fill_rate_pct": 46.9,
+      "intermarket_transfer": {
+        "has_transfer": true,
+        "donor_country": "Country 024",
+        "donor_region": "Region 03",
+        "donor_inventory": 1626623,
+        "donor_pre_doh": 94.1,
+        "donor_ssd": 63.0,
+        "donor_post_doh": 92.0,
+        "transfer_qty": 36756,
+        "transit_mode": "Priority Air Freight Charter",
+        "transit_days": 4,
+        "capital_saved_inr": 73512000,
+        "feasibility": "FEASIBLE \u2014 Donor remains at 92.0 DOH (safely > 63.0d SSD floor)",
+        "narrative": "Transfer 36,756 units of Aster from Country 024 (Region 03) \u2192 Country 079. Resolves W1 stockout in 4 days via Priority Air Freight Charter, saving \u20b97.35 Cr in stockout non-fulfillment penalties without emergency manufacturing."
+      }
     },
     {
       "row_id": 1976,
@@ -1575,7 +1605,22 @@
       "capital_at_risk_inr": 84252600,
       "supply_certainty": 0.819,
       "otif_pct": 63.1,
-      "fill_rate_pct": 63.1
+      "fill_rate_pct": 63.1,
+      "intermarket_transfer": {
+        "has_transfer": true,
+        "donor_country": "Country 065",
+        "donor_region": "Region 07",
+        "donor_inventory": 1241872,
+        "donor_pre_doh": 136.4,
+        "donor_ssd": 84.0,
+        "donor_post_doh": 131.3,
+        "transfer_qty": 46807,
+        "transit_mode": "Priority Air Freight Charter",
+        "transit_days": 4,
+        "capital_saved_inr": 84252600,
+        "feasibility": "FEASIBLE \u2014 Donor remains at 131.3 DOH (safely > 84.0d SSD floor)",
+        "narrative": "Transfer 46,807 units of Ember from Country 065 (Region 07) \u2192 Country 038. Resolves W1 stockout in 4 days via Priority Air Freight Charter, saving \u20b98.43 Cr in stockout non-fulfillment penalties without emergency manufacturing."
+      }
     },
     {
       "row_id": 2923,
@@ -2042,7 +2087,22 @@
       "capital_at_risk_inr": 208951200,
       "supply_certainty": 0.834,
       "otif_pct": 70.1,
-      "fill_rate_pct": 70.1
+      "fill_rate_pct": 70.1,
+      "intermarket_transfer": {
+        "has_transfer": true,
+        "donor_country": "Country 065",
+        "donor_region": "Region 07",
+        "donor_inventory": 1241872,
+        "donor_pre_doh": 136.4,
+        "donor_ssd": 84.0,
+        "donor_post_doh": 123.7,
+        "transfer_qty": 116084,
+        "transit_mode": "Priority Air Freight Charter",
+        "transit_days": 4,
+        "capital_saved_inr": 208951200,
+        "feasibility": "FEASIBLE \u2014 Donor remains at 123.7 DOH (safely > 84.0d SSD floor)",
+        "narrative": "Transfer 116,084 units of Ember from Country 065 (Region 07) \u2192 Country 053. Resolves W1 stockout in 4 days via Priority Air Freight Charter, saving \u20b920.90 Cr in stockout non-fulfillment penalties without emergency manufacturing."
+      }
     },
     {
       "row_id": 3347,
@@ -2509,7 +2569,22 @@
       "capital_at_risk_inr": 23012800,
       "supply_certainty": 0.794,
       "otif_pct": 64.6,
-      "fill_rate_pct": 64.6
+      "fill_rate_pct": 64.6,
+      "intermarket_transfer": {
+        "has_transfer": true,
+        "donor_country": "Country 055",
+        "donor_region": "Region 06",
+        "donor_inventory": 309634,
+        "donor_pre_doh": 163.2,
+        "donor_ssd": 42.0,
+        "donor_post_doh": 148.0,
+        "transfer_qty": 28766,
+        "transit_mode": "Priority Air Freight Charter",
+        "transit_days": 4,
+        "capital_saved_inr": 23012800,
+        "feasibility": "FEASIBLE \u2014 Donor remains at 148.0 DOH (safely > 42.0d SSD floor)",
+        "narrative": "Transfer 28,766 units of Delta from Country 055 (Region 06) \u2192 Country 065. Resolves W1 stockout in 4 days via Priority Air Freight Charter, saving \u20b92.30 Cr in stockout non-fulfillment penalties without emergency manufacturing."
+      }
     },
     {
       "row_id": 1500,
@@ -2976,7 +3051,11 @@
       "capital_at_risk_inr": 0,
       "supply_certainty": 0.858,
       "otif_pct": 69.3,
-      "fill_rate_pct": 69.3
+      "fill_rate_pct": 69.3,
+      "intermarket_transfer": {
+        "has_transfer": false,
+        "reason": "Signal is nominal or overstocked; no emergency stock injection required."
+      }
     },
     {
       "row_id": 969,
@@ -3443,7 +3522,22 @@
       "capital_at_risk_inr": 21454200,
       "supply_certainty": 0.703,
       "otif_pct": 74.2,
-      "fill_rate_pct": 74.2
+      "fill_rate_pct": 74.2,
+      "intermarket_transfer": {
+        "has_transfer": true,
+        "donor_country": "Country 065",
+        "donor_region": "Region 07",
+        "donor_inventory": 1241872,
+        "donor_pre_doh": 136.4,
+        "donor_ssd": 84.0,
+        "donor_post_doh": 135.1,
+        "transfer_qty": 11919,
+        "transit_mode": "Priority Air Freight Charter",
+        "transit_days": 4,
+        "capital_saved_inr": 21454200,
+        "feasibility": "FEASIBLE \u2014 Donor remains at 135.1 DOH (safely > 84.0d SSD floor)",
+        "narrative": "Transfer 11,919 units of Ember from Country 065 (Region 07) \u2192 Country 017. Resolves W1 stockout in 4 days via Priority Air Freight Charter, saving \u20b92.15 Cr in stockout non-fulfillment penalties without emergency manufacturing."
+      }
     },
     {
       "row_id": 4465,
@@ -3910,7 +4004,22 @@
       "capital_at_risk_inr": 108891000,
       "supply_certainty": 0.798,
       "otif_pct": 69.3,
-      "fill_rate_pct": 69.3
+      "fill_rate_pct": 69.3,
+      "intermarket_transfer": {
+        "has_transfer": true,
+        "donor_country": "Country 065",
+        "donor_region": "Region 07",
+        "donor_inventory": 1241872,
+        "donor_pre_doh": 136.4,
+        "donor_ssd": 84.0,
+        "donor_post_doh": 129.8,
+        "transfer_qty": 60495,
+        "transit_mode": "Priority Air Freight Charter",
+        "transit_days": 4,
+        "capital_saved_inr": 108891000,
+        "feasibility": "FEASIBLE \u2014 Donor remains at 129.8 DOH (safely > 84.0d SSD floor)",
+        "narrative": "Transfer 60,495 units of Ember from Country 065 (Region 07) \u2192 Country 087. Resolves W1 stockout in 4 days via Priority Air Freight Charter, saving \u20b910.89 Cr in stockout non-fulfillment penalties without emergency manufacturing."
+      }
     },
     {
       "row_id": 2340,
@@ -4377,7 +4486,22 @@
       "capital_at_risk_inr": 12240000,
       "supply_certainty": 0.832,
       "otif_pct": 100.0,
-      "fill_rate_pct": 100.0
+      "fill_rate_pct": 100.0,
+      "intermarket_transfer": {
+        "has_transfer": true,
+        "donor_country": "Country 055",
+        "donor_region": "Region 06",
+        "donor_inventory": 309634,
+        "donor_pre_doh": 163.2,
+        "donor_ssd": 42.0,
+        "donor_post_doh": 155.1,
+        "transfer_qty": 15300,
+        "transit_mode": "Priority Air Freight Charter",
+        "transit_days": 4,
+        "capital_saved_inr": 12240000,
+        "feasibility": "FEASIBLE \u2014 Donor remains at 155.1 DOH (safely > 42.0d SSD floor)",
+        "narrative": "Transfer 15,300 units of Delta from Country 055 (Region 06) \u2192 Country 045. Resolves W3 stockout in 4 days via Priority Air Freight Charter, saving \u20b91.22 Cr in stockout non-fulfillment penalties without emergency manufacturing."
+      }
     },
     {
       "row_id": 1577,
@@ -4844,7 +4968,22 @@
       "capital_at_risk_inr": 28326000,
       "supply_certainty": 0.778,
       "otif_pct": 96.6,
-      "fill_rate_pct": 96.6
+      "fill_rate_pct": 96.6,
+      "intermarket_transfer": {
+        "has_transfer": true,
+        "donor_country": "Country 024",
+        "donor_region": "Region 03",
+        "donor_inventory": 1626623,
+        "donor_pre_doh": 94.1,
+        "donor_ssd": 63.0,
+        "donor_post_doh": 93.3,
+        "transfer_qty": 14163,
+        "transit_mode": "Priority Air Freight Charter",
+        "transit_days": 4,
+        "capital_saved_inr": 28326000,
+        "feasibility": "FEASIBLE \u2014 Donor remains at 93.3 DOH (safely > 63.0d SSD floor)",
+        "narrative": "Transfer 14,163 units of Aster from Country 024 (Region 03) \u2192 Country 038. Resolves W3 stockout in 4 days via Priority Air Freight Charter, saving \u20b92.83 Cr in stockout non-fulfillment penalties without emergency manufacturing."
+      }
     },
     {
       "row_id": 4637,
@@ -5311,7 +5450,11 @@
       "capital_at_risk_inr": 16203000,
       "supply_certainty": 0.547,
       "otif_pct": 100.0,
-      "fill_rate_pct": 100.0
+      "fill_rate_pct": 100.0,
+      "intermarket_transfer": {
+        "has_transfer": false,
+        "reason": "Signal is nominal or overstocked; no emergency stock injection required."
+      }
     },
     {
       "row_id": 995,
@@ -5778,7 +5921,11 @@
       "capital_at_risk_inr": 18061200,
       "supply_certainty": 0.863,
       "otif_pct": 100.0,
-      "fill_rate_pct": 100.0
+      "fill_rate_pct": 100.0,
+      "intermarket_transfer": {
+        "has_transfer": false,
+        "reason": "Signal is nominal or overstocked; no emergency stock injection required."
+      }
     },
     {
       "row_id": 1245,
@@ -6245,7 +6392,11 @@
       "capital_at_risk_inr": 8767200,
       "supply_certainty": 0.862,
       "otif_pct": 100.0,
-      "fill_rate_pct": 100.0
+      "fill_rate_pct": 100.0,
+      "intermarket_transfer": {
+        "has_transfer": false,
+        "reason": "Signal is nominal or overstocked; no emergency stock injection required."
+      }
     },
     {
       "row_id": 2480,
@@ -6712,7 +6863,11 @@
       "capital_at_risk_inr": 3585600,
       "supply_certainty": 0.842,
       "otif_pct": 100.0,
-      "fill_rate_pct": 100.0
+      "fill_rate_pct": 100.0,
+      "intermarket_transfer": {
+        "has_transfer": false,
+        "reason": "Signal is nominal or overstocked; no emergency stock injection required."
+      }
     },
     {
       "row_id": 1918,
@@ -7179,7 +7334,11 @@
       "capital_at_risk_inr": 323992800,
       "supply_certainty": 0.863,
       "otif_pct": 100.0,
-      "fill_rate_pct": 100.0
+      "fill_rate_pct": 100.0,
+      "intermarket_transfer": {
+        "has_transfer": false,
+        "reason": "Signal is nominal or overstocked; no emergency stock injection required."
+      }
     }
   ],
   "executive": {
@@ -14549,7 +14708,7 @@
       "otif_current": 98.5,
       "otif_delta": 0.3,
       "otif_delta_text": "\u2191 0.3% vs last week",
-      "briefing_narrative": "3 of 4 crisis signals resolved. 2 new signals emerged. Net network health improved by \u2191 1.2 pts."
+      "briefing_narrative": "3 of 5 crisis signals resolved. 2 new signals emerged. Net network health improved by \u2191 1.2 pts."
     }
   },
   "simulated_email": "CORRIDOR HEALTH MONITOR \u2014 WEEKLY EXECUTIVE BRIEFING\nNovo Nordisk GBS \u00b7 Supply Chain Corridor Intelligence \u00b7 Week 32, 2026\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\n\ud83d\udd34 CRITICAL \u2014 Immediate Action Required\n1. Brand Beacon | Country 013 | Category 02\n   Status: Below safety stock floor since Week 1\n   Lead Time: Standard sea-freight arriving post-stockout\n   Recommended: Air-freight expedite & stock re-allocation \u2014 13,174 units\n   Capital at Risk: \u20b91.98 Cr\n\n\u26a0\ufe0f ACTIONABLE \u2014 Review This Week\n2. Brand Delta | Country 045 | Category 01\n   Status: Corridor breach risk at Week 3\n   Recommended: Emergency air expedite \u2014 15,300 units (Exposure: \u20b91.22 Cr)\n\n3. Brand Aster | Country 038 | Category 01\n   Status: Corridor breach risk at Week 3\n   Recommended: Emergency air expedite \u2014 14,163 units (Exposure: \u20b92.83 Cr)\n\n4. Brand Beacon | Country 094 | Category 02\n   Status: Corridor breach risk at Week 6\n   Recommended: Standard PO raise \u2014 10,802 units (Exposure: \u20b91.62 Cr)\n\n5. Brand Ember | Country 020 | Category 02\n   Status: Corridor breach risk at Week 5\n   Recommended: Standard PO raise \u2014 10,034 units (Exposure: \u20b91.81 Cr)\n\n6. Brand Crest | Country 025 | Category 03\n   Status: Corridor breach risk at Week 5\n   Recommended: Standard PO raise \u2014 7,306 units (Exposure: \u20b987.7L)\n\n7. Brand Aster | Country 079 | Category 01\n   Status: Corridor breach risk at Week 1\n   Recommended: Defer / re-allocate inbound supply \u2014 36,756 units (Exposure: \u20b97.35 Cr)\n\n8. Brand Ember | Country 038 | Category 02\n   Status: Corridor breach risk at Week 1\n   Recommended: Defer / re-allocate inbound supply \u2014 46,807 units (Exposure: \u20b98.43 Cr)\n\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\ud83d\udcca Network Health: CHI 86.8% (OTIF Rate: 98.5% \u00b7 SLA Compliant)\n\ud83d\udcc5 Next review: Week 33, 2026\n\ud83d\udd17 Open Corridor Signal Console: http://localhost:8000/#view-signals\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nGenerated automatically by CIPHER for Novo Nordisk Global Business Services.\nGxP Session Logged \u00b7 21 CFR Part 11 Compliant Signature System.",

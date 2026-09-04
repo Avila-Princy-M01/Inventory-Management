@@ -69,6 +69,14 @@ export function renderSignalCards(signals, approvedSignals = {}) {
          </div>`
       : '';
 
+    const transfer = sig.intermarket_transfer || {};
+    const transferHtml = (transfer.has_transfer && (isCrisis || badge.label === 'EMERGENCY EXPEDITE'))
+      ? `<div class="card-transfer-pill">
+           <span class="transfer-pill-icon">🔄</span>
+           <span class="transfer-pill-text">TRANSFER ROUTE: <strong>${esc(transfer.donor_country)}</strong> → <strong>${esc(sig.country)}</strong> (${fmtNum(transfer.transfer_qty)} U)</span>
+         </div>`
+      : '';
+
     return `<div class="signal-card ${isCrisis ? 'signal-card--crisis' : ''}" style="--i:${i}; --index:${i};" data-rid="${sig.row_id}">
       <div class="card-row1">
         <span class="card-rank tabular-nums">#${rank}</span>
@@ -89,6 +97,7 @@ export function renderSignalCards(signals, approvedSignals = {}) {
         <span>BREACH <strong>WK ${sig.breach_week}</strong></span>
         <span>REC QTY <strong>${fmtNum(sig.recommended_qty_units)}</strong></span>
       </div>
+      ${transferHtml}
       ${cliffHtml}
       ${warnHtml}
       ${actionArea}

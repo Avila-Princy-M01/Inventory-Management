@@ -288,6 +288,30 @@ test('Unit: Irrecoverable sea freight cliff breach detection (China W14 vs 36W)'
   assert(japanSig.is_late_for_sea === false, 'Japan with breach W6 >= 4W must be on cadence');
 });
 
+// ── Unit Tests: Section 6.3 Inter-Market Stock Transfer Invariant ─
+test('Unit: Inter-market transfer matching invariant & donor safety floor', () => {
+  const dashData = JSON.parse(fs.readFileSync('backend/dashboard_data.json', 'utf8'));
+  const crisisSigs = (dashData.top_signals || []).filter(s => s.action_type === 'ACTIVE CRISIS' || s.action_type === 'EMERGENCY EXPEDITE');
+  assert(crisisSigs.length > 0, 'Must have at least 1 acute signal in dataset');
+
+  let transferCount = 0;
+  crisisSigs.forEach(sig => {
+    const t = sig.intermarket_transfer;
+    if (t && t.has_transfer) {
+      transferCount++;
+      assert(t.donor_country !== sig.country, `Donor ${t.donor_country} cannot be the recipient country ${sig.country}`);
+      assert(t.transfer_qty > 0, 'Transfer quantity must be > 0');
+      assert(t.transfer_qty <= sig.recommended_qty_units, `Transfer qty ${t.transfer_qty} must be <= required qty ${sig.recommended_qty_units}`);
+      assert(t.donor_post_doh > t.donor_ssd, `Donor post-transfer DOH ${t.donor_post_doh} must remain strictly above safety stock days ${t.donor_ssd}`);
+      assert(t.transit_days > 0 && t.transit_days <= 7, 'Emergency air transfer must arrive within 7 days');
+      assert(t.capital_saved_inr > 0, 'Capital saved must be positive');
+      assert(t.narrative && t.narrative.length > 10, 'Transfer narrative must be informative');
+    }
+  });
+
+  assert(transferCount > 0, `Expected acute signals to have matched inter-market transfers, found ${transferCount}`);
+});
+
 console.log(`\n=== TEST SUMMARY ===`);
 console.log(`Total Passed: ${passedCount}`);
 console.log(`Total Failed: ${failedCount}`);

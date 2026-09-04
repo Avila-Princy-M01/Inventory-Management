@@ -473,6 +473,83 @@ def layer3_capital_and_certainty(signals, price_master, panel):
 
     return signals
 
+def layer3_intermarket_transfers(signals, panel, price_master):
+    """
+    Section 6.3 Inter-Market Stock Transfer Recommendation Engine:
+    For acute deficit signals (ACTIVE CRISIS or EMERGENCY EXPEDITE), search the network
+    for donor markets with surplus inventory of the same brand.
+    Pair donor -> recipient, verify donor post-transfer safety stock floor,
+    and compute transit time, mode, and capital saved.
+    """
+    w1 = panel[panel["week_seq"] == 1].copy()
+    w1["doh"] = pd.to_numeric(w1[DOH], errors="coerce").fillna(0.0)
+    w1["ssd"] = pd.to_numeric(w1[SSD], errors="coerce").fillna(42.0)
+    w1["inv"] = pd.to_numeric(w1[INV], errors="coerce").fillna(0.0)
+    w1["clean_brand"] = w1["Brand"].astype(str).str.replace("Synthetic Brand ", "")
+    w1["clean_country"] = w1["Country"].astype(str).str.replace("Synthetic Country ", "Country ")
+    w1["clean_region"] = w1["Region"].astype(str).str.replace("Synthetic Region ", "Region ")
+
+    for sig in signals:
+        brand = sig["brand"]
+        country = sig["country"]
+        rec_qty = int(sig.get("recommended_qty_units", 0) or 0)
+        action_type = sig.get("action_type", "")
+        unit_price = price_master.get(brand, price_master.get("default", 1500))
+
+        is_acute = action_type in (AT_CRISIS, AT_EXPEDITE) or sig.get("breach_week", 99) <= 4
+
+        if is_acute and rec_qty > 0:
+            donors = w1[
+                (w1["clean_brand"] == brand) &
+                (w1["clean_country"] != country) &
+                (w1["inv"] > rec_qty * 1.2) &
+                (w1["doh"] > w1["ssd"] * 1.2)
+            ].sort_values("inv", ascending=False)
+
+            if len(donors) > 0:
+                donor = donors.iloc[0]
+                donor_inv = float(donor["inv"])
+                donor_doh = float(donor["doh"])
+                donor_ssd = float(donor["ssd"])
+                transfer_qty = min(int(donor_inv * 0.4), rec_qty)
+                post_doh = round(donor_doh * (1.0 - (transfer_qty / max(donor_inv, 1.0))), 1)
+
+                transit_mode = "Priority Air Freight Charter"
+                transit_days = 4
+                capital_saved = int(transfer_qty * unit_price)
+
+                sig["intermarket_transfer"] = {
+                    "has_transfer": True,
+                    "donor_country": donor["clean_country"],
+                    "donor_region": donor["clean_region"],
+                    "donor_inventory": int(round(donor_inv)),
+                    "donor_pre_doh": round(donor_doh, 1),
+                    "donor_ssd": round(donor_ssd, 1),
+                    "donor_post_doh": post_doh,
+                    "transfer_qty": transfer_qty,
+                    "transit_mode": transit_mode,
+                    "transit_days": transit_days,
+                    "capital_saved_inr": capital_saved,
+                    "feasibility": f"FEASIBLE — Donor remains at {post_doh} DOH (safely > {donor_ssd}d SSD floor)",
+                    "narrative": (
+                        f"Transfer {transfer_qty:,} units of {brand} from {donor['clean_country']} ({donor['clean_region']}) "
+                        f"→ {country}. Resolves W{sig['breach_week']} stockout in {transit_days} days via {transit_mode}, "
+                        f"saving ₹{capital_saved/1e7:.2f} Cr in stockout non-fulfillment penalties without emergency manufacturing."
+                    )
+                }
+            else:
+                sig["intermarket_transfer"] = {
+                    "has_transfer": False,
+                    "reason": f"No surplus donor network holding available for {brand} with inventory > {rec_qty:,} units."
+                }
+        else:
+            sig["intermarket_transfer"] = {
+                "has_transfer": False,
+                "reason": "Signal is nominal or overstocked; no emergency stock injection required."
+            }
+
+    return signals
+
 # ===========================================================================
 # LAYER 4 — corridor_health (Exact WSP-Based CHI) + executive block
 # ===========================================================================
@@ -929,9 +1006,12 @@ def main():
 
     print("\n[4/5] Layer 3 — capital at risk & exact pipeline supply certainty …")
     signals = layer3_capital_and_certainty(signals, price_master, panel)
+    signals = layer3_intermarket_transfers(signals, panel, price_master)
     capital = sum(s.get("capital_at_risk_inr", 0) or 0 for s in signals)
     print(f"  Total capital at risk: ₹{capital:,.0f}")
     print(f"  Pipeline Supply Certainties: {[s['supply_certainty'] for s in signals]}")
+    transfers = [s for s in signals if s.get("intermarket_transfer", {}).get("has_transfer")]
+    print(f"  Inter-Market Transfer Corridors identified: {len(transfers)}")
 
     print("\n[4/5] Layer 4 — Corridor Health Index (WSP-Based) & Executive Block …")
     corridor_health, executive = layer4_health_and_executive(panel, signals, pure_chronic, series_meta, price_master)

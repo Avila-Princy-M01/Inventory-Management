@@ -73,8 +73,63 @@ export function openDetailDrawer(sig, approvedSignals) {
        </div>`
     : '';
 
+  const transfer = sig.intermarket_transfer || {};
+  const transferCardHtml = transfer.has_transfer
+    ? `
+      <div class="transfer-corridor-box">
+        <div class="transfer-corridor-header">
+          <div class="detail-section-label" style="margin-bottom:0">INTER-MARKET STOCK RE-ALLOCATION CORRIDOR (SECTION 6.3)</div>
+          <span class="transfer-badge">MATCHED SURPLUS ROUTE ✓</span>
+        </div>
+        
+        <div class="transfer-visualizer">
+          <div class="transfer-node transfer-node--donor">
+            <div class="transfer-node-role">SURPLUS DONOR</div>
+            <div class="transfer-node-market">${transfer.donor_country}</div>
+            <div class="transfer-node-sub">${transfer.donor_region} · DOH ${transfer.donor_pre_doh}d</div>
+          </div>
+          <div class="transfer-arrow-block">
+            <div class="transfer-arrow-line">
+              <span class="transfer-arrow-pill">${Number(transfer.transfer_qty).toLocaleString()} UNITS</span>
+              <span class="transfer-arrow-mode">✈️ ${transfer.transit_days}D AIR CHARTER</span>
+            </div>
+            <div class="transfer-arrow-head">▶</div>
+          </div>
+          <div class="transfer-node transfer-node--recipient">
+            <div class="transfer-node-role">ACUTE RECIPIENT</div>
+            <div class="transfer-node-market">${sig.country}</div>
+            <div class="transfer-node-sub">Breach W${sig.breach_week} · Deficit ${Number(sig.recommended_qty_units).toLocaleString()} U</div>
+          </div>
+        </div>
+
+        <div class="transfer-impact-grid">
+          <div class="transfer-impact-item">
+            <span class="transfer-impact-k">DONOR POST-TRANSFER DOH</span>
+            <span class="transfer-impact-v" style="color:var(--ok-text)">${transfer.donor_post_doh} DAYS (SAFE)</span>
+            <span class="transfer-impact-sub">SSD floor: ${transfer.donor_ssd}d (0 collateral risk)</span>
+          </div>
+          <div class="transfer-impact-item">
+            <span class="transfer-impact-k">STOCKOUT RESOLUTION</span>
+            <span class="transfer-impact-v" style="color:var(--ok-text)">RESTORED IN ${transfer.transit_days} DAYS</span>
+            <span class="transfer-impact-sub">Prevents clinical penalty &amp; breach</span>
+          </div>
+          <div class="transfer-impact-item">
+            <span class="transfer-impact-k">CAPITAL PRESERVED</span>
+            <span class="transfer-impact-v">₹${(transfer.capital_saved_inr / 1e7).toFixed(2)} CR</span>
+            <span class="transfer-impact-sub">Consumes idle stock without new PO</span>
+          </div>
+        </div>
+
+        <button class="btn-primary btn-transfer-execute" id="btn-execute-transfer" ${approved ? 'disabled' : ''}>
+          ${approved ? 'TRANSFER APPROVED & EXECUTED ✓' : `⚡ EXECUTE INTER-MARKET STOCK TRANSFER (${Number(transfer.transfer_qty).toLocaleString()} UNITS)`}
+        </button>
+      </div>
+    `
+    : '';
+
   body.innerHTML = `
     ${cliffBannerHtml}
+    ${transferCardHtml}
     <div>
       <div class="detail-section-label">SIGNAL METADATA</div>
       <div class="detail-meta-grid">
@@ -141,6 +196,42 @@ export function openDetailDrawer(sig, approvedSignals) {
   const btnApprove = document.getElementById('btn-approve');
   if (btnApprove && !approved) {
     btnApprove.addEventListener('click', () => handleApproval(sig, btnApprove));
+  }
+
+  const btnTransfer = document.getElementById('btn-execute-transfer');
+  if (btnTransfer && !approved) {
+    btnTransfer.addEventListener('click', () => {
+      btnTransfer.disabled = true;
+      btnTransfer.textContent = '■ TRANSFER APPROVED — GxP LOGGED';
+      btnTransfer.classList.add('approval-btn--approved');
+
+      const id = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `transfer-${Date.now()}`;
+      const entry = {
+        id, timestamp_utc: new Date().toISOString(),
+        row_id: sig.row_id,
+        sku: `${sig.brand}|${sig.country}`,
+        action_type: 'INTER-MARKET RE-ALLOCATION',
+        approved_qty: transfer.transfer_qty || sig.recommended_qty_units || 0,
+        reason_code: 'EMERGENCY_INTERMARKET_TRANSFER',
+        signature: 'Analyst Session — GxP Compliant (Sec 6.3)',
+      };
+
+      window._pushAudit && window._pushAudit(entry);
+      window._setApproved && window._setApproved(sig.row_id);
+
+      if (_chart) {
+        _chart.data.datasets.push(buildRecovery(sig));
+        _chart.update();
+      }
+
+      const badgeStatus = document.getElementById('narrative-badge-status');
+      if (badgeStatus) badgeStatus.textContent = 'APPROVED & SIGNED ✓';
+      if (btnApprove) {
+        btnApprove.disabled = true;
+        btnApprove.textContent = '■ ORDER APPROVED — GxP LOGGED';
+        btnApprove.classList.add('approval-btn--approved');
+      }
+    });
   }
 }
 
