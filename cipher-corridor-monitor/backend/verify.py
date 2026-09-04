@@ -130,7 +130,23 @@ assert_check(
 
 # 4. Each signal trajectory has all 8 required keys, each of length 52
 traj_errors = []
+REQUIRED_SIGNAL_FIELDS = [
+    "row_id", "prs_score", "urgency", "severity", "region", "brand",
+    "country", "mrp", "product_group", "breach_week", "arrival_target_week",
+    "delta_t_weeks", "breach_length_weeks", "is_actionable", "is_early_order",
+    "midpoint_target_units", "recommended_qty_units", "action_type",
+    "action_desc", "badge_color", "root_cause", "trajectory",
+    "supply_certainty", "capital_at_risk_inr",
+]
+field_errors = []
 for i, sig in enumerate(signals):
+    for fld in REQUIRED_SIGNAL_FIELDS:
+        if fld not in sig:
+            field_errors.append(f"signal[{i}] row_id={sig.get('row_id')} missing field: '{fld}'")
+    prs = sig.get("prs_score", -1)
+    if not (0 <= prs <= 100):
+        field_errors.append(f"signal[{i}] prs_score {prs} not in [0, 100]")
+
     traj = sig.get("trajectory")
     if not isinstance(traj, dict):
         traj_errors.append(f"  signal[{i}] row_id={sig.get('row_id')} — trajectory is missing or not an object")
@@ -148,6 +164,12 @@ for i, sig in enumerate(signals):
                 f"has length {len(arr) if isinstance(arr, list) else type(arr).__name__!r}, "
                 f"expected {TRAJECTORY_EXPECTED_LENGTH}"
             )
+
+assert_check(
+    len(field_errors) == 0,
+    f"All {len(signals)} signals contain all 24 required fields with valid PRS in [0, 100]",
+    "Signal field errors:\n" + "\n".join(field_errors[:10]),
+)
 
 assert_check(
     len(traj_errors) == 0,
@@ -210,6 +232,22 @@ try:
         failures.append("chi_matrix is not a list")
 except (KeyError, TypeError) as exc:
     fail(f"Could not read chi_matrix: {exc}")
+    failures.append(str(exc))
+
+# 9. chi_lookup_matrix structured object validation
+try:
+    clm = data.get("chi_lookup_matrix", {})
+    lt_len = len(clm.get("lead_time_axis", []))
+    ceil_len = len(clm.get("ceiling_axis", []))
+    val_rows = len(clm.get("values", []))
+    clm_ok = lt_len == 12 and ceil_len == 20 and val_rows == 12
+    assert_check(
+        clm_ok,
+        f"chi_lookup_matrix has valid axes ({lt_len} lead times × {ceil_len} ceilings) and 12-row values",
+        f"chi_lookup_matrix invalid: lead_times={lt_len}, ceilings={ceil_len}, values_rows={val_rows}",
+    )
+except Exception as exc:
+    fail(f"Could not read chi_lookup_matrix: {exc}")
     failures.append(str(exc))
 
 # ---------------------------------------------------------------------------
