@@ -139,15 +139,71 @@ export function openDetailDrawer(sig, approvedSignals) {
   const countryDisplayName = sig.market_name || sig.country || 'China';
   const freightCallout = sig.freight_callout || `${countryDisplayName} breach at week ${sig.breach_week} — with ${leadWks}-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this.`;
 
-  const slaBannerHtml = sla.isCritical
-    ? `<div class="detail-sla-banner ${sla.cls}">
-         <div class="sla-banner-inner">
-           <span class="sla-pill-badge">${sla.status === 'RESOLVED' ? '✓ GxP COMPLIANT' : (sla.status === 'SNOOZED' ? '💤 SNOOZED' : '⏱ 24H SLA ESCALATION')}</span>
-           <span class="sla-title">${sla.label}</span>
-         </div>
-         <div class="sla-subtext">Corporate Governance Standard: Critical corridor crises must be triaged / actioned within 24h of Monday 08:00 UTC cycle.</div>
-       </div>`
-    : '';
+  let slaBannerHtml = '';
+  if (sla.isCritical) {
+    if (sla.status === 'RESOLVED') {
+      slaBannerHtml = `
+        <div class="detail-sla-banner sla-resolved">
+          <div class="sla-banner-header">
+            <div class="sla-header-left">
+              <span class="sla-pill-badge">✓ GxP COMPLIANT</span>
+              <span class="sla-status-title">Crisis Triage Complete — Order Approved &amp; Signed</span>
+            </div>
+            <span class="sla-deadline-tag">21 CFR Part 11 Verified</span>
+          </div>
+          <div class="sla-body-text">All replenishment parameters and quantities are recorded in the GxP audit ledger. SLA successfully resolved.</div>
+        </div>
+      `;
+    } else if (sla.status === 'SNOOZED') {
+      slaBannerHtml = `
+        <div class="detail-sla-banner sla-snoozed">
+          <div class="sla-banner-header">
+            <div class="sla-header-left">
+              <span class="sla-pill-badge">💤 SNOOZED</span>
+              <span class="sla-status-title">${sla.label}</span>
+            </div>
+            <span class="sla-deadline-tag">Governance Review on Hold</span>
+          </div>
+          <div class="sla-body-text">Alert temporarily deferred with operational justification. Triage countdown will resume after snooze period.</div>
+        </div>
+      `;
+    } else if (sla.status === 'ACKNOWLEDGED') {
+      slaBannerHtml = `
+        <div class="detail-sla-banner sla-assigned">
+          <div class="sla-banner-header">
+            <div class="sla-header-left">
+              <span class="sla-pill-badge">ACTIVE TRIAGE</span>
+              <span class="sla-status-title">${sla.label}</span>
+            </div>
+            <span class="sla-deadline-tag">Ownership Acknowledged</span>
+          </div>
+          <div class="sla-body-text">Corridor owner assigned. Authorize PO order or execute matched inter-market stock transfer below to complete resolution.</div>
+        </div>
+      `;
+    } else {
+      slaBannerHtml = `
+        <div class="detail-sla-banner sla-urgent">
+          <div class="sla-banner-header">
+            <div class="sla-header-left">
+              <span class="sla-pill-badge">⏱ 24-HOUR ACTION DEADLINE</span>
+              <span class="sla-timer-highlight"><strong>${sla.hoursLeft}h ${sla.minsLeft}m</strong> remaining</span>
+            </div>
+            <span class="sla-deadline-tag">Escalation Target: Tuesday 08:00 UTC</span>
+          </div>
+          <div class="sla-body-grid">
+            <div class="sla-body-main">
+              <strong>Action Required:</strong> Unassigned acute crisis. If not actioned within the 24h window, this signal automatically escalates to the <strong>VP of Global Supply Chain</strong>.
+            </div>
+            <div class="sla-body-steps">
+              <span class="sla-step-item">① Assign an owner</span>
+              <span class="sla-step-item">② Authorize transfer / PO</span>
+              <span class="sla-step-item">③ Or snooze with operational justification below</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+  }
 
   const cliffBannerHtml = isLateForSea
     ? `<div class="detail-cliff-banner">

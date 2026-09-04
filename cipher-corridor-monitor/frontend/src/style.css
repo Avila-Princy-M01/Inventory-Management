@@ -2903,7 +2903,16 @@ button {
   border-left: 4px solid #6B7280;
 }
 
-.sla-banner-inner {
+.sla-banner-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.sla-header-left {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -2913,7 +2922,7 @@ button {
   font-family: var(--font-mono);
   font-size: 9px;
   font-weight: 700;
-  padding: 2px 6px;
+  padding: 2px 7px;
   letter-spacing: 0.05em;
   background: #000000;
   color: #FFFFFF;
@@ -2934,18 +2943,68 @@ button {
   color: #FFFFFF;
 }
 
-.sla-title {
+.sla-snoozed .sla-pill-badge {
+  background: #4B5563;
+  color: #FFFFFF;
+}
+
+.sla-timer-highlight {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: #DC2626;
+  background: #FEE2E2;
+  border: 1px solid #FECACA;
+  padding: 1px 6px;
+}
+
+.sla-status-title {
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
   color: var(--ink);
-  letter-spacing: -0.01em;
 }
 
-.sla-subtext {
+.sla-deadline-tag {
   font-family: var(--font-mono);
   font-size: 9.5px;
   color: var(--muted);
+}
+
+.sla-body-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sla-body-main {
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: #111111;
+}
+
+.sla-body-steps {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: #787774;
+  flex-wrap: wrap;
+}
+
+.sla-step-item {
+  display: inline-flex;
+  align-items: center;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  padding: 2px 6px;
+}
+
+.sla-body-text {
+  font-size: 11px;
+  line-height: 1.45;
+  color: #4B5563;
   margin-top: 4px;
 }
 
