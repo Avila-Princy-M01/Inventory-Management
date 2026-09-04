@@ -1983,9 +1983,122 @@ button {
   vertical-align: middle;
 }
 
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+/* ── Parameter Audit Engine (View 3 - Section 6.4) ── */
+.param-audit-banner {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid #0072CE;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.param-audit-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  gap: 12px;
+}
+
+.audit-badge-status {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #0072CE;
+  background: rgba(0, 114, 206, 0.08);
+  padding: 3px 8px;
+  border: 1px solid rgba(0, 114, 206, 0.2);
+}
+
+.param-audit-heading {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.param-audit-quote {
+  font-family: var(--font-body), sans-serif;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text);
+  margin: 0 0 16px 0;
+  padding: 12px 16px;
+  background: rgba(0, 114, 206, 0.04);
+  border-left: 3px solid #0072CE;
+  font-style: normal;
+  font-weight: 500;
+}
+
+.param-audit-kpis {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+
+.param-kpi-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.param-kpi-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.param-kpi-val {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.param-kpi-sub {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.rec-ssd-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 114, 206, 0.08);
+  border: 1px solid rgba(0, 114, 206, 0.25);
+  color: #0072CE;
+  padding: 2px 7px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.rec-delta {
+  font-size: 10px;
+  color: #059669;
+  font-weight: 500;
+}
+
+.cap-freed-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
+  padding: 1px 6px;
+  margin-left: 4px;
 }
 
 /* ── Print ── */

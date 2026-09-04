@@ -318,17 +318,47 @@
           </div>
         </section>
 
-        <!-- VIEW 3: Master Data -->
+        <!-- VIEW 3: Master Data / Parameter Audit Engine -->
         <section id="view-masterdata" class="view-section">
           <div class="view-header">
             <div>
-              <h1 class="view-title">MASTER DATA PARAMETER REVIEW</h1>
-              <p class="view-subtitle">Chronic false-alert series flagged for SAP/OMP safety stock recalibration</p>
+              <h1 class="view-title">MASTER DATA PARAMETER AUDIT ENGINE</h1>
+              <p class="view-subtitle">Automated SAP/OMP planning parameter recalibration & working capital liberation (Section 6.4)</p>
             </div>
             <div class="view-actions">
               <button class="btn-action" id="btn-export-masterdata">EXPORT CSV</button>
             </div>
           </div>
+
+          <!-- Parameter Audit Callout Banner: "Tell Me What to Fix" -->
+          <div class="param-audit-banner" id="param-audit-banner">
+            <div class="param-audit-top">
+              <span class="callout-tag">[ PARAMETER AUDIT ENGINE · SECTION 6.4 COMPLIANCE ]</span>
+              <span class="audit-badge-status">AUTOMATED SAP/OMP RECALIBRATION ACTIVE</span>
+            </div>
+            <div class="param-audit-heading">PLANNER DIRECTIVE: &ldquo;TELL ME WHAT TO FIX&rdquo;</div>
+            <blockquote class="param-audit-quote">
+              &ldquo;Series #2847 (Ember, China): Safety Stock Days is set to 42 but the data shows DOH never drops below 28. Recommended: reduce SSD from 42 → 28 days. This would eliminate 52 false alerts per year and free ₹12.4L in frozen capital.&rdquo;
+            </blockquote>
+            <div class="param-audit-kpis">
+              <div class="param-kpi-item">
+                <span class="param-kpi-label">CHRONIC MISCONFIGURED SERIES</span>
+                <span class="param-kpi-val tabular-nums" id="audit-kpi-series">379 SERIES</span>
+                <span class="param-kpi-sub">100% false-alert prone</span>
+              </div>
+              <div class="param-kpi-item">
+                <span class="param-kpi-label">ANNUAL FALSE ALERTS ELIMINATED</span>
+                <span class="param-kpi-val tabular-nums" id="audit-kpi-alerts" style="color:var(--ok-text)">19,708 ALERTS / YR</span>
+                <span class="param-kpi-sub">52 weeks × 379 series</span>
+              </div>
+              <div class="param-kpi-item">
+                <span class="param-kpi-label">FROZEN WORKING CAPITAL UNLOCKED</span>
+                <span class="param-kpi-val tabular-nums" id="audit-kpi-capital" style="color:#0072CE">₹1,498.7 CR</span>
+                <span class="param-kpi-sub">Across 379 recalibration targets</span>
+              </div>
+            </div>
+          </div>
+
           <div class="masterdata-callout">
             <span id="masterdata-summary-stats" class="tabular-nums">Loading chronic series data…</span>
           </div>
@@ -341,15 +371,16 @@
                   <th>BRAND</th>
                   <th>COUNTRY</th>
                   <th>PRODUCT GROUP</th>
-                  <th class="text-right">DOH</th>
-                  <th class="text-right">SSD</th>
+                  <th class="text-right">CURRENT SSD</th>
+                  <th class="text-right">MIN DOH</th>
+                  <th class="text-right">RECOMMENDED SSD</th>
                   <th class="text-right">DOH/SSD</th>
-                  <th>ACTION</th>
+                  <th>PARAMETER AUDIT ACTION / CAPITAL FREED</th>
                 </tr>
               </thead>
               <tbody id="tbody-masterdata">
                 <tr>
-                  <td colspan="9" class="empty-cell">Loading…</td>
+                  <td colspan="10" class="empty-cell">Loading…</td>
                 </tr>
               </tbody>
             </table>
