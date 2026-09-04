@@ -3,6 +3,8 @@
  * Swiss Industrial Print: oversized rank numerals, razor-thin PRS bar, 5-key badge contract
  */
 
+import { getWorkflowState, getEscalationSLA } from './workflow.js';
+
 export const BADGE_MAP = [
   { prefix: 'ACTIVE CRISIS', cls: 'badge--crisis', label: 'ACTIVE CRISIS', borderColor: '#DC2626' },
   { prefix: 'EMERGENCY EXPEDITE', cls: 'badge--expedite', label: 'EMERGENCY EXPEDITE', borderColor: '#F59E0B' },
@@ -45,6 +47,12 @@ export function renderSignalCards(signals, approvedSignals = {}) {
     const showWarn = sig.supply_certainty !== undefined && sig.supply_certainty !== null && sig.supply_certainty < 0.5;
     const rank = String(i + 1).padStart(2, '0');
 
+    // Section 6.2 Workflow & SLA State
+    const wf = getWorkflowState(sig.row_id);
+    const isSnoozed = Boolean(wf.snooze && wf.snooze.snoozed_until > Date.now());
+    const hasOwner = Boolean(wf.owner && wf.owner !== 'Unassigned');
+    const sla = getEscalationSLA(sig, approvedSignals);
+
     const actionArea = approved
       ? `<div class="card-approved">■ APPROVED — GxP LOGGED</div>`
       : `<div class="card-actions">
@@ -62,6 +70,21 @@ export function renderSignalCards(signals, approvedSignals = {}) {
       ? `<span class="card-mkt-cliff-tag" title="${esc(sig.freight_callout || 'Late for Sea Freight')}">⚠️ LATE FOR SEA (${ltVal}W)</span>`
       : `<span class="card-mkt-lt-tag">LT: ${ltVal}W</span>`;
 
+    const ownerTag = hasOwner
+      ? `<span class="card-owner-tag" title="Assigned Owner: ${esc(wf.owner)}">👤 ${esc(wf.owner.replace(/\s*\(.*?\)/, ''))}</span>`
+      : '';
+
+    const slaTag = (sla.isCritical && !approved && !isSnoozed)
+      ? `<span class="card-sla-badge ${sla.cls}" title="${esc(sla.label)}">⏱ SLA: ${sla.hoursLeft}h ${sla.minsLeft}m</span>`
+      : '';
+
+    const snoozeHtml = isSnoozed
+      ? `<div class="card-snooze-pill">
+           <span class="snooze-icon">💤</span>
+           <span class="snooze-text">SNOOZED (${wf.snooze.weeks}W: ${esc(wf.snooze.reason)})</span>
+         </div>`
+      : '';
+
     const cliffHtml = isLateForSea
       ? `<div class="card-cliff-alert">
            <span class="cliff-alert-badge">🚨 AIR FREIGHT ONLY</span>
@@ -77,10 +100,12 @@ export function renderSignalCards(signals, approvedSignals = {}) {
          </div>`
       : '';
 
-    return `<div class="signal-card ${isCrisis ? 'signal-card--crisis' : ''}" style="--i:${i}; --index:${i};" data-rid="${sig.row_id}">
+    return `<div class="signal-card ${isCrisis ? 'signal-card--crisis' : ''} ${isSnoozed ? 'signal-card--snoozed' : ''}" style="--i:${i}; --index:${i};" data-rid="${sig.row_id}">
       <div class="card-row1">
         <span class="card-rank tabular-nums">#${rank}</span>
         <div style="display:flex;align-items:center;gap:6px">
+          ${ownerTag}
+          ${slaTag}
           ${mktTag}
           <span class="badge ${badge.cls}">${badge.label}</span>
         </div>
@@ -97,6 +122,7 @@ export function renderSignalCards(signals, approvedSignals = {}) {
         <span>BREACH <strong>WK ${sig.breach_week}</strong></span>
         <span>REC QTY <strong>${fmtNum(sig.recommended_qty_units)}</strong></span>
       </div>
+      ${snoozeHtml}
       ${transferHtml}
       ${cliffHtml}
       ${warnHtml}

@@ -2800,11 +2800,450 @@ button {
   background: #005FA8 !important;
 }
 
-.btn-transfer-execute:disabled {
-  background: var(--border) !important;
-  color: var(--muted) !important;
-  border-color: var(--border) !important;
-  cursor: not-allowed;
+/* ── Section 6.2: Alert Workflow & Escalation Engine ── */
+.card-owner-tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  color: #2563EB;
+  background: #EFF6FF;
+  border: 1px solid #BFDBFE;
+  padding: 1px 5px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.card-sla-badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 5px;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  animation: pulseSla 2.5s infinite ease-in-out;
+}
+
+.card-sla-badge.sla-urgent {
+  color: #DC2626;
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+}
+
+.card-sla-badge.sla-assigned {
+  color: #2563EB;
+  background: #EFF6FF;
+  border: 1px solid #BFDBFE;
+  animation: none;
+}
+
+.card-sla-badge.sla-resolved {
+  color: #346538;
+  background: #F0FDF4;
+  border: 1px solid #BBF7D0;
+  animation: none;
+}
+
+.card-snooze-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #F4F4F0;
+  border: 1px dashed var(--border);
+  padding: 4px 8px;
+  margin: 6px 0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.signal-card--snoozed {
+  opacity: 0.72;
+  filter: grayscale(0.2);
+}
+
+.signal-card--snoozed:hover {
+  opacity: 1;
+  filter: none;
+}
+
+@keyframes pulseSla {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Detail Drawer SLA Banner */
+.detail-sla-banner {
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  margin-bottom: 12px;
+  background: #FFFFFF;
+}
+
+.detail-sla-banner.sla-urgent {
+  background: #FEF2F2;
+  border-color: #FECACA;
+  border-left: 4px solid #DC2626;
+}
+
+.detail-sla-banner.sla-assigned {
+  background: #EFF6FF;
+  border-color: #BFDBFE;
+  border-left: 4px solid #2563EB;
+}
+
+.detail-sla-banner.sla-resolved {
+  background: #F0FDF4;
+  border-color: #BBF7D0;
+  border-left: 4px solid #346538;
+}
+
+.detail-sla-banner.sla-snoozed {
+  background: #F9FAFB;
+  border-color: #E5E7EB;
+  border-left: 4px solid #6B7280;
+}
+
+.sla-banner-inner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sla-pill-badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  letter-spacing: 0.05em;
+  background: #000000;
+  color: #FFFFFF;
+}
+
+.sla-urgent .sla-pill-badge {
+  background: #DC2626;
+  color: #FFFFFF;
+}
+
+.sla-assigned .sla-pill-badge {
+  background: #2563EB;
+  color: #FFFFFF;
+}
+
+.sla-resolved .sla-pill-badge {
+  background: #346538;
+  color: #FFFFFF;
+}
+
+.sla-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.sla-subtext {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* Workflow Container */
+.workflow-box {
+  border: 1px solid var(--border);
+  background: #FFFFFF;
+  padding: 14px;
+  margin-bottom: 16px;
+}
+
+.workflow-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.workflow-status-badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 7px;
+  letter-spacing: 0.05em;
+  background: #F4F4F0;
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+.workflow-status-badge--active {
+  background: #EFF6FF;
+  color: #2563EB;
+  border-color: #BFDBFE;
+}
+
+.workflow-field-label {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.workflow-row {
+  margin-bottom: 12px;
+}
+
+.workflow-select-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.workflow-select {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink);
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  padding: 6px 10px;
+  border-radius: 0;
+  outline: none;
+}
+
+.workflow-select:focus {
+  border-color: #0072CE;
+}
+
+.workflow-saved-pill {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  color: #346538;
+  background: #F0FDF4;
+  border: 1px solid #BBF7D0;
+  padding: 3px 6px;
+}
+
+/* Snooze Area */
+.workflow-active-snooze {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #F9FAFB;
+  border: 1px dashed var(--border);
+  padding: 10px 12px;
+  margin-bottom: 14px;
+}
+
+.active-snooze-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.active-snooze-icon {
+  font-size: 18px;
+}
+
+.active-snooze-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.active-snooze-meta {
+  font-size: 10.5px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.btn-unsnooze {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  background: #0072CE;
+  color: #FFFFFF;
+  border: none;
+  padding: 6px 10px;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+}
+
+.btn-unsnooze:hover {
+  background: #005FA8;
+}
+
+.workflow-snooze-form {
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  background: #FAFAFA;
+  border: 1px solid var(--border);
+}
+
+.workflow-snooze-grid {
+  display: grid;
+  grid-template-columns: 140px 1.4fr 1fr auto;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.workflow-input {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink);
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  padding: 6px 8px;
+  border-radius: 0;
+  outline: none;
+}
+
+.workflow-input:focus {
+  border-color: #0072CE;
+}
+
+.btn-snooze {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  background: #F4F4F0;
+  color: var(--ink);
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-snooze:hover {
+  background: #EAEAEA;
+  border-color: #9CA3AF;
+}
+
+/* Comments Block */
+.workflow-comments-block {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+.workflow-comments-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.workflow-count-badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--muted);
+  background: #F4F4F0;
+  padding: 1px 5px;
+  border: 1px solid var(--border);
+}
+
+.workflow-comments-list {
+  max-height: 180px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding-right: 4px;
+}
+
+.workflow-no-comments {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  text-align: center;
+  padding: 12px 0;
+}
+
+.workflow-comment-item {
+  background: #FAFAFA;
+  border-left: 3px solid #0072CE;
+  padding: 8px 10px;
+}
+
+.workflow-comment-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.workflow-comment-author {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.workflow-comment-role {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: #0072CE;
+  background: #EFF6FF;
+  padding: 1px 4px;
+}
+
+.workflow-comment-time {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--muted);
+  margin-left: auto;
+}
+
+.workflow-comment-text {
+  font-size: 11px;
+  color: var(--ink);
+  line-height: 1.4;
+}
+
+.workflow-comment-input-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.workflow-textarea {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink);
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  padding: 6px 8px;
+  border-radius: 0;
+  outline: none;
+  resize: vertical;
+}
+
+.workflow-textarea:focus {
+  border-color: #0072CE;
+}
+
+.btn-workflow-comment {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  background: #0072CE;
+  color: #FFFFFF;
+  border: none;
+  padding: 0 14px;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.btn-workflow-comment:hover {
+  background: #005FA8;
 }
 
 /* ── Print ── */

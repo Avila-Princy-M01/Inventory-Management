@@ -1,10 +1,76 @@
 /**
  * drawer-detail.js — 52-week trajectory chart + GxP approval flow
  */
-import { getBadgeConfig } from './signals.js';
+import { getBadgeConfig, renderSignalCards } from './signals.js';
+import {
+  OWNER_ROLES,
+  SNOOZE_DURATIONS,
+  SNOOZE_REASONS,
+  getWorkflowState,
+  assignSignalOwner,
+  addSignalComment,
+  snoozeAlert,
+  unsnoozeAlert,
+  getEscalationSLA,
+  getInitialComments
+} from './workflow.js';
 
 let _chart = null;
 let _sig = null;
+
+function buildSnoozeHtml(wf) {
+  const isSnoozed = Boolean(wf.snooze && wf.snooze.snoozed_until > Date.now());
+  if (isSnoozed) {
+    return `
+      <div class="workflow-active-snooze">
+        <div class="active-snooze-left">
+          <span class="active-snooze-icon">💤</span>
+          <div>
+            <div class="active-snooze-title">ALERT SNOOZED (${wf.snooze.weeks} WEEKS)</div>
+            <div class="active-snooze-meta">Justification: <strong>${wf.snooze.reason}</strong>${wf.snooze.note ? ' · ' + wf.snooze.note : ''}</div>
+          </div>
+        </div>
+        <button class="btn-unsnooze" id="btn-unsnooze-alert">RESUME ALERT EARLY ▶</button>
+      </div>
+    `;
+  }
+  return `
+    <div class="workflow-snooze-form">
+      <div class="workflow-field-label">SNOOZE ALERT (MANDATORY JUSTIFICATION):</div>
+      <div class="workflow-snooze-grid">
+        <select class="workflow-select" id="select-snooze-weeks">
+          ${SNOOZE_DURATIONS.map(d => `<option value="${d.weeks}">${d.label}</option>`).join('')}
+        </select>
+        <select class="workflow-select" id="select-snooze-reason">
+          ${SNOOZE_REASONS.map(r => `<option value="${r}">${r}</option>`).join('')}
+        </select>
+        <input type="text" class="workflow-input" id="input-snooze-note" placeholder="Operational rationale..." />
+        <button class="btn-snooze" id="btn-snooze-alert">💤 SNOOZE</button>
+      </div>
+    </div>
+  `;
+}
+
+function buildCommentsHtml(comments) {
+  if (!comments || comments.length === 0) {
+    return '<div class="workflow-no-comments">[ NO OPERATIONAL COMMENTS LOGGED ]</div>';
+  }
+  return comments.map(c => {
+    const d = c.timestamp ? new Date(c.timestamp) : new Date();
+    const timeStr = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const dateStr = d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+    return `
+      <div class="workflow-comment-item">
+        <div class="workflow-comment-meta">
+          <span class="workflow-comment-author">${c.author}</span>
+          <span class="workflow-comment-role">${c.role || 'Planner'}</span>
+          <span class="workflow-comment-time">${dateStr} ${timeStr}</span>
+        </div>
+        <div class="workflow-comment-text">${c.text}</div>
+      </div>
+    `;
+  }).join('');
+}
 
 function getApprovalLabel(actionType, qty) {
   const b = getBadgeConfig(actionType);
@@ -58,6 +124,13 @@ export function openDetailDrawer(sig, approvedSignals) {
   const cert = Math.round((sig.supply_certainty || 0.8) * 100);
   const btnLabel = getApprovalLabel(sig.action_type, sig.recommended_qty_units);
 
+  // Section 6.2 Workflow & SLA State
+  const wf = getWorkflowState(sig.row_id);
+  if (!wf.comments || wf.comments.length === 0) {
+    wf.comments = getInitialComments(sig);
+  }
+  const sla = getEscalationSLA(sig, approvedSignals);
+
   if (title) title.textContent = `${(sig.brand || '').toUpperCase()} · ${(sig.country || '').toUpperCase()}`;
 
   const leadWks = sig.market_lead_time || (window.DATA && window.DATA.metadata && window.DATA.metadata.calendar_lead_time_weeks) || 3;
@@ -65,6 +138,16 @@ export function openDetailDrawer(sig, approvedSignals) {
   const isLateForSea = Boolean(sig.is_late_for_sea);
   const countryDisplayName = sig.market_name || sig.country || 'China';
   const freightCallout = sig.freight_callout || `${countryDisplayName} breach at week ${sig.breach_week} — with ${leadWks}-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this.`;
+
+  const slaBannerHtml = sla.isCritical
+    ? `<div class="detail-sla-banner ${sla.cls}">
+         <div class="sla-banner-inner">
+           <span class="sla-pill-badge">${sla.status === 'RESOLVED' ? '✓ GxP COMPLIANT' : (sla.status === 'SNOOZED' ? '💤 SNOOZED' : '⏱ 24H SLA ESCALATION')}</span>
+           <span class="sla-title">${sla.label}</span>
+         </div>
+         <div class="sla-subtext">Corporate Governance Standard: Critical corridor crises must be triaged / actioned within 24h of Monday 08:00 UTC cycle.</div>
+       </div>`
+    : '';
 
   const cliffBannerHtml = isLateForSea
     ? `<div class="detail-cliff-banner">
@@ -127,7 +210,50 @@ export function openDetailDrawer(sig, approvedSignals) {
     `
     : '';
 
+  const workflowSectionHtml = `
+    <div class="workflow-box" id="workflow-container">
+      <div class="workflow-header">
+        <div class="detail-section-label" style="margin-bottom:0">ALERT WORKFLOW &amp; ESCALATION (SECTION 6.2)</div>
+        <span class="workflow-status-badge ${wf.owner !== 'Unassigned' ? 'workflow-status-badge--active' : ''}" id="workflow-status-badge">
+          ${wf.owner !== 'Unassigned' ? 'OWNER ASSIGNED ✓' : 'TRIAGE PENDING'}
+        </span>
+      </div>
+
+      <!-- Owner Assignment -->
+      <div class="workflow-row">
+        <div class="workflow-field-label">SUPPLY CHAIN OWNER / GOVERNANCE LEAD:</div>
+        <div class="workflow-select-wrap">
+          <select class="workflow-select" id="select-signal-owner">
+            ${OWNER_ROLES.map(r => `<option value="${r}" ${wf.owner === r ? 'selected' : ''}>${r}</option>`).join('')}
+          </select>
+          <span class="workflow-saved-pill" id="owner-saved-pill" style="display:none">SAVED ✓</span>
+        </div>
+      </div>
+
+      <!-- Snooze Area -->
+      <div id="workflow-snooze-area">
+        ${buildSnoozeHtml(wf)}
+      </div>
+
+      <!-- Planner Comments & Rationale Thread -->
+      <div class="workflow-comments-block">
+        <div class="workflow-comments-header">
+          <span class="workflow-field-label" style="margin-bottom:0">PLANNER OPERATIONAL RATIONALE &amp; AUDIT TRAIL</span>
+          <span class="workflow-count-badge tabular-nums" id="comment-count-badge">${(wf.comments || []).length} ENTRIES</span>
+        </div>
+        <div class="workflow-comments-list" id="workflow-comments-list">
+          ${buildCommentsHtml(wf.comments)}
+        </div>
+        <div class="workflow-comment-input-row">
+          <textarea class="workflow-textarea" id="input-new-comment" rows="2" placeholder="Record operational rationale (e.g. Flight capacity booked on LH Cargo for W14 delivery)..."></textarea>
+          <button class="btn-workflow-comment" id="btn-post-comment">+ POST RATIONALE</button>
+        </div>
+      </div>
+    </div>
+  `;
+
   body.innerHTML = `
+    ${slaBannerHtml}
     ${cliffBannerHtml}
     ${transferCardHtml}
     <div>
@@ -141,6 +267,7 @@ export function openDetailDrawer(sig, approvedSignals) {
         <div class="detail-meta-item"><span class="detail-meta-key">52W OTIF / FULFILLMENT</span><span class="detail-meta-val tabular-nums" style="color:${(sig.otif_pct !== undefined ? sig.otif_pct : 98.5) >= 95 ? 'var(--ok-text)' : 'var(--crisis-text)'}">${sig.otif_pct !== undefined ? sig.otif_pct : 98.5}% (SLA: 95.0%)</span></div>
       </div>
     </div>
+    ${workflowSectionHtml}
     <div class="narrative-box" id="narrative-container">
       <div class="narrative-header">
         <div class="detail-section-label" style="margin-bottom:0;">EXECUTIVE STRATEGIC DOSSIER</div>
@@ -187,6 +314,92 @@ export function openDetailDrawer(sig, approvedSignals) {
   if (overlay) overlay.classList.add('active');
 
   renderChart(sig, approved);
+
+  // Wire Owner Selection
+  const selectOwner = document.getElementById('select-signal-owner');
+  const ownerPill = document.getElementById('owner-saved-pill');
+  const wfBadge = document.getElementById('workflow-status-badge');
+  if (selectOwner) {
+    selectOwner.addEventListener('change', () => {
+      const newOwner = selectOwner.value;
+      assignSignalOwner(sig, newOwner);
+      if (ownerPill) {
+        ownerPill.style.display = 'inline-block';
+        setTimeout(() => { if (ownerPill) ownerPill.style.display = 'none'; }, 2500);
+      }
+      if (wfBadge) {
+        wfBadge.textContent = newOwner !== 'Unassigned' ? 'OWNER ASSIGNED ✓' : 'TRIAGE PENDING';
+        wfBadge.className = `workflow-status-badge ${newOwner !== 'Unassigned' ? 'workflow-status-badge--active' : ''}`;
+      }
+      if (window.DATA && window.DATA.top_signals) {
+        renderSignalCards(window.DATA.top_signals, window._approvedSignals || {});
+      }
+    });
+  }
+
+  // Wire Comments Posting
+  const btnComment = document.getElementById('btn-post-comment');
+  const txtComment = document.getElementById('input-new-comment');
+  const commentsList = document.getElementById('workflow-comments-list');
+  const commentCount = document.getElementById('comment-count-badge');
+  if (btnComment && txtComment) {
+    btnComment.addEventListener('click', () => {
+      const text = txtComment.value.trim();
+      if (!text) return;
+      const currentOwner = (selectOwner ? selectOwner.value : 'Lead Supply Chain Planner (Global / HQ)');
+      const author = currentOwner !== 'Unassigned' ? currentOwner : 'Lead Supply Chain Planner (Global / HQ)';
+      addSignalComment(sig, text, author);
+      txtComment.value = '';
+      const updatedWf = getWorkflowState(sig.row_id);
+      if (commentsList) commentsList.innerHTML = buildCommentsHtml(updatedWf.comments);
+      if (commentCount) commentCount.textContent = `${(updatedWf.comments || []).length} ENTRIES`;
+      if (window.DATA && window.DATA.top_signals) {
+        renderSignalCards(window.DATA.top_signals, window._approvedSignals || {});
+      }
+    });
+  }
+
+  // Wire Snooze / Unsnooze
+  function bindSnoozeEvents() {
+    const btnSnooze = document.getElementById('btn-snooze-alert');
+    const selectWeeks = document.getElementById('select-snooze-weeks');
+    const selectReason = document.getElementById('select-snooze-reason');
+    const inputNote = document.getElementById('input-snooze-note');
+    const snoozeArea = document.getElementById('workflow-snooze-area');
+
+    if (btnSnooze && selectWeeks && selectReason) {
+      btnSnooze.addEventListener('click', () => {
+        const weeks = parseInt(selectWeeks.value, 10) || 1;
+        const reason = selectReason.value;
+        const note = inputNote ? inputNote.value : '';
+        snoozeAlert(sig, weeks, reason, note);
+        const updatedWf = getWorkflowState(sig.row_id);
+        if (snoozeArea) {
+          snoozeArea.innerHTML = buildSnoozeHtml(updatedWf);
+          bindSnoozeEvents();
+        }
+        if (window.DATA && window.DATA.top_signals) {
+          renderSignalCards(window.DATA.top_signals, window._approvedSignals || {});
+        }
+      });
+    }
+
+    const btnUnsnooze = document.getElementById('btn-unsnooze-alert');
+    if (btnUnsnooze) {
+      btnUnsnooze.addEventListener('click', () => {
+        unsnoozeAlert(sig);
+        const updatedWf = getWorkflowState(sig.row_id);
+        if (snoozeArea) {
+          snoozeArea.innerHTML = buildSnoozeHtml(updatedWf);
+          bindSnoozeEvents();
+        }
+        if (window.DATA && window.DATA.top_signals) {
+          renderSignalCards(window.DATA.top_signals, window._approvedSignals || {});
+        }
+      });
+    }
+  }
+  bindSnoozeEvents();
 
   const narrativeDossierEl = document.getElementById('narrative-dossier');
   if (narrativeDossierEl) {

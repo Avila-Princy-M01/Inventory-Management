@@ -312,6 +312,88 @@ test('Unit: Inter-market transfer matching invariant & donor safety floor', () =
   assert(transferCount > 0, `Expected acute signals to have matched inter-market transfers, found ${transferCount}`);
 });
 
+// ── Unit Tests: Section 6.2 Alert Workflow & Escalation Engine ────
+const {
+  OWNER_ROLES,
+  SNOOZE_DURATIONS,
+  SNOOZE_REASONS,
+  getWorkflowState,
+  assignSignalOwner,
+  addSignalComment,
+  snoozeAlert,
+  unsnoozeAlert,
+  getEscalationSLA
+} = require('./frontend/src/workflow.js');
+
+test('Unit: Section 6.2 Owner assignment and audit logging', () => {
+  const dummySig = { row_id: 9901, brand: 'Beacon', country: 'Country 013', action_type: 'ACTIVE CRISIS', prs_score: 88.5 };
+  const auditEntries = [];
+  global.window = { _pushAudit: (e) => auditEntries.push(e) };
+
+  const owner = 'Affiliate Market Coordinator';
+  const state = assignSignalOwner(dummySig, owner);
+  assert(state.owner === owner, `Owner must be set to ${owner}`);
+  assert(state.acknowledged === true, 'Assigning owner must acknowledge the alert');
+  assert(auditEntries.length === 1, 'Audit entry must be created on owner assignment');
+  assert(auditEntries[0].action_type === 'WORKFLOW_ASSIGN_OWNER', 'Action type must match');
+  assert(auditEntries[0].signature.includes(owner), 'Signature must reference the assigned owner');
+});
+
+test('Unit: Section 6.2 Comments & operational rationale thread', () => {
+  const dummySig = { row_id: 9902, brand: 'Delta', country: 'Country 045', action_type: 'EMERGENCY EXPEDITE', prs_score: 82.0 };
+  const auditEntries = [];
+  global.window = { _pushAudit: (e) => auditEntries.push(e) };
+
+  const noteText = 'Vendor confirms charter slot secured for W14 delivery.';
+  const res = addSignalComment(dummySig, noteText, 'Lead Supply Chain Planner (Global / HQ)');
+  assert(res !== null, 'Comment must be added');
+  assert(res.text === noteText, 'Comment text must match input');
+
+  const state = getWorkflowState(dummySig.row_id);
+  assert(state.comments.some(c => c.text === noteText), 'Comment must be persisted in workflow state');
+  assert(auditEntries.length === 1, 'Audit entry must be generated for comment');
+  assert(auditEntries[0].action_type === 'GxP Operational Rationale', 'Action type must match');
+});
+
+test('Unit: Section 6.2 Snooze action with mandatory justification', () => {
+  const dummySig = { row_id: 9903, brand: 'Aster', country: 'Country 038', action_type: 'ACTIVE CRISIS', prs_score: 91.0 };
+  const auditEntries = [];
+  global.window = { _pushAudit: (e) => auditEntries.push(e) };
+
+  const reason = SNOOZE_REASONS[0]; // 'Awaiting Commercial Forecast Confirmation'
+  const state = snoozeAlert(dummySig, 2, reason, 'Hold until Wednesday S&OP');
+  assert(state.snooze !== null, 'Snooze object must be present');
+  assert(state.snooze.weeks === 2, 'Snooze weeks must be 2');
+  assert(state.snooze.reason === reason, 'Snooze reason must match mandatory code');
+  assert(state.snooze.snoozed_until > Date.now(), 'Snooze expiration must be in future');
+
+  // Verify early resume / unsnooze
+  const unsnoozed = unsnoozeAlert(dummySig);
+  assert(unsnoozed.snooze === null, 'Snooze must be cleared after unsnooze');
+  assert(auditEntries.length === 2, 'Audit entries must exist for snooze and resume');
+});
+
+test('Unit: Section 6.2 24-Hour escalation countdown SLA calculation', () => {
+  const crisisSig = { row_id: 9904, brand: 'Beacon', country: 'Country 013', action_type: 'ACTIVE CRISIS', prs_score: 95.0 };
+  const standardSig = { row_id: 9905, brand: 'Ember', country: 'Country 020', action_type: 'STANDARD PO', prs_score: 45.0 };
+
+  // Standard PO does not require crisis escalation SLA
+  const stdSla = getEscalationSLA(standardSig, {});
+  assert(stdSla.isCritical === false, 'Standard PO must not be marked as critical for 24h SLA');
+
+  // Unacknowledged crisis
+  const crisisSla = getEscalationSLA(crisisSig, {});
+  assert(crisisSla.isCritical === true, 'Crisis signal must be marked critical');
+  assert(crisisSla.status === 'URGENT_COUNTDOWN', 'Unacknowledged crisis must be in URGENT_COUNTDOWN status');
+  assert(crisisSla.compliant === false, 'Unacknowledged crisis cannot be marked compliant');
+  assert(typeof crisisSla.hoursLeft === 'number' && crisisSla.hoursLeft > 0, 'Hours left must be positive number');
+
+  // Approved crisis
+  const approvedSla = getEscalationSLA(crisisSig, { [crisisSig.row_id]: true });
+  assert(approvedSla.status === 'RESOLVED', 'Approved crisis must resolve SLA');
+  assert(approvedSla.compliant === true, 'Approved crisis must be compliant');
+});
+
 console.log(`\n=== TEST SUMMARY ===`);
 console.log(`Total Passed: ${passedCount}`);
 console.log(`Total Failed: ${failedCount}`);
