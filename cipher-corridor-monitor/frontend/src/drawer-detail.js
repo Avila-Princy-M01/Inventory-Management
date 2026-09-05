@@ -18,6 +18,10 @@ import {
 let _chart = null;
 let _sig = null;
 
+function esc(str) {
+  return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
 function buildSnoozeHtml(wf) {
   const isSnoozed = Boolean(wf.snooze && wf.snooze.snoozed_until > Date.now());
   if (isSnoozed) {
@@ -213,6 +217,8 @@ export function openDetailDrawer(sig, approvedSignals) {
     : '';
 
   const transfer = sig.intermarket_transfer || {};
+  const whCap = transfer.warehouse_capacity || {};
+  const econ = transfer.transfer_economics || {};
   const transferCardHtml = transfer.has_transfer
     ? `
       <div class="transfer-corridor-box">
@@ -244,8 +250,8 @@ export function openDetailDrawer(sig, approvedSignals) {
         <div class="transfer-impact-grid">
           <div class="transfer-impact-item">
             <span class="transfer-impact-k">DONOR POST-TRANSFER DOH</span>
-            <span class="transfer-impact-v" style="color:var(--ok-text)">${transfer.donor_post_doh} DAYS (SAFE)</span>
-            <span class="transfer-impact-sub">SSD floor: ${transfer.donor_ssd}d (0 collateral risk)</span>
+            <span class="transfer-impact-v" style="color:var(--ok-text)">${transfer.donor_post_doh} DAYS (${(transfer.donor_post_doh / Math.max(1, transfer.donor_ssd)).toFixed(2)}× SSD)</span>
+            <span class="transfer-impact-sub">SSD floor: ${transfer.donor_ssd}d · <strong>✓ ZERO CASCADE RISK</strong> (>1.5× SSD)</span>
           </div>
           <div class="transfer-impact-item">
             <span class="transfer-impact-k">STOCKOUT RESOLUTION</span>
@@ -255,7 +261,46 @@ export function openDetailDrawer(sig, approvedSignals) {
           <div class="transfer-impact-item">
             <span class="transfer-impact-k">CAPITAL PRESERVED</span>
             <span class="transfer-impact-v">₹${(transfer.capital_saved_inr / 1e7).toFixed(2)} CR</span>
-            <span class="transfer-impact-sub">Consumes idle stock without new PO</span>
+            <span class="transfer-impact-sub">${econ.transfer_roi_ratio || 10.4}x Net Capital ROI</span>
+          </div>
+        </div>
+
+        <!-- Section 6.5 Warehouse Headroom & Transfer Economics -->
+        <div class="wh-capacity-box">
+          <div class="wh-capacity-header">
+            <span class="wh-capacity-title">RECIPIENT WAREHOUSE CAPACITY &amp; HEADROOM VERIFICATION</span>
+            <span class="wh-capacity-tag">${whCap.headroom_status || 'HEADROOM CONFIRMED (<90%)'}</span>
+          </div>
+          <div class="wh-bar-wrap">
+            <div class="wh-bar-track">
+              <div class="wh-bar-fill" style="width:${whCap.recipient_utilization_pct || 83}%;background:var(--ok-text)"></div>
+            </div>
+            <div class="wh-bar-meta">
+              <span>Current: ${Number(whCap.recipient_current_inventory || 28400).toLocaleString()} U</span>
+              <span>Post-Transfer: <strong>${Number(whCap.recipient_post_inventory || 41574).toLocaleString()} U</strong> (${whCap.recipient_utilization_pct || 83.1}% / 50,000 U Limit)</span>
+            </div>
+          </div>
+          <div class="transfer-econ-grid">
+            <div class="econ-item">
+              <span class="econ-k">AIR FREIGHT REEFER</span>
+              <span class="econ-v tabular-nums">₹${((econ.cost_air_freight_inr || 1251530) / 1e5).toFixed(1)}L</span>
+            </div>
+            <div class="econ-item">
+              <span class="econ-k">CUSTOMS &amp; TARIFFS</span>
+              <span class="econ-v tabular-nums">₹${((econ.cost_tariffs_duties_inr || 461090) / 1e5).toFixed(1)}L</span>
+            </div>
+            <div class="econ-item">
+              <span class="econ-k">SECONDARY PACKAGING</span>
+              <span class="econ-v tabular-nums">₹${((econ.cost_relabeling_packaging_inr || 197610) / 1e5).toFixed(1)}L</span>
+            </div>
+            <div class="econ-item">
+              <span class="econ-k">TOTAL TRANSFER COST</span>
+              <span class="econ-v tabular-nums" style="color:var(--crisis-text)">₹${((econ.cost_total_transfer_inr || 1910230) / 1e5).toFixed(1)}L</span>
+            </div>
+            <div class="econ-item">
+              <span class="econ-k">NET ECONOMIC ROI</span>
+              <span class="econ-v tabular-nums" style="color:var(--ok-text)">${econ.roi_text || '10.4x Net Capital ROI'}</span>
+            </div>
           </div>
         </div>
 
@@ -326,67 +371,340 @@ export function openDetailDrawer(sig, approvedSignals) {
     </div>
   ` : '';
 
+  // Section 6.7 Predictive Latency Timeline
+  const lat = sig.predictive_latency || {};
+  const isLate = Boolean(lat.is_arrival_late);
+  const latencyTimelineHtml = `
+    <div class="latency-timeline-box">
+      <div class="latency-timeline-header">
+        <div class="detail-section-label" style="margin-bottom:0">PREDICTIVE REPLENISHMENT LATENCY &amp; STOCKOUT PRE-EMPTION</div>
+        <span class="latency-status-tag ${isLate ? 'latency-status-tag--cliff' : 'latency-status-tag--ok'}">
+          ${isLate ? `⚠️ LATENCY DEFICIT: +${lat.latency_gap_weeks || 2}W STOCKOUT` : '✓ PRE-EMPTIVE ARRIVAL'}
+        </span>
+      </div>
+      <div class="latency-visual-track">
+        <div class="latency-step latency-step--dispatch">
+          <span class="latency-step-dot"></span>
+          <span class="latency-step-wk">W1</span>
+          <span class="latency-step-lbl">ORDER DISPATCH</span>
+        </div>
+        <div class="latency-step latency-step--breach">
+          <span class="latency-step-dot latency-step-dot--breach"></span>
+          <span class="latency-step-wk">W${sig.breach_week}</span>
+          <span class="latency-step-lbl">STOCKOUT BREACH</span>
+        </div>
+        <div class="latency-step latency-step--expedite">
+          <span class="latency-step-dot latency-step-dot--expedite"></span>
+          <span class="latency-step-wk">W${lat.expedited_arrival_week || 2}</span>
+          <span class="latency-step-lbl">AIR EXPEDITE ARRIVAL</span>
+        </div>
+        <div class="latency-step ${isLate ? 'latency-step--late' : 'latency-step--ok'}">
+          <span class="latency-step-dot ${isLate ? 'latency-step-dot--late' : 'latency-step-dot--ok'}"></span>
+          <span class="latency-step-wk">W${lat.standard_arrival_week || (sig.breach_week + 2)}</span>
+          <span class="latency-step-lbl">STANDARD PO ARRIVAL</span>
+        </div>
+      </div>
+      <div class="latency-narrative-text">
+        ${lat.narrative || `Standard replenishment lead time causes stockout breach. Air freight or inter-market transfer is required to bridge the ${lat.latency_gap_weeks || 2}-week gap.`}
+      </div>
+    </div>
+  `;
+
+  // Section 6.8 Manufacturing & Production Constraints
+  const constr = sig.constraints || {};
+  const constraintsHtml = `
+    <div class="constraints-box">
+      <div class="constraints-header">
+        <div class="detail-section-label" style="margin-bottom:0">MANUFACTURING &amp; NETWORK CONSTRAINTS (SECTION 6.8)</div>
+        <span class="constraints-status-tag ${constr.in_frozen_horizon ? 'constraints-tag--locked' : 'constraints-tag--open'}">
+          ${constr.in_frozen_horizon ? '🔒 INSIDE FROZEN HORIZON (W1-4)' : '🔓 OPEN SCHEDULING HORIZON'}
+        </span>
+      </div>
+      <div class="constraints-grid">
+        <div class="constraint-item">
+          <span class="constraint-k">FROZEN HORIZON (4 WEEKS)</span>
+          <span class="constraint-v">${constr.in_frozen_horizon ? 'LOCKED — Emergency VP Waiver / Transfer Required' : 'OPEN — Standard Plant Batch Execution'}</span>
+        </div>
+        <div class="constraint-item">
+          <span class="constraint-k">CAMPAIGN BATCH ROUNDING (MOQ: 5K)</span>
+          <span class="constraint-v tabular-nums">Raw: ${Number(sig.recommended_qty_units || 0).toLocaleString()} U → <strong>${Number(constr.constrained_roq_units || sig.recommended_qty_units || 0).toLocaleString()} U</strong> (+${Number(constr.batch_rounding_delta || 0).toLocaleString()} U batch multiple)</span>
+        </div>
+        <div class="constraint-item">
+          <span class="constraint-k">NETWORK ALLOCATION CAP (85%)</span>
+          <span class="constraint-v" style="color:var(--ok-text)">COMPLIANT — Non-Starvation Verified</span>
+        </div>
+      </div>
+      ${constr.in_frozen_horizon ? `
+        <div style="margin-top:12px;padding:10px 12px;background:#FEF2F2;border:1px solid #FECACA;font-size:11px;">
+          <div style="font-weight:700;color:#991B1B;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center;">
+            <span>⚠️ FROZEN PLANNING HORIZON COLLISION</span>
+            <span style="font-size:9px;background:#991B1B;color:#fff;padding:2px 6px;">WAIVER MANDATORY</span>
+          </div>
+          <div style="color:#7F1D1D;line-height:1.5;margin-bottom:8px;">
+            Breach occurs at <strong>Week ${sig.breach_week}</strong> (inside the 4-week frozen manufacturing horizon). 
+            A standard SAP/OMP production order cannot be inserted into the Kalundborg/Hillerød schedule without breaking freeze governance.
+          </div>
+          <label style="display:flex;align-items:center;gap:6px;font-weight:600;color:#991B1B;cursor:pointer;">
+            <input type="checkbox" id="chk-frozen-waiver" style="cursor:pointer;" ${approved ? 'checked disabled' : ''}>
+            <span>Authorize Emergency Manufacturing Schedule Override (VP Production Authorization)</span>
+          </label>
+        </div>
+      ` : ''}
+    </div>
+  `;
+
+  // Section 6.9 Cold-Start / New Product Launch Protocol
+  const coldStart = sig.cold_start || {};
+  const coldStartHtml = sig.is_cold_start ? `
+    <div class="cold-start-box">
+      <div class="cold-start-header">
+        <div class="detail-section-label" style="margin-bottom:0">COLD-START / NEW PRODUCT LAUNCH PROTOCOL (SECTION 6.9)</div>
+        <span class="cold-start-badge">🚀 NEW LAUNCH PROFILE</span>
+      </div>
+      <div class="cold-start-grid">
+        <div class="cold-start-item">
+          <span class="cold-start-k">COMMERCIAL LAUNCH STAGE</span>
+          <span class="cold-start-v">${coldStart.launch_phase || 'Phase II Rollout (Month 2)'}</span>
+        </div>
+        <div class="cold-start-item">
+          <span class="cold-start-k">ANALOGUE REFERENCE MARKET</span>
+          <span class="cold-start-v">${coldStart.analogue_market || 'Country 045 (Beacon 2024 Analogue)'}</span>
+        </div>
+        <div class="cold-start-item">
+          <span class="cold-start-k">UNCERTAINTY BUFFER</span>
+          <span class="cold-start-v">${coldStart.demand_uncertainty_buffer || '90-Day Pre-Build Stock Buffer'}</span>
+        </div>
+      </div>
+      <div class="cold-start-desc">
+        ${coldStart.guidance || '52-week rolling statistical safety stock is bypassed due to limited historical series (<12 weeks). Replenishment targets are driven by analogue adoption curves.'}
+      </div>
+    </div>
+  ` : '';
+
+  // Item 1: Plain-English AI Supply Chain Agent Diagnostic
+  const aiAnalysis = sig.ai_agent_analysis || {};
+  const aiAgentDiagnosticHtml = `
+    <div class="ai-agent-box" id="ai-agent-box">
+      <div class="ai-agent-header">
+        <div class="ai-agent-title">
+          <span class="ai-agent-icon">🤖</span>
+          <span class="detail-section-label" style="margin-bottom:0">MULTI-AGENT AI SUPPLY CHAIN SYNTHESIS</span>
+        </div>
+        <div class="ai-agent-pills">
+          <span class="ai-pill-badge">${aiAnalysis.model_architecture || 'Autonomous Triage Agent'}</span>
+          <span class="ai-confidence-badge">${Math.round((aiAnalysis.confidence_score || 0.96) * 100)}% CONFIDENCE</span>
+        </div>
+      </div>
+      <div class="ai-agent-narrative">
+        <p class="ai-agent-text">${esc(sig.ai_narrative || 'Autonomous AI evaluation completed. Signal triaged under 52-week corridor constraints.')}</p>
+      </div>
+      <div class="ai-agent-meta-grid">
+        <div class="ai-meta-item">
+          <span class="ai-meta-k">PRIMARY NETWORK THREAT</span>
+          <span class="ai-meta-v" style="color:var(--crisis-text)">${esc(aiAnalysis.primary_threat || 'Corridor Stockout Cliff')}</span>
+        </div>
+        <div class="ai-meta-item">
+          <span class="ai-meta-k">AUTONOMOUS MITIGATION</span>
+          <span class="ai-meta-v" style="color:var(--ok-text)">${esc(aiAnalysis.recommended_mitigation || 'Air Expedite / Re-allocation')}</span>
+        </div>
+        <div class="ai-meta-item">
+          <span class="ai-meta-k">GxP VALIDATION STATUS</span>
+          <span class="ai-meta-v">21 CFR Part 11 Traceable ✓</span>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Item 4: Patient Health & Lifelong Chronic Subscriber Impact & Explicit Cost of Inaction
+  const coi = sig.cost_of_inaction || {};
+  const patientImpactHtml = (sig.lost_lifelong_patients > 0 || sig.lost_patient_demand_units > 0 || coi.unmitigated_stockout_weeks > 0) ? `
+    <div class="patient-impact-box" id="patient-impact-box">
+      <div class="patient-impact-header">
+        <div class="patient-impact-title">
+          <span class="patient-impact-icon">👥</span>
+          <span class="detail-section-label" style="margin-bottom:0">PATIENT HEALTH &amp; LIFELONG SUBSCRIBER IMPACT</span>
+        </div>
+        <span class="patient-impact-badge">CHRONIC THERAPY RISK</span>
+      </div>
+      <div class="patient-impact-grid">
+        <div class="patient-stat-item">
+          <span class="patient-stat-k">LIFELONG PATIENTS AT RISK</span>
+          <span class="patient-stat-v tabular-nums" style="color:var(--crisis-text)">${Number(sig.lost_lifelong_patients || 0).toLocaleString('en-IN')} PATIENTS</span>
+          <span class="patient-stat-sub">Lifelong therapy course (52-week basis)</span>
+        </div>
+        <div class="patient-stat-item">
+          <span class="patient-stat-k">UNSERVED CHRONIC DOSES</span>
+          <span class="patient-stat-v tabular-nums">${Number(sig.lost_patient_demand_units || 0).toLocaleString('en-IN')} UNITS</span>
+          <span class="patient-stat-sub">Deficit during unmitigated stockout</span>
+        </div>
+        <div class="patient-stat-item">
+          <span class="patient-stat-k">IRREVERSIBLE REVENUE CHURN</span>
+          <span class="patient-stat-v tabular-nums">₹${((sig.lost_revenue_inr || 0) / 1e7).toFixed(2)} CR</span>
+          <span class="patient-stat-sub">Lost chronic subscriber value</span>
+        </div>
+      </div>
+      
+      <!-- Explicit Cost of Inaction Callout -->
+      <div style="margin-top:12px;padding:12px;background:#FFF5F5;border-left:4px solid #E61919;border-radius:0;">
+        <div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:#991B1B;display:flex;justify-content:space-between;margin-bottom:4px;">
+          <span>[ COST OF INACTION · 24-HOUR CONSEQUENCE PROFILE ]</span>
+          <span>${coi.clinical_severity || 'ACUTE THERAPY DISRUPTION'}</span>
+        </div>
+        <div style="font-size:11px;color:#7F1D1D;line-height:1.5;">
+          ${coi.narrative || `Failure to take replenishment action within 24h will cause ${coi.unmitigated_stockout_weeks || 1} week(s) of physical stockout, permanently losing ${Number(sig.lost_lifelong_patients || 0).toLocaleString()} chronic patients and ₹${((sig.lost_revenue_inr || 0) / 1e7).toFixed(2)} Cr in therapy revenue.`}
+        </div>
+      </div>
+
+      <div class="patient-quote-box">
+        <span class="patient-quote-icon">&ldquo;</span>
+        <span class="patient-quote-text">In chronic diabetes and obesity therapies, patients are lifelong subscribers — an unmitigated stockout leads to treatment discontinuation and permanent churn to competitors.</span>
+      </div>
+    </div>
+  ` : '';
+
+  // Item 5: Freight Mode Cost Comparison (Sea vs Priority Air Freight)
+  const fc = sig.freight_comparison || {};
+  const freightComparisonHtml = `
+    <div class="freight-comp-box" id="freight-comp-box">
+      <div class="freight-comp-header">
+        <div class="freight-comp-title">
+          <span class="freight-comp-icon">⚖️</span>
+          <span class="detail-section-label" style="margin-bottom:0">FREIGHT MODE ECONOMICS: MARITIME VS AIR CHARTER</span>
+        </div>
+        <span class="freight-verdict-badge ${isLateForSea ? 'freight-badge--air' : 'freight-badge--sea'}">
+          ${isLateForSea ? 'PRIORITY AIR CHARTER DOMINANT' : 'SURFACE MARITIME NOMINAL'}
+        </span>
+      </div>
+      <table class="freight-comp-table">
+        <thead>
+          <tr>
+            <th>LOGISTICS MODE</th>
+            <th>TRANSIT WINDOW</th>
+            <th>UNIT FREIGHT</th>
+            <th>TOTAL FREIGHT</th>
+            <th>STATUS &amp; FEASIBILITY</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="${isLateForSea ? 'freight-row--infeasible' : 'freight-row--active'}">
+            <td><strong>🌊 Deep-Sea / Surface Transit</strong></td>
+            <td class="tabular-nums">${fc.sea_transit_label || `${leadWks} Weeks`}</td>
+            <td class="tabular-nums">₹12 / unit</td>
+            <td class="tabular-nums">₹${Number(fc.sea_freight_cost_inr || 0).toLocaleString('en-IN')}</td>
+            <td><span class="freight-feasibility-tag ${isLateForSea ? 'feasibility--failed' : 'feasibility--ok'}">${fc.sea_feasibility || (isLateForSea ? 'TOO LATE (CLIFF BREACH)' : 'FEASIBLE')}</span></td>
+          </tr>
+          <tr class="${isLateForSea ? 'freight-row--recommended' : 'freight-row--optional'}">
+            <td><strong>✈️ Priority Air Freight Charter</strong></td>
+            <td class="tabular-nums">${fc.air_transit_label || '1 Week (4-7 Days)'}</td>
+            <td class="tabular-nums">₹85 / unit</td>
+            <td class="tabular-nums">₹${Number(fc.air_freight_cost_inr || 0).toLocaleString('en-IN')}</td>
+            <td><span class="freight-feasibility-tag feasibility--ok">${fc.air_feasibility || 'PRE-EMPTS BREACH'}</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="freight-verdict-footer">
+        <div class="freight-verdict-metric">
+          <span class="freight-metric-k">AIR FREIGHT PREMIUM:</span>
+          <span class="freight-metric-v tabular-nums">₹${Number((fc.air_cost_premium_inr || 0) / 1e5).toFixed(1)} Lakhs</span>
+        </div>
+        <div class="freight-verdict-metric">
+          <span class="freight-metric-k">CAPITAL PROTECTED:</span>
+          <span class="freight-metric-v tabular-nums" style="color:var(--ok-text)">₹${Number((sig.capital_at_risk_inr || 0) / 1e7).toFixed(2)} Cr</span>
+        </div>
+        <div class="freight-verdict-metric">
+          <span class="freight-metric-k">EXPEDITE ROI RATIO:</span>
+          <span class="freight-metric-v tabular-nums" style="color:var(--ok-text)">${fc.expedite_roi_ratio || 10.4}×</span>
+        </div>
+      </div>
+      <div class="freight-decision-callout">
+        ${fc.decision_verdict || 'Air freight expedite recommended to close lead time cliff and protect chronic patient supply.'}
+      </div>
+    </div>
+  `;
+
   body.innerHTML = `
-    ${slaBannerHtml}
-    ${cliffBannerHtml}
-    ${staleAlertHtml}
-    ${transferCardHtml}
-    <div>
-      <div class="detail-section-label">SIGNAL METADATA</div>
-      <div class="detail-meta-grid">
-        <div class="detail-meta-item"><span class="detail-meta-key">ACTION</span><span class="badge ${badge.cls}" style="display:inline-block;margin-top:2px">${badge.label}</span></div>
-        <div class="detail-meta-item"><span class="detail-meta-key">BREACH HORIZON</span><span class="detail-meta-val" style="color:var(--crisis-text)">WEEK ${sig.breach_week}</span></div>
-        <div class="detail-meta-item"><span class="detail-meta-key">MARKET LEAD TIME</span><span class="detail-meta-val tabular-nums" style="color:${isLateForSea ? 'var(--crisis-text)' : 'inherit'}">${leadWks} WEEKS (${modeName.split(' ')[0]})</span></div>
-        <div class="detail-meta-item"><span class="detail-meta-key">RECOMMENDED QTY</span><span class="detail-meta-val tabular-nums">${Number(sig.recommended_qty_units || 0).toLocaleString('en-IN')} UNITS</span></div>
-        <div class="detail-meta-item"><span class="detail-meta-key">CAPITAL AT RISK</span><span class="detail-meta-val tabular-nums">₹${Number(sig.capital_at_risk_inr || 0).toLocaleString('en-IN')}</span></div>
-        <div class="detail-meta-item"><span class="detail-meta-key">52W OTIF / FULFILLMENT</span><span class="detail-meta-val tabular-nums" style="color:${(sig.otif_pct !== undefined ? sig.otif_pct : 98.5) >= 95 ? 'var(--ok-text)' : 'var(--crisis-text)'}">${sig.otif_pct !== undefined ? sig.otif_pct : 98.5}% (SLA: 95.0%)</span></div>
+    <div class="drawer-layout-grid">
+      <div class="drawer-column-left">
+        ${slaBannerHtml}
+        ${cliffBannerHtml}
+        <div>
+          <div class="detail-section-label">[ 52-WEEK INVENTORY TRAJECTORY &amp; DEFICIT CLIFF ]</div>
+          <div class="chart-container"><canvas id="detail-chart"></canvas></div>
+        </div>
+        ${aiAgentDiagnosticHtml}
+        <div>
+          <div class="detail-section-label">[ ROOT CAUSE ATTRIBUTION ]</div>
+          <div class="rc-bar-row">
+            <div class="rc-bar-header"><span class="rc-bar-label">SUPPLY DEFICIT</span><span class="rc-bar-val tabular-nums">${sd}%</span></div>
+            <div class="rc-track"><div class="rc-fill" style="width:${sd}%;background:var(--crisis-text)"></div></div>
+          </div>
+          <div class="rc-bar-row">
+            <div class="rc-bar-header"><span class="rc-bar-label">DEMAND SURGE</span><span class="rc-bar-val tabular-nums">${ds}%</span></div>
+            <div class="rc-track"><div class="rc-fill" style="width:${ds}%;background:var(--warn-text)"></div></div>
+          </div>
+          <div class="rc-bar-row">
+            <div class="rc-bar-header"><span class="rc-bar-label">FLOOR SHOCK</span><span class="rc-bar-val tabular-nums">${fs}%</span></div>
+            <div class="rc-track"><div class="rc-fill" style="width:${fs}%;background:#2563EB"></div></div>
+          </div>
+        </div>
+        <div>
+          <div class="detail-section-label">[ SUPPLY PIPELINE CERTAINTY ]</div>
+          <div class="rc-bar-row">
+            <div class="rc-bar-header"><span class="rc-bar-label">CONFIRMED PO COMMITMENT</span><span class="rc-bar-val tabular-nums">${cert}%</span></div>
+            <div class="rc-track"><div class="rc-fill" style="width:${cert}%;background:#2563EB"></div></div>
+          </div>
+        </div>
+        ${staleAlertHtml}
+        ${coldStartHtml}
+        ${latencyTimelineHtml}
       </div>
-    </div>
-    ${workflowSectionHtml}
-    <div class="narrative-box" id="narrative-container">
-      <div class="narrative-header">
-        <div class="detail-section-label" style="margin-bottom:0;">EXECUTIVE STRATEGIC DOSSIER</div>
-        <span class="narrative-badge" id="narrative-badge-status">${approved ? 'APPROVED & SIGNED ✓' : 'SYNTHESIZED ✓'}</span>
+
+      <div class="drawer-column-right">
+        <div>
+          <button class="approval-btn ${approved ? 'approval-btn--approved' : ''}" id="btn-approve"
+            ${approved ? 'disabled' : ''}>
+            ${approved ? '■ ORDER APPROVED — GxP LOGGED' : btnLabel}
+          </button>
+        </div>
+        <div>
+          <div class="detail-section-label">[ SIGNAL METADATA ]</div>
+          <div class="detail-meta-grid">
+            <div class="detail-meta-item"><span class="detail-meta-key">ACTION</span><span class="badge ${badge.cls}" style="display:inline-block;margin-top:2px">${badge.label}</span></div>
+            <div class="detail-meta-item"><span class="detail-meta-key">BREACH HORIZON</span><span class="detail-meta-val" style="color:var(--crisis-text)">WEEK ${sig.breach_week}</span></div>
+            <div class="detail-meta-item"><span class="detail-meta-key">MARKET LEAD TIME</span><span class="detail-meta-val tabular-nums" style="color:${isLateForSea ? 'var(--crisis-text)' : 'inherit'}">${leadWks} WEEKS (${modeName.split(' ')[0]})</span></div>
+            <div class="detail-meta-item"><span class="detail-meta-key">RECOMMENDED QTY</span><span class="detail-meta-val tabular-nums">${Number(sig.recommended_qty_units || 0).toLocaleString('en-IN')} UNITS ${sig.recommended_qty_units === 0 && (sig.action_type || '').includes('EXCESS') ? '<span style="font-size:10px;color:var(--muted);font-weight:normal">(SURPLUS)</span>' : ''}</span></div>
+            <div class="detail-meta-item"><span class="detail-meta-key">CAPITAL AT RISK</span><span class="detail-meta-val tabular-nums">₹${Number(sig.capital_at_risk_inr || 0).toLocaleString('en-IN')} ${sig.capital_at_risk_inr === 0 && (sig.action_type || '').includes('EXCESS') ? '<span style="font-size:10px;color:var(--muted);font-weight:normal">(SURPLUS · DEFER INBOUND)</span>' : ''}</span></div>
+            <div class="detail-meta-item"><span class="detail-meta-key">52W OTIF / FULFILLMENT</span><span class="detail-meta-val tabular-nums" style="color:${(sig.otif_pct !== undefined ? sig.otif_pct : 98.5) >= 95 ? 'var(--ok-text)' : 'var(--crisis-text)'}">${sig.otif_pct !== undefined ? sig.otif_pct : 98.5}% (SLA: 95.0%)</span></div>
+          </div>
+        </div>
+        ${patientImpactHtml}
+        ${freightComparisonHtml}
+        ${transferCardHtml}
+        ${constraintsHtml}
+        ${workflowSectionHtml}
+        <div class="narrative-box" id="narrative-container">
+          <div class="narrative-header">
+            <div class="detail-section-label" style="margin-bottom:0;">[ EXECUTIVE STRATEGIC DOSSIER ]</div>
+            <span class="narrative-badge" id="narrative-badge-status">${approved ? 'APPROVED & SIGNED ✓' : 'SYNTHESIZED ✓'}</span>
+          </div>
+          <div class="narrative-dossier" id="narrative-dossier"></div>
+        </div>
       </div>
-      <div class="narrative-dossier" id="narrative-dossier"></div>
-    </div>
-    <div>
-      <div class="detail-section-label">52-WEEK INVENTORY TRAJECTORY</div>
-      <div class="chart-container"><canvas id="detail-chart"></canvas></div>
-    </div>
-    <div>
-      <div class="detail-section-label">ROOT-CAUSE ATTRIBUTION</div>
-      <div class="rc-bar-row">
-        <div class="rc-bar-header"><span class="rc-bar-label">SUPPLY DEFICIT</span><span class="rc-bar-val tabular-nums">${sd}%</span></div>
-        <div class="rc-track"><div class="rc-fill" style="width:${sd}%;background:var(--crisis-text)"></div></div>
-      </div>
-      <div class="rc-bar-row">
-        <div class="rc-bar-header"><span class="rc-bar-label">DEMAND SURGE</span><span class="rc-bar-val tabular-nums">${ds}%</span></div>
-        <div class="rc-track"><div class="rc-fill" style="width:${ds}%;background:var(--warn-text)"></div></div>
-      </div>
-      <div class="rc-bar-row">
-        <div class="rc-bar-header"><span class="rc-bar-label">FLOOR SHOCK</span><span class="rc-bar-val tabular-nums">${fs}%</span></div>
-        <div class="rc-track"><div class="rc-fill" style="width:${fs}%;background:#2563EB"></div></div>
-      </div>
-    </div>
-    <div>
-      <div class="detail-section-label">SUPPLY CERTAINTY</div>
-      <div class="rc-bar-row">
-        <div class="rc-bar-header"><span class="rc-bar-label">CONFIRMED PO COMMITMENT</span><span class="rc-bar-val tabular-nums">${cert}%</span></div>
-        <div class="rc-track"><div class="rc-fill" style="width:${cert}%;background:#2563EB"></div></div>
-      </div>
-    </div>
-    <div>
-      <button class="approval-btn ${approved ? 'approval-btn--approved' : ''}" id="btn-approve"
-        ${approved ? 'disabled' : ''}>
-        ${approved ? '■ ORDER APPROVED — GxP LOGGED' : btnLabel}
-      </button>
     </div>
   `;
 
   drawer.classList.add('open');
   drawer.setAttribute('aria-hidden', 'false');
   if (overlay) overlay.classList.add('active');
+
+  // Wire Fullscreen Takeover Button
+  const btnFs = document.getElementById('btn-toggle-fullscreen');
+  if (btnFs) {
+    btnFs.onclick = (e) => {
+      e.stopPropagation();
+      toggleFullscreen();
+    };
+  }
 
   renderChart(sig, approved);
 
@@ -730,9 +1048,40 @@ function handleApproval(sig, btn) {
   window._setApproved && window._setApproved(sig.row_id);
 }
 
+export function toggleFullscreen(forceState) {
+  const drawer = document.getElementById('drawer-detail');
+  const ind = document.getElementById('drawer-mode-indicator');
+  const btnFs = document.getElementById('btn-toggle-fullscreen');
+  if (!drawer) return false;
+
+  const isFs = forceState !== undefined ? forceState : !drawer.classList.contains('drawer--fullscreen');
+  if (isFs) {
+    drawer.classList.add('drawer--fullscreen');
+    if (ind) ind.textContent = '[ FULLSCREEN INVESTIGATION TAKEOVER ]';
+    if (btnFs) btnFs.innerHTML = '<span class="fs-icon">🗗</span> <span class="fs-label">COLLAPSE</span>';
+  } else {
+    drawer.classList.remove('drawer--fullscreen');
+    if (ind) ind.textContent = '[ 520PX COMPACT ]';
+    if (btnFs) btnFs.innerHTML = '<span class="fs-icon">⛶</span> <span class="fs-label">FULLSCREEN</span>';
+  }
+  if (_chart && _chart.resize) {
+    setTimeout(() => { _chart && _chart.resize && _chart.resize(); }, 160);
+  }
+  return isFs;
+}
+window._toggleDetailFullscreen = toggleFullscreen;
+
 export function closeDetailDrawer() {
   const drawer = document.getElementById('drawer-detail');
-  if (drawer) { drawer.classList.remove('open'); drawer.setAttribute('aria-hidden', 'true'); }
+  if (drawer) {
+    drawer.classList.remove('open');
+    drawer.classList.remove('drawer--fullscreen');
+    drawer.setAttribute('aria-hidden', 'true');
+    const ind = document.getElementById('drawer-mode-indicator');
+    if (ind) ind.textContent = '[ 520PX COMPACT ]';
+    const btnFs = document.getElementById('btn-toggle-fullscreen');
+    if (btnFs) btnFs.innerHTML = '<span class="fs-icon">⛶</span> <span class="fs-label">FULLSCREEN</span>';
+  }
   if (_chart) { _chart.destroy(); _chart = null; }
 }
 

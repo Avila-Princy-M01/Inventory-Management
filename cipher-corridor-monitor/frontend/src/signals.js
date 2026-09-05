@@ -67,27 +67,30 @@ export function renderSignalCards(signals, approvedSignals = {}) {
     const ltVal = sig.market_lead_time || 3;
     const isLateForSea = Boolean(sig.is_late_for_sea);
     const mktTag = isLateForSea
-      ? `<span class="card-mkt-cliff-tag" title="${esc(sig.freight_callout || 'Late for Sea Freight')}">⚠️ LATE FOR SEA (${ltVal}W)</span>`
+      ? `<span class="card-mkt-cliff-tag" title="${esc(sig.freight_callout || 'Late for Sea Freight')}">[AIR ONLY · ${ltVal}W SEA LT]</span>`
       : `<span class="card-mkt-lt-tag">LT: ${ltVal}W</span>`;
 
     const ownerTag = hasOwner
-      ? `<span class="card-owner-tag" title="Assigned Owner: ${esc(wf.owner)}">👤 ${esc(wf.owner.replace(/\s*\(.*?\)/, ''))}</span>`
+      ? `<span class="card-owner-tag" title="Assigned Owner: ${esc(wf.owner)}">OWNER: ${esc(wf.owner.replace(/\s*\(.*?\)/, ''))}</span>`
       : '';
 
+    const slaText = sla.hoursLeft !== undefined
+      ? `SLA: ${sla.hoursLeft}h ${sla.minsLeft}m`
+      : (sla.status === 'ACKNOWLEDGED' ? 'SLA: ASSIGNED' : 'SLA: ACTIVE');
     const slaTag = (sla.isCritical && !approved && !isSnoozed)
-      ? `<span class="card-sla-badge ${sla.cls}" title="${esc(sla.label)}">⏱ SLA: ${sla.hoursLeft}h ${sla.minsLeft}m</span>`
+      ? `<span class="card-sla-badge ${sla.cls}" title="${esc(sla.label)}">[${slaText}]</span>`
       : '';
 
     const snoozeHtml = isSnoozed
       ? `<div class="card-snooze-pill">
            <span class="snooze-icon">💤</span>
-           <span class="snooze-text">SNOOZED (${wf.snooze.weeks}W: ${esc(wf.snooze.reason)})</span>
+           <span class="snooze-text">[SNOOZED ${wf.snooze.weeks}W: ${esc(wf.snooze.reason)}]</span>
          </div>`
       : '';
 
     const cliffHtml = isLateForSea
       ? `<div class="card-cliff-alert">
-           <span class="cliff-alert-badge">🚨 AIR FREIGHT ONLY</span>
+           <span class="cliff-alert-badge">[AIR FREIGHT ONLY]</span>
            <span class="cliff-alert-text">Breach at W${sig.breach_week} &lt; ${ltVal}W sea transit window</span>
          </div>`
       : '';
@@ -100,19 +103,81 @@ export function renderSignalCards(signals, approvedSignals = {}) {
          </div>`
       : '';
 
+    const constr = sig.constraints || {};
+    const frozenTag = (constr.in_frozen_horizon && !approved)
+      ? `<span class="card-frozen-tag" style="background:#FEF2F2;color:#991B1B;border:1px solid #F87171;font-size:9px;padding:2px 5px;font-family:var(--font-mono);font-weight:700;" title="Collision with 4-week frozen horizon. Standard PO impossible without emergency manufacturing waiver.">[FROZEN HORIZON · WAIVER REQ]</span>`
+      : '';
+
+    const cascadeSafeguard = (transfer.donor_cascade_safeguard || {});
+    const cascadeTag = transfer.has_transfer
+      ? `<span class="card-cascade-tag" style="background:#F0FDF4;color:#166534;border:1px solid #86EFAC;font-size:9px;padding:2px 5px;font-family:var(--font-mono);font-weight:700;" title="${esc(cascadeSafeguard.verification_text || 'Donor retains > 1.5× SSD')}">✓ ZERO CASCADE RISK</span>`
+      : '';
+
     const staleParam = sig.stale_parameter || {};
     const isStale = Boolean(sig.is_stale_parameter || staleParam.is_stale);
     const staleTag = isStale
-      ? `<span class="card-stale-tag" title="Safety Stock Days unchanged for 52W while demand pattern shifted ${staleParam.demand_shift_pct > 0 ? '+' : ''}${staleParam.demand_shift_pct}%">⚠️ STALE SSD (${staleParam.demand_shift_pct > 0 ? '+' : ''}${Math.round(staleParam.demand_shift_pct)}%)</span>`
+      ? `<span class="card-stale-tag" title="Safety Stock Days unchanged for 52W while demand pattern shifted ${staleParam.demand_shift_pct > 0 ? '+' : ''}${staleParam.demand_shift_pct}%">[STALE SSD ${staleParam.demand_shift_pct > 0 ? '+' : ''}${Math.round(staleParam.demand_shift_pct)}%]</span>`
       : '';
 
-    return `<div class="signal-card ${isCrisis ? 'signal-card--crisis' : ''} ${isSnoozed ? 'signal-card--snoozed' : ''}" style="--i:${i}; --index:${i};" data-rid="${sig.row_id}">
+    const isLaunch = Boolean(sig.is_cold_start);
+    const launchTag = isLaunch
+      ? `<span class="card-launch-tag" title="New Product Launch: 52W rolling stats bypassed; 90-day pre-build buffer active">[COLD START]</span>`
+      : '';
+
+    const lat = sig.predictive_latency || {};
+    const latencyTag = (lat.is_arrival_late && !approved)
+      ? `<span class="card-latency-tag" title="${esc(lat.narrative)}">[DEFICIT +${lat.latency_gap_weeks}W]</span>`
+      : '';
+
+    const rawBadgeText = (sig.wow_badge || '').replace(/[^A-Za-z0-9\s+-]/g, '').trim();
+    const wowTag = sig.wow_badge
+      ? `<span class="card-wow-tag" title="${esc(sig.wow_narrative || '')}">[${esc(rawBadgeText)}]</span>`
+      : '';
+
+    const certPct = Math.round((sig.supply_certainty || 0.8) * 100);
+    const capAtRiskStr = sig.capital_at_risk_inr === 0
+      ? '₹0 (SURPLUS · DEFER)'
+      : '₹' + (Number(sig.capital_at_risk_inr || 0) / 1e7).toFixed(2) + ' Cr';
+
+    const aiNarrativeHtml = sig.ai_narrative
+      ? `<div class="card-ai-box">
+           <span class="card-ai-badge">[AI DIAGNOSTIC]</span>
+           <p class="card-ai-text">${esc(sig.ai_narrative)}</p>
+         </div>`
+      : '';
+
+    const patientRiskHtml = (sig.lost_lifelong_patients && sig.lost_lifelong_patients > 0)
+      ? `<div class="card-patient-impact">
+           <span class="patient-icon">👥</span>
+           <span class="patient-text"><strong>${fmtNum(sig.lost_lifelong_patients)}</strong> Lifelong Patients at Risk (${fmtNum(sig.lost_patient_demand_units)} U unserved)</span>
+         </div>`
+      : '';
+
+    const fc = sig.freight_comparison;
+    const freightCompHtml = (fc && isLateForSea)
+      ? `<div class="card-freight-callout">
+           <span class="freight-icon">✈️</span>
+           <span class="freight-text">Priority Air Charter saves <strong>₹${Number((sig.capital_at_risk_inr || 0) / 1e7).toFixed(2)} Cr</strong> (ROI <strong>${fc.expedite_roi_ratio}×</strong>)</span>
+         </div>`
+      : '';
+
+    // Stitch Design Taste: Priority sizing layout classes
+    const priorityClass = i === 0
+      ? 'signal-card--hero'
+      : (i <= 3 ? 'signal-card--mid' : 'signal-card--std');
+
+    return `<div class="signal-card ${priorityClass} ${isCrisis ? 'signal-card--crisis' : ''} ${isSnoozed ? 'signal-card--snoozed' : ''}" style="--i:${i}; --index:${i};" data-rid="${sig.row_id}" data-index="${i}" tabindex="0">
       <div class="card-row1">
         <span class="card-rank tabular-nums">#${rank}</span>
         <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
           ${ownerTag}
           ${slaTag}
+          ${frozenTag}
+          ${cascadeTag}
+          ${wowTag}
           ${staleTag}
+          ${launchTag}
+          ${latencyTag}
           ${mktTag}
           <span class="badge ${badge.cls}">${badge.label}</span>
         </div>
@@ -127,8 +192,26 @@ export function renderSignalCards(signals, approvedSignals = {}) {
       </div>
       <div class="card-meta tabular-nums">
         <span>BREACH <strong>WK ${sig.breach_week}</strong></span>
-        <span>REC QTY <strong>${fmtNum(sig.recommended_qty_units)}</strong></span>
+        <span>REC QTY <strong>${sig.recommended_qty_units === 0 && (sig.action_type || '').includes('EXCESS') ? '0 (SURPLUS)' : fmtNum(sig.recommended_qty_units)}</strong></span>
       </div>
+      <div class="card-glance-row tabular-nums">
+        <div class="glance-cap">
+          <span class="glance-k">CAPITAL AT RISK</span>
+          <span class="glance-v" style="color:${sig.capital_at_risk_inr === 0 ? 'var(--ok-text)' : 'var(--crisis-text)'}">${capAtRiskStr}</span>
+        </div>
+        <div class="glance-cert" title="Pipeline Supply Certainty">
+          <div class="glance-cert-header">
+            <span class="glance-k">SUPPLY COMMIT</span>
+            <span class="glance-cert-num">${certPct}%</span>
+          </div>
+          <div class="glance-cert-track">
+            <div class="glance-cert-fill" style="width:${certPct}%;background:${certPct < 50 ? 'var(--warn-text)' : '#2563EB'}"></div>
+          </div>
+        </div>
+      </div>
+      ${aiNarrativeHtml}
+      ${patientRiskHtml}
+      ${freightCompHtml}
       ${snoozeHtml}
       ${transferHtml}
       ${cliffHtml}

@@ -203,11 +203,16 @@ except (KeyError, TypeError) as exc:
 
 # 6b. Section 6.4: Stale Parameter Detection verification
 try:
-    total_stale = data["executive"]["chronic_summary"].get("total_stale_parameters", 0)
+    total_stale = (
+        data["executive"]["chronic_summary"].get("total_stale_parameters")
+        or data["executive"]["chronic_summary"].get("stale_parameters")
+        or data["executive"]["chronic_summary"].get("total_stale")
+        or 0
+    )
     assert_check(
         total_stale > 0,
         f"Section 6.4 Stale Parameter Engine: {total_stale} of 379 chronic series flagged (shift >= 30%)",
-        f"Expected total_stale_parameters > 0, got {total_stale}",
+        f"Expected total_stale_parameters / stale_parameters > 0, got {total_stale}",
     )
     first_stale = next((s for s in sample if s.get("is_stale")), None)
     assert_check(
@@ -280,22 +285,125 @@ except Exception as exc:
     fail(f"Could not read chi_lookup_matrix: {exc}")
     failures.append(str(exc))
 
-# 8. Week-over-Week delta validation
+# 10. Intermarket Transfer validation (Issue 2)
+try:
+    has_transfer_signals = [s for s in signals if s.get("intermarket_transfer", {}).get("has_transfer")]
+    assert_check(
+        len(has_transfer_signals) > 0,
+        f"Intermarket transfer engine active: {len(has_transfer_signals)} signal(s) matched with donor corridors",
+        f"Expected at least 1 signal with active transfer, got {len(has_transfer_signals)}",
+    )
+    transfer_sig = has_transfer_signals[0]
+    tr = transfer_sig.get("intermarket_transfer", {})
+    wh_cap = tr.get("warehouse_capacity", {})
+    econ = tr.get("transfer_economics", {})
+    tr_ok = (
+        bool(tr.get("donor_country"))
+        and int(tr.get("transfer_qty", 0)) > 0
+        and "recipient_wh_capacity_units" in wh_cap
+        and "transfer_roi_ratio" in econ
+    )
+    assert_check(
+        tr_ok,
+        f"Intermarket transfer payload validated (Donor: {tr.get('donor_country')}, Qty: {tr.get('transfer_qty'):,}, ROI: {econ.get('transfer_roi_ratio')}x)",
+        f"Intermarket transfer payload missing required fields: {tr}",
+    )
+except Exception as exc:
+    fail(f"Could not validate intermarket_transfer: {exc}")
+    failures.append(str(exc))
+
+# 11. Comprehensive Week-over-Week delta validation (Issue 3)
 try:
     wow_ch = data["corridor_health"].get("wow_delta", {})
     wow_exec = data["executive"].get("wow_delta", {})
-    wow_valid = (
-        "chi_delta" in wow_ch
-        and "crises_delta" in wow_ch
-        and "briefing_narrative" in wow_exec
+    req_wow_fields = [
+        "chi_current", "chi_previous", "chi_delta", "chi_direction",
+        "crises_current", "crises_previous", "crises_delta",
+        "capital_current_inr", "capital_previous_inr", "capital_delta_inr",
+        "otif_current", "otif_previous", "otif_delta", "briefing_narrative"
+    ]
+    missing_wow = [f for f in req_wow_fields if f not in wow_ch]
+    assert_check(
+        len(missing_wow) == 0,
+        f"Week-over-Week delta core metrics complete (CHI: {wow_ch.get('chi_delta_text')}, Crises: {wow_ch.get('crises_delta_text')})",
+        f"Week-over-Week delta missing fields: {missing_wow}",
+    )
+    sig_diff = wow_ch.get("signal_diff", {})
+    diff_ok = (
+        isinstance(sig_diff.get("resolved"), list) and len(sig_diff["resolved"]) > 0
+        and isinstance(sig_diff.get("new"), list) and len(sig_diff["new"]) > 0
+        and isinstance(sig_diff.get("shifts"), list) and len(sig_diff["shifts"]) > 0
     )
     assert_check(
-        wow_valid,
-        f"Week-over-Week delta present (CHI delta: {wow_ch.get('chi_delta_text')}, Crises delta: {wow_ch.get('crises_delta_text')})",
-        "Week-over-Week delta missing or incomplete in corridor_health / executive",
+        diff_ok,
+        f"Signal diff breakdown verified: {len(sig_diff.get('resolved', []))} resolved, {len(sig_diff.get('new', []))} new, {len(sig_diff.get('shifts', []))} shifts",
+        f"Signal diff incomplete in wow_delta: {sig_diff}",
     )
 except Exception as exc:
     fail(f"Could not validate wow_delta: {exc}")
+    failures.append(str(exc))
+
+# 12. Administrative Settings & Lead Times by Market Validation
+try:
+    assert_check(
+        "administrative_settings" in data,
+        "administrative_settings key present in dashboard_data.json root",
+        "administrative_settings key missing from dashboard_data.json root",
+    )
+    adm = data.get("administrative_settings", {})
+    assert_check(
+        adm.get("global_lead_time_default_days") == 14 and adm.get("global_lead_time_default_weeks") == 2,
+        f"Global default lead time is 14 days / 2 weeks per mentor spec (days={adm.get('global_lead_time_default_days')}, weeks={adm.get('global_lead_time_default_weeks')})",
+        f"Invalid global lead time defaults in administrative_settings: {adm}",
+    )
+    assert_check(
+        adm.get("overstock_trigger_weeks") == 4 and adm.get("understock_trigger_weeks") == 5,
+        f"Alert persistence gates configured: Overstock {adm.get('overstock_trigger_weeks')}W, Understock {adm.get('understock_trigger_weeks')}W",
+        f"Alert persistence gates mismatch in administrative_settings: {adm}",
+    )
+    assert_check(
+        adm.get("per_market_override_toggle") is True,
+        "per_market_override_toggle is enabled (True) in administrative_settings",
+        f"per_market_override_toggle is not True: {adm.get('per_market_override_toggle')}",
+    )
+    lts = adm.get("lead_times_by_market", {})
+    assert_check(
+        isinstance(lts, dict) and len(lts) >= 10,
+        f"lead_times_by_market populated with {len(lts)} corridor configurations",
+        f"lead_times_by_market missing or insufficient: {len(lts) if isinstance(lts, dict) else type(lts)}",
+    )
+    china_cfg = lts.get("Country 013") or lts.get("China") or {}
+    assert_check(
+        china_cfg.get("lead_time_weeks") == 36 and china_cfg.get("lead_time") == 36,
+        f"China (Country 013) ocean lead time configured to 36 weeks (8-9 months deep sea)",
+        f"China lead time mismatch: {china_cfg}",
+    )
+    brazil_cfg = lts.get("Country 017") or lts.get("Brazil") or {}
+    assert_check(
+        brazil_cfg.get("lead_time_weeks") == 8 and brazil_cfg.get("lead_time") == 8,
+        f"Brazil (Country 017) ocean lead time configured to 8 weeks",
+        f"Brazil lead time mismatch: {brazil_cfg}",
+    )
+    japan_cfg = lts.get("Country 053") or lts.get("Japan") or {}
+    assert_check(
+        japan_cfg.get("lead_time_weeks") == 4 and japan_cfg.get("lead_time") == 4,
+        f"Japan (Country 053) transit lead time configured to 4 weeks",
+        f"Japan lead time mismatch: {japan_cfg}",
+    )
+
+    # Check top signals have valid lead time attributes and no empty strings
+    lead_time_errs = []
+    for s in signals:
+        if not s.get("market_lead_time"): lead_time_errs.append(f"Rank {s.get('rank')} missing market_lead_time")
+        if not s.get("market_name"): lead_time_errs.append(f"Rank {s.get('rank')} missing market_name")
+        if not s.get("freight_callout"): lead_time_errs.append(f"Rank {s.get('rank')} empty freight_callout")
+    assert_check(
+        len(lead_time_errs) == 0,
+        f"All {len(signals)} top signals contain market_lead_time, market_name, and non-empty freight_callout",
+        f"Signal lead time errors: {lead_time_errs}",
+    )
+except Exception as exc:
+    fail(f"Could not validate administrative_settings: {exc}")
     failures.append(str(exc))
 
 # ---------------------------------------------------------------------------

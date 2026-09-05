@@ -453,6 +453,151 @@ test('Unit: Section 6.4 Stale Parameter Detection & Master Data Segmentation', (
   });
 });
 
+// ── Unit Tests: 6 Mentor Feedback Features ─────────────────────────
+test('Unit: Feature 1: Section 6.1 "What Changed Since Last Week" SKU Diff Alerting', () => {
+  const dashData = JSON.parse(fs.readFileSync('backend/dashboard_data.json', 'utf8'));
+  const wow = dashData.corridor_health.wow_delta;
+  assert(wow.signal_diff, 'wow_delta must contain signal_diff');
+  assert(Array.isArray(wow.signal_diff.resolved) && wow.signal_diff.resolved.length === 3, 'Must have 3 resolved crises in diff');
+  assert(Array.isArray(wow.signal_diff.new) && wow.signal_diff.new.length === 2, 'Must have 2 newly emerged crises in diff');
+  assert(Array.isArray(wow.signal_diff.shifts) && wow.signal_diff.shifts.length === 2, 'Must have 2 priority shifts in diff');
+
+  const firstResolved = wow.signal_diff.resolved[0];
+  assert(firstResolved.brand && firstResolved.country && firstResolved.action_taken && firstResolved.capital_liberated_inr > 0, 'Resolved record must have brand, country, action, and capital liberated');
+
+  const firstNew = wow.signal_diff.new[0];
+  assert(firstNew.brand && firstNew.country && firstNew.breach_week && firstNew.trigger, 'New crisis record must have brand, country, breach week, and emergence trigger');
+});
+
+test('Unit: Feature 2: Section 6.8 Context-Aware Manufacturing & Allocation Constraints', () => {
+  const dashData = JSON.parse(fs.readFileSync('backend/dashboard_data.json', 'utf8'));
+  const sigs = dashData.top_signals;
+  sigs.forEach(s => {
+    const c = s.constraints;
+    assert(c, `Signal #${s.rank} must contain constraints object`);
+    assert(c.frozen_horizon_weeks === 4, 'Frozen horizon must be 4 weeks');
+    assert(typeof c.in_frozen_horizon === 'boolean', 'in_frozen_horizon must be boolean');
+    assert(c.in_frozen_horizon === (s.breach_week <= 4), 'in_frozen_horizon must match breach_week <= 4');
+    assert(c.campaign_moq_units === 5000, 'Campaign MOQ must be 5,000 units');
+    assert(c.batch_multiple_units === 2500, 'Batch multiple must be 2,500 units');
+    assert(c.allocation_cap_pct === 85.0, 'Global network allocation cap must be 85%');
+    if (s.recommended_qty_units > 0) {
+      assert(c.constrained_roq_units >= c.campaign_moq_units, 'Constrained ROQ must meet or exceed MOQ');
+      assert(c.constrained_roq_units % c.batch_multiple_units === 0, 'Constrained ROQ must be a multiple of 2,500 units');
+    }
+  });
+});
+
+test('Unit: Feature 3: Section 6.9 Cold-Start / New Product Launch Protocol', () => {
+  const dashData = JSON.parse(fs.readFileSync('backend/dashboard_data.json', 'utf8'));
+  const sigs = dashData.top_signals;
+  const launchSigs = sigs.filter(s => s.is_cold_start);
+  assert(launchSigs.length > 0, `Expected at least one cold start / launch signal in top signals, got ${launchSigs.length}`);
+  launchSigs.forEach(s => {
+    assert(s.cold_start && s.cold_start.is_cold_start, 'cold_start object must be marked active');
+    assert(s.cold_start.launch_phase && s.cold_start.launch_phase.includes('Phase II'), 'Must contain launch phase');
+    assert(s.cold_start.analogue_market && s.cold_start.analogue_market.includes('Country 045'), 'Must reference analogue market');
+    assert(s.cold_start.demand_uncertainty_buffer.includes('90-Day Pre-Build Buffer'), 'Must use 90-day pre-build buffer');
+  });
+});
+
+test('Unit: Feature 4: Section 6.10 CHI Contextualization & 4-Quarter Rolling Trend', () => {
+  const dashData = JSON.parse(fs.readFileSync('backend/dashboard_data.json', 'utf8'));
+  const ch = dashData.corridor_health;
+  assert(ch.benchmarks, 'corridor_health must contain benchmarks object');
+  assert(ch.benchmarks.world_class_sla_target === 95.0, 'World-class SLA benchmark must be 95.0%');
+  assert(ch.benchmarks.operational_threshold === 85.0, 'Operational threshold must be 85.0%');
+  assert(ch.benchmarks.critical_floor === 80.0, 'Critical risk floor must be 80.0%');
+  assert(Array.isArray(ch.historical_trend_4q) && ch.historical_trend_4q.length === 4, 'Must have 4 quarters of historical trend');
+  assert(ch.historical_trend_4q[0].chi === 82.4, 'Q1 CHI must be 82.4');
+  assert(ch.historical_trend_4q[3].chi === ch.global_chi, 'Q4 CHI must match current global CHI');
+});
+
+test('Unit: Feature 5: Section 6.5 Recipient Warehouse Headroom & Transfer Economics ROI', () => {
+  const dashData = JSON.parse(fs.readFileSync('backend/dashboard_data.json', 'utf8'));
+  const transferSigs = dashData.top_signals.filter(s => s.intermarket_transfer && s.intermarket_transfer.has_transfer);
+  assert(transferSigs.length > 0, `Expected transfer signals, got ${transferSigs.length}`);
+  transferSigs.forEach(s => {
+    const tr = s.intermarket_transfer;
+    const wh = tr.warehouse_capacity;
+    assert(wh, 'Must contain warehouse_capacity');
+    assert(wh.recipient_wh_capacity_units >= 50000, 'Warehouse capacity must be at least 50,000 units');
+    assert(wh.recipient_utilization_pct <= 90.0, `Warehouse utilization must be <= 90%, got ${wh.recipient_utilization_pct}`);
+    assert(wh.is_feasible === true, 'Warehouse headroom must be feasible (PASS)');
+
+    const econ = tr.transfer_economics;
+    assert(econ, 'Must contain transfer_economics');
+    assert(econ.cost_air_freight_inr > 0, 'Must compute air freight cost');
+    assert(econ.cost_total_transfer_inr > 0, 'Must compute total transfer cost');
+    assert(econ.transfer_roi_ratio >= 5.0, `Transfer ROI ratio must be >= 5x, got ${econ.transfer_roi_ratio}`);
+  });
+});
+
+test('Unit: Feature 6: Section 6.7 Predictive Replenishment Latency & Lead Time Cliff', () => {
+  const dashData = JSON.parse(fs.readFileSync('backend/dashboard_data.json', 'utf8'));
+  const sigs = dashData.top_signals;
+  sigs.forEach(s => {
+    const lat = s.predictive_latency;
+    assert(lat, `Signal #${s.rank} must contain predictive_latency`);
+    assert(lat.order_dispatch_week === 1, 'Dispatch week must be Week 1');
+    assert(lat.standard_arrival_week === 1 + lat.market_lead_time_weeks, 'Standard arrival must equal 1 + lead time');
+    assert(lat.stockout_breach_week === s.breach_week, 'Stockout breach week must match signal breach week');
+    assert(lat.is_arrival_late === (lat.standard_arrival_week > s.breach_week), 'is_arrival_late must reflect standard arrival vs breach week');
+    if (lat.is_arrival_late) {
+      assert(lat.latency_gap_weeks > 0, 'Late signal must have positive latency gap');
+      assert(lat.expedited_arrival_week === 2, 'Expedited arrival must be Week 2');
+    }
+  });
+});
+
+test('Unit: Issues 4 & 6: WoW Diff Modal Integration & Overstock Zero-Capital Rationale', () => {
+  const indexHtml = fs.readFileSync('frontend/index.html', 'utf8');
+  assert(indexHtml.includes('modal-wow-diff'), 'index.html must contain modal-wow-diff markup');
+  assert(indexHtml.includes('btn-wow-diff'), 'index.html must contain btn-wow-diff');
+  assert(indexHtml.includes('btn-inline-wow-diff'), 'index.html must contain btn-inline-wow-diff');
+
+  const briefingJs = fs.readFileSync('frontend/src/briefing.js', 'utf8');
+  assert(briefingJs.includes('initWoWDiffModal'), 'briefing.js must export/call initWoWDiffModal');
+  assert(briefingJs.includes('renderTab'), 'initWoWDiffModal must implement tab rendering');
+
+  const dashData = JSON.parse(fs.readFileSync('backend/dashboard_data.json', 'utf8'));
+  const s6 = dashData.top_signals.find(s => s.rank === 6);
+  assert(s6 && s6.action_type === 'EXCESS HOLDING', 'Signal #6 must be EXCESS HOLDING');
+  assert(s6.capital_at_risk_inr === 0, 'Signal #6 capital_at_risk_inr is 0 because overstock requires zero reorder purchase capital');
+
+  const drawerJs = fs.readFileSync('frontend/src/drawer-detail.js', 'utf8');
+  assert(drawerJs.includes('SURPLUS · DEFER INBOUND'), 'drawer-detail.js must clarify zero capital as surplus');
+});
+
+test('Unit: Administrative Settings Toggle & Backend Lead Times by Market Data', () => {
+  const dashData = JSON.parse(fs.readFileSync('backend/dashboard_data.json', 'utf8'));
+  const adm = dashData.administrative_settings;
+  assert(adm, 'dashboard_data.json must contain administrative_settings');
+  assert(adm.global_lead_time_default_days === 14, 'Global default lead time days must be 14');
+  assert(adm.global_lead_time_default_weeks === 2, 'Global default lead time weeks must be 2');
+  assert(adm.overstock_trigger_weeks === 4, 'Overstock trigger weeks must be 4');
+  assert(adm.understock_trigger_weeks === 5, 'Understock trigger weeks must be 5');
+  assert(adm.per_market_override_toggle === true, 'per_market_override_toggle must be true');
+
+  const lts = adm.lead_times_by_market;
+  assert(lts && typeof lts === 'object', 'lead_times_by_market must be an object');
+  assert(lts['Country 013'] && lts['Country 013'].lead_time_weeks === 36, 'China lead time must be 36W');
+  assert(lts['Country 017'] && lts['Country 017'].lead_time_weeks === 8, 'Brazil lead time must be 8W');
+  assert(lts['Country 053'] && lts['Country 053'].lead_time_weeks === 4, 'Japan lead time must be 4W');
+
+  // Verify all top signals have real non-empty lead time data
+  dashData.top_signals.forEach(s => {
+    assert(s.market_lead_time && s.market_lead_time > 0, `Signal #${s.rank} missing market_lead_time`);
+    assert(s.market_name && s.market_name.length > 0, `Signal #${s.rank} missing market_name`);
+    assert(s.freight_callout && s.freight_callout.length > 0, `Signal #${s.rank} missing freight_callout`);
+  });
+
+  const scenarioJs = fs.readFileSync('frontend/src/drawer-scenario.js', 'utf8');
+  assert(scenarioJs.includes('administrative_settings'), 'drawer-scenario.js must reference administrative_settings');
+  assert(scenarioJs.includes('toggle-per-market'), 'drawer-scenario.js must contain toggle-per-market element');
+  assert(scenarioJs.includes('market-config-table'), 'drawer-scenario.js must contain market-config-table element');
+});
+
 console.log(`\n=== TEST SUMMARY ===`);
 console.log(`Total Passed: ${passedCount}`);
 console.log(`Total Failed: ${failedCount}`);

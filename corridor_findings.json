@@ -157,7 +157,7 @@
     "max_weeks": 23
   },
   "shape": {
-    "source_file": "Inventry_Corridor_Alert_Weekly_Aug2026_Jul2027.xlsx",
+    "source_file": "C:\\Users\\PC\\AppData\\Local\\Temp\\tmp7tqmvwkx.xlsx",
     "sheet": "Export",
     "series": 5000,
     "weeks": 52,
@@ -508,7 +508,7 @@
   ],
   "is_synthetic": true,
   "_meta": {
-    "generated_utc": "2026-08-26 10:58:44Z",
+    "generated_utc": "2026-09-05 06:44:09Z",
     "pipeline": "corridor_pipeline.py",
     "pandas": "2.3.3",
     "numpy": "2.5.1",

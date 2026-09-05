@@ -248,7 +248,9 @@ async function startDemoPipeline() {
     stepper.style.display = 'block';
   }
 
-  const demoPromise = fetch('/load-demo');
+  const demoPromise = fetch('/load-demo')
+    .then(r => r.ok ? r : fetch('/dashboard_data.json'))
+    .catch(() => fetch('/dashboard_data.json'));
 
   try {
     await animateStep(1, 500);

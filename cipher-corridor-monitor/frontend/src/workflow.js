@@ -47,7 +47,29 @@ export function getWorkflowState(rowId) {
       if (raw) return JSON.parse(raw);
     } catch (e) {}
   }
-  return MEMORY_WORKFLOW[rowId] || {
+  if (MEMORY_WORKFLOW[rowId]) {
+    return MEMORY_WORKFLOW[rowId];
+  }
+
+  // Fallback to backend pre-assigned workflow data from dashboard_data.json
+  if (typeof window !== 'undefined' && window.DATA) {
+    const active = window.DATA.alert_workflow?.active_assignments?.[String(rowId)]
+      || window.DATA.top_signals?.find(s => String(s.row_id) === String(rowId))?.workflow;
+    if (active) {
+      return {
+        owner: active.owner || 'Unassigned',
+        comments: Array.isArray(active.comments) ? [...active.comments] : [],
+        snooze: active.snooze || null,
+        acknowledged: Boolean(active.acknowledged),
+        assigned_at: active.assigned_at || null,
+        sla_deadline_utc: active.sla_deadline_utc || null,
+        sla_remaining_hours: active.sla_remaining_hours !== undefined ? active.sla_remaining_hours : 18.2,
+        is_sla_critical: Boolean(active.is_sla_critical)
+      };
+    }
+  }
+
+  return {
     owner: 'Unassigned',
     comments: [],
     snooze: null,
