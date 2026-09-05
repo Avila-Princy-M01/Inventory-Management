@@ -66,31 +66,7 @@ ADMINISTRATIVE_LEAD_TIMES_BY_MARKET = {
         "ocean_transit_days": 252,
         "is_deep_sea": True
     },
-    "China": {
-        "code": "Country 013",
-        "name": "China",
-        "lead_time": 36,
-        "lead_time_weeks": 36,
-        "mode": "Sea Freight",
-        "air_lead_time": 2,
-        "air_lead_time_weeks": 2,
-        "desc": "Pacific Sea Freight Corridor (Standard 8-9 Months Ocean Transit)",
-        "ocean_transit_days": 252,
-        "is_deep_sea": True
-    },
     "Country 017": {
-        "code": "Country 017",
-        "name": "Brazil",
-        "lead_time": 8,
-        "lead_time_weeks": 8,
-        "mode": "Sea Freight",
-        "air_lead_time": 2,
-        "air_lead_time_weeks": 2,
-        "desc": "Atlantic Ocean + Santos Port Customs Clearance",
-        "ocean_transit_days": 56,
-        "is_deep_sea": True
-    },
-    "Brazil": {
         "code": "Country 017",
         "name": "Brazil",
         "lead_time": 8,
@@ -114,31 +90,7 @@ ADMINISTRATIVE_LEAD_TIMES_BY_MARKET = {
         "ocean_transit_days": 28,
         "is_deep_sea": False
     },
-    "Japan": {
-        "code": "Country 053",
-        "name": "Japan",
-        "lead_time": 4,
-        "lead_time_weeks": 4,
-        "mode": "Maritime / Air",
-        "air_lead_time": 1,
-        "air_lead_time_weeks": 1,
-        "desc": "Tokyo Regional Transit Hub & Coastal Feeder",
-        "ocean_transit_days": 28,
-        "is_deep_sea": False
-    },
     "Country 020": {
-        "code": "Country 020",
-        "name": "United States",
-        "lead_time": 6,
-        "lead_time_weeks": 6,
-        "mode": "Sea / Intermodal",
-        "air_lead_time": 2,
-        "air_lead_time_weeks": 2,
-        "desc": "East Coast Ports + Continental Rail Intermodal",
-        "ocean_transit_days": 42,
-        "is_deep_sea": True
-    },
-    "United States": {
         "code": "Country 020",
         "name": "United States",
         "lead_time": 6,
@@ -162,31 +114,7 @@ ADMINISTRATIVE_LEAD_TIMES_BY_MARKET = {
         "ocean_transit_days": 35,
         "is_deep_sea": False
     },
-    "India": {
-        "code": "Country 025",
-        "name": "India",
-        "lead_time": 5,
-        "lead_time_weeks": 5,
-        "mode": "Regional Maritime",
-        "air_lead_time": 1,
-        "air_lead_time_weeks": 1,
-        "desc": "Nhava Sheva Sea Gate + Inland Container Depot",
-        "ocean_transit_days": 35,
-        "is_deep_sea": False
-    },
     "Country 031": {
-        "code": "Country 031",
-        "name": "Germany",
-        "lead_time": 3,
-        "lead_time_weeks": 3,
-        "mode": "Road / Rail",
-        "air_lead_time": 1,
-        "air_lead_time_weeks": 1,
-        "desc": "Central European Cross-Border Reefer Trucking",
-        "ocean_transit_days": 0,
-        "is_deep_sea": False
-    },
-    "Germany": {
         "code": "Country 031",
         "name": "Germany",
         "lead_time": 3,
@@ -210,31 +138,7 @@ ADMINISTRATIVE_LEAD_TIMES_BY_MARKET = {
         "ocean_transit_days": 0,
         "is_deep_sea": False
     },
-    "United Kingdom": {
-        "code": "Country 032",
-        "name": "United Kingdom",
-        "lead_time": 3,
-        "lead_time_weeks": 3,
-        "mode": "Maritime / Road",
-        "air_lead_time": 1,
-        "air_lead_time_weeks": 1,
-        "desc": "Channel Ferry Cross-Dock + UK National Depot",
-        "ocean_transit_days": 0,
-        "is_deep_sea": False
-    },
     "Country 038": {
-        "code": "Country 038",
-        "name": "France",
-        "lead_time": 3,
-        "lead_time_weeks": 3,
-        "mode": "Road / Rail",
-        "air_lead_time": 1,
-        "air_lead_time_weeks": 1,
-        "desc": "Western Europe Pharma Cold-Chain Logistics",
-        "ocean_transit_days": 0,
-        "is_deep_sea": False
-    },
-    "France": {
         "code": "Country 038",
         "name": "France",
         "lead_time": 3,
@@ -258,31 +162,7 @@ ADMINISTRATIVE_LEAD_TIMES_BY_MARKET = {
         "ocean_transit_days": 49,
         "is_deep_sea": True
     },
-    "Australia": {
-        "code": "Country 045",
-        "name": "Australia",
-        "lead_time": 7,
-        "lead_time_weeks": 7,
-        "mode": "Sea Freight",
-        "air_lead_time": 2,
-        "air_lead_time_weeks": 2,
-        "desc": "Southern Ocean Freight + Biosecurity Quarantine",
-        "ocean_transit_days": 49,
-        "is_deep_sea": True
-    },
     "Country 049": {
-        "code": "Country 049",
-        "name": "Canada",
-        "lead_time": 4,
-        "lead_time_weeks": 4,
-        "mode": "Sea / Intermodal",
-        "air_lead_time": 2,
-        "air_lead_time_weeks": 2,
-        "desc": "St. Lawrence Seaway / Great Lakes Intermodal",
-        "ocean_transit_days": 28,
-        "is_deep_sea": False
-    },
-    "Canada": {
         "code": "Country 049",
         "name": "Canada",
         "lead_time": 4,
@@ -1129,7 +1009,7 @@ def layer3_intermarket_transfers(signals, panel, price_master):
                         "cost_relabeling_packaging_inr": cost_relabel,
                         "cost_total_transfer_inr": cost_total,
                         "capital_protected_inr": capital_saved,
-                        "net_economic_benefit_inr": net_benefit if 'net_benefit' in locals() else (capital_saved - cost_total),
+                        "net_economic_benefit_inr": capital_saved - cost_total,
                         "transfer_roi_ratio": roi_ratio,
                         "roi_text": f"{roi_ratio}x Net Capital ROI"
                     },

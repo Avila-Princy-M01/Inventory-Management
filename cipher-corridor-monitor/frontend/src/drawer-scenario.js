@@ -59,25 +59,15 @@ export function computeUrgency(dt, leadTimeWeeks = 3) {
 // ── Per-Market Supply Corridor Defaults ──────────────────────────────────────────
 export const DEFAULT_MARKET_LEAD_TIMES = {
   'Country 013': { code: 'Country 013', name: 'China', lead_time: 36, mode: 'Sea Freight', air_lead_time: 2, desc: 'Pacific Sea Freight Corridor (Standard)' },
-  'China':       { code: 'Country 013', name: 'China', lead_time: 36, mode: 'Sea Freight', air_lead_time: 2, desc: 'Pacific Sea Freight Corridor (Standard)' },
   'Country 017': { code: 'Country 017', name: 'Brazil', lead_time: 8, mode: 'Sea Freight', air_lead_time: 2, desc: 'Atlantic Ocean + Santos Port Customs' },
-  'Brazil':      { code: 'Country 017', name: 'Brazil', lead_time: 8, mode: 'Sea Freight', air_lead_time: 2, desc: 'Atlantic Ocean + Santos Port Customs' },
   'Country 053': { code: 'Country 053', name: 'Japan', lead_time: 4, mode: 'Maritime / Air', air_lead_time: 1, desc: 'Tokyo Regional Transit Hub' },
-  'Japan':       { code: 'Country 053', name: 'Japan', lead_time: 4, mode: 'Maritime / Air', air_lead_time: 1, desc: 'Tokyo Regional Transit Hub' },
   'Country 020': { code: 'Country 020', name: 'United States', lead_time: 6, mode: 'Sea / Intermodal', air_lead_time: 2, desc: 'East Coast Ports + Rail Intermodal' },
-  'United States': { code: 'Country 020', name: 'United States', lead_time: 6, mode: 'Sea / Intermodal', air_lead_time: 2, desc: 'East Coast Ports + Rail Intermodal' },
   'Country 025': { code: 'Country 025', name: 'India', lead_time: 5, mode: 'Regional Maritime', air_lead_time: 1, desc: 'Nhava Sheva Sea Gate + Inland Depot' },
-  'India':       { code: 'Country 025', name: 'India', lead_time: 5, mode: 'Regional Maritime', air_lead_time: 1, desc: 'Nhava Sheva Sea Gate + Inland Depot' },
   'Country 031': { code: 'Country 031', name: 'Germany', lead_time: 3, mode: 'Road / Rail', air_lead_time: 1, desc: 'Central European Cross-Border Trucking' },
-  'Germany':     { code: 'Country 031', name: 'Germany', lead_time: 3, mode: 'Road / Rail', air_lead_time: 1, desc: 'Central European Cross-Border Trucking' },
   'Country 032': { code: 'Country 032', name: 'United Kingdom', lead_time: 3, mode: 'Maritime / Road', air_lead_time: 1, desc: 'Channel Ferry + UK Regional Depot' },
-  'United Kingdom': { code: 'Country 032', name: 'United Kingdom', lead_time: 3, mode: 'Maritime / Road', air_lead_time: 1, desc: 'Channel Ferry + UK Regional Depot' },
   'Country 038': { code: 'Country 038', name: 'France', lead_time: 3, mode: 'Road / Rail', air_lead_time: 1, desc: 'Western Europe Road Freight Network' },
-  'France':      { code: 'Country 038', name: 'France', lead_time: 3, mode: 'Road / Rail', air_lead_time: 1, desc: 'Western Europe Road Freight Network' },
   'Country 045': { code: 'Country 045', name: 'Australia', lead_time: 7, mode: 'Sea Freight', air_lead_time: 2, desc: 'Southern Ocean Freight + Quarantine' },
-  'Australia':   { code: 'Country 045', name: 'Australia', lead_time: 7, mode: 'Sea Freight', air_lead_time: 2, desc: 'Southern Ocean Freight + Quarantine' },
-  'Country 049': { code: 'Country 049', name: 'Canada', lead_time: 4, mode: 'Sea / Intermodal', air_lead_time: 2, desc: 'St. Lawrence Seaway / Rail' },
-  'Canada':      { code: 'Country 049', name: 'Canada', lead_time: 4, mode: 'Sea / Intermodal', air_lead_time: 2, desc: 'St. Lawrence Seaway / Rail' }
+  'Country 049': { code: 'Country 049', name: 'Canada', lead_time: 4, mode: 'Sea / Intermodal', air_lead_time: 2, desc: 'St. Lawrence Seaway / Rail' }
 };
 
 let _perMarketActive = false;
@@ -94,7 +84,13 @@ export function isPerMarketActive() {
   const st = safeStorage();
   if (st) {
     const saved = st.getItem('novomonitor_per_market_active');
-    if (saved !== null) _perMarketActive = saved === '1';
+    if (saved !== null) {
+      _perMarketActive = saved === '1';
+      return _perMarketActive;
+    }
+  }
+  if (typeof window !== 'undefined' && window.DATA && window.DATA.administrative_settings) {
+    _perMarketActive = Boolean(window.DATA.administrative_settings.per_market_override_toggle);
   }
   return _perMarketActive;
 }
@@ -114,6 +110,38 @@ export function setPerMarketActive(active) {
 export function getMarketConfig(country) {
   const key = String(country || '').trim();
   if (_marketOverrides[key]) return _marketOverrides[key];
+
+  // Dynamic source of truth: backend administrative_settings.lead_times_by_market
+  const backendMarketMap = (typeof window !== 'undefined' && window.DATA && 
+    (window.DATA.administrative_settings?.lead_times_by_market || window.DATA.metadata?.lead_times_by_market)) || null;
+
+  if (backendMarketMap && backendMarketMap[key]) {
+    const b = backendMarketMap[key];
+    return {
+      code: b.code || key,
+      name: b.name || key,
+      lead_time: b.lead_time || b.lead_time_weeks || 3,
+      mode: b.mode || 'Sea Freight',
+      air_lead_time: b.air_lead_time || b.air_lead_time_weeks || 2,
+      desc: b.desc || b.corridor_description || 'Standard Corridor Lead Time'
+    };
+  }
+  if (backendMarketMap) {
+    for (const k of Object.keys(backendMarketMap)) {
+      const b = backendMarketMap[k];
+      if (k.toLowerCase() === key.toLowerCase() || (b.name && b.name.toLowerCase() === key.toLowerCase())) {
+        return {
+          code: b.code || k,
+          name: b.name || k,
+          lead_time: b.lead_time || b.lead_time_weeks || 3,
+          mode: b.mode || 'Sea Freight',
+          air_lead_time: b.air_lead_time || b.air_lead_time_weeks || 2,
+          desc: b.desc || b.corridor_description || 'Standard Corridor Lead Time'
+        };
+      }
+    }
+  }
+
   if (DEFAULT_MARKET_LEAD_TIMES[key]) return DEFAULT_MARKET_LEAD_TIMES[key];
   for (const k of Object.keys(DEFAULT_MARKET_LEAD_TIMES)) {
     if (k.toLowerCase() === key.toLowerCase() || (DEFAULT_MARKET_LEAD_TIMES[k].name && DEFAULT_MARKET_LEAD_TIMES[k].name.toLowerCase() === key.toLowerCase())) {
@@ -195,9 +223,11 @@ export function recomputeSignalScores(signals, leadTimeWeeks, ceilMult, marketOv
     // When breach week occurs before replenishment lead time, standard sea freight cannot arrive in time!
     // Example: China breach at week 14 — with 36-week lead time, this is ALREADY TOO LATE for sea freight.
     const isLateForSea = usePerMarket && (mktLt >= 6) && (breachWk < mktLt);
-    let freightCallout = '';
+    let freightCallout = sig.freight_callout || '';
     if (isLateForSea) {
       freightCallout = `${countryName} breach at week ${breachWk} — with ${mktLt}-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this.`;
+    } else if (!freightCallout) {
+      freightCallout = `${countryName} breach at week ${breachWk} — within ${mktLt}-week standard replenishment window. Sea/surface transit on cadence.`;
     }
 
     let qty = sig.recommended_qty_units || 0;
@@ -240,6 +270,15 @@ export function openScenarioDrawer(data, options = {}) {
   const overlay = document.getElementById('drawer-overlay');
   const body    = document.getElementById('scenario-body');
   if (!drawer || !body) return;
+
+  if (data && data.administrative_settings) {
+    if (data.administrative_settings.understock_trigger_weeks) {
+      _understockGate = data.administrative_settings.understock_trigger_weeks;
+    }
+    if (data.administrative_settings.overstock_trigger_weeks) {
+      _overstockGate = data.administrative_settings.overstock_trigger_weeks;
+    }
+  }
 
   const baseCHI = (data && data.corridor_health && data.corridor_health.global_chi) || 85.3;
   const defaultTab = (options && options.defaultTab) || (_perMarketActive ? 'market' : 'global');
@@ -360,6 +399,8 @@ export function openScenarioDrawer(data, options = {}) {
       </div>
 
       <button class="btn-primary" id="btn-reset-market-defaults" style="width:100%;margin-top:14px">RESET CORRIDORS TO DEFAULTS</button>
+      <button class="btn-action" id="btn-save-market-settings" style="width:100%;margin-top:8px;background:#F8FAFC;border:1px solid #CBD5E1;color:#0F172A;font-weight:700;">💾 PERSIST SETTINGS TO BACKEND (SYNC)</button>
+      <div id="save-settings-feedback" style="display:none;font-size:11px;font-family:var(--font-mono);color:var(--ok-text);text-align:center;margin-top:6px;font-weight:700;"></div>
     </div>
   `;
 
@@ -444,6 +485,12 @@ export function openScenarioDrawer(data, options = {}) {
         pillMkt.textContent = _perMarketActive ? '● PER-MARKET OVERRIDE ACTIVE' : '○ GLOBAL PARAMETERS ACTIVE';
       }
       recalc();
+      // Synchronize state with backend administrative_settings
+      fetch('/api/settings/administrative', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ per_market_override_toggle: _perMarketActive })
+      }).catch(() => {});
     });
   }
 
@@ -464,6 +511,11 @@ export function openScenarioDrawer(data, options = {}) {
         pillMkt.textContent = '● PER-MARKET OVERRIDE ACTIVE';
       }
       recalc();
+      fetch('/api/settings/administrative', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ per_market_override_toggle: true })
+      }).catch(() => {});
     });
   }
 
@@ -483,6 +535,11 @@ export function openScenarioDrawer(data, options = {}) {
         pillMkt.textContent = '● PER-MARKET OVERRIDE ACTIVE';
       }
       recalc();
+      fetch('/api/settings/administrative', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ per_market_override_toggle: true })
+      }).catch(() => {});
     });
   }
 
@@ -497,6 +554,54 @@ export function openScenarioDrawer(data, options = {}) {
         pillMkt.textContent = '○ GLOBAL PARAMETERS ACTIVE';
       }
       recalc();
+      fetch('/api/settings/administrative', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ per_market_override_toggle: false })
+      }).catch(() => {});
+    });
+  }
+
+  const btnSaveSettings = document.getElementById('btn-save-market-settings');
+  const saveFeedback = document.getElementById('save-settings-feedback');
+  if (btnSaveSettings) {
+    btnSaveSettings.addEventListener('click', async () => {
+      btnSaveSettings.disabled = true;
+      btnSaveSettings.textContent = 'SAVING SETTINGS…';
+      try {
+        const payload = {
+          per_market_override_toggle: _perMarketActive,
+          lead_times_by_market: _marketOverrides
+        };
+        const res = await fetch('/api/settings/administrative', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+        if (res.ok && result.success) {
+          btnSaveSettings.textContent = '✓ PERSISTED TO BACKEND';
+          if (saveFeedback) {
+            saveFeedback.textContent = '✓ Lead time settings & toggle saved to dashboard_data.json';
+            saveFeedback.style.display = 'block';
+          }
+          setTimeout(() => {
+            btnSaveSettings.disabled = false;
+            btnSaveSettings.textContent = '💾 PERSIST SETTINGS TO BACKEND (SYNC)';
+            if (saveFeedback) saveFeedback.style.display = 'none';
+          }, 3000);
+        } else {
+          throw new Error(result.error || 'Failed');
+        }
+      } catch (err) {
+        btnSaveSettings.disabled = false;
+        btnSaveSettings.textContent = 'RETRY PERSIST';
+        if (saveFeedback) {
+          saveFeedback.textContent = '⚠️ Save failed: ' + err.message;
+          saveFeedback.style.color = 'var(--crisis-text)';
+          saveFeedback.style.display = 'block';
+        }
+      }
     });
   }
 
@@ -504,7 +609,13 @@ export function openScenarioDrawer(data, options = {}) {
     const tbody = document.getElementById('market-table-body');
     if (!tbody) return;
 
-    const keyMarkets = [
+    const appData = window.DATA || {};
+    const sigs = appData.top_signals || [];
+
+    const backendMarketMap = (appData.administrative_settings && appData.administrative_settings.lead_times_by_market) ||
+                             (appData.metadata && appData.metadata.lead_times_by_market) || null;
+
+    let keyMarkets = [
       { code: 'Country 013', name: 'China', defaultLt: 36, defaultMode: 'Sea Freight' },
       { code: 'Country 017', name: 'Brazil', defaultLt: 8, defaultMode: 'Sea Freight' },
       { code: 'Country 053', name: 'Japan', defaultLt: 4, defaultMode: 'Maritime / Air' },
@@ -517,8 +628,25 @@ export function openScenarioDrawer(data, options = {}) {
       { code: 'Country 049', name: 'Canada', defaultLt: 4, defaultMode: 'Sea / Intermodal' }
     ];
 
-    const appData = window.DATA || {};
-    const sigs = appData.top_signals || [];
+    if (backendMarketMap) {
+      const seen = new Set();
+      const dynamicMarkets = [];
+      for (const [k, v] of Object.entries(backendMarketMap)) {
+        const c = v.code || k;
+        if (!seen.has(c)) {
+          seen.add(c);
+          dynamicMarkets.push({
+            code: c,
+            name: v.name || c,
+            defaultLt: v.lead_time || v.lead_time_weeks || 3,
+            defaultMode: v.mode || 'Sea Freight'
+          });
+        }
+      }
+      if (dynamicMarkets.length >= 10) {
+        keyMarkets = dynamicMarkets;
+      }
+    }
 
     tbody.innerHTML = keyMarkets.map(m => {
       const cfg = getMarketConfig(m.code);
