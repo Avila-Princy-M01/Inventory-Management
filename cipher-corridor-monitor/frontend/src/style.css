@@ -6165,3 +6165,218 @@ button {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
 }
 
+/* ── Monday Executive Emergency Briefing: Emergency Charts & Plan of Action ── */
+.emergency-briefing-card {
+  background: #FFF5F5;
+  border: 1px solid #FECACA;
+  border-left: 5px solid #DC2626;
+  padding: 18px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 6px rgba(220, 38, 38, 0.06);
+}
+
+.emergency-briefing-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.emergency-pill-live {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 800;
+  background: #FEE2E2;
+  color: #991B1B;
+  border: 1px solid #F87171;
+  padding: 3px 8px;
+  letter-spacing: 0.05em;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.emergency-live-dot {
+  width: 7px;
+  height: 7px;
+  background: #DC2626;
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulseCrisis 1.2s infinite ease-in-out;
+}
+
+@keyframes pulseCrisis {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.emergency-briefing-heading {
+  font-family: var(--font-head);
+  font-size: 17px;
+  font-weight: 800;
+  color: #7F1D1D;
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+
+.emergency-briefing-sub {
+  font-size: 12px;
+  color: #991B1B;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.emergency-charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+@media (max-width: 900px) {
+  .emergency-charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.emergency-chart-tile {
+  background: #FFFFFF;
+  border: 1px solid #FCA5A5;
+  padding: 14px;
+  position: relative;
+}
+
+.emergency-chart-title {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #991B1B;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.emergency-chart-wrap {
+  height: 165px;
+  position: relative;
+}
+
+.emergency-points-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+@media (max-width: 800px) {
+  .emergency-points-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.emergency-point-item {
+  background: #FFFFFF;
+  border: 1px solid #FECACA;
+  border-left: 3px solid #DC2626;
+  padding: 12px;
+}
+
+.emergency-point-k {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 800;
+  color: #991B1B;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.emergency-point-v {
+  font-size: 12px;
+  color: #374151;
+  line-height: 1.5;
+}
+
+.emergency-action-plan-container {
+  background: #FFFFFF;
+  border: 1px solid #FCA5A5;
+  border-left: 4px solid #991B1B;
+  padding: 14px 16px;
+}
+
+.emergency-action-plan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.emergency-action-plan-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 800;
+  color: #7F1D1D;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.emergency-action-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.emergency-action-step-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 10px;
+  background: #FEF2F2;
+  border: 1px solid #FEE2E2;
+}
+
+.emergency-step-badge {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 800;
+  background: #991B1B;
+  color: #FFFFFF;
+  padding: 2px 6px;
+  flex-shrink: 0;
+}
+
+.emergency-step-text {
+  font-size: 11.5px;
+  color: #1F2937;
+  line-height: 1.5;
+}
+
+.emergency-step-text strong {
+  color: #991B1B;
+}
+
+.emergency-step-action-btn {
+  margin-left: auto;
+  background: #991B1B;
+  color: #FFFFFF;
+  border: none;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 4px 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.emergency-step-action-btn:hover {
+  background: #7F1D1D;
+}
+
