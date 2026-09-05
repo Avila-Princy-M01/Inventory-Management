@@ -58,8 +58,24 @@ Modern pharmaceutical supply networks face severe friction when global ERP/OMP s
 | **Annual Alert Volume** | 21,450 alerts / year | 1,742 actionable alerts / year | **91.9% Noise Elimination** (−19,708 false alarms/yr) |
 | **Chronic Master Data Alarms** | 379 series ringing 52w | 0 ringing (routed to master data queue) | **100% of phantom alarm noise removed** |
 | **Daily Planner Triage Load** | 4.2 hours / day per planner | 18 minutes / day (PRS rank-ordered) | **+3.9 hours/day recovered per planner** |
-| **Trapped Buffer Capital** | ₹1,498.7 Cr frozen in static SSD | ₹1,498.7 Cr parameter unlock queue | **Capital liberated to corporate treasury** |
+| **Trapped Buffer Capital** | ₹1,498.7 Cr frozen in static SSD | ₹1,498.7 Cr parameter unlock queue | **₹149.8 Cr/yr holding cost saved** (@ 10% WACC; ₹14.9 Cr Phase-1 release) |
 | **Breach Detection Horizon** | Reactive (post-stockout) | Predictive (1–12 weeks prior to breach) | **Pre-empts 36W deep-sea shipping cliffs** |
+
+### 4. Financial Reconciliation & Actionable Net ROI
+To satisfy rigorous CFO / supply chain audit standards, every recommended action is backed by explicit gross vs. net financial mathematics:
+
+| Financial Tier | Value | Scope & Methodology |
+|---|---|---|
+| **Total Trapped Working Capital** | **₹1,498.7 Cr** | Total inventory capital tied up across all 379 chronic misconfigured series |
+| **Stale Master Data Core** | **₹643.8 Cr** | Capital tied up in 164 high-confidence corridors with static SSD despite ≥30% demand shift |
+| **Annual Cash Holding Cost Saved** | **₹149.8 Cr / year** | Pure annual inventory carrying savings evaluated at standard 10% WACC |
+| **Phase-1 Fast-Track Release** | **₹14.9 Cr** | Immediate wave-1 capital liberated across top-tier acute corridors |
+
+#### Emergency Air Transfer Net ROI Equation:
+$$\text{Net Economic Benefit} = \text{Capital Protected} - (\text{Air Freight} + \text{Import Tariffs} + \text{GxP Relabeling})$$
+$$\text{Net ROI} = \frac{\text{Capital Protected}}{\text{Cost of Transfer}}$$
+- **Beacon (Country 013)**: ₹1.98 Cr protected vs ₹19.1L transfer cost (₹95/u freight + ₹35/u duty + ₹15/u relabel) = **₹1.79 Cr Net Benefit (10.3× Net ROI)**.
+- **Delta (Country 045)**: ₹1.24 Cr protected vs ₹22.2L transfer cost = **₹1.02 Cr Net Benefit (5.6× Net ROI)**.
 
 ---
 
@@ -97,9 +113,8 @@ Modern pharmaceutical supply networks face severe friction when global ERP/OMP s
 - **Email Digest & Live Dispatch**: Tabbed modal featuring **Rich AI Executive View** with one-click live dispatch to planners via TLS SMTP.
 
 ### View 03 — Master Data Governance
-- **379 Chronic Calibration Corridors**: Isolates corridors suffering 100% false-alarm rates due to static safety stock settings.
-- **Stale Parameter Detection**: Filters 164 corridors where demand shifted ≥30% while SSD remained frozen in SAP/OMP.
-- **Capital Liberation**: Highlights ₹14.9 Cr in holding buffer savings and provides instant CSV export formatted for SAP/OMP transport.
+- **Capital Liberation Hierarchy**: Reconciles **₹1,498.7 Cr** total trapped working capital across 379 misconfigured series, **₹149.8 Cr/yr** in recurring inventory holding cash savings (@ 10% WACC), and **₹14.9 Cr** in immediate Phase-1 pilot release with instant CSV export formatted for SAP/OMP transport.
+- **Net Economic ROI**: Demonstrates emergency action profitability by weighing gross inventory protected vs air charter premiums (e.g. ₹1.98 Cr protected vs ₹19.1L freight/duty = **10.3× Net ROI**).
 
 ### View 04 — GxP Audit Trail
 - **21 CFR Part 11 Compliance**: Immutable ledger recording planner approvals, electronic signatures, timestamps, reason codes, and SHA-256 session IDs.

@@ -172,7 +172,9 @@ Identified Chronic Calibration Series: 379 Corridors (Pure SAP/OMP Parameter Mis
 Stale Master Data Parameters: 164 Corridors (Static SSD despite ≥30% Demand Velocity Shift)
 Annual False Stockout Alerts Eliminated: 19,708 alerts/year
 Recommended Safety Stock Days (SSD) Adjustments: Ready for SAP/OMP transport
-Total Working Capital Unlocked: ₹14.9 Cr across inventory holding buffers
+Total Trapped Working Capital: ₹1,498.7 Cr (379 series; ₹643.8 Cr in 164 stale series)
+Annual Holding Cost Liberated (@ 10% WACC): ₹149.8 Cr / year recurring cash savings
+Phase 1 Immediate Fast-Track Release: ₹14.9 Cr (top-priority critical corridors)
 
 4. GOVERNANCE DECISION & ACTION DIRECTIVES
 --------------------------------------------------------------------------------
@@ -354,13 +356,15 @@ export function renderSlide(index, data) {
                     <strong>BEACON (Country 013):</strong> 13,174 U required.<br>
                     Matched Donor: <strong>Country 059</strong> (1.29M inv, 342.0d DOH).<br>
                     Donor Post-Transfer: <strong>338.6d DOH</strong> (safely &gt; 84d SSD floor).<br>
-                    Arrival: <strong>4-Day Air Charter</strong> · Saves ₹1.98 Cr.
+                    Arrival: <strong>4-Day Air Charter</strong> · Gross: ₹1.98 Cr · Freight &amp; Duty: ₹19.1L<br>
+                    <strong>Net Economic Benefit: ₹1.79 Cr (10.3× Net ROI)</strong>
                   </div>
                   <div style="background:#FFFFFF;border:1px solid var(--border);padding:10px">
                     <strong>DELTA (Country 045):</strong> 15,300 U required.<br>
                     Matched Donor: <strong>Country 055</strong> (309k inv, 163.2d DOH).<br>
                     Donor Post-Transfer: <strong>155.1d DOH</strong> (safely &gt; 42d SSD floor).<br>
-                    Arrival: <strong>4-Day Air Charter</strong> · Saves ₹1.24 Cr.
+                    Arrival: <strong>4-Day Air Charter</strong> · Gross: ₹1.24 Cr · Freight &amp; Duty: ₹22.2L<br>
+                    <strong>Net Economic Benefit: ₹1.02 Cr (5.6× Net ROI)</strong>
                   </div>
                 </div>
               </div>
@@ -401,15 +405,15 @@ export function renderSlide(index, data) {
               <div class="deck-kpi-note">52 weeks × 379 series eliminated</div>
             </div>
             <div class="deck-kpi-tile">
-              <div class="deck-kpi-val" style="color:#0072CE">₹14.9 CR</div>
-              <div class="deck-kpi-lbl">CAPITAL UNLOCKED</div>
-              <div class="deck-kpi-note">Liberated from excess SSD buffers</div>
+              <div class="deck-kpi-val" style="color:#0072CE">₹1,498.7 CR</div>
+              <div class="deck-kpi-lbl">TOTAL TRAPPED CAPITAL</div>
+              <div class="deck-kpi-note">₹149.8 Cr/yr WACC saved · Phase-1: ₹14.9 Cr</div>
             </div>
           </div>
           <div class="deck-content-card">
             <div class="deck-card-title">SECTION 6.4 STALE PARAMETER &amp; DIRECTIVE AUDIT</div>
             <div class="deck-card-body" style="font-family:var(--font-mono);font-size:12px;background:#F9FAFB;padding:12px;border-left:4px solid #D97706">
-              <div style="margin-bottom:6px"><strong>Stale Master Data Flag:</strong> 164 of 379 chronic series flagged with frozen SSD settings despite &gt;30% demand velocity shifts over 6 months.</div>
+              <div style="margin-bottom:6px"><strong>Stale Master Data Flag:</strong> 164 of 379 chronic series flagged with frozen SSD settings despite &gt;30% demand velocity shifts over 6 months (Total Trapped: ₹1,498.7 Cr; Stale subset: ₹643.8 Cr; Phase 1 immediate: ₹14.9 Cr).</div>
               <div><strong>Planner Directive:</strong> &ldquo;Series #2847 (Ember, China): Safety Stock Days is set to 42 but the data shows DOH never drops below 28. Recommended: reduce SSD from 42 → 28 days. This would eliminate 52 false alerts per year and free ₹12.4L in frozen capital.&rdquo;</div>
             </div>
           </div>
