@@ -327,6 +327,8 @@ def dispatch_email(recipients=None, custom_data=None):
     smtp_error = None
 
     # Attempt real SMTP transmission if configured
+    if not cfg["smtp_user"] or not cfg["smtp_pass"]:
+        logger.info("SMTP credentials not configured (SMTP_USER/SMTP_PASS). Dispatching in LOCAL_SIMULATION mode. Set environment variables to enable live email.")
     if cfg["smtp_user"] and cfg["smtp_pass"]:
         try:
             msg = MIMEMultipart("alternative")

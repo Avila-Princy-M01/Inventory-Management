@@ -378,5 +378,108 @@ class TestStaleParameterDetection(unittest.TestCase):
             self.assertEqual(sp.get("trigger"), "DEMAND_SHIFT_30PCT_STATIC_SSD")
 
 
+class TestMentorFeatures(unittest.TestCase):
+    """Assertions for the 6 mentor & analyst feedback features."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.data = _load_data()
+        cls.signals = cls.data.get("top_signals", [])
+        cls.health = cls.data.get("corridor_health", {})
+        cls.wow = cls.health.get("wow_delta", {})
+
+    def test_feature1_what_changed_granular_sku_diff(self):
+        diff = self.wow.get("signal_diff", {})
+        self.assertIn("resolved", diff, "signal_diff must contain 'resolved' list")
+        self.assertIn("new", diff, "signal_diff must contain 'new' list")
+        self.assertIn("shifts", diff, "signal_diff must contain 'shifts' list")
+        self.assertGreaterEqual(len(diff["resolved"]), 1, "Must have at least 1 resolved item")
+        self.assertGreaterEqual(len(diff["new"]), 1, "Must have at least 1 new item")
+        # shifts may be 0 if no action_type changes between weeks
+        self.assertIsInstance(diff["shifts"], list)
+
+    def test_feature2_manufacturing_allocation_constraints(self):
+        for s in self.signals:
+            c = s.get("constraints")
+            self.assertIsNotNone(c, f"Signal #{s.get('rank')} missing constraints")
+            self.assertEqual(c.get("frozen_horizon_weeks"), 4)
+            self.assertEqual(c.get("campaign_moq_units"), 5000)
+            self.assertEqual(c.get("batch_multiple_units"), 2500)
+            self.assertEqual(c.get("allocation_cap_pct"), 85.0)
+            if s.get("recommended_qty_units", 0) > 0:
+                self.assertGreaterEqual(c.get("constrained_roq_units"), 5000)
+                self.assertEqual(c.get("constrained_roq_units") % 2500, 0)
+
+    def test_feature3_cold_start_new_launch_logic(self):
+        cold_sigs = [s for s in self.signals if s.get("is_cold_start")]
+        self.assertGreater(len(cold_sigs), 0, "Must have at least one cold start / launch corridor")
+        for s in cold_sigs:
+            cs = s.get("cold_start", {})
+            self.assertTrue(cs.get("is_cold_start"))
+            self.assertIn("Country 045", cs.get("analogue_market", ""))
+            self.assertIn("90-Day Pre-Build Buffer", cs.get("demand_uncertainty_buffer", ""))
+
+    def test_feature4_chi_benchmarks_and_historical_trend(self):
+        benchmarks = self.health.get("benchmarks", {})
+        self.assertEqual(benchmarks.get("world_class_sla_target"), 95.0)
+        self.assertEqual(benchmarks.get("operational_threshold"), 85.0)
+        self.assertEqual(benchmarks.get("critical_floor"), 80.0)
+
+        trend = self.health.get("historical_trend_4q", [])
+        self.assertEqual(len(trend), 4, "Must have 4 quarters of historical trend")
+        self.assertEqual(trend[0].get("quarter"), "Q1 2026")
+        self.assertEqual(trend[0].get("chi"), 82.4)
+        self.assertEqual(trend[3].get("chi"), self.health.get("global_chi"))
+
+    def test_feature5_warehouse_capacity_and_transfer_economics(self):
+        transfer_sigs = [s for s in self.signals if s.get("intermarket_transfer", {}).get("has_transfer")]
+        self.assertGreater(len(transfer_sigs), 0, "Must have transfer corridors")
+        for s in transfer_sigs:
+            tr = s.get("intermarket_transfer", {})
+            wh = tr.get("warehouse_capacity", {})
+            self.assertGreaterEqual(wh.get("recipient_wh_capacity_units"), 50000)
+            self.assertLessEqual(wh.get("recipient_utilization_pct"), 90.0)
+            self.assertTrue(wh.get("is_feasible"))
+
+            econ = tr.get("transfer_economics", {})
+            self.assertGreater(econ.get("cost_air_freight_inr"), 0)
+            self.assertGreater(econ.get("cost_total_transfer_inr"), 0)
+            self.assertGreaterEqual(econ.get("transfer_roi_ratio"), 5.0)
+
+    def test_feature6_predictive_latency_and_preemption(self):
+        for s in self.signals:
+            lat = s.get("predictive_latency", {})
+            self.assertEqual(lat.get("order_dispatch_week"), 1)
+            self.assertEqual(lat.get("stockout_breach_week"), s.get("breach_week"))
+            self.assertEqual(lat.get("standard_arrival_week"), 1 + lat.get("market_lead_time_weeks"))
+            if lat.get("is_arrival_late"):
+                self.assertGreater(lat.get("latency_gap_weeks"), 0)
+                self.assertEqual(lat.get("expedited_arrival_week"), 2)
+
+    def test_feature7_administrative_settings_and_market_lead_times(self):
+        adm = self.data.get("administrative_settings", {})
+        self.assertIsNotNone(adm, "administrative_settings must exist in dashboard_data.json")
+        self.assertEqual(adm.get("global_lead_time_default_days"), 14)
+        self.assertEqual(adm.get("global_lead_time_default_weeks"), 2)
+        self.assertEqual(adm.get("overstock_trigger_weeks"), 4)
+        self.assertEqual(adm.get("understock_trigger_weeks"), 5)
+        self.assertTrue(adm.get("per_market_override_toggle"))
+
+        lts = adm.get("lead_times_by_market", {})
+        self.assertGreaterEqual(len(lts), 10)
+        self.assertEqual(lts["Country 013"]["lead_time_weeks"], 36)
+        self.assertEqual(lts["Country 017"]["lead_time_weeks"], 8)
+        self.assertEqual(lts["Country 053"]["lead_time_weeks"], 4)
+
+        for s in self.signals:
+            self.assertIn("market_lead_time", s)
+            self.assertIn("market_name", s)
+            self.assertIn("freight_callout", s)
+            self.assertNotEqual(s["freight_callout"], "")
+            self.assertNotEqual(s["market_name"], "")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+

@@ -1110,8 +1110,10 @@ def layer4_health_and_executive(panel, signals, pure_chronic, series_meta, price
             prev_snap = {}
 
     prev_chi = float(prev_snap.get("global_chi", 85.6))
-    prev_crises = int(prev_snap.get("active_crises", 8))
-    prev_capital = int(prev_snap.get("capital_at_risk_inr", 1093000000))
+    prev_signals_list = prev_snap.get("previous_signals", [])
+    prev_by_rid_raw = {s["row_id"]: s for s in prev_signals_list}
+    prev_crises = sum(1 for s in prev_signals_list if s.get("action_type") == AT_CRISIS)
+    prev_capital = int(prev_snap.get("capital_at_risk_inr", sum(s.get("capital_at_risk_inr", 0) for s in prev_signals_list)))
     prev_otif = float(prev_snap.get("actual_otif", 98.2))
     prev_week = int(prev_snap.get("week", CURRENT_WEEK - 1))
 
@@ -1134,70 +1136,72 @@ def layer4_health_and_executive(panel, signals, pure_chronic, series_meta, price
     otif_sign = "↑" if otif_diff >= 0 else "↓"
     otif_delta_str = f"{otif_sign} {abs(otif_diff):.1f}% vs last week"
 
-    resolved_crises = int(prev_snap.get("resolved_crises_count", 3))
-    emerged_crises = int(prev_snap.get("new_crises_count", 2))
+    # ── Dynamic WoW Signal Diff (computed from actual prev/current comparison) ──
+    prev_by_rid = {s["row_id"]: s for s in prev_signals_list}
+    curr_by_rid = {s["row_id"]: s for s in signals}
+    prev_rids = set(prev_by_rid.keys())
+    curr_rids = set(curr_by_rid.keys())
 
-    # Granular SKU-Level Signal Diff week-over-week
-    resolved_signals_detail = prev_snap.get("resolved_crises", [
-        {
-            "brand": "Echo",
-            "country": "Country 021",
-            "prior_breach_week": 1,
-            "action_taken": "Inter-Market Transfer (12,500 U from Country 055)",
-            "capital_liberated_inr": 187500000,
-            "current_status": "RESTORED (DOH 38d · ZERO STOCKOUT)"
-        },
-        {
-            "brand": "Aster",
-            "country": "Country 044",
-            "prior_breach_week": 2,
-            "action_taken": "Emergency Kalundborg Aseptic Batch Release",
-            "capital_liberated_inr": 135000000,
-            "current_status": "RESTORED (PIPELINE CONFIRMED 100%)"
-        },
-        {
-            "brand": "Beacon",
-            "country": "Country 077",
-            "prior_breach_week": 3,
-            "action_taken": "Reefer Air Charter Dispatch (8,400 U)",
-            "capital_liberated_inr": 92000000,
-            "current_status": "RESTORED (ON TARGET · NO COLLATERAL)"
-        }
-    ])
+    # Resolved: in previous but NOT in current (signal disappeared)
+    resolved_rids = prev_rids - curr_rids
+    resolved_signals_detail = []
+    for rid in sorted(resolved_rids):
+        ps = prev_by_rid[rid]
+        resolved_signals_detail.append({
+            "row_id": rid,
+            "brand": ps.get("brand", "Unknown"),
+            "country": ps.get("country", "Unknown"),
+            "prior_breach_week": ps.get("breach_week", 1),
+            "prior_action": ps.get("action_type", "UNKNOWN"),
+            "capital_liberated_inr": ps.get("capital_at_risk_inr", 0),
+            "action_taken": ps.get("resolution_note", "Resolved via standard replenishment cycle"),
+            "current_status": "RESTORED (DOH recovered · ZERO STOCKOUT)"
+        })
+    resolved_crises = len(resolved_signals_detail)
 
-    new_crises_detail = [
-        {
-            "row_id": s["row_id"],
-            "brand": s["brand"],
-            "country": s["country"],
-            "region": s["region"],
-            "breach_week": s["breach_week"],
-            "action_type": s["action_type"],
-            "capital_at_risk_inr": s.get("capital_at_risk_inr", 0),
-            "root_cause": s.get("root_cause", {}).get("primary_cause", "Supply Deficit"),
-            "trigger": "Rolling demand spike broke safety stock floor" if "013" in s["country"] else "Supplier delivery delay outside frozen window"
-        }
-        for s in signals if s.get("action_type") in (AT_CRISIS, AT_EXPEDITE)
-    ][:2]
+    # Also count signals that shifted from crisis to non-crisis (de-escalated)
+    deescalated = 0
+    for rid in prev_rids & curr_rids:
+        if prev_by_rid[rid].get("action_type") == AT_CRISIS and curr_by_rid[rid].get("action_type") != AT_CRISIS:
+            deescalated += 1
+    resolved_crises += deescalated
 
-    priority_shifts_detail = [
-        {
-            "brand": "Delta",
-            "country": "Country 045",
-            "prior_action": "STANDARD PO",
-            "current_action": "EMERGENCY EXPEDITE",
-            "reason": "Demand acceleration burned safety buffer; lead time cliff triggered.",
-            "rank_change": "+4 Ranks Higher"
-        },
-        {
-            "brand": "Beacon",
-            "country": "Country 013",
-            "prior_action": "ACTIVE CRISIS",
-            "current_action": "ACTIVE CRISIS (ESCALATED)",
-            "reason": "14h remaining on 24h SLA governance countdown.",
-            "rank_change": "Maintained #01 Critical Priority"
-        }
-    ]
+    # New: in current crisis/expedite but NOT in previous
+    new_rids = curr_rids - prev_rids
+    new_crises_detail = []
+    for s in signals:
+        if s["row_id"] in new_rids and s.get("action_type") in (AT_CRISIS, AT_EXPEDITE):
+            new_crises_detail.append({
+                "row_id": s["row_id"],
+                "brand": s["brand"],
+                "country": s["country"],
+                "region": s["region"],
+                "breach_week": s["breach_week"],
+                "action_type": s["action_type"],
+                "capital_at_risk_inr": s.get("capital_at_risk_inr", 0),
+                "root_cause": s.get("root_cause", {}).get("primary_cause", "Supply Deficit"),
+                "trigger": s.get("freight_callout", "New corridor breach detected this week")
+            })
+    emerged_crises = len(new_crises_detail)
+
+    # Shifts: in both but action_type changed
+    priority_shifts_detail = []
+    for rid in sorted(prev_rids & curr_rids):
+        ps = prev_by_rid[rid]
+        cs = curr_by_rid[rid]
+        pa = ps.get("action_type", "")
+        ca = cs.get("action_type", "")
+        if pa != ca:
+            rank_change = f"Rank #{cs.get('rank', '?')} (was #{ps.get('rank', '?')})" if cs.get('rank') and ps.get('rank') else "Priority shifted"
+            priority_shifts_detail.append({
+                "row_id": rid,
+                "brand": cs.get("brand", "Unknown"),
+                "country": cs.get("country", "Unknown"),
+                "prior_action": pa,
+                "current_action": ca,
+                "reason": f"Action type shifted from {pa} to {ca} due to corridor trajectory evolution.",
+                "rank_change": rank_change
+            })
 
     wow_delta = {
         "previous_week": prev_week,

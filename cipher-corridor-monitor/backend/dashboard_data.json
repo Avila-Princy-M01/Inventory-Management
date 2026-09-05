@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated_utc": "2026-09-05T09:42:17.712357+00:00",
+    "generated_utc": "2026-09-05T10:05:32.991618+00:00",
     "current_week": 32,
     "total_series": 5000,
     "total_evaluated_records": 215280,
@@ -31,31 +31,7 @@
           "ocean_transit_days": 252,
           "is_deep_sea": true
         },
-        "China": {
-          "code": "Country 013",
-          "name": "China",
-          "lead_time": 36,
-          "lead_time_weeks": 36,
-          "mode": "Sea Freight",
-          "air_lead_time": 2,
-          "air_lead_time_weeks": 2,
-          "desc": "Pacific Sea Freight Corridor (Standard 8-9 Months Ocean Transit)",
-          "ocean_transit_days": 252,
-          "is_deep_sea": true
-        },
         "Country 017": {
-          "code": "Country 017",
-          "name": "Brazil",
-          "lead_time": 8,
-          "lead_time_weeks": 8,
-          "mode": "Sea Freight",
-          "air_lead_time": 2,
-          "air_lead_time_weeks": 2,
-          "desc": "Atlantic Ocean + Santos Port Customs Clearance",
-          "ocean_transit_days": 56,
-          "is_deep_sea": true
-        },
-        "Brazil": {
           "code": "Country 017",
           "name": "Brazil",
           "lead_time": 8,
@@ -79,31 +55,7 @@
           "ocean_transit_days": 28,
           "is_deep_sea": false
         },
-        "Japan": {
-          "code": "Country 053",
-          "name": "Japan",
-          "lead_time": 4,
-          "lead_time_weeks": 4,
-          "mode": "Maritime / Air",
-          "air_lead_time": 1,
-          "air_lead_time_weeks": 1,
-          "desc": "Tokyo Regional Transit Hub & Coastal Feeder",
-          "ocean_transit_days": 28,
-          "is_deep_sea": false
-        },
         "Country 020": {
-          "code": "Country 020",
-          "name": "United States",
-          "lead_time": 6,
-          "lead_time_weeks": 6,
-          "mode": "Sea / Intermodal",
-          "air_lead_time": 2,
-          "air_lead_time_weeks": 2,
-          "desc": "East Coast Ports + Continental Rail Intermodal",
-          "ocean_transit_days": 42,
-          "is_deep_sea": true
-        },
-        "United States": {
           "code": "Country 020",
           "name": "United States",
           "lead_time": 6,
@@ -127,31 +79,7 @@
           "ocean_transit_days": 35,
           "is_deep_sea": false
         },
-        "India": {
-          "code": "Country 025",
-          "name": "India",
-          "lead_time": 5,
-          "lead_time_weeks": 5,
-          "mode": "Regional Maritime",
-          "air_lead_time": 1,
-          "air_lead_time_weeks": 1,
-          "desc": "Nhava Sheva Sea Gate + Inland Container Depot",
-          "ocean_transit_days": 35,
-          "is_deep_sea": false
-        },
         "Country 031": {
-          "code": "Country 031",
-          "name": "Germany",
-          "lead_time": 3,
-          "lead_time_weeks": 3,
-          "mode": "Road / Rail",
-          "air_lead_time": 1,
-          "air_lead_time_weeks": 1,
-          "desc": "Central European Cross-Border Reefer Trucking",
-          "ocean_transit_days": 0,
-          "is_deep_sea": false
-        },
-        "Germany": {
           "code": "Country 031",
           "name": "Germany",
           "lead_time": 3,
@@ -175,31 +103,7 @@
           "ocean_transit_days": 0,
           "is_deep_sea": false
         },
-        "United Kingdom": {
-          "code": "Country 032",
-          "name": "United Kingdom",
-          "lead_time": 3,
-          "lead_time_weeks": 3,
-          "mode": "Maritime / Road",
-          "air_lead_time": 1,
-          "air_lead_time_weeks": 1,
-          "desc": "Channel Ferry Cross-Dock + UK National Depot",
-          "ocean_transit_days": 0,
-          "is_deep_sea": false
-        },
         "Country 038": {
-          "code": "Country 038",
-          "name": "France",
-          "lead_time": 3,
-          "lead_time_weeks": 3,
-          "mode": "Road / Rail",
-          "air_lead_time": 1,
-          "air_lead_time_weeks": 1,
-          "desc": "Western Europe Pharma Cold-Chain Logistics",
-          "ocean_transit_days": 0,
-          "is_deep_sea": false
-        },
-        "France": {
           "code": "Country 038",
           "name": "France",
           "lead_time": 3,
@@ -223,31 +127,7 @@
           "ocean_transit_days": 49,
           "is_deep_sea": true
         },
-        "Australia": {
-          "code": "Country 045",
-          "name": "Australia",
-          "lead_time": 7,
-          "lead_time_weeks": 7,
-          "mode": "Sea Freight",
-          "air_lead_time": 2,
-          "air_lead_time_weeks": 2,
-          "desc": "Southern Ocean Freight + Biosecurity Quarantine",
-          "ocean_transit_days": 49,
-          "is_deep_sea": true
-        },
         "Country 049": {
-          "code": "Country 049",
-          "name": "Canada",
-          "lead_time": 4,
-          "lead_time_weeks": 4,
-          "mode": "Sea / Intermodal",
-          "air_lead_time": 2,
-          "air_lead_time_weeks": 2,
-          "desc": "St. Lawrence Seaway / Great Lakes Intermodal",
-          "ocean_transit_days": 28,
-          "is_deep_sea": false
-        },
-        "Canada": {
           "code": "Country 049",
           "name": "Canada",
           "lead_time": 4,
@@ -274,31 +154,7 @@
         "ocean_transit_days": 252,
         "is_deep_sea": true
       },
-      "China": {
-        "code": "Country 013",
-        "name": "China",
-        "lead_time": 36,
-        "lead_time_weeks": 36,
-        "mode": "Sea Freight",
-        "air_lead_time": 2,
-        "air_lead_time_weeks": 2,
-        "desc": "Pacific Sea Freight Corridor (Standard 8-9 Months Ocean Transit)",
-        "ocean_transit_days": 252,
-        "is_deep_sea": true
-      },
       "Country 017": {
-        "code": "Country 017",
-        "name": "Brazil",
-        "lead_time": 8,
-        "lead_time_weeks": 8,
-        "mode": "Sea Freight",
-        "air_lead_time": 2,
-        "air_lead_time_weeks": 2,
-        "desc": "Atlantic Ocean + Santos Port Customs Clearance",
-        "ocean_transit_days": 56,
-        "is_deep_sea": true
-      },
-      "Brazil": {
         "code": "Country 017",
         "name": "Brazil",
         "lead_time": 8,
@@ -322,31 +178,7 @@
         "ocean_transit_days": 28,
         "is_deep_sea": false
       },
-      "Japan": {
-        "code": "Country 053",
-        "name": "Japan",
-        "lead_time": 4,
-        "lead_time_weeks": 4,
-        "mode": "Maritime / Air",
-        "air_lead_time": 1,
-        "air_lead_time_weeks": 1,
-        "desc": "Tokyo Regional Transit Hub & Coastal Feeder",
-        "ocean_transit_days": 28,
-        "is_deep_sea": false
-      },
       "Country 020": {
-        "code": "Country 020",
-        "name": "United States",
-        "lead_time": 6,
-        "lead_time_weeks": 6,
-        "mode": "Sea / Intermodal",
-        "air_lead_time": 2,
-        "air_lead_time_weeks": 2,
-        "desc": "East Coast Ports + Continental Rail Intermodal",
-        "ocean_transit_days": 42,
-        "is_deep_sea": true
-      },
-      "United States": {
         "code": "Country 020",
         "name": "United States",
         "lead_time": 6,
@@ -370,31 +202,7 @@
         "ocean_transit_days": 35,
         "is_deep_sea": false
       },
-      "India": {
-        "code": "Country 025",
-        "name": "India",
-        "lead_time": 5,
-        "lead_time_weeks": 5,
-        "mode": "Regional Maritime",
-        "air_lead_time": 1,
-        "air_lead_time_weeks": 1,
-        "desc": "Nhava Sheva Sea Gate + Inland Container Depot",
-        "ocean_transit_days": 35,
-        "is_deep_sea": false
-      },
       "Country 031": {
-        "code": "Country 031",
-        "name": "Germany",
-        "lead_time": 3,
-        "lead_time_weeks": 3,
-        "mode": "Road / Rail",
-        "air_lead_time": 1,
-        "air_lead_time_weeks": 1,
-        "desc": "Central European Cross-Border Reefer Trucking",
-        "ocean_transit_days": 0,
-        "is_deep_sea": false
-      },
-      "Germany": {
         "code": "Country 031",
         "name": "Germany",
         "lead_time": 3,
@@ -418,31 +226,7 @@
         "ocean_transit_days": 0,
         "is_deep_sea": false
       },
-      "United Kingdom": {
-        "code": "Country 032",
-        "name": "United Kingdom",
-        "lead_time": 3,
-        "lead_time_weeks": 3,
-        "mode": "Maritime / Road",
-        "air_lead_time": 1,
-        "air_lead_time_weeks": 1,
-        "desc": "Channel Ferry Cross-Dock + UK National Depot",
-        "ocean_transit_days": 0,
-        "is_deep_sea": false
-      },
       "Country 038": {
-        "code": "Country 038",
-        "name": "France",
-        "lead_time": 3,
-        "lead_time_weeks": 3,
-        "mode": "Road / Rail",
-        "air_lead_time": 1,
-        "air_lead_time_weeks": 1,
-        "desc": "Western Europe Pharma Cold-Chain Logistics",
-        "ocean_transit_days": 0,
-        "is_deep_sea": false
-      },
-      "France": {
         "code": "Country 038",
         "name": "France",
         "lead_time": 3,
@@ -466,31 +250,7 @@
         "ocean_transit_days": 49,
         "is_deep_sea": true
       },
-      "Australia": {
-        "code": "Country 045",
-        "name": "Australia",
-        "lead_time": 7,
-        "lead_time_weeks": 7,
-        "mode": "Sea Freight",
-        "air_lead_time": 2,
-        "air_lead_time_weeks": 2,
-        "desc": "Southern Ocean Freight + Biosecurity Quarantine",
-        "ocean_transit_days": 49,
-        "is_deep_sea": true
-      },
       "Country 049": {
-        "code": "Country 049",
-        "name": "Canada",
-        "lead_time": 4,
-        "lead_time_weeks": 4,
-        "mode": "Sea / Intermodal",
-        "air_lead_time": 2,
-        "air_lead_time_weeks": 2,
-        "desc": "St. Lawrence Seaway / Great Lakes Intermodal",
-        "ocean_transit_days": 28,
-        "is_deep_sea": false
-      },
-      "Canada": {
         "code": "Country 049",
         "name": "Canada",
         "lead_time": 4,
@@ -516,31 +276,7 @@
         "ocean_transit_days": 252,
         "is_deep_sea": true
       },
-      "China": {
-        "code": "Country 013",
-        "name": "China",
-        "lead_time": 36,
-        "lead_time_weeks": 36,
-        "mode": "Sea Freight",
-        "air_lead_time": 2,
-        "air_lead_time_weeks": 2,
-        "desc": "Pacific Sea Freight Corridor (Standard 8-9 Months Ocean Transit)",
-        "ocean_transit_days": 252,
-        "is_deep_sea": true
-      },
       "Country 017": {
-        "code": "Country 017",
-        "name": "Brazil",
-        "lead_time": 8,
-        "lead_time_weeks": 8,
-        "mode": "Sea Freight",
-        "air_lead_time": 2,
-        "air_lead_time_weeks": 2,
-        "desc": "Atlantic Ocean + Santos Port Customs Clearance",
-        "ocean_transit_days": 56,
-        "is_deep_sea": true
-      },
-      "Brazil": {
         "code": "Country 017",
         "name": "Brazil",
         "lead_time": 8,
@@ -564,31 +300,7 @@
         "ocean_transit_days": 28,
         "is_deep_sea": false
       },
-      "Japan": {
-        "code": "Country 053",
-        "name": "Japan",
-        "lead_time": 4,
-        "lead_time_weeks": 4,
-        "mode": "Maritime / Air",
-        "air_lead_time": 1,
-        "air_lead_time_weeks": 1,
-        "desc": "Tokyo Regional Transit Hub & Coastal Feeder",
-        "ocean_transit_days": 28,
-        "is_deep_sea": false
-      },
       "Country 020": {
-        "code": "Country 020",
-        "name": "United States",
-        "lead_time": 6,
-        "lead_time_weeks": 6,
-        "mode": "Sea / Intermodal",
-        "air_lead_time": 2,
-        "air_lead_time_weeks": 2,
-        "desc": "East Coast Ports + Continental Rail Intermodal",
-        "ocean_transit_days": 42,
-        "is_deep_sea": true
-      },
-      "United States": {
         "code": "Country 020",
         "name": "United States",
         "lead_time": 6,
@@ -612,31 +324,7 @@
         "ocean_transit_days": 35,
         "is_deep_sea": false
       },
-      "India": {
-        "code": "Country 025",
-        "name": "India",
-        "lead_time": 5,
-        "lead_time_weeks": 5,
-        "mode": "Regional Maritime",
-        "air_lead_time": 1,
-        "air_lead_time_weeks": 1,
-        "desc": "Nhava Sheva Sea Gate + Inland Container Depot",
-        "ocean_transit_days": 35,
-        "is_deep_sea": false
-      },
       "Country 031": {
-        "code": "Country 031",
-        "name": "Germany",
-        "lead_time": 3,
-        "lead_time_weeks": 3,
-        "mode": "Road / Rail",
-        "air_lead_time": 1,
-        "air_lead_time_weeks": 1,
-        "desc": "Central European Cross-Border Reefer Trucking",
-        "ocean_transit_days": 0,
-        "is_deep_sea": false
-      },
-      "Germany": {
         "code": "Country 031",
         "name": "Germany",
         "lead_time": 3,
@@ -660,31 +348,7 @@
         "ocean_transit_days": 0,
         "is_deep_sea": false
       },
-      "United Kingdom": {
-        "code": "Country 032",
-        "name": "United Kingdom",
-        "lead_time": 3,
-        "lead_time_weeks": 3,
-        "mode": "Maritime / Road",
-        "air_lead_time": 1,
-        "air_lead_time_weeks": 1,
-        "desc": "Channel Ferry Cross-Dock + UK National Depot",
-        "ocean_transit_days": 0,
-        "is_deep_sea": false
-      },
       "Country 038": {
-        "code": "Country 038",
-        "name": "France",
-        "lead_time": 3,
-        "lead_time_weeks": 3,
-        "mode": "Road / Rail",
-        "air_lead_time": 1,
-        "air_lead_time_weeks": 1,
-        "desc": "Western Europe Pharma Cold-Chain Logistics",
-        "ocean_transit_days": 0,
-        "is_deep_sea": false
-      },
-      "France": {
         "code": "Country 038",
         "name": "France",
         "lead_time": 3,
@@ -708,31 +372,7 @@
         "ocean_transit_days": 49,
         "is_deep_sea": true
       },
-      "Australia": {
-        "code": "Country 045",
-        "name": "Australia",
-        "lead_time": 7,
-        "lead_time_weeks": 7,
-        "mode": "Sea Freight",
-        "air_lead_time": 2,
-        "air_lead_time_weeks": 2,
-        "desc": "Southern Ocean Freight + Biosecurity Quarantine",
-        "ocean_transit_days": 49,
-        "is_deep_sea": true
-      },
       "Country 049": {
-        "code": "Country 049",
-        "name": "Canada",
-        "lead_time": 4,
-        "lead_time_weeks": 4,
-        "mode": "Sea / Intermodal",
-        "air_lead_time": 2,
-        "air_lead_time_weeks": 2,
-        "desc": "St. Lawrence Seaway / Great Lakes Intermodal",
-        "ocean_transit_days": 28,
-        "is_deep_sea": false
-      },
-      "Canada": {
         "code": "Country 049",
         "name": "Canada",
         "lead_time": 4,
@@ -1045,31 +685,7 @@
         "ocean_transit_days": 252,
         "is_deep_sea": true
       },
-      "China": {
-        "code": "Country 013",
-        "name": "China",
-        "lead_time": 36,
-        "lead_time_weeks": 36,
-        "mode": "Sea Freight",
-        "air_lead_time": 2,
-        "air_lead_time_weeks": 2,
-        "desc": "Pacific Sea Freight Corridor (Standard 8-9 Months Ocean Transit)",
-        "ocean_transit_days": 252,
-        "is_deep_sea": true
-      },
       "Country 017": {
-        "code": "Country 017",
-        "name": "Brazil",
-        "lead_time": 8,
-        "lead_time_weeks": 8,
-        "mode": "Sea Freight",
-        "air_lead_time": 2,
-        "air_lead_time_weeks": 2,
-        "desc": "Atlantic Ocean + Santos Port Customs Clearance",
-        "ocean_transit_days": 56,
-        "is_deep_sea": true
-      },
-      "Brazil": {
         "code": "Country 017",
         "name": "Brazil",
         "lead_time": 8,
@@ -1093,31 +709,7 @@
         "ocean_transit_days": 28,
         "is_deep_sea": false
       },
-      "Japan": {
-        "code": "Country 053",
-        "name": "Japan",
-        "lead_time": 4,
-        "lead_time_weeks": 4,
-        "mode": "Maritime / Air",
-        "air_lead_time": 1,
-        "air_lead_time_weeks": 1,
-        "desc": "Tokyo Regional Transit Hub & Coastal Feeder",
-        "ocean_transit_days": 28,
-        "is_deep_sea": false
-      },
       "Country 020": {
-        "code": "Country 020",
-        "name": "United States",
-        "lead_time": 6,
-        "lead_time_weeks": 6,
-        "mode": "Sea / Intermodal",
-        "air_lead_time": 2,
-        "air_lead_time_weeks": 2,
-        "desc": "East Coast Ports + Continental Rail Intermodal",
-        "ocean_transit_days": 42,
-        "is_deep_sea": true
-      },
-      "United States": {
         "code": "Country 020",
         "name": "United States",
         "lead_time": 6,
@@ -1141,31 +733,7 @@
         "ocean_transit_days": 35,
         "is_deep_sea": false
       },
-      "India": {
-        "code": "Country 025",
-        "name": "India",
-        "lead_time": 5,
-        "lead_time_weeks": 5,
-        "mode": "Regional Maritime",
-        "air_lead_time": 1,
-        "air_lead_time_weeks": 1,
-        "desc": "Nhava Sheva Sea Gate + Inland Container Depot",
-        "ocean_transit_days": 35,
-        "is_deep_sea": false
-      },
       "Country 031": {
-        "code": "Country 031",
-        "name": "Germany",
-        "lead_time": 3,
-        "lead_time_weeks": 3,
-        "mode": "Road / Rail",
-        "air_lead_time": 1,
-        "air_lead_time_weeks": 1,
-        "desc": "Central European Cross-Border Reefer Trucking",
-        "ocean_transit_days": 0,
-        "is_deep_sea": false
-      },
-      "Germany": {
         "code": "Country 031",
         "name": "Germany",
         "lead_time": 3,
@@ -1189,31 +757,7 @@
         "ocean_transit_days": 0,
         "is_deep_sea": false
       },
-      "United Kingdom": {
-        "code": "Country 032",
-        "name": "United Kingdom",
-        "lead_time": 3,
-        "lead_time_weeks": 3,
-        "mode": "Maritime / Road",
-        "air_lead_time": 1,
-        "air_lead_time_weeks": 1,
-        "desc": "Channel Ferry Cross-Dock + UK National Depot",
-        "ocean_transit_days": 0,
-        "is_deep_sea": false
-      },
       "Country 038": {
-        "code": "Country 038",
-        "name": "France",
-        "lead_time": 3,
-        "lead_time_weeks": 3,
-        "mode": "Road / Rail",
-        "air_lead_time": 1,
-        "air_lead_time_weeks": 1,
-        "desc": "Western Europe Pharma Cold-Chain Logistics",
-        "ocean_transit_days": 0,
-        "is_deep_sea": false
-      },
-      "France": {
         "code": "Country 038",
         "name": "France",
         "lead_time": 3,
@@ -1237,31 +781,7 @@
         "ocean_transit_days": 49,
         "is_deep_sea": true
       },
-      "Australia": {
-        "code": "Country 045",
-        "name": "Australia",
-        "lead_time": 7,
-        "lead_time_weeks": 7,
-        "mode": "Sea Freight",
-        "air_lead_time": 2,
-        "air_lead_time_weeks": 2,
-        "desc": "Southern Ocean Freight + Biosecurity Quarantine",
-        "ocean_transit_days": 49,
-        "is_deep_sea": true
-      },
       "Country 049": {
-        "code": "Country 049",
-        "name": "Canada",
-        "lead_time": 4,
-        "lead_time_weeks": 4,
-        "mode": "Sea / Intermodal",
-        "air_lead_time": 2,
-        "air_lead_time_weeks": 2,
-        "desc": "St. Lawrence Seaway / Great Lakes Intermodal",
-        "ocean_transit_days": 28,
-        "is_deep_sea": false
-      },
-      "Canada": {
         "code": "Country 049",
         "name": "Canada",
         "lead_time": 4,
@@ -1288,31 +808,7 @@
       "ocean_transit_days": 252,
       "is_deep_sea": true
     },
-    "China": {
-      "code": "Country 013",
-      "name": "China",
-      "lead_time": 36,
-      "lead_time_weeks": 36,
-      "mode": "Sea Freight",
-      "air_lead_time": 2,
-      "air_lead_time_weeks": 2,
-      "desc": "Pacific Sea Freight Corridor (Standard 8-9 Months Ocean Transit)",
-      "ocean_transit_days": 252,
-      "is_deep_sea": true
-    },
     "Country 017": {
-      "code": "Country 017",
-      "name": "Brazil",
-      "lead_time": 8,
-      "lead_time_weeks": 8,
-      "mode": "Sea Freight",
-      "air_lead_time": 2,
-      "air_lead_time_weeks": 2,
-      "desc": "Atlantic Ocean + Santos Port Customs Clearance",
-      "ocean_transit_days": 56,
-      "is_deep_sea": true
-    },
-    "Brazil": {
       "code": "Country 017",
       "name": "Brazil",
       "lead_time": 8,
@@ -1336,31 +832,7 @@
       "ocean_transit_days": 28,
       "is_deep_sea": false
     },
-    "Japan": {
-      "code": "Country 053",
-      "name": "Japan",
-      "lead_time": 4,
-      "lead_time_weeks": 4,
-      "mode": "Maritime / Air",
-      "air_lead_time": 1,
-      "air_lead_time_weeks": 1,
-      "desc": "Tokyo Regional Transit Hub & Coastal Feeder",
-      "ocean_transit_days": 28,
-      "is_deep_sea": false
-    },
     "Country 020": {
-      "code": "Country 020",
-      "name": "United States",
-      "lead_time": 6,
-      "lead_time_weeks": 6,
-      "mode": "Sea / Intermodal",
-      "air_lead_time": 2,
-      "air_lead_time_weeks": 2,
-      "desc": "East Coast Ports + Continental Rail Intermodal",
-      "ocean_transit_days": 42,
-      "is_deep_sea": true
-    },
-    "United States": {
       "code": "Country 020",
       "name": "United States",
       "lead_time": 6,
@@ -1384,31 +856,7 @@
       "ocean_transit_days": 35,
       "is_deep_sea": false
     },
-    "India": {
-      "code": "Country 025",
-      "name": "India",
-      "lead_time": 5,
-      "lead_time_weeks": 5,
-      "mode": "Regional Maritime",
-      "air_lead_time": 1,
-      "air_lead_time_weeks": 1,
-      "desc": "Nhava Sheva Sea Gate + Inland Container Depot",
-      "ocean_transit_days": 35,
-      "is_deep_sea": false
-    },
     "Country 031": {
-      "code": "Country 031",
-      "name": "Germany",
-      "lead_time": 3,
-      "lead_time_weeks": 3,
-      "mode": "Road / Rail",
-      "air_lead_time": 1,
-      "air_lead_time_weeks": 1,
-      "desc": "Central European Cross-Border Reefer Trucking",
-      "ocean_transit_days": 0,
-      "is_deep_sea": false
-    },
-    "Germany": {
       "code": "Country 031",
       "name": "Germany",
       "lead_time": 3,
@@ -1432,31 +880,7 @@
       "ocean_transit_days": 0,
       "is_deep_sea": false
     },
-    "United Kingdom": {
-      "code": "Country 032",
-      "name": "United Kingdom",
-      "lead_time": 3,
-      "lead_time_weeks": 3,
-      "mode": "Maritime / Road",
-      "air_lead_time": 1,
-      "air_lead_time_weeks": 1,
-      "desc": "Channel Ferry Cross-Dock + UK National Depot",
-      "ocean_transit_days": 0,
-      "is_deep_sea": false
-    },
     "Country 038": {
-      "code": "Country 038",
-      "name": "France",
-      "lead_time": 3,
-      "lead_time_weeks": 3,
-      "mode": "Road / Rail",
-      "air_lead_time": 1,
-      "air_lead_time_weeks": 1,
-      "desc": "Western Europe Pharma Cold-Chain Logistics",
-      "ocean_transit_days": 0,
-      "is_deep_sea": false
-    },
-    "France": {
       "code": "Country 038",
       "name": "France",
       "lead_time": 3,
@@ -1480,31 +904,7 @@
       "ocean_transit_days": 49,
       "is_deep_sea": true
     },
-    "Australia": {
-      "code": "Country 045",
-      "name": "Australia",
-      "lead_time": 7,
-      "lead_time_weeks": 7,
-      "mode": "Sea Freight",
-      "air_lead_time": 2,
-      "air_lead_time_weeks": 2,
-      "desc": "Southern Ocean Freight + Biosecurity Quarantine",
-      "ocean_transit_days": 49,
-      "is_deep_sea": true
-    },
     "Country 049": {
-      "code": "Country 049",
-      "name": "Canada",
-      "lead_time": 4,
-      "lead_time_weeks": 4,
-      "mode": "Sea / Intermodal",
-      "air_lead_time": 2,
-      "air_lead_time_weeks": 2,
-      "desc": "St. Lawrence Seaway / Great Lakes Intermodal",
-      "ocean_transit_days": 28,
-      "is_deep_sea": false
-    },
-    "Canada": {
       "code": "Country 049",
       "name": "Canada",
       "lead_time": 4,
@@ -1997,12 +1397,12 @@
       "chi_delta": 1.2,
       "chi_direction": "up",
       "chi_delta_text": "\u2191 1.2 from last week",
-      "crises_previous": 8,
+      "crises_previous": 3,
       "crises_current": 7,
-      "crises_delta": -1,
-      "crises_delta_text": "\u2193 1 from last week",
+      "crises_delta": 4,
+      "crises_delta_text": "\u2191 4 from last week",
       "crises_resolved": 3,
-      "crises_emerged": 2,
+      "crises_emerged": 7,
       "capital_previous_inr": 1093000000,
       "capital_current_inr": 951010600,
       "capital_delta_inr": -141989400,
@@ -2011,45 +1411,40 @@
       "otif_current": 98.5,
       "otif_delta": 0.3,
       "otif_delta_text": "\u2191 0.3% vs last week",
-      "briefing_narrative": "3 of 8 prior crisis signals resolved. 2 new signals emerged. Net crisis count: 8 \u2192 7. CHI improved by \u2191 1.2 pts.",
+      "briefing_narrative": "3 of 3 prior crisis signals resolved. 7 new signals emerged. Net crisis count: 3 \u2192 7. CHI improved by \u2191 1.2 pts.",
       "resolved_signals_detail": [
         {
+          "row_id": 9991,
           "brand": "Echo",
           "country": "Country 021",
           "prior_breach_week": 1,
-          "action_taken": "Inter-Market Transfer (12,500 U from Country 055)",
+          "prior_action": "ACTIVE CRISIS",
           "capital_liberated_inr": 187500000,
-          "current_status": "RESTORED (DOH 38d \u00b7 ZERO STOCKOUT)"
+          "action_taken": "Resolved via 12,500 U priority transfer from Country 055; DOH restored to 38d.",
+          "current_status": "RESTORED (DOH recovered \u00b7 ZERO STOCKOUT)"
         },
         {
+          "row_id": 9992,
           "brand": "Aster",
           "country": "Country 044",
           "prior_breach_week": 2,
-          "action_taken": "Emergency Kalundborg Aseptic Batch Release",
+          "prior_action": "ACTIVE CRISIS",
           "capital_liberated_inr": 135000000,
-          "current_status": "RESTORED (PIPELINE CONFIRMED 100%)"
+          "action_taken": "Emergency packaging run released from Kalundborg Plant; W2 stockout eliminated.",
+          "current_status": "RESTORED (DOH recovered \u00b7 ZERO STOCKOUT)"
         },
         {
+          "row_id": 9993,
           "brand": "Beacon",
           "country": "Country 077",
           "prior_breach_week": 3,
-          "action_taken": "Reefer Air Charter Dispatch (8,400 U)",
+          "prior_action": "EMERGENCY EXPEDITE",
           "capital_liberated_inr": 92000000,
-          "current_status": "RESTORED (ON TARGET \u00b7 NO COLLATERAL)"
+          "action_taken": "In-transit reefer flight LH842 arrived W31; pipeline recovered.",
+          "current_status": "RESTORED (DOH recovered \u00b7 ZERO STOCKOUT)"
         }
       ],
       "new_crises_detail": [
-        {
-          "row_id": 623,
-          "brand": "Beacon",
-          "country": "Country 013",
-          "region": "Region 02",
-          "breach_week": 1,
-          "action_type": "ACTIVE CRISIS",
-          "capital_at_risk_inr": 19761000,
-          "root_cause": "Floor Shock",
-          "trigger": "Rolling demand spike broke safety stock floor"
-        },
         {
           "row_id": 3581,
           "brand": "Aster",
@@ -2059,66 +1454,120 @@
           "action_type": "ACTIVE CRISIS",
           "capital_at_risk_inr": 73512000,
           "root_cause": "Demand Surge",
-          "trigger": "Supplier delivery delay outside frozen window"
+          "trigger": "Country 079 breach at week 1 \u2014 with 2-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this."
+        },
+        {
+          "row_id": 1976,
+          "brand": "Ember",
+          "country": "Country 038",
+          "region": "Region 04",
+          "breach_week": 1,
+          "action_type": "ACTIVE CRISIS",
+          "capital_at_risk_inr": 84252600,
+          "root_cause": "Floor Shock",
+          "trigger": "France breach at week 1 \u2014 with 3-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this."
+        },
+        {
+          "row_id": 2923,
+          "brand": "Ember",
+          "country": "Country 053",
+          "region": "Region 06",
+          "breach_week": 1,
+          "action_type": "ACTIVE CRISIS",
+          "capital_at_risk_inr": 208951200,
+          "root_cause": "Floor Shock",
+          "trigger": "Japan breach at week 1 \u2014 with 4-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this."
+        },
+        {
+          "row_id": 3347,
+          "brand": "Delta",
+          "country": "Country 065",
+          "region": "Region 07",
+          "breach_week": 1,
+          "action_type": "ACTIVE CRISIS",
+          "capital_at_risk_inr": 23012800,
+          "root_cause": "Floor Shock",
+          "trigger": "Country 065 breach at week 1 \u2014 with 2-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this."
+        },
+        {
+          "row_id": 969,
+          "brand": "Ember",
+          "country": "Country 017",
+          "region": "Region 02",
+          "breach_week": 1,
+          "action_type": "ACTIVE CRISIS",
+          "capital_at_risk_inr": 21454200,
+          "root_cause": "Demand Surge",
+          "trigger": "Brazil breach at week 1 \u2014 with 8-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this."
+        },
+        {
+          "row_id": 4465,
+          "brand": "Ember",
+          "country": "Country 087",
+          "region": "Region 09",
+          "breach_week": 1,
+          "action_type": "ACTIVE CRISIS",
+          "capital_at_risk_inr": 108891000,
+          "root_cause": "Floor Shock",
+          "trigger": "Country 087 breach at week 1 \u2014 with 2-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this."
+        },
+        {
+          "row_id": 1577,
+          "brand": "Aster",
+          "country": "Country 038",
+          "region": "Region 04",
+          "breach_week": 3,
+          "action_type": "EMERGENCY EXPEDITE",
+          "capital_at_risk_inr": 28326000,
+          "root_cause": "Floor Shock",
+          "trigger": "France breach at week 3 \u2014 with 3-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this."
         }
       ],
       "priority_shifts_detail": [
         {
+          "row_id": 2340,
           "brand": "Delta",
           "country": "Country 045",
           "prior_action": "STANDARD PO",
           "current_action": "EMERGENCY EXPEDITE",
-          "reason": "Demand acceleration burned safety buffer; lead time cliff triggered.",
-          "rank_change": "+4 Ranks Higher"
-        },
-        {
-          "brand": "Beacon",
-          "country": "Country 013",
-          "prior_action": "ACTIVE CRISIS",
-          "current_action": "ACTIVE CRISIS (ESCALATED)",
-          "reason": "14h remaining on 24h SLA governance countdown.",
-          "rank_change": "Maintained #01 Critical Priority"
+          "reason": "Action type shifted from STANDARD PO to EMERGENCY EXPEDITE due to corridor trajectory evolution.",
+          "rank_change": "Priority shifted"
         }
       ],
       "signal_diff": {
         "resolved": [
           {
+            "row_id": 9991,
             "brand": "Echo",
             "country": "Country 021",
             "prior_breach_week": 1,
-            "action_taken": "Inter-Market Transfer (12,500 U from Country 055)",
+            "prior_action": "ACTIVE CRISIS",
             "capital_liberated_inr": 187500000,
-            "current_status": "RESTORED (DOH 38d \u00b7 ZERO STOCKOUT)"
+            "action_taken": "Resolved via 12,500 U priority transfer from Country 055; DOH restored to 38d.",
+            "current_status": "RESTORED (DOH recovered \u00b7 ZERO STOCKOUT)"
           },
           {
+            "row_id": 9992,
             "brand": "Aster",
             "country": "Country 044",
             "prior_breach_week": 2,
-            "action_taken": "Emergency Kalundborg Aseptic Batch Release",
+            "prior_action": "ACTIVE CRISIS",
             "capital_liberated_inr": 135000000,
-            "current_status": "RESTORED (PIPELINE CONFIRMED 100%)"
+            "action_taken": "Emergency packaging run released from Kalundborg Plant; W2 stockout eliminated.",
+            "current_status": "RESTORED (DOH recovered \u00b7 ZERO STOCKOUT)"
           },
           {
+            "row_id": 9993,
             "brand": "Beacon",
             "country": "Country 077",
             "prior_breach_week": 3,
-            "action_taken": "Reefer Air Charter Dispatch (8,400 U)",
+            "prior_action": "EMERGENCY EXPEDITE",
             "capital_liberated_inr": 92000000,
-            "current_status": "RESTORED (ON TARGET \u00b7 NO COLLATERAL)"
+            "action_taken": "In-transit reefer flight LH842 arrived W31; pipeline recovered.",
+            "current_status": "RESTORED (DOH recovered \u00b7 ZERO STOCKOUT)"
           }
         ],
         "new": [
-          {
-            "row_id": 623,
-            "brand": "Beacon",
-            "country": "Country 013",
-            "region": "Region 02",
-            "breach_week": 1,
-            "action_type": "ACTIVE CRISIS",
-            "capital_at_risk_inr": 19761000,
-            "root_cause": "Floor Shock",
-            "trigger": "Rolling demand spike broke safety stock floor"
-          },
           {
             "row_id": 3581,
             "brand": "Aster",
@@ -2128,25 +1577,84 @@
             "action_type": "ACTIVE CRISIS",
             "capital_at_risk_inr": 73512000,
             "root_cause": "Demand Surge",
-            "trigger": "Supplier delivery delay outside frozen window"
+            "trigger": "Country 079 breach at week 1 \u2014 with 2-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this."
+          },
+          {
+            "row_id": 1976,
+            "brand": "Ember",
+            "country": "Country 038",
+            "region": "Region 04",
+            "breach_week": 1,
+            "action_type": "ACTIVE CRISIS",
+            "capital_at_risk_inr": 84252600,
+            "root_cause": "Floor Shock",
+            "trigger": "France breach at week 1 \u2014 with 3-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this."
+          },
+          {
+            "row_id": 2923,
+            "brand": "Ember",
+            "country": "Country 053",
+            "region": "Region 06",
+            "breach_week": 1,
+            "action_type": "ACTIVE CRISIS",
+            "capital_at_risk_inr": 208951200,
+            "root_cause": "Floor Shock",
+            "trigger": "Japan breach at week 1 \u2014 with 4-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this."
+          },
+          {
+            "row_id": 3347,
+            "brand": "Delta",
+            "country": "Country 065",
+            "region": "Region 07",
+            "breach_week": 1,
+            "action_type": "ACTIVE CRISIS",
+            "capital_at_risk_inr": 23012800,
+            "root_cause": "Floor Shock",
+            "trigger": "Country 065 breach at week 1 \u2014 with 2-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this."
+          },
+          {
+            "row_id": 969,
+            "brand": "Ember",
+            "country": "Country 017",
+            "region": "Region 02",
+            "breach_week": 1,
+            "action_type": "ACTIVE CRISIS",
+            "capital_at_risk_inr": 21454200,
+            "root_cause": "Demand Surge",
+            "trigger": "Brazil breach at week 1 \u2014 with 8-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this."
+          },
+          {
+            "row_id": 4465,
+            "brand": "Ember",
+            "country": "Country 087",
+            "region": "Region 09",
+            "breach_week": 1,
+            "action_type": "ACTIVE CRISIS",
+            "capital_at_risk_inr": 108891000,
+            "root_cause": "Floor Shock",
+            "trigger": "Country 087 breach at week 1 \u2014 with 2-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this."
+          },
+          {
+            "row_id": 1577,
+            "brand": "Aster",
+            "country": "Country 038",
+            "region": "Region 04",
+            "breach_week": 3,
+            "action_type": "EMERGENCY EXPEDITE",
+            "capital_at_risk_inr": 28326000,
+            "root_cause": "Floor Shock",
+            "trigger": "France breach at week 3 \u2014 with 3-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this."
           }
         ],
         "shifts": [
           {
+            "row_id": 2340,
             "brand": "Delta",
             "country": "Country 045",
             "prior_action": "STANDARD PO",
             "current_action": "EMERGENCY EXPEDITE",
-            "reason": "Demand acceleration burned safety buffer; lead time cliff triggered.",
-            "rank_change": "+4 Ranks Higher"
-          },
-          {
-            "brand": "Beacon",
-            "country": "Country 013",
-            "prior_action": "ACTIVE CRISIS",
-            "current_action": "ACTIVE CRISIS (ESCALATED)",
-            "reason": "14h remaining on 24h SLA governance countdown.",
-            "rank_change": "Maintained #01 Critical Priority"
+            "reason": "Action type shifted from STANDARD PO to EMERGENCY EXPEDITE due to corridor trajectory evolution.",
+            "rank_change": "Priority shifted"
           }
         ]
       }
@@ -20520,12 +20028,12 @@
       "chi_delta": 1.2,
       "chi_direction": "up",
       "chi_delta_text": "\u2191 1.2 from last week",
-      "crises_previous": 8,
+      "crises_previous": 3,
       "crises_current": 7,
-      "crises_delta": -1,
-      "crises_delta_text": "\u2193 1 from last week",
+      "crises_delta": 4,
+      "crises_delta_text": "\u2191 4 from last week",
       "crises_resolved": 3,
-      "crises_emerged": 2,
+      "crises_emerged": 7,
       "capital_previous_inr": 1093000000,
       "capital_current_inr": 951010600,
       "capital_delta_inr": -141989400,
@@ -20534,45 +20042,40 @@
       "otif_current": 98.5,
       "otif_delta": 0.3,
       "otif_delta_text": "\u2191 0.3% vs last week",
-      "briefing_narrative": "3 of 8 prior crisis signals resolved. 2 new signals emerged. Net crisis count: 8 \u2192 7. CHI improved by \u2191 1.2 pts.",
+      "briefing_narrative": "3 of 3 prior crisis signals resolved. 7 new signals emerged. Net crisis count: 3 \u2192 7. CHI improved by \u2191 1.2 pts.",
       "resolved_signals_detail": [
         {
+          "row_id": 9991,
           "brand": "Echo",
           "country": "Country 021",
           "prior_breach_week": 1,
-          "action_taken": "Inter-Market Transfer (12,500 U from Country 055)",
+          "prior_action": "ACTIVE CRISIS",
           "capital_liberated_inr": 187500000,
-          "current_status": "RESTORED (DOH 38d \u00b7 ZERO STOCKOUT)"
+          "action_taken": "Resolved via 12,500 U priority transfer from Country 055; DOH restored to 38d.",
+          "current_status": "RESTORED (DOH recovered \u00b7 ZERO STOCKOUT)"
         },
         {
+          "row_id": 9992,
           "brand": "Aster",
           "country": "Country 044",
           "prior_breach_week": 2,
-          "action_taken": "Emergency Kalundborg Aseptic Batch Release",
+          "prior_action": "ACTIVE CRISIS",
           "capital_liberated_inr": 135000000,
-          "current_status": "RESTORED (PIPELINE CONFIRMED 100%)"
+          "action_taken": "Emergency packaging run released from Kalundborg Plant; W2 stockout eliminated.",
+          "current_status": "RESTORED (DOH recovered \u00b7 ZERO STOCKOUT)"
         },
         {
+          "row_id": 9993,
           "brand": "Beacon",
           "country": "Country 077",
           "prior_breach_week": 3,
-          "action_taken": "Reefer Air Charter Dispatch (8,400 U)",
+          "prior_action": "EMERGENCY EXPEDITE",
           "capital_liberated_inr": 92000000,
-          "current_status": "RESTORED (ON TARGET \u00b7 NO COLLATERAL)"
+          "action_taken": "In-transit reefer flight LH842 arrived W31; pipeline recovered.",
+          "current_status": "RESTORED (DOH recovered \u00b7 ZERO STOCKOUT)"
         }
       ],
       "new_crises_detail": [
-        {
-          "row_id": 623,
-          "brand": "Beacon",
-          "country": "Country 013",
-          "region": "Region 02",
-          "breach_week": 1,
-          "action_type": "ACTIVE CRISIS",
-          "capital_at_risk_inr": 19761000,
-          "root_cause": "Floor Shock",
-          "trigger": "Rolling demand spike broke safety stock floor"
-        },
         {
           "row_id": 3581,
           "brand": "Aster",
@@ -20582,66 +20085,120 @@
           "action_type": "ACTIVE CRISIS",
           "capital_at_risk_inr": 73512000,
           "root_cause": "Demand Surge",
-          "trigger": "Supplier delivery delay outside frozen window"
+          "trigger": "Country 079 breach at week 1 \u2014 with 2-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this."
+        },
+        {
+          "row_id": 1976,
+          "brand": "Ember",
+          "country": "Country 038",
+          "region": "Region 04",
+          "breach_week": 1,
+          "action_type": "ACTIVE CRISIS",
+          "capital_at_risk_inr": 84252600,
+          "root_cause": "Floor Shock",
+          "trigger": "France breach at week 1 \u2014 with 3-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this."
+        },
+        {
+          "row_id": 2923,
+          "brand": "Ember",
+          "country": "Country 053",
+          "region": "Region 06",
+          "breach_week": 1,
+          "action_type": "ACTIVE CRISIS",
+          "capital_at_risk_inr": 208951200,
+          "root_cause": "Floor Shock",
+          "trigger": "Japan breach at week 1 \u2014 with 4-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this."
+        },
+        {
+          "row_id": 3347,
+          "brand": "Delta",
+          "country": "Country 065",
+          "region": "Region 07",
+          "breach_week": 1,
+          "action_type": "ACTIVE CRISIS",
+          "capital_at_risk_inr": 23012800,
+          "root_cause": "Floor Shock",
+          "trigger": "Country 065 breach at week 1 \u2014 with 2-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this."
+        },
+        {
+          "row_id": 969,
+          "brand": "Ember",
+          "country": "Country 017",
+          "region": "Region 02",
+          "breach_week": 1,
+          "action_type": "ACTIVE CRISIS",
+          "capital_at_risk_inr": 21454200,
+          "root_cause": "Demand Surge",
+          "trigger": "Brazil breach at week 1 \u2014 with 8-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this."
+        },
+        {
+          "row_id": 4465,
+          "brand": "Ember",
+          "country": "Country 087",
+          "region": "Region 09",
+          "breach_week": 1,
+          "action_type": "ACTIVE CRISIS",
+          "capital_at_risk_inr": 108891000,
+          "root_cause": "Floor Shock",
+          "trigger": "Country 087 breach at week 1 \u2014 with 2-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this."
+        },
+        {
+          "row_id": 1577,
+          "brand": "Aster",
+          "country": "Country 038",
+          "region": "Region 04",
+          "breach_week": 3,
+          "action_type": "EMERGENCY EXPEDITE",
+          "capital_at_risk_inr": 28326000,
+          "root_cause": "Floor Shock",
+          "trigger": "France breach at week 3 \u2014 with 3-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this."
         }
       ],
       "priority_shifts_detail": [
         {
+          "row_id": 2340,
           "brand": "Delta",
           "country": "Country 045",
           "prior_action": "STANDARD PO",
           "current_action": "EMERGENCY EXPEDITE",
-          "reason": "Demand acceleration burned safety buffer; lead time cliff triggered.",
-          "rank_change": "+4 Ranks Higher"
-        },
-        {
-          "brand": "Beacon",
-          "country": "Country 013",
-          "prior_action": "ACTIVE CRISIS",
-          "current_action": "ACTIVE CRISIS (ESCALATED)",
-          "reason": "14h remaining on 24h SLA governance countdown.",
-          "rank_change": "Maintained #01 Critical Priority"
+          "reason": "Action type shifted from STANDARD PO to EMERGENCY EXPEDITE due to corridor trajectory evolution.",
+          "rank_change": "Priority shifted"
         }
       ],
       "signal_diff": {
         "resolved": [
           {
+            "row_id": 9991,
             "brand": "Echo",
             "country": "Country 021",
             "prior_breach_week": 1,
-            "action_taken": "Inter-Market Transfer (12,500 U from Country 055)",
+            "prior_action": "ACTIVE CRISIS",
             "capital_liberated_inr": 187500000,
-            "current_status": "RESTORED (DOH 38d \u00b7 ZERO STOCKOUT)"
+            "action_taken": "Resolved via 12,500 U priority transfer from Country 055; DOH restored to 38d.",
+            "current_status": "RESTORED (DOH recovered \u00b7 ZERO STOCKOUT)"
           },
           {
+            "row_id": 9992,
             "brand": "Aster",
             "country": "Country 044",
             "prior_breach_week": 2,
-            "action_taken": "Emergency Kalundborg Aseptic Batch Release",
+            "prior_action": "ACTIVE CRISIS",
             "capital_liberated_inr": 135000000,
-            "current_status": "RESTORED (PIPELINE CONFIRMED 100%)"
+            "action_taken": "Emergency packaging run released from Kalundborg Plant; W2 stockout eliminated.",
+            "current_status": "RESTORED (DOH recovered \u00b7 ZERO STOCKOUT)"
           },
           {
+            "row_id": 9993,
             "brand": "Beacon",
             "country": "Country 077",
             "prior_breach_week": 3,
-            "action_taken": "Reefer Air Charter Dispatch (8,400 U)",
+            "prior_action": "EMERGENCY EXPEDITE",
             "capital_liberated_inr": 92000000,
-            "current_status": "RESTORED (ON TARGET \u00b7 NO COLLATERAL)"
+            "action_taken": "In-transit reefer flight LH842 arrived W31; pipeline recovered.",
+            "current_status": "RESTORED (DOH recovered \u00b7 ZERO STOCKOUT)"
           }
         ],
         "new": [
-          {
-            "row_id": 623,
-            "brand": "Beacon",
-            "country": "Country 013",
-            "region": "Region 02",
-            "breach_week": 1,
-            "action_type": "ACTIVE CRISIS",
-            "capital_at_risk_inr": 19761000,
-            "root_cause": "Floor Shock",
-            "trigger": "Rolling demand spike broke safety stock floor"
-          },
           {
             "row_id": 3581,
             "brand": "Aster",
@@ -20651,25 +20208,84 @@
             "action_type": "ACTIVE CRISIS",
             "capital_at_risk_inr": 73512000,
             "root_cause": "Demand Surge",
-            "trigger": "Supplier delivery delay outside frozen window"
+            "trigger": "Country 079 breach at week 1 \u2014 with 2-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this."
+          },
+          {
+            "row_id": 1976,
+            "brand": "Ember",
+            "country": "Country 038",
+            "region": "Region 04",
+            "breach_week": 1,
+            "action_type": "ACTIVE CRISIS",
+            "capital_at_risk_inr": 84252600,
+            "root_cause": "Floor Shock",
+            "trigger": "France breach at week 1 \u2014 with 3-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this."
+          },
+          {
+            "row_id": 2923,
+            "brand": "Ember",
+            "country": "Country 053",
+            "region": "Region 06",
+            "breach_week": 1,
+            "action_type": "ACTIVE CRISIS",
+            "capital_at_risk_inr": 208951200,
+            "root_cause": "Floor Shock",
+            "trigger": "Japan breach at week 1 \u2014 with 4-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this."
+          },
+          {
+            "row_id": 3347,
+            "brand": "Delta",
+            "country": "Country 065",
+            "region": "Region 07",
+            "breach_week": 1,
+            "action_type": "ACTIVE CRISIS",
+            "capital_at_risk_inr": 23012800,
+            "root_cause": "Floor Shock",
+            "trigger": "Country 065 breach at week 1 \u2014 with 2-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this."
+          },
+          {
+            "row_id": 969,
+            "brand": "Ember",
+            "country": "Country 017",
+            "region": "Region 02",
+            "breach_week": 1,
+            "action_type": "ACTIVE CRISIS",
+            "capital_at_risk_inr": 21454200,
+            "root_cause": "Demand Surge",
+            "trigger": "Brazil breach at week 1 \u2014 with 8-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this."
+          },
+          {
+            "row_id": 4465,
+            "brand": "Ember",
+            "country": "Country 087",
+            "region": "Region 09",
+            "breach_week": 1,
+            "action_type": "ACTIVE CRISIS",
+            "capital_at_risk_inr": 108891000,
+            "root_cause": "Floor Shock",
+            "trigger": "Country 087 breach at week 1 \u2014 with 2-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this."
+          },
+          {
+            "row_id": 1577,
+            "brand": "Aster",
+            "country": "Country 038",
+            "region": "Region 04",
+            "breach_week": 3,
+            "action_type": "EMERGENCY EXPEDITE",
+            "capital_at_risk_inr": 28326000,
+            "root_cause": "Floor Shock",
+            "trigger": "France breach at week 3 \u2014 with 3-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this."
           }
         ],
         "shifts": [
           {
+            "row_id": 2340,
             "brand": "Delta",
             "country": "Country 045",
             "prior_action": "STANDARD PO",
             "current_action": "EMERGENCY EXPEDITE",
-            "reason": "Demand acceleration burned safety buffer; lead time cliff triggered.",
-            "rank_change": "+4 Ranks Higher"
-          },
-          {
-            "brand": "Beacon",
-            "country": "Country 013",
-            "prior_action": "ACTIVE CRISIS",
-            "current_action": "ACTIVE CRISIS (ESCALATED)",
-            "reason": "14h remaining on 24h SLA governance countdown.",
-            "rank_change": "Maintained #01 Critical Priority"
+            "reason": "Action type shifted from STANDARD PO to EMERGENCY EXPEDITE due to corridor trajectory evolution.",
+            "rank_change": "Priority shifted"
           }
         ]
       }
