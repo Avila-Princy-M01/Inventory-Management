@@ -599,22 +599,25 @@ let _focusedSignalIndex = 0;
 
 function setupKeyboardShortcuts() {
   window.addEventListener('keydown', (e) => {
-    // Ignore keystrokes inside inputs or textareas
-    const tag = (e.target && e.target.tagName || '').toLowerCase();
-    if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
-
     const drawerDetail = document.getElementById('drawer-detail');
     const isDrawerOpen = drawerDetail && drawerDetail.classList.contains('open');
 
-    // 1. Escape: Close drawer or collapse fullscreen
+    // 1. Universal Escape: Close drawer or collapse fullscreen even when focused in an input/select
     if (e.key === 'Escape') {
       if (drawerDetail && drawerDetail.classList.contains('drawer--fullscreen')) {
         toggleFullscreen(false);
-      } else {
+      } else if (isDrawerOpen) {
         closeAllDrawers();
+      } else {
+        const modal = document.getElementById('modal-email');
+        if (modal && modal.style.display !== 'none') modal.style.display = 'none';
       }
       return;
     }
+
+    // Ignore other single-key navigation keystrokes inside inputs or textareas
+    const tag = (e.target && e.target.tagName || '').toLowerCase();
+    if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
 
     // 2. Fullscreen Toggle (Key: 'F' or 'f')
     if ((e.key === 'f' || e.key === 'F') && isDrawerOpen) {

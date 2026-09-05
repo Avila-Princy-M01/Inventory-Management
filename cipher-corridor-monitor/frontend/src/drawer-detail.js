@@ -1362,12 +1362,63 @@ function renderChart(sig, approved) {
     type: 'line',
     data: { labels, datasets },
     options: {
-      responsive: true, maintainAspectRatio: false, animation: false,
-      plugins: { legend: { display: true, position: 'top', labels: { boxWidth: 8, font: { family: "'JetBrains Mono',monospace", size: 9 }, color: '#787774' } }, tooltip: { mode: 'index', intersect: false } },
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      interaction: {
+        mode: 'index',
+        intersect: false
+      },
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top',
+          labels: {
+            boxWidth: 8,
+            font: { family: "'JetBrains Mono', monospace", size: 9 },
+            color: '#787774',
+            padding: 8
+          }
+        },
+        tooltip: {
+          mode: 'index',
+          intersect: false,
+          backgroundColor: '#050505',
+          titleFont: { family: "'JetBrains Mono', monospace", size: 10, weight: '700' },
+          bodyFont: { family: "'JetBrains Mono', monospace", size: 9.5 },
+          padding: 10,
+          cornerRadius: 0,
+          borderColor: '#333333',
+          borderWidth: 1,
+          displayColors: true,
+          boxWidth: 6,
+          boxHeight: 6
+        }
+      },
       scales: {
-        x: { grid: { color: '#F4F4F0' }, ticks: { maxTicksLimit: 13, font: { family: "'JetBrains Mono',monospace", size: 9 }, color: '#787774' } },
-        y: { type: 'linear', position: 'left', grid: { color: '#EAEAEA' }, ticks: { font: { family: "'JetBrains Mono',monospace", size: 9 }, color: '#787774' } },
-        y1: { type: 'linear', position: 'right', display: false, grid: { drawOnChartArea: false } }
+        x: {
+          grid: { color: '#F4F4F0' },
+          ticks: {
+            maxTicksLimit: window.innerWidth < 1400 ? 8 : 13,
+            font: { family: "'JetBrains Mono', monospace", size: 9 },
+            color: '#787774'
+          }
+        },
+        y: {
+          type: 'linear',
+          position: 'left',
+          grid: { color: '#EAEAEA' },
+          ticks: {
+            font: { family: "'JetBrains Mono', monospace", size: 9 },
+            color: '#787774'
+          }
+        },
+        y1: {
+          type: 'linear',
+          position: 'right',
+          display: false,
+          grid: { drawOnChartArea: false }
+        }
       }
     },
     plugins: [breachPlugin]
