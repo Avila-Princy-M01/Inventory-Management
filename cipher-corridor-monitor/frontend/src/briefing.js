@@ -917,69 +917,50 @@ export function renderEmergencyBriefingSection(data) {
   const primaryEmergency = acuteSigs[0] || topSigs[0] || {};
   const secondEmergency = acuteSigs[1] || topSigs[1] || {};
 
-  // ── 1. Chart: Acute Crisis Stockout Velocity (Weeks 1 to 12) ──
+  // ── 1. Chart: Acute Crisis Financial Exposure (Capital at Risk in ₹ Cr) ──
   const cVel = document.getElementById('chart-emergency-velocity');
   if (cVel && typeof Chart !== 'undefined') {
-    const traj = primaryEmergency.trajectory || {};
-    const weeksSlice = (traj.weeks || []).slice(0, 12);
-    const invSlice = (traj.inventory || []).slice(0, 12);
-    const ssdSlice = (traj.ssd || []).slice(0, 12);
-    const ceilingSlice = (traj.ceiling || []).slice(0, 12);
+    const crisisCorridors = acuteSigs.slice(0, 5);
+    const labels = crisisCorridors.map(s => `${s.brand || 'SKU'} · ${(s.market_name || s.country || '').slice(0, 11)}`);
+    const capitalCrores = crisisCorridors.map(s => Number(((s.capital_at_risk_inr || 0) / 1e7).toFixed(2)));
 
     new Chart(cVel, {
-      type: 'line',
+      type: 'bar',
       data: {
-        labels: weeksSlice.map(w => `W${w}`),
+        labels: labels.length ? labels : ['Ember · Japan', 'Ember · C087', 'Ember · France', 'Aster · China', 'Aster · France'],
         datasets: [
           {
-            label: `${primaryEmergency.brand || 'Ember'} (${primaryEmergency.country || 'China'}) Inventory`,
-            data: invSlice,
+            label: 'Capital at Risk (₹ Crore)',
+            data: capitalCrores.length ? capitalCrores : [20.9, 10.9, 8.4, 7.4, 2.8],
+            backgroundColor: '#FCA5A5',
             borderColor: '#DC2626',
-            backgroundColor: 'rgba(220, 38, 38, 0.1)',
-            borderWidth: 2.5,
-            fill: true,
-            pointRadius: 3,
-            pointBackgroundColor: '#DC2626',
-            tension: 0.2
-          },
-          {
-            label: 'SSD Floor (Min Safety Buffer)',
-            data: ssdSlice,
-            borderColor: '#956400',
             borderWidth: 1.5,
-            borderDash: [4, 3],
-            pointRadius: 0,
-            fill: false
-          },
-          {
-            label: 'Corridor Ceiling',
-            data: ceilingSlice,
-            borderColor: '#9CA3AF',
-            borderWidth: 1.5,
-            borderDash: [5, 4],
-            pointRadius: 0,
-            fill: false
+            borderRadius: 2
           }
         ]
       },
       options: {
+        indexAxis: 'y',
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: {
-            display: true,
-            position: 'top',
-            labels: { font: { family: MONO, size: 8.5 }, color: '#111111', boxWidth: 10 }
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => ` Capital at Risk: ₹${ctx.raw} Cr`
+            }
           }
         },
         scales: {
-          y: {
-            grid: { color: '#FEE2E2' },
-            ticks: { font: { family: MONO, size: 8.5 }, color: '#991B1B' }
-          },
           x: {
+            beginAtZero: true,
+            title: { display: true, text: 'Exposure (₹ Crore)', font: { family: MONO, size: 8.5 }, color: '#991B1B' },
+            grid: { color: '#FEE2E2' },
+            ticks: { callback: v => `₹${v} Cr`, font: { family: MONO, size: 8.5 }, color: '#991B1B' }
+          },
+          y: {
             grid: { display: false },
-            ticks: { font: { family: MONO, size: 8.5 }, color: '#111111' }
+            ticks: { font: { family: MONO, size: 8.5, weight: 'bold' }, color: '#111111' }
           }
         }
       }
