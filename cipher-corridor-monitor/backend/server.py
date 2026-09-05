@@ -13,6 +13,7 @@ import sys
 import json
 import tempfile
 import subprocess
+from datetime import datetime
 
 from flask import Flask, send_from_directory, jsonify, request, Response
 
@@ -61,7 +62,23 @@ def serve_static(filename):
 # ── Dashboard data ─────────────────────────────────────────────────────────────
 @app.route("/dashboard_data.json")
 def serve_dashboard_data():
-    """Serve the current backend/dashboard_data.json as application/json."""
+    """Serve the current backend/dashboard_data.json with automatic gzip compression."""
+    accept_encoding = request.headers.get("Accept-Encoding", "")
+    data_path = os.path.join(BACKEND_DIR, "dashboard_data.json")
+    if not os.path.isfile(data_path):
+        return jsonify({"error": "NOT_FOUND"}), 404
+
+    if "gzip" in accept_encoding.lower():
+        import gzip
+        with open(data_path, "rb") as fh:
+            raw_bytes = fh.read()
+        compressed = gzip.compress(raw_bytes, compresslevel=6)
+        resp = Response(compressed, mimetype="application/json")
+        resp.headers["Content-Encoding"] = "gzip"
+        resp.headers["Content-Length"] = str(len(compressed))
+        resp.headers["Cache-Control"] = "no-cache"
+        return resp
+
     return send_from_directory(BACKEND_DIR, "dashboard_data.json")
 
 
@@ -293,6 +310,63 @@ def update_recipients_endpoint():
     return jsonify({"success": True, "recipients": new_recs}), 200
 
 
+@app.route("/api/settings/administrative", methods=["GET", "POST"])
+def administrative_settings_endpoint():
+    """
+    GET: Returns current administrative settings from dashboard_data.json.
+    POST: Updates administrative settings (per_market_override_toggle, lead_times_by_market, etc.)
+          and persists them into dashboard_data.json.
+    """
+    if not os.path.isfile(DASHBOARD_DATA_PATH):
+        return jsonify({"error": "DATA_NOT_FOUND"}), 404
+
+    try:
+        with open(DASHBOARD_DATA_PATH, "r", encoding="utf-8") as fh:
+            data = json.load(fh)
+    except Exception as exc:
+        return jsonify({"error": "READ_ERROR", "detail": str(exc)}), 500
+
+    current_settings = data.get("administrative_settings", {})
+
+    if request.method == "GET":
+        return jsonify(current_settings), 200
+
+    # POST update
+    if not request.is_json:
+        return jsonify({"error": "INVALID_JSON"}), 400
+
+    updates = request.json or {}
+    if "per_market_override_toggle" in updates:
+        current_settings["per_market_override_toggle"] = bool(updates["per_market_override_toggle"])
+    if "global_lead_time_default_weeks" in updates:
+        current_settings["global_lead_time_default_weeks"] = int(updates["global_lead_time_default_weeks"])
+        current_settings["global_lead_time_default_days"] = current_settings["global_lead_time_default_weeks"] * 7
+    if "lead_times_by_market" in updates and isinstance(updates["lead_times_by_market"], dict):
+        current_settings.setdefault("lead_times_by_market", {}).update(updates["lead_times_by_market"])
+
+    data["administrative_settings"] = current_settings
+
+    # Also update metadata.administrative_settings if present
+    if "metadata" in data and isinstance(data["metadata"], dict):
+        data["metadata"]["administrative_settings"] = current_settings
+
+    try:
+        with open(DASHBOARD_DATA_PATH, "w", encoding="utf-8") as fh:
+            json.dump(data, fh, indent=2)
+        # Sync to parent directory if exists
+        parent_dash = os.path.join(PARENT_DIR, "dashboard_data.json")
+        if os.path.isdir(PARENT_DIR) and os.path.isfile(parent_dash) and DASHBOARD_DATA_PATH != parent_dash:
+            with open(parent_dash, "w", encoding="utf-8") as fh2:
+                json.dump(data, fh2, indent=2)
+    except Exception as exc:
+        return jsonify({"error": "WRITE_ERROR", "detail": str(exc)}), 500
+
+    return jsonify({
+        "success": True,
+        "administrative_settings": current_settings
+    }), 200
+
+
 # ── Entry point ────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     # Verify expected directories exist before starting.
@@ -323,3 +397,5 @@ if __name__ == "__main__":
     print("[server] Listening on    http://0.0.0.0:8000")
 
     app.run(host="0.0.0.0", port=8000, debug=False, threaded=True, use_reloader=False)
+
+
