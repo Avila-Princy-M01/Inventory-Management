@@ -6380,3 +6380,198 @@ button {
   background: #7F1D1D;
 }
 
+/* ==========================================================================
+   RESPONSIVE & PRESENTATION STYLESHEET (PROJECTORS, TABLETS, MOBILE & PRINT)
+   ========================================================================== */
+
+/* ── Projectors & Small Laptops (<= 1200px) ──────────────────────────────── */
+@media screen and (max-width: 1200px) {
+  .drawer {
+    width: 85vw;
+    max-width: 820px;
+  }
+  .briefing-charts-grid {
+    grid-template-columns: 1fr;
+  }
+  .drawer-layout-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .ai-three-pillars {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Tablets & iPad Landscape (<= 1024px) ────────────────────────────────── */
+@media screen and (max-width: 1024px) {
+  .app-shell {
+    flex-direction: column;
+    height: auto;
+    min-height: calc(100vh - 48px);
+  }
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-list {
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 6px 10px;
+    gap: 6px;
+  }
+  .nav-item {
+    padding: 6px 12px;
+    white-space: nowrap;
+    border-left: none;
+    border-bottom: 2px solid transparent;
+  }
+  .nav-item.active {
+    border-left-color: transparent;
+    border-bottom-color: var(--ink);
+  }
+  .nav-footer {
+    display: none;
+  }
+  .kpi-banner {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    border-bottom: 1px solid var(--border);
+  }
+  .kpi-tile--divider {
+    border-left: none;
+  }
+  .drawer {
+    width: 95vw;
+  }
+  .signal-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+  .table-scroll-container,
+  .masterdata-table-container,
+  .audit-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* ── Mobile Devices (<= 768px) ───────────────────────────────────────────── */
+@media screen and (max-width: 768px) {
+  .app-header {
+    flex-direction: column;
+    height: auto;
+    padding: 8px 12px;
+    gap: 6px;
+  }
+  .header-meta {
+    flex-wrap: wrap;
+    gap: 4px;
+    font-size: 10px;
+  }
+  .kpi-banner {
+    grid-template-columns: 1fr;
+  }
+  .view-content {
+    padding: 12px;
+  }
+  .signal-grid {
+    grid-template-columns: 1fr;
+  }
+  .drawer {
+    width: 100vw;
+  }
+  .deck-slide {
+    width: 96vw;
+    height: auto;
+    min-height: 500px;
+    padding: 16px;
+  }
+  .deck-kpi-grid,
+  .deck-content-grid {
+    grid-template-columns: 1fr;
+  }
+  .meeting-selector-tabs {
+    flex-direction: column;
+  }
+  .meeting-agenda-grid {
+    grid-template-columns: 1fr;
+  }
+  #ai-briefing-summary-content {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── Print & PDF Export Stylesheet (@media print) ─────────────────────────── */
+@media print {
+  *, *::before, *::after {
+    background: transparent !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  body {
+    background: #FFFFFF !important;
+    font-size: 10pt;
+  }
+  .app-header,
+  .sidebar,
+  .nav-list,
+  .nav-footer,
+  .drawer-overlay,
+  .drawer,
+  .btn-header-ingest,
+  .btn-print,
+  .btn-deck-close,
+  .btn-deck-nav,
+  .deck-controls,
+  .meeting-selector-bar,
+  .uploader-container,
+  #btn-briefing-resynth,
+  #btn-header-market-lt,
+  #btn-header-email-digest {
+    display: none !important;
+  }
+  .app-shell,
+  .main-col,
+  .view-content {
+    display: block !important;
+    height: auto !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+  .view-section {
+    display: block !important;
+    page-break-after: always;
+  }
+  .briefing-charts-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 20px !important;
+    page-break-inside: avoid;
+  }
+  .chart-card {
+    border: 1px solid #CCCCCC !important;
+    page-break-inside: avoid;
+    height: 260px !important;
+  }
+  .baseline-comparison-card,
+  .briefing-wow-card,
+  .ai-briefing-executive-card,
+  .emergency-executive-briefing-box {
+    border: 1px solid #999999 !important;
+    page-break-inside: avoid;
+    margin-bottom: 15px !important;
+  }
+  table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+  }
+  th, td {
+    border: 1px solid #DDDDDD !important;
+    padding: 4px 6px !important;
+  }
+}
+
+

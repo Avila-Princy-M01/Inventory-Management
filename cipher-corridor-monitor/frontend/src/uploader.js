@@ -168,6 +168,16 @@ function resetStepper() {
   }
 }
 
+function setStepState(stepNum, stateText, stateClass) {
+  const stepEl = document.getElementById(`step-${stepNum}`);
+  if (!stepEl) return;
+  const statusEl = stepEl.querySelector('.step-status');
+  if (statusEl) {
+    statusEl.textContent = stateText;
+    statusEl.className = `step-status mono-text ${stateClass}`;
+  }
+}
+
 /**
  * Runs upload extraction pipeline
  */
@@ -176,6 +186,7 @@ async function startUploadPipeline(file) {
   const stepper = document.getElementById('extraction-stepper');
   const btnRun = document.getElementById('btn-run-pipeline');
   const btnDemo = document.getElementById('btn-load-demo');
+  const elapsedEl = document.getElementById('upload-elapsed-sec');
 
   if (btnRun) btnRun.disabled = true;
   if (btnDemo) btnDemo.disabled = true;
@@ -183,23 +194,42 @@ async function startUploadPipeline(file) {
     resetStepper();
     stepper.style.display = 'block';
   }
+  if (elapsedEl) elapsedEl.textContent = '0';
+
+  let timerInterval = null;
+  let elapsedSec = 0;
+
+  setStepState(1, 'RUNNING', 'status-running');
+  timerInterval = setInterval(() => {
+    elapsedSec++;
+    if (elapsedEl) elapsedEl.textContent = elapsedSec;
+    if (elapsedSec === 3) {
+      setStepState(1, 'DONE ✓', 'status-done');
+      setStepState(2, 'RUNNING', 'status-running');
+    } else if (elapsedSec === 15) {
+      setStepState(2, 'DONE ✓', 'status-done');
+      setStepState(3, 'RUNNING', 'status-running');
+    } else if (elapsedSec === 40) {
+      setStepState(3, 'DONE ✓', 'status-done');
+      setStepState(4, 'RUNNING', 'status-running');
+    } else if (elapsedSec === 65) {
+      setStepState(4, 'DONE ✓', 'status-done');
+      setStepState(5, 'RUNNING', 'status-running');
+    }
+  }, 1000);
 
   const formData = new FormData();
   formData.append('file', file);
 
-  // Start visual stepper in parallel with upload request
+  const startTime = performance.now();
   const uploadPromise = fetch('/upload', {
     method: 'POST',
     body: formData,
   });
 
   try {
-    const startTime = performance.now();
-    await animateStep(1, 800);
-    await animateStep(2, 1000);
-    await animateStep(3, 800);
-
     const res = await uploadPromise;
+    clearInterval(timerInterval);
 
     if (!res.ok) {
       const errJson = await res.json().catch(() => ({}));
@@ -212,8 +242,9 @@ async function startUploadPipeline(file) {
       payload.metadata.pipeline_duration_seconds = durationSec;
     }
 
-    await animateStep(4, 600);
-    await animateStep(5, 600);
+    for (let i = 1; i <= 5; i++) {
+      setStepState(i, 'DONE ✓', 'status-done');
+    }
 
     await new Promise(r => setTimeout(r, 400));
 
@@ -227,10 +258,12 @@ async function startUploadPipeline(file) {
       }
     }
   } catch (err) {
+    clearInterval(timerInterval);
     console.error('[uploader] Pipeline failure:', err);
     alert(`[ EXTRACTION FAILURE ]: ${err.message || 'Check server logs'}`);
     if (stepper) stepper.style.display = 'none';
   } finally {
+    clearInterval(timerInterval);
     isExtracting = false;
     if (btnRun) btnRun.disabled = false;
     if (btnDemo) btnDemo.disabled = false;

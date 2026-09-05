@@ -554,6 +554,44 @@ export function initBriefingCharts(data) {
     wowCapEl.textContent = `${wow.capital_delta_inr <= 0 ? '-' : '+'}₹${(Math.abs(wow.capital_delta_inr)/1e7).toFixed(1)} CR`;
   }
 
+  // Wire Live Analytical Re-Synthesis button
+  const btnResynth = document.getElementById('btn-briefing-resynth');
+  if (btnResynth) {
+    btnResynth.addEventListener('click', async () => {
+      btnResynth.disabled = true;
+      btnResynth.innerHTML = '<span>⏳</span><span>SYNTHESIZING...</span>';
+      try {
+        const res = await fetch('/api/ai/ask', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            question: 'Generate a concise Monday executive synthesis covering what changed, top leadership action, and capital unlock.',
+            topic: 'executive_briefing',
+            signal: data.top_signals ? data.top_signals[0] : {}
+          })
+        });
+        const json = await res.json();
+        const contentEl = document.getElementById('ai-briefing-summary-content');
+        if (contentEl && json.answer) {
+          contentEl.innerHTML = `
+            <div style="grid-column:1/-1;background:#FFFFFF;border:1px solid #BAE6FD;padding:14px;border-radius:2px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <span style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:#0284C7;">✨ REAL-TIME EXECUTIVE DOSSIER (${json.model || 'Deterministic GxP Engine'})</span>
+                <span style="font-family:var(--font-mono);font-size:9px;color:#64748B;">Just now</span>
+              </div>
+              <div style="font-size:12px;color:#0F172A;line-height:1.65;white-space:pre-wrap;">${json.answer}</div>
+            </div>
+          `;
+        }
+      } catch (err) {
+        console.warn('Re-synthesis fallback active:', err);
+      } finally {
+        btnResynth.disabled = false;
+        btnResynth.innerHTML = '<span>⚡</span><span>RE-SYNTHESIZE LIVE</span>';
+      }
+    });
+  }
+
   // Chart 1: Regional CHI
   const c1 = document.getElementById('chart-regional-chi');
   if (c1 && typeof Chart !== 'undefined') {

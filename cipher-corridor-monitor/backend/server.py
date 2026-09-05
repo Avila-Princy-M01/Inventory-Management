@@ -70,13 +70,37 @@ app = Flask(__name__, static_folder=None)
 @app.route("/")
 def serve_index():
     """Serve the SPA entry point."""
-    return send_from_directory(FRONTEND_DIR, "index.html")
+    idx_path = os.path.join(FRONTEND_DIR, "index.html")
+    from flask import send_file
+    return send_file(idx_path)
 
 
 @app.route("/<path:filename>")
 def serve_static(filename):
-    """Serve any static asset from frontend/ (JS, CSS, fonts, etc.)."""
-    return send_from_directory(FRONTEND_DIR, filename)
+    """Serve any static asset from frontend/ (JS, CSS, fonts, etc.) safely handling spaces and URI encoding."""
+    import urllib.parse
+    decoded = urllib.parse.unquote(filename)
+    if decoded.startswith("frontend/"):
+        decoded = decoded[len("frontend/"):]
+
+    # Check FRONTEND_DIR
+    target = os.path.join(FRONTEND_DIR, decoded)
+    if os.path.isfile(target):
+        from flask import send_file
+        return send_file(target)
+
+    # Check dashboard_data.json
+    if decoded in ("dashboard_data.json", "backend/dashboard_data.json"):
+        return serve_dashboard_data()
+
+    # Check PROJECT_ROOT and BACKEND_DIR
+    for root_cand in [PROJECT_ROOT, BACKEND_DIR, PARENT_DIR]:
+        alt = os.path.join(root_cand, decoded)
+        if os.path.isfile(alt):
+            from flask import send_file
+            return send_file(alt)
+
+    return send_from_directory(FRONTEND_DIR, decoded)
 
 
 # ── Dashboard data ─────────────────────────────────────────────────────────────

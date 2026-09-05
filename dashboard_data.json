@@ -1,9 +1,19 @@
 {
   "metadata": {
-    "generated_utc": "2026-09-05T18:59:58.545741+00:00",
+    "generated_utc": "2026-09-05T19:04:58.811014+00:00",
     "current_week": 32,
     "total_series": 5000,
     "total_evaluated_records": 215280,
+    "total_raw_records": 260000,
+    "dataset_record_breakdown": {
+      "total_raw_sku_weeks": 260000,
+      "total_corridors": 5000,
+      "operational_active_sku_weeks": 215280,
+      "operational_corridors": 4140,
+      "chronic_master_data_sku_weeks": 44720,
+      "chronic_master_data_corridors": 860,
+      "explanation": "Raw dataset contains 260,000 SKU-weeks across 5,000 corridors. 860 corridors (44,720 SKU-weeks) suffer from frozen SAP/OMP master data parameters with artificial 52-week breaches. Filtering these isolates 215,280 operational SKU-weeks across 4,140 corridors for daily supply chain planner triage."
+    },
     "operational_series": 4140,
     "recalled_chronic_series": 860,
     "pure_chronic_series": 379,
@@ -1200,6 +1210,34 @@
   "corridor_health": {
     "global_chi": 86.8,
     "total_evaluated_records": 215280,
+    "total_raw_records": 260000,
+    "dataset_record_breakdown": {
+      "total_raw_sku_weeks": 260000,
+      "total_corridors": 5000,
+      "operational_active_sku_weeks": 215280,
+      "operational_corridors": 4140,
+      "chronic_master_data_sku_weeks": 44720,
+      "chronic_master_data_corridors": 860,
+      "explanation": "Raw dataset contains 260,000 SKU-weeks across 5,000 corridors. 860 corridors (44,720 SKU-weeks) suffer from frozen SAP/OMP master data parameters with artificial 52-week breaches. Filtering these isolates 215,280 operational SKU-weeks across 4,140 corridors for daily supply chain planner triage."
+    },
+    "otif_vs_chi_rationale": {
+      "actual_otif_pct": 98.5,
+      "global_chi_pct": 86.8,
+      "delta_gap_pct": 11.7,
+      "executive_explanation": "OTIF (98.5%) is a backward-looking lagging metric measuring historical delivery execution (actual stockouts). CHI (86.8%) is a forward-looking leading indicator measuring latent network vulnerability\u2014penalizing corridors running below safety floor (DOH < SSD), pending lead-time cliffs, and unconfirmed supply orders before stockouts materialize."
+    },
+    "baseline_comparison": {
+      "legacy_annual_alerts": 21450,
+      "optimized_annual_alerts": 1742,
+      "false_alerts_eliminated": 19708,
+      "noise_reduction_pct": 91.9,
+      "legacy_triage_hours_per_day": 4.2,
+      "optimized_triage_minutes_per_day": 18,
+      "triage_efficiency_gain_pct": 92.8,
+      "trapped_capital_inr": 14987000000,
+      "trapped_capital_cr": 1498.7,
+      "stale_parameter_corridors": 164
+    },
     "actual_otif": 98.5,
     "target_otif": 95.0,
     "otif_compliance": "SLA COMPLIANT",
