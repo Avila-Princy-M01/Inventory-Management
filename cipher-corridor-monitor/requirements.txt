@@ -1,12 +1,19 @@
-# Novo Nordisk GBS Hackathon 2026 - Pharma Corridor Monitor
-# Core Python Dependencies
+# Novo Nordisk GBS Hackathon 2026 — Team CIPHER
+# Executive Corridor Health Monitor & Predictive Stock-Out Signal Console
+# Problem Statement 5: Inventory Corridor Health Check Monitoring & Predictive Stock-Out Capturing
 
+# Core Web & API Engine
 flask>=3.0.0
-pandas>=2.0.0
-openpyxl>=3.1.0
-pyarrow>=14.0.0
-numpy>=1.24.0
+werkzeug>=3.0.0
 
-# Testing & Quality Assurance
-pytest>=7.4.0
+# Analytical Data Pipeline & Parquet Storage
+pandas>=2.0.0
+numpy>=1.24.0
+pyarrow>=14.0.0
+openpyxl>=3.1.0
+
+# GxP Documentation & Automated Export
 python-docx>=1.0.0
+
+# Test & Validation Suite
+pytest>=7.4.0
