@@ -194,6 +194,7 @@ async function startUploadPipeline(file) {
   });
 
   try {
+    const startTime = performance.now();
     await animateStep(1, 800);
     await animateStep(2, 1000);
     await animateStep(3, 800);
@@ -206,6 +207,10 @@ async function startUploadPipeline(file) {
     }
 
     const payload = await res.json();
+    const durationSec = ((performance.now() - startTime) / 1000).toFixed(1);
+    if (payload.metadata) {
+      payload.metadata.pipeline_duration_seconds = durationSec;
+    }
 
     await animateStep(4, 600);
     await animateStep(5, 600);

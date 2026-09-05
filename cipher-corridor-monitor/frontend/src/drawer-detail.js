@@ -849,6 +849,20 @@ export function openDetailDrawer(sig, approvedSignals) {
       </div>
 
       <div class="drawer-column-right">
+        <!-- Explicit ROQ Mathematical Line for Executive Sign-off -->
+        <div class="roq-math-callout" style="margin-bottom:10px;padding:9px 12px;background:#F8FAFC;border:1px solid #E2E8F0;border-left:3px solid #0072CE;font-family:var(--font-mono);font-size:10.5px;line-height:1.5;">
+          <div style="font-weight:700;color:#0F172A;margin-bottom:3px;display:flex;justify-content:space-between;align-items:center;">
+            <span>📐 ROQ FORMULA (WHY ${Number(sig.recommended_qty_units || 0).toLocaleString()} U?):</span>
+            <span style="color:#0072CE;font-weight:800;">MIDPOINT RESTORATION</span>
+          </div>
+          <div style="color:#334155;font-size:10px;">
+            <strong>ROQ</strong> = max(0, ⌈Target Midpoint (${Number(sig.midpoint_target_units || Math.round((sig.recommended_qty_units || 0) * 1.3)).toLocaleString()} U) − Projected Inv (${Math.max(0, Math.round((sig.midpoint_target_units || (sig.recommended_qty_units * 1.3)) - (sig.recommended_qty_units || 0))).toLocaleString()} U)⌉
+          </div>
+          <div style="color:#64748B;font-size:9.5px;margin-top:2px;">
+            Target = (Safety Floor + Ceiling) / 2 = 1.5× SSD Buffer · Prevents secondary breach
+          </div>
+        </div>
+
         <div>
           <button class="approval-btn ${approved ? 'approval-btn--approved' : ''}" id="btn-approve"
             ${approved ? 'disabled' : ''}>

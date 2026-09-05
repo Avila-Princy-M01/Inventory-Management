@@ -128,6 +128,13 @@
                   The local Python backend extracts all 260,000 SKU-week records, computes corridor boundary breaches,
                   scores Priority Risk (PRS), and synthesises the Corridor Health Index (CHI).
                 </p>
+                <!-- Enterprise SAP/OMP Schema Integration Architecture Callout -->
+                <div class="sap-integration-callout" style="margin-top:10px;padding:9px 12px;background:#F0FDF4;border:1px solid #BBF7D0;border-left:3px solid #16A34A;display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                  <div style="font-size:11px;color:#166534;line-height:1.45;">
+                    <strong>🏭 ENTERPRISE ARCHITECTURE:</strong> The backend pipeline is architected to point directly at the scheduled <strong>SAP / OMP automated batch export job</strong> (matching identical 26-column schema with <strong>zero manual steps</strong> required).
+                  </div>
+                  <span style="font-size:9.5px;font-weight:700;font-family:var(--font-mono);background:#DCFCE7;color:#15803D;padding:3px 7px;border:1px solid #86EFAC;white-space:nowrap;">ZERO MANUAL STEPS</span>
+                </div>
               </div>
 
               <!-- Drag & Drop Zone -->
@@ -251,9 +258,12 @@
               <button class="filter-pill-ind filter-pill-ind--excess" data-filter="EXCESS HOLDING" id="filter-pill-excess">
                 EXCESS <span class="pill-count" id="pill-count-excess">4</span>
               </button>
-              <span class="pill-divider">✓</span>
               <button class="filter-pill-ind filter-pill-ind--approved" data-filter="APPROVED" id="filter-pill-approved">
                 APPROVED <span class="pill-count" id="pill-count-approved">0</span>
+              </button>
+              <span class="pill-divider">💤</span>
+              <button class="filter-pill-ind" data-filter="SNOOZED" id="filter-pill-snoozed" style="color:#6B21A8;border-color:#D8B4FE;background:#FAF5FF;font-weight:700;" title="Snoozed Alerts Queue · Track operational justifications and upcoming un-snooze dates">
+                💤 SNOOZED QUEUE <span class="pill-count" id="pill-count-snoozed">0</span>
               </button>
             </div>
 

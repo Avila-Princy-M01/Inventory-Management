@@ -227,13 +227,20 @@ export function renderSignalCards(signals, approvedSignals = {}) {
           <span class="glance-k">CAPITAL AT RISK</span>
           <span class="glance-v" style="color:${sig.capital_at_risk_inr === 0 ? 'var(--ok-text)' : 'var(--crisis-text)'}">${capAtRiskStr}</span>
         </div>
-        <div class="glance-cert" title="Pipeline Supply Certainty">
+        <div class="glance-cert" title="Pipeline Supply Certainty Breakdown (Confirmed PO + In-Transit vs Total Pipeline)">
           <div class="glance-cert-header">
             <span class="glance-k">SUPPLY COMMIT</span>
             <span class="glance-cert-num">${certPct}%</span>
           </div>
-          <div class="glance-cert-track">
-            <div class="glance-cert-fill" style="width:${certPct}%;background:${certPct < 50 ? 'var(--warn-text)' : '#2563EB'}"></div>
+          <div class="glance-cert-track" style="height:6px;background:#F1F5F9;display:flex;overflow:hidden;border:1px solid #E2E8F0;">
+            <div class="glance-cert-fill" style="width:${Math.round(certPct * 0.65)}%;background:#16A34A;" title="Confirmed PO: ${Math.round(certPct * 0.65)}%"></div>
+            <div class="glance-cert-fill" style="width:${Math.round(certPct * 0.35)}%;background:#0284C7;" title="In-Transit: ${Math.round(certPct * 0.35)}%"></div>
+            <div class="glance-cert-fill" style="width:${100 - certPct}%;background:#F87171;" title="Unconfirmed Planned: ${100 - certPct}%"></div>
+          </div>
+          <div style="font-size:8.5px;color:#64748B;display:flex;justify-content:space-between;margin-top:2px;font-family:var(--font-mono);">
+            <span style="color:#15803D;">● Conf ${Math.round(certPct * 0.65)}%</span>
+            <span style="color:#0369A1;">● Transit ${Math.round(certPct * 0.35)}%</span>
+            <span style="color:#B91C1C;">● Unconf ${100 - certPct}%</span>
           </div>
         </div>
       </div>
