@@ -728,7 +728,21 @@
         </div>
       </div>
 
-      <pre class="email-pre" id="email-text"></pre>
+      <!-- Email Format View Selector -->
+      <div class="email-view-tabs" style="display:flex;gap:6px;padding:8px 18px;background:#FAFAFA;border-bottom:1px solid #E5E7EB;">
+        <button id="btn-email-tab-html" class="btn-console-action" style="font-size:11px;font-weight:700;padding:4px 10px;background:#0072CE;color:#FFF;border-color:#0072CE;">
+          ✨ RICH AI EXECUTIVE VIEW
+        </button>
+        <button id="btn-email-tab-text" class="btn-console-action" style="font-size:11px;font-weight:600;padding:4px 10px;background:#FFF;color:#4B5563;border-color:#D1D5DB;">
+          📄 PLAIN TEXT / GxP DISPATCH
+        </button>
+      </div>
+
+      <div id="email-html-container" style="max-height:520px;overflow-y:auto;padding:12px;background:#F4F4F0;display:block;">
+        <iframe id="email-html-frame" style="width:100%;min-height:500px;border:none;background:#FFFFFF;box-shadow:0 1px 3px rgba(0,0,0,0.1);" title="Email HTML Preview"></iframe>
+      </div>
+
+      <pre class="email-pre" id="email-text" style="display:none;"></pre>
 
       <div class="modal-footer">
         <div class="modal-footer-left">

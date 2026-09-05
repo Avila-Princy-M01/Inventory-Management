@@ -304,6 +304,20 @@ def email_status():
     return jsonify(email_service.get_status()), 200
 
 
+@app.route("/api/email/preview", methods=["GET"])
+def email_preview():
+    """Returns the formatted HTML and text preview of the Monday morning AI email digest."""
+    try:
+        data = None
+        if os.path.isfile(DASHBOARD_DATA_PATH):
+            with open(DASHBOARD_DATA_PATH, "r", encoding="utf-8") as fh:
+                data = json.load(fh)
+        digest = email_service.build_email_digest(data)
+        return jsonify(digest), 200
+    except Exception as exc:
+        return jsonify({"error": "PREVIEW_FAILED", "detail": str(exc)}), 500
+
+
 @app.route("/api/email/dispatch", methods=["POST"])
 def dispatch_email_endpoint():
     """

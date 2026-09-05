@@ -399,12 +399,59 @@ function setupTriageToolbar() {
   // Email digest header button
   const btnEmailDigest = document.getElementById('btn-header-email-digest');
   if (btnEmailDigest) {
-    btnEmailDigest.addEventListener('click', () => {
+    btnEmailDigest.addEventListener('click', async () => {
       const modal = document.getElementById('email-modal');
       const pre = document.getElementById('email-text');
+      const frame = document.getElementById('email-html-frame');
+      const htmlContainer = document.getElementById('email-html-container');
+      const tabHtml = document.getElementById('btn-email-tab-html');
+      const tabText = document.getElementById('btn-email-tab-text');
+
+      // Populate text fallback
       if (pre && window.DATA) {
         pre.textContent = window.DATA.simulated_email || 'No email digest generated yet.';
       }
+
+      // Populate rich HTML
+      try {
+        const resp = await fetch('/api/email/preview');
+        if (resp.ok) {
+          const res = await resp.json();
+          if (res && res.html_body && frame) {
+            frame.srcdoc = res.html_body;
+          }
+          if (res && res.text_body && pre) {
+            pre.textContent = res.text_body;
+          }
+        }
+      } catch (err) {
+        console.warn('Could not fetch rich email preview from API:', err);
+      }
+
+      // Wire Tab toggles
+      if (tabHtml && tabText && htmlContainer && pre) {
+        tabHtml.onclick = () => {
+          tabHtml.style.background = '#0072CE';
+          tabHtml.style.color = '#FFF';
+          tabHtml.style.borderColor = '#0072CE';
+          tabText.style.background = '#FFF';
+          tabText.style.color = '#4B5563';
+          tabText.style.borderColor = '#D1D5DB';
+          htmlContainer.style.display = 'block';
+          pre.style.display = 'none';
+        };
+        tabText.onclick = () => {
+          tabText.style.background = '#0072CE';
+          tabText.style.color = '#FFF';
+          tabText.style.borderColor = '#0072CE';
+          tabHtml.style.background = '#FFF';
+          tabHtml.style.color = '#4B5563';
+          tabHtml.style.borderColor = '#D1D5DB';
+          pre.style.display = 'block';
+          htmlContainer.style.display = 'none';
+        };
+      }
+
       if (modal) modal.style.display = 'flex';
     });
   }
