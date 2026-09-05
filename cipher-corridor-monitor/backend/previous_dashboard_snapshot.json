@@ -2,11 +2,93 @@
   "week": 31,
   "snapshot_timestamp": "2026-08-28T10:00:00Z",
   "global_chi": 85.6,
-  "active_crises": 3,
+  "active_crises": 8,
   "capital_at_risk_inr": 1093000000,
   "actual_otif": 98.2,
   "top_signals_count": 15,
   "resolved_crises_count": 3,
   "new_crises_count": 2,
-  "chronic_series_count": 379
+  "chronic_series_count": 379,
+  "previous_signals": [
+    {
+      "row_id": 623,
+      "brand": "Beacon",
+      "country": "Country 013",
+      "action_type": "ACTIVE CRISIS",
+      "prs_score": 96.2,
+      "breach_week": 1,
+      "capital_at_risk_inr": 142000000,
+      "status": "ACTIVE_CRISIS_PERSISTENT"
+    },
+    {
+      "row_id": 9991,
+      "brand": "Echo",
+      "country": "Country 021",
+      "action_type": "ACTIVE CRISIS",
+      "prs_score": 94.0,
+      "breach_week": 1,
+      "capital_at_risk_inr": 187500000,
+      "status": "RESOLVED_BY_TRANSFER",
+      "resolution_note": "Resolved via 12,500 U priority transfer from Country 055; DOH restored to 38d."
+    },
+    {
+      "row_id": 9992,
+      "brand": "Aster",
+      "country": "Country 044",
+      "action_type": "ACTIVE CRISIS",
+      "prs_score": 91.5,
+      "breach_week": 2,
+      "capital_at_risk_inr": 135000000,
+      "status": "RESOLVED_BY_EXPEDITE",
+      "resolution_note": "Emergency packaging run released from Kalundborg Plant; W2 stockout eliminated."
+    },
+    {
+      "row_id": 9993,
+      "brand": "Beacon",
+      "country": "Country 077",
+      "action_type": "EMERGENCY EXPEDITE",
+      "prs_score": 88.0,
+      "breach_week": 3,
+      "capital_at_risk_inr": 92000000,
+      "status": "RESOLVED_BY_ARRIVAL",
+      "resolution_note": "In-transit reefer flight LH842 arrived W31; pipeline recovered."
+    },
+    {
+      "row_id": 2340,
+      "brand": "Delta",
+      "country": "Country 045",
+      "action_type": "STANDARD PO",
+      "prs_score": 72.0,
+      "breach_week": 6,
+      "capital_at_risk_inr": 85000000,
+      "status": "ESCALATED_TO_CRISIS",
+      "resolution_note": "Demand acceleration burned safety stock; escalated from Standard PO to Acute Crisis."
+    }
+  ],
+  "resolved_crises": [
+    {
+      "brand": "Echo",
+      "country": "Country 021",
+      "prior_breach_week": 1,
+      "action_taken": "Inter-Market Transfer (12,500 U from Country 055)",
+      "capital_liberated_inr": 187500000,
+      "current_status": "RESTORED (DOH 38d \u00b7 ZERO STOCKOUT)"
+    },
+    {
+      "brand": "Aster",
+      "country": "Country 044",
+      "prior_breach_week": 2,
+      "action_taken": "Emergency Kalundborg Aseptic Batch Release",
+      "capital_liberated_inr": 135000000,
+      "current_status": "RESTORED (PIPELINE CONFIRMED 100%)"
+    },
+    {
+      "brand": "Beacon",
+      "country": "Country 077",
+      "prior_breach_week": 3,
+      "action_taken": "Reefer Air Charter Dispatch (8,400 U)",
+      "capital_liberated_inr": 92000000,
+      "current_status": "RESTORED (ON TARGET \u00b7 NO COLLATERAL)"
+    }
+  ]
 }

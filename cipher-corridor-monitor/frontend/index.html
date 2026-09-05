@@ -84,17 +84,17 @@
         <div class="kpi-tile" id="kpi-chi">
           <output class="kpi-numeral" id="chi-value" aria-label="Corridor Health Index">--.-</output>
           <div class="kpi-label">CORRIDOR HEALTH INDEX</div>
-          <div class="kpi-sub" id="chi-sub">CIPHER PIONEER KPI <span class="kpi-delta kpi-delta--up" id="chi-delta">(↑ 1.2 from last week)</span></div>
+          <div class="kpi-sub" id="chi-sub">CIPHER PIONEER KPI <span class="kpi-delta kpi-delta--up" id="chi-delta">OPERATIONAL</span></div>
         </div>
         <div class="kpi-tile kpi-tile--divider" id="kpi-crises">
           <output class="kpi-numeral crisis-num" id="crises-value" aria-label="Active Crises">0</output>
           <div class="kpi-label">ACTIVE CRISES</div>
-          <div class="kpi-sub" id="crises-sub">IMMEDIATE ACTION <span class="kpi-delta kpi-delta--up" id="crises-delta">(↓ 2 from last week)</span></div>
+          <div class="kpi-sub" id="crises-sub">IMMEDIATE ACTION <span class="kpi-delta kpi-delta--down" id="crises-delta">WEEK 1 BREACH</span></div>
         </div>
         <div class="kpi-tile kpi-tile--divider" id="kpi-capital">
           <output class="kpi-numeral kpi-numeral--mono" id="capital-value" aria-label="Capital at Risk">₹ —</output>
           <div class="kpi-label">CAPITAL AT RISK</div>
-          <div class="kpi-sub" id="capital-sub">TOP 15 EXPOSURE <span class="kpi-delta kpi-delta--up" id="capital-delta">(↓ ₹14.2 Cr)</span></div>
+          <div class="kpi-sub" id="capital-sub">TOP 15 EXPOSURE <span class="kpi-delta kpi-delta--up" id="capital-delta">52W RUN-RATE</span></div>
         </div>
         <div class="kpi-tile kpi-tile--divider" id="kpi-otif">
           <output class="kpi-numeral kpi-healthy tabular-nums" id="otif-value" aria-label="OTIF Fulfillment">
@@ -106,7 +106,7 @@
             </svg>
           </output>
           <div class="kpi-label">OTIF · FULFILLMENT RATE</div>
-          <div class="kpi-sub" id="otif-sub">SLA TARGET: 95.0% CONTRACTUAL <span class="kpi-delta kpi-delta--up" id="otif-delta">(↑ 0.3%)</span></div>
+          <div class="kpi-sub" id="otif-sub">SLA TARGET: 95.0% CONTRACTUAL <span class="kpi-delta kpi-delta--up" id="otif-delta">SLA COMPLIANT</span></div>
         </div>
       </div>
 
@@ -160,7 +160,7 @@
                 </button>
                 <div class="action-divider">OR</div>
                 <button class="btn-ingest-demo" id="btn-load-demo">
-                  <span>⚡ LOAD HACKATHON BENCHMARK (AUG 2026 – JUL 2027)</span>
+                  <span>⚡ LOAD PRE-SEEDED BENCHMARK DATA (AUG 2026 – JUL 2027)</span>
                 </button>
               </div>
 
@@ -215,8 +215,11 @@
               <button class="btn-console-action btn-email-trigger" id="btn-header-email-digest" title="Open executive Monday briefing email digest">
                 <span class="live-dot-pulse">●</span> EMAIL DIGEST
               </button>
-              <button class="btn-console-action btn-batch-crisis" id="btn-batch-approve-crises" title="Batch approve and sign all active crises">
-                <span class="lightning-bolt">⚡</span> APPROVE ALL CRISES
+              <button class="btn-console-action btn-batch-crisis" id="btn-batch-approve-pos" title="Batch approve and sign all standard purchase orders">
+                <span class="lightning-bolt">⚡</span> APPROVE ALL STANDARD POs
+              </button>
+              <button class="btn-console-action btn-batch-crisis" id="btn-batch-approve-crises" style="background:#FDEBEC;color:#9F2F2D;border-color:#F5A6A6;" title="Escalate & sign all active crisis signals">
+                <span class="lightning-bolt">🚨</span> ESCALATE ALL CRISES
               </button>
               <div class="count-badge-industrial" id="signal-count-badge">15 ACTIVE SIGNALS</div>
             </div>
@@ -227,6 +230,10 @@
             <div class="filter-pill-group" id="filter-pill-group">
               <button class="filter-pill-ind active" data-filter="ALL" id="filter-pill-all">
                 ALL <span class="pill-count" id="pill-count-all">15</span>
+              </button>
+              <span class="pill-divider">●</span>
+              <button class="filter-pill-ind" data-filter="CHANGED" id="filter-pill-changed" style="color:#B45309;border-color:#FDE68A;background:#FFFBEB;font-weight:700;">
+                ⚡ CHANGED WoW <span class="pill-count" id="pill-count-changed">5</span>
               </button>
               <span class="pill-divider">●</span>
               <button class="filter-pill-ind filter-pill-ind--crisis" data-filter="ACTIVE CRISIS" id="filter-pill-crisis">
@@ -270,6 +277,7 @@
               <p class="view-subtitle">Systemic risk posture, brand/region CHI, and 52-week seasonality</p>
             </div>
             <div class="view-actions">
+              <button class="btn-action" id="btn-wow-diff">🔄 WHAT CHANGED</button>
               <button class="btn-action btn-action--deck" id="btn-presentation-deck">📊 PRESENTATION SLIDES</button>
               <button class="btn-action" id="btn-export-pdf">PDF EXPORT</button>
               <button class="btn-action" id="btn-email-digest">EMAIL DIGEST</button>
@@ -297,7 +305,7 @@
             </div>
             <div class="wow-title">EXECUTIVE DECISION IMPACT: &ldquo;DID IT GET BETTER?&rdquo;</div>
             <div class="wow-quote" id="wow-narrative-text">
-              3 of 5 crisis signals resolved. 2 new signals emerged. Net network health improved by ↑ 1.2 pts (CHI 85.6% → 86.8%), mitigating ₹14.2 Cr in active exposure.
+              3 of 8 prior crisis signals resolved. 2 new signals emerged. Net crisis count reduced. CHI improved by ↑ 1.2 pts (85.6% → 86.8%).
             </div>
             <div class="wow-grid">
               <div class="wow-grid-item">
@@ -321,6 +329,60 @@
                 <span class="wow-grid-sub">Active capital at risk down</span>
               </div>
             </div>
+            <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:11px;color:var(--muted);font-family:var(--font-mono);">SECTION 6.1 · WHAT CHANGED SINCE LAST WEEK (DYNAMIC SKU DIFF)</span>
+              <button class="btn-action" id="btn-inline-wow-diff" style="font-size:11px;padding:6px 14px;background:var(--card-bg);border:1px solid var(--border);cursor:pointer;">🔍 EXPAND MODAL AUDIT</button>
+            </div>
+            <!-- Embedded Dynamic SKU Diff Front-and-Center -->
+            <div class="briefing-embedded-diff" id="briefing-embedded-diff" style="margin-top:16px;">
+              <div class="embedded-diff-grid" id="embedded-diff-grid">
+                <!-- Dynamically populated by briefing.js -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 6.10 CHI Performance Benchmarks & 4-Quarter Rolling Trajectory -->
+          <div class="chi-benchmark-card" id="chi-benchmark-card">
+            <div class="benchmark-top">
+              <span class="callout-tag">[ CHI PERFORMANCE BENCHMARKS &amp; 4-QUARTER ROLLING TRAJECTORY ]</span>
+              <span class="benchmark-target-pill">WORLD-CLASS SLA TARGET: 95.0%</span>
+            </div>
+            <div class="benchmark-grid">
+              <div class="benchmark-tile">
+                <span class="benchmark-k">WORLD-CLASS SLA TARGET</span>
+                <span class="benchmark-v" style="color:#0072CE">95.0%</span>
+                <span class="benchmark-sub">Target gap: 8.2 pts</span>
+              </div>
+              <div class="benchmark-tile">
+                <span class="benchmark-k">OPERATIONAL THRESHOLD</span>
+                <span class="benchmark-v" style="color:var(--ok-text)">85.0%</span>
+                <span class="benchmark-sub">+1.8 pts buffer (COMPLIANT)</span>
+              </div>
+              <div class="benchmark-tile">
+                <span class="benchmark-k">CRITICAL RISK FLOOR</span>
+                <span class="benchmark-v" style="color:var(--crisis-text)">&lt; 80.0%</span>
+                <span class="benchmark-sub">VP intervention trigger</span>
+              </div>
+              <div class="benchmark-tile">
+                <span class="benchmark-k">4-QUARTER TRAJECTORY</span>
+                <span class="benchmark-v tabular-nums" style="color:var(--ok-text)">Q1 82.4 → Q4 86.8</span>
+                <span class="benchmark-sub">+4.4 pts net improvement</span>
+              </div>
+            </div>
+            <div class="quarter-track-row">
+              <div class="quarter-step"><span class="q-dot"></span><span class="q-name">Q1 2026</span><span class="q-val">82.4%</span><span class="q-note">Post-ERP floor shock</span></div>
+              <div class="quarter-step"><span class="q-dot"></span><span class="q-name">Q2 2026</span><span class="q-val">84.1%</span><span class="q-note">Buffer recalibration</span></div>
+              <div class="quarter-step"><span class="q-dot"></span><span class="q-name">Q3 2026</span><span class="q-val">85.6%</span><span class="q-note">Inter-market transfers</span></div>
+              <div class="quarter-step quarter-step--current"><span class="q-dot q-dot--current"></span><span class="q-name">Q4 2026 (W32)</span><span class="q-val" style="color:var(--ok-text)">86.8%</span><span class="q-note">On target (+1.2 WoW)</span></div>
+            </div>
+            <!-- Dedicated 4-Quarter CHI Historical Trend Line Chart -->
+            <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
+              <div style="font-size:11px;font-family:var(--font-mono);font-weight:700;margin-bottom:8px;display:flex;justify-content:space-between;">
+                <span>4-QUARTER ROLLING CHI RECOVERY TIMELINE</span>
+                <span style="color:var(--ok-text)">CONTRACTUAL SLA FLOOR: 85.0%</span>
+              </div>
+              <div style="height:140px;position:relative;"><canvas id="chart-chi-historical-4q"></canvas></div>
+            </div>
           </div>
 
           <div class="briefing-layout">
@@ -334,7 +396,11 @@
                 <div class="chart-wrap"><canvas id="chart-brand-chi"></canvas></div>
               </div>
               <div class="chart-card">
-                <div class="chart-card-label">SYSTEMIC RISK CONCENTRATION (PARETO)</div>
+                <div class="chart-card-label" style="display:flex;justify-content:space-between;align-items:center;">
+                  <span>SYSTEMIC RISK CONCENTRATION (PARETO)</span>
+                  <span style="font-size:9px;color:var(--crisis-text);font-weight:700;background:#FEF2F2;border:1px solid #FECACA;padding:2px 6px;">WORST 20 = 38.2% (NOT 80/20)</span>
+                </div>
+                <div style="font-size:10px;font-family:var(--font-mono);color:var(--muted);margin-bottom:6px;">Contradicts 80/20 rule: stockout risk is broadly distributed across all 5,000 corridors, proving global automation is required.</div>
                 <div class="chart-wrap"><canvas id="chart-pareto"></canvas></div>
               </div>
               <div class="chart-card">
@@ -378,19 +444,21 @@
               <p class="view-subtitle">Automated SAP/OMP planning parameter recalibration & working capital liberation (Section 6.4)</p>
             </div>
             <div class="view-actions">
-              <button class="btn-action" id="btn-export-masterdata">EXPORT CSV</button>
+              <button class="btn-action btn-action--deck" id="btn-export-masterdata" style="font-weight:700;display:flex;align-items:center;gap:6px;">
+                <span>📥</span> EXPORT SAP/OMP RECALIBRATION QUEUE (CSV)
+              </button>
             </div>
           </div>
 
           <!-- Parameter Audit Callout Banner: "Tell Me What to Fix" -->
           <div class="param-audit-banner" id="param-audit-banner">
             <div class="param-audit-top">
-              <span class="callout-tag">[ PARAMETER AUDIT ENGINE · SECTION 6.4 COMPLIANCE ]</span>
-              <span class="audit-badge-status">AUTOMATED SAP/OMP RECALIBRATION ACTIVE</span>
+              <span class="callout-tag">[ PARAMETER AUDIT DELIVERABLE · SECTION 6.4 SAP/OMP QUEUE ]</span>
+              <span class="audit-badge-status">ACTIONABLE MASTER DATA DIRECTIVES READY</span>
             </div>
             <div class="param-audit-heading">PLANNER DIRECTIVE: &ldquo;TELL ME WHAT TO FIX&rdquo;</div>
             <blockquote class="param-audit-quote">
-              &ldquo;Series #2847 (Ember, China): Safety Stock Days is set to 42 but the data shows DOH never drops below 28. Recommended: reduce SSD from 42 → 28 days. This would eliminate 52 false alerts per year and free ₹12.4L in frozen capital.&rdquo;
+              &ldquo;The 379-series deliverable: Hand this queue directly to the SAP/OMP master data team with explicit instructions: <strong>&lsquo;Reduce SSD from 42 → 9 days for these 164 stale series&rsquo;</strong>. Eliminates 19,708 false alerts/year and unlocks ₹1,498.7 Cr in frozen safety stock capital.&rdquo;
             </blockquote>
             <div class="param-audit-kpis">
               <div class="param-kpi-item">
@@ -496,11 +564,19 @@
     </div>
   </div>
 
-  <!-- ── DRAWER: Signal Detail (520px) ── -->
+  <!-- ── DRAWER: Signal Detail (520px / Fullscreen Takeover) ── -->
   <aside id="drawer-detail" class="drawer" aria-hidden="true">
     <div class="drawer-header">
-      <div class="drawer-title" id="detail-title">SIGNAL DETAIL</div>
-      <button class="drawer-close" id="btn-close-detail" aria-label="Close">✕</button>
+      <div class="drawer-header-left">
+        <div class="drawer-title" id="detail-title">SIGNAL DETAIL</div>
+        <span class="drawer-mode-indicator" id="drawer-mode-indicator">[ 520PX COMPACT ]</span>
+      </div>
+      <div class="drawer-header-actions">
+        <button class="btn-drawer-action" id="btn-toggle-fullscreen" title="Toggle Fullscreen Takeover (Key: F)">
+          <span class="fs-icon">⛶</span> <span class="fs-label">FULLSCREEN</span>
+        </button>
+        <button class="drawer-close" id="btn-close-detail" aria-label="Close">✕</button>
+      </div>
     </div>
     <div class="drawer-body" id="detail-body"><!-- populated by drawer-detail.js --></div>
   </aside>
@@ -554,6 +630,33 @@
     </div>
   </div>
 
+  <!-- ── WHAT CHANGED SINCE LAST WEEK MODAL (SECTION 6.1) ── -->
+  <div id="modal-wow-diff" class="modal-wrap" style="display:none">
+    <div class="modal-card wow-diff-modal-card">
+      <div class="modal-header">
+        <div class="modal-header-left">
+          <span class="modal-title">WHAT CHANGED SINCE LAST WEEK · GRANULAR SKU AUDIT</span>
+          <span class="modal-tag">[ WEEK 31 → WEEK 32 TRIAGE SHIFTS ]</span>
+        </div>
+        <button class="drawer-close" id="btn-close-wow-diff">✕</button>
+      </div>
+      <div class="wow-diff-tabs">
+        <button class="wow-diff-tab active" data-tab="resolved">🟢 RESOLVED CRISES (3)</button>
+        <button class="wow-diff-tab" data-tab="new">🔴 NEWLY EMERGED (2)</button>
+        <button class="wow-diff-tab" data-tab="shifts">🟡 PRIORITY SHIFTS (2)</button>
+      </div>
+      <div class="wow-diff-content" id="wow-diff-content">
+        <!-- Rendered dynamically by briefing.js -->
+      </div>
+      <div class="modal-footer">
+        <div class="modal-footer-left">
+          <span class="wow-diff-summary-note">Net Network Health: ↑ 1.2 pts CHI · ₹14.2 Cr exposure mitigated</span>
+        </div>
+        <button class="btn-primary" id="btn-close-wow-diff-footer">CLOSE DIFF AUDIT</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ── S&OP PRESENTATION SLIDE DECK MODAL (SECTION 6.6) ── -->
   <div id="slide-deck-modal" class="modal-wrap" style="display:none">
     <div class="modal-card deck-modal-card">
@@ -577,6 +680,28 @@
           <button class="btn-action" id="btn-deck-print">🖨️ PRINT SLIDES</button>
           <button class="btn-primary" id="btn-deck-close">CLOSE DECK</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CHI MATHEMATICAL EXPLAINABILITY MODAL (WHY SHOULD I TRUST THIS NUMBER?) ── -->
+  <div id="modal-chi-explain" class="modal-wrap" style="display:none">
+    <div class="modal-card chi-explain-modal-card" style="max-width:860px;width:95%;">
+      <div class="modal-header">
+        <div class="modal-header-left">
+          <span class="modal-title">WHY SHOULD I TRUST THIS NUMBER? · CHI MATHEMATICAL AUDIT</span>
+          <span class="modal-tag">[ GxP FORMULA VERIFICATION · 21 CFR PART 11 ]</span>
+        </div>
+        <button class="drawer-close" id="btn-close-chi-explain">✕</button>
+      </div>
+      <div class="chi-explain-body" id="chi-explain-body" style="padding:20px;max-height:75vh;overflow-y:auto;">
+        <!-- Dynamically rendered by main.js -->
+      </div>
+      <div class="modal-footer">
+        <div class="modal-footer-left">
+          <span style="font-size:11px;font-family:var(--font-mono);color:var(--ok-text)">✓ DETERMINISTIC FORMULA VERIFIED · 0 RANDOM DRIFT</span>
+        </div>
+        <button class="btn-primary" id="btn-close-chi-explain-footer">CLOSE AUDIT BREAKDOWN</button>
       </div>
     </div>
   </div>
