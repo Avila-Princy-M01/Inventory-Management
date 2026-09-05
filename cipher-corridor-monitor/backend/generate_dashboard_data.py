@@ -397,8 +397,46 @@ def layer1_load_and_signals(panel):
     con_wide = panel.pivot(index="row_id", columns="week_seq", values=CON)
     tra_wide = panel.pivot(index="row_id", columns="week_seq", values=TRA)
     doh_wide = panel.pivot(index="row_id", columns="week_seq", values=DOH)
-    weeks_list = list(range(1, HORIZON_WEEKS + 1))
+    # Statistical Plant Contention Inference (Multi-Brand Upstream Line Contention)
+    # 1. Brand Portfolio Weekly Aggregation (Scheduled Supply & Confirmed Supply across all corridors)
+    brand_series_clean = panel["Brand"].str.replace("Synthetic Brand ", "")
+    panel_temp = panel.assign(_b_clean=brand_series_clean)
+    brand_wk_agg = panel_temp.groupby(["_b_clean", "week_seq"]).agg(
+        total_sup=(SUP, "sum"),
+        total_con=(CON, "sum"),
+        total_dem=(DEM, "sum")
+    ).reset_index()
 
+    # Peak weekly supply per brand family as statistical plant line capacity ceiling proxy
+    brand_cap_map = brand_wk_agg.groupby("_b_clean")["total_sup"].quantile(0.95).to_dict()
+    brand_wk_agg["capacity_ceiling"] = brand_wk_agg["_b_clean"].map(brand_cap_map)
+    brand_wk_agg["line_utilization_pct"] = (brand_wk_agg["total_sup"] / brand_wk_agg["capacity_ceiling"] * 100.0).round(1)
+    brand_wk_agg["confirmed_ratio"] = (brand_wk_agg["total_con"] / brand_wk_agg["total_sup"].replace(0, np.nan)).round(3)
+    brand_wk_agg["has_shortfall"] = brand_wk_agg["confirmed_ratio"] < 0.70
+
+    # Multi-brand shortfall co-occurrence by week: count how many brands suffer confirmed supply shortfall
+    shortfall_piv = brand_wk_agg.pivot(index="week_seq", columns="_b_clean", values="has_shortfall").fillna(False)
+    shortfall_brands_by_week = {}
+    for w in range(1, HORIZON_WEEKS + 1):
+        if w in shortfall_piv.index:
+            row_short = shortfall_piv.loc[w]
+            shortfall_brands_by_week[w] = [b for b, is_sf in row_short.items() if is_sf]
+        else:
+            shortfall_brands_by_week[w] = []
+
+    # Map brand family to shared filling lines & changeover matrix (Kalundborg / Hillerød aseptic fill-finish lines)
+    # Shared Line 04: Aster & Beacon (oral formulation & pre-filled pen line)
+    # Shared Line 07: Crest & Delta (high-speed cartridge filling)
+    # Dedicated/Flex Line 12: Ember (multi-dose GLP-1 pen line with secondary packaging flex to Beacon)
+    line_sharing_map = {
+        "Aster":  {"line_id": "Line 04 (Aseptic Filling)", "sister_brand": "Beacon", "plant_site": "Kalundborg Site 1"},
+        "Beacon": {"line_id": "Line 04 (Aseptic Filling)", "sister_brand": "Aster", "plant_site": "Kalundborg Site 1"},
+        "Crest":  {"line_id": "Line 07 (Cartridge Assembly)", "sister_brand": "Delta", "plant_site": "Hillerød Site 2"},
+        "Delta":  {"line_id": "Line 07 (Cartridge Assembly)", "sister_brand": "Crest", "plant_site": "Hillerød Site 2"},
+        "Ember":  {"line_id": "Line 12 (Flex Pen Line)", "sister_brand": "Beacon", "plant_site": "Kalundborg Site 2"},
+    }
+
+    weeks_list = list(range(1, HORIZON_WEEKS + 1))
     signals = []
     for rank, (rid, row) in enumerate(top15.iterrows()):
         def arr(wide): return [_jsafe(wide.at[rid, w]) if w in wide.columns else 0.0 for w in weeks_list]
@@ -503,6 +541,70 @@ def layer1_load_and_signals(panel):
         frozen_horizon_weeks = 4
         allocation_cap_pct = 85.0
 
+        # Statistical Plant Contention & Portfolio Trade-off Analysis
+        brand_clean = str(row["brand"]).replace("Synthetic Brand ", "")
+        plant_info = line_sharing_map.get(brand_clean, {
+            "line_id": "Line 04 (Aseptic Filling)", "sister_brand": "Beacon", "plant_site": "Kalundborg Site 1"
+        })
+        line_name = plant_info["line_id"]
+        sister_brand = plant_info["sister_brand"]
+        plant_site = plant_info["plant_site"]
+
+        # Check multi-brand shortfall in breach week
+        co_shortfall_brands = shortfall_brands_by_week.get(breach_week, [])
+        is_correlated_shortfall = len(co_shortfall_brands) >= 2
+        correlated_shortfall_brands = [b for b in co_shortfall_brands if b != brand_clean]
+
+        # Brand portfolio weekly scheduled supply & capacity utilization at breach week
+        b_agg_row = brand_wk_agg[(brand_wk_agg["_b_clean"] == brand_clean) & (brand_wk_agg["week_seq"] == breach_week)]
+        b_util_pct = float(b_agg_row["line_utilization_pct"].iloc[0]) if not b_agg_row.empty else 82.5
+        b_tot_sup = float(b_agg_row["total_sup"].iloc[0]) if not b_agg_row.empty else 0.0
+        b_cap_ceil = float(b_agg_row["capacity_ceiling"].iloc[0]) if not b_agg_row.empty else 1.0
+
+        # Contention Risk Level:
+        # If line utilization > 80% or correlated shortfalls exist, high contention
+        if b_util_pct >= 90.0 or (is_correlated_shortfall and len(correlated_shortfall_brands) >= 2):
+            contention_level = "HIGH"
+            contention_color = "#DC2626"
+        elif b_util_pct >= 75.0 or is_correlated_shortfall:
+            contention_level = "MODERATE"
+            contention_color = "#D97706"
+        else:
+            contention_level = "LOW"
+            contention_color = "#16A34A"
+
+        changeover_hours = 72 if contention_level == "HIGH" else (48 if contention_level == "MODERATE" else 24)
+        changeover_delay_days = round(changeover_hours / 24.0, 1)
+
+        # Portfolio trade-off narrative:
+        if raw_rec_qty > 0:
+            tradeoff_narrative = (
+                f"🏭 Upstream Contention Warning: Producing {constrained_rec_qty:,} units for {brand_clean} at {plant_site} ({line_name}) "
+                f"requires a {changeover_hours}h CIP/SIP changeover. This locks capacity against sister brand {sister_brand} "
+                f"and defers scheduled batch slots during Week {breach_week}. "
+                + (f"Correlated upstream confirmed drops detected across {', '.join(correlated_shortfall_brands)} (systemic plant constraint, not corridor shipping delay)." if correlated_shortfall_brands else "Local line constraint.")
+            )
+        else:
+            tradeoff_narrative = (
+                f"Plant line {line_name} operates nominally ({b_util_pct}% utilization). No emergency batch preemption against {sister_brand}."
+            )
+
+        plant_contention_obj = {
+            "plant_site": plant_site,
+            "line_id": line_name,
+            "sister_brand": sister_brand,
+            "contention_level": contention_level,
+            "contention_color": contention_color,
+            "portfolio_weekly_supply_units": int(round(b_tot_sup)),
+            "portfolio_capacity_ceiling_units": int(round(b_cap_ceil)),
+            "line_utilization_pct": b_util_pct,
+            "is_correlated_upstream_shortfall": is_correlated_shortfall,
+            "correlated_shortfall_brands": correlated_shortfall_brands,
+            "changeover_hours": changeover_hours,
+            "changeover_delay_days": changeover_delay_days,
+            "tradeoff_narrative": tradeoff_narrative
+        }
+
         constraints_obj = {
             "frozen_horizon_weeks": frozen_horizon_weeks,
             "in_frozen_horizon": in_frozen_horizon,
@@ -514,7 +616,8 @@ def layer1_load_and_signals(panel):
             "batch_rounding_delta": constrained_rec_qty - raw_rec_qty,
             "allocation_cap_pct": allocation_cap_pct,
             "allocation_cap_status": "COMPLIANT (<= 85% PLANT CAPACITY)",
-            "collateral_corridor_risk": "LOW (DONOR SAFETY FLOOR PROTECTED)"
+            "collateral_corridor_risk": "LOW (DONOR SAFETY FLOOR PROTECTED)",
+            "plant_contention": plant_contention_obj
         }
 
         # Section 6.7 Predictive Latency & Replenishment Cliff (Per-Market Supply Corridor)

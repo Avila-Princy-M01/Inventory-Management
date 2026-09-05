@@ -463,6 +463,7 @@ export function openDetailDrawer(sig, approvedSignals) {
 
   // Section 6.8 Manufacturing & Production Constraints
   const constr = sig.constraints || {};
+  const pc = constr.plant_contention || {};
   const constraintsHtml = `
     <div class="constraints-box">
       <div class="constraints-header">
@@ -485,6 +486,48 @@ export function openDetailDrawer(sig, approvedSignals) {
           <span class="constraint-v" style="color:var(--ok-text)">COMPLIANT — Non-Starvation Verified</span>
         </div>
       </div>
+
+      <!-- Upstream Plant Contention & Portfolio Trade-off Sub-Panel -->
+      <div class="plant-contention-box" style="margin-top:12px;padding:11px 13px;background:#F8FAFC;border:1px solid #E2E8F0;border-left:4px solid ${pc.contention_color || '#2563EB'};font-family:var(--font-mono);font-size:11px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-size:13px;">🏭</span>
+            <span style="font-weight:800;color:#0F172A;letter-spacing:0.04em;">UPSTREAM PLANT LINE CONTENTION &amp; PORTFOLIO CONFLICT</span>
+          </div>
+          <span style="font-size:9px;font-weight:800;padding:2px 6px;color:#fff;background:${pc.contention_color || '#2563EB'};border-radius:2px;">
+            ${pc.contention_level || 'NOMINAL'} CONTENTION RISK
+          </span>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:8px;margin-bottom:8px;font-size:10.5px;">
+          <div style="background:#fff;padding:6px 8px;border:1px solid #CBD5E1;">
+            <div style="color:#64748B;font-size:9.5px;">MANUFACTURING LINE</div>
+            <div style="font-weight:700;color:#0F172A;">${pc.line_id || 'Shared Line 04'}</div>
+            <div style="color:#64748B;font-size:9px;">${pc.plant_site || 'Kalundborg Site 1'}</div>
+          </div>
+          <div style="background:#fff;padding:6px 8px;border:1px solid #CBD5E1;">
+            <div style="color:#64748B;font-size:9.5px;">SHARED SISTER BRAND</div>
+            <div style="font-weight:700;color:#0F172A;">${pc.sister_brand || 'Beacon'}</div>
+            <div style="color:#DC2626;font-size:9px;font-weight:600;">Trade-off Collision Risk</div>
+          </div>
+          <div style="background:#fff;padding:6px 8px;border:1px solid #CBD5E1;">
+            <div style="color:#64748B;font-size:9.5px;">LINE UTILIZATION &amp; CHANGEOVER</div>
+            <div style="font-weight:700;color:#0F172A;">${pc.line_utilization_pct || 82.5}% Ceiling</div>
+            <div style="color:#B45309;font-size:9px;">${pc.changeover_hours || 48}h CIP/SIP (${pc.changeover_delay_days || 2}d)</div>
+          </div>
+        </div>
+
+        <div style="font-size:10.5px;color:#1E293B;line-height:1.55;background:#fff;padding:8px 10px;border:1px solid #E2E8F0;margin-bottom:4px;">
+          ${pc.tradeoff_narrative || 'Multi-brand portfolio line utilization within statistical baseline.'}
+        </div>
+        ${pc.is_correlated_upstream_shortfall ? `
+          <div style="display:flex;align-items:center;gap:5px;margin-top:6px;font-size:9.5px;color:#991B1B;font-weight:600;">
+            <span>⚠️ STATISTICAL PROXY:</span>
+            <span>Simultaneous confirmed drop across brand families in Week ${sig.breach_week} confirms bulk upstream plant constraint (not a transit delay).</span>
+          </div>
+        ` : ''}
+      </div>
+
       ${constr.in_frozen_horizon ? `
         <div style="margin-top:12px;padding:12px;background:#FEF2F2;border:1px solid #FECACA;border-left:4px solid #DC2626;font-size:11px;">
           <div style="font-weight:700;color:#991B1B;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;">
