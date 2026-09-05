@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated_utc": "2026-09-05T10:05:32.991618+00:00",
+    "generated_utc": "2026-09-05T13:37:19.003478+00:00",
     "current_week": 32,
     "total_series": 5000,
     "total_evaluated_records": 215280,
@@ -1720,7 +1720,7 @@
         "expedited_arrival_week": 2,
         "expedited_arrival_preempts_stockout": false,
         "freight_callout": "China breach at week 1 \u2014 with 36-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this.",
-        "narrative": "Standard replenishment (Sea Freight, 36W LT) arrives at Week 37, which is 36 week(s) AFTER breach at Week 1. Unmitigated sea/ground lead time causes a 36-week zero-inventory stockout cliff. Emergency air expedite (1W transit) or surplus stock transfer arrives at Week 2, pre-empting the stockout."
+        "narrative": "\ud83e\udd16 AI Lead Time Breakdown: Standard delivery (Sea Freight, 36W lead time) arrives at Week 37\u2014which is 36 week(s) after inventory completely runs out at Week 1. This creates a 36-week zero-inventory stockout. Dispatching emergency air charter (4-7 days) or approving the inter-market transfer delivers stock in Week 2, successfully preventing any stockout."
       },
       "is_late_for_sea": true,
       "constraints": {
@@ -2195,7 +2195,7 @@
         "permanent_revenue_churn_inr": 93763500,
         "total_inaction_exposure_inr": 113524500,
         "clinical_severity": "ACUTE THERAPY DISRUPTION",
-        "narrative": "If no action is taken within 24h SLA: 30 week(s) of physical stockout will occur, permanently alienating 1,202 chronic insulin/GLP-1 patients, causing \u20b91.98 Cr immediate non-delivery penalties and \u20b99.38 Cr in permanent annual therapy revenue churn."
+        "narrative": "\ud83e\udd16 AI Clinical Consequence: If no replenishment is dispatched within our 24h SLA, patients face 30 week(s) of empty pharmacy shelves. Because chronic insulin and GLP-1 therapies require uninterrupted weekly doses, 1,202 patients will be switched by physicians to competing brands permanently. This inaction triggers \u20b91.98 Cr in immediate non-delivery penalties and permanently destroys \u20b99.38 Cr in annual recurring therapy revenue."
       },
       "freight_comparison": {
         "sea_lead_time_weeks": 36,
@@ -2208,15 +2208,29 @@
         "air_feasibility": "PRE-EMPTS BREACH (1-WEEK ARRIVAL)",
         "air_cost_premium_inr": 961702,
         "expedite_roi_ratio": 20.5,
-        "decision_verdict": "Air Expedite Economically Dominant: Paying \u20b99.6L air freight premium prevents \u20b91.98 Cr stockout loss (ROI 20.5\u00d7) and closes a 36-week stockout gap."
+        "decision_verdict": "\ud83e\udd16 AI Freight Recommendation: Paying \u20b99.6L for air charter lands stock in 4\u20137 days and prevents \u20b91.98 Cr in stockout losses (20.5\u00d7 ROI). Standard cargo ships take 36 weeks and would arrive 35 weeks too late."
       },
       "wow_status": "CRISIS ESCALATED",
       "wow_badge": "\u26a1 ESCALATED WoW",
       "wow_narrative": "Upgraded from Advisory to Active Crisis (+1.2 severity shock, buffer depleted in Week 1)",
-      "ai_narrative": "\ud83e\udd16 AI Diagnostic: Beacon/China is in ACTIVE CRISIS with inventory dropping below safety stock floor in Week 1. Supply pipeline is 85.8% confirmed, but the 36-week sea freight lead time means a standard PO arrives too late. Autonomous Agent Recommendation: Air-freight expedite of 13,174 units or inter-market transfer required to protect 1,202 lifelong patients (Capital at risk: \u20b91.98 Cr).",
+      "ai_narrative": "\ud83e\udd16 What's Happening: Inventory of Beacon in China drops below the safety floor in Week 1. Standard ocean freight takes 36 weeks to arrive, which is far too late to prevent a stockout. \ud83c\udfaf What You Should Do: Approve an emergency air transfer of 13,174 units from a surplus donor market, or authorize an emergency priority air charter today. \u26a0\ufe0f Why It Matters: If you take no action, 1,202 chronic patients will miss essential therapy courses, and Novo Nordisk will suffer \u20b91.98 Cr in permanent revenue loss and non-fulfillment penalties.",
+      "ai_action_plan": {
+        "simple_headline": "Critical Alert: Beacon in China runs out of stock in Week 1.",
+        "what_is_happening": "Inventory of Beacon in China drops below the safety floor in Week 1. Standard ocean freight takes 36 weeks to arrive, which is far too late to prevent a stockout.",
+        "why_it_matters": "If you take no action, 1,202 chronic patients will miss essential therapy courses, and Novo Nordisk will suffer \u20b91.98 Cr in permanent revenue loss and non-fulfillment penalties.",
+        "what_you_should_do": "Approve an emergency air transfer of 13,174 units from a surplus donor market, or authorize an emergency priority air charter today.",
+        "action_steps": [
+          "Step 1: Click 'TRANSFER APPROVED' to dispatch 13,174 units (arrives in 4 days via priority reefer air charter).",
+          "Step 2: If donor transfer is unavailable, click 'APPROVE AIR EXPEDITE' to authorize expedited manufacturing release.",
+          "Step 3: Confirm 24-hour escalation sign-off in the GxP electronic audit ledger."
+        ],
+        "eli5": "We will run out of medicine in China in Week 1. Normal shipping takes 36 weeks (too slow), so we need to fly 13,174 units in by air right now to protect 1,202 patients.",
+        "manager_brief": "Beacon (China) will stock out in W1. Action taken: Approving 13,174 unit air transfer/expedite to protect 1,202 patients and avoid \u20b91.98 Cr loss.",
+        "priority_action": "Step 1: Click 'TRANSFER APPROVED' to dispatch 13,174 units (arrives in 4 days via priority reefer air charter)."
+      },
       "ai_agent_analysis": {
         "agent_name": "NovoSupply Autonomous Triage Agent v2.4",
-        "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + RAG-Synthesizer)",
+        "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + Plain-Language NLG)",
         "confidence_score": 0.96,
         "primary_threat": "Physical Patient Stockout",
         "recommended_mitigation": "Emergency Air Expedite",
@@ -2352,7 +2366,7 @@
         "expedited_arrival_week": 2,
         "expedited_arrival_preempts_stockout": false,
         "freight_callout": "Country 079 breach at week 1 \u2014 with 2-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this.",
-        "narrative": "Standard replenishment (Standard Intermodal Freight, 2W LT) arrives at Week 3, which is 2 week(s) AFTER breach at Week 1. Unmitigated sea/ground lead time causes a 2-week zero-inventory stockout cliff. Emergency air expedite (1W transit) or surplus stock transfer arrives at Week 2, pre-empting the stockout."
+        "narrative": "\ud83e\udd16 AI Lead Time Breakdown: Standard delivery (Standard Intermodal Freight, 2W lead time) arrives at Week 3\u2014which is 2 week(s) after inventory completely runs out at Week 1. This creates a 2-week zero-inventory stockout. Dispatching emergency air charter (4-7 days) or approving the inter-market transfer delivers stock in Week 2, successfully preventing any stockout."
       },
       "is_late_for_sea": true,
       "constraints": {
@@ -2827,7 +2841,7 @@
         "permanent_revenue_churn_inr": 172822000,
         "total_inaction_exposure_inr": 246334000,
         "clinical_severity": "ACUTE THERAPY DISRUPTION",
-        "narrative": "If no action is taken within 24h SLA: 26 week(s) of physical stockout will occur, permanently alienating 1,662 chronic insulin/GLP-1 patients, causing \u20b97.35 Cr immediate non-delivery penalties and \u20b917.28 Cr in permanent annual therapy revenue churn."
+        "narrative": "\ud83e\udd16 AI Clinical Consequence: If no replenishment is dispatched within our 24h SLA, patients face 26 week(s) of empty pharmacy shelves. Because chronic insulin and GLP-1 therapies require uninterrupted weekly doses, 1,662 patients will be switched by physicians to competing brands permanently. This inaction triggers \u20b97.35 Cr in immediate non-delivery penalties and permanently destroys \u20b917.28 Cr in annual recurring therapy revenue."
       },
       "freight_comparison": {
         "sea_lead_time_weeks": 2,
@@ -2840,15 +2854,29 @@
         "air_feasibility": "PRE-EMPTS BREACH (1-WEEK ARRIVAL)",
         "air_cost_premium_inr": 2683188,
         "expedite_roi_ratio": 27.4,
-        "decision_verdict": "Air Expedite Economically Dominant: Paying \u20b926.8L air freight premium prevents \u20b97.35 Cr stockout loss (ROI 27.4\u00d7) and closes a 2-week stockout gap."
+        "decision_verdict": "\ud83e\udd16 AI Freight Recommendation: Paying \u20b926.8L for air charter lands stock in 4\u20137 days and prevents \u20b97.35 Cr in stockout losses (27.4\u00d7 ROI). Standard cargo ships take 2 weeks and would arrive 1 weeks too late."
       },
       "wow_status": "ACUTE BREACH",
       "wow_badge": "\ud83d\udea8 NEW CRISIS",
       "wow_narrative": "Physical inventory dropped below safety floor in current planning cycle (+42 PRS shift)",
-      "ai_narrative": "\ud83e\udd16 AI Diagnostic: Aster/Country 079 is in ACTIVE CRISIS with inventory dropping below safety stock floor in Week 1. Supply pipeline is 85.8% confirmed, but the 2-week sea freight lead time means a standard PO arrives too late. Autonomous Agent Recommendation: Air-freight expedite of 36,756 units or inter-market transfer required to protect 1,662 lifelong patients (Capital at risk: \u20b97.35 Cr).",
+      "ai_narrative": "\ud83e\udd16 What's Happening: Inventory of Aster in Country 079 drops below the safety floor in Week 1. Standard ocean freight takes 2 weeks to arrive, which is far too late to prevent a stockout. \ud83c\udfaf What You Should Do: Approve an emergency air transfer of 36,756 units from a surplus donor market, or authorize an emergency priority air charter today. \u26a0\ufe0f Why It Matters: If you take no action, 1,662 chronic patients will miss essential therapy courses, and Novo Nordisk will suffer \u20b97.35 Cr in permanent revenue loss and non-fulfillment penalties.",
+      "ai_action_plan": {
+        "simple_headline": "Critical Alert: Aster in Country 079 runs out of stock in Week 1.",
+        "what_is_happening": "Inventory of Aster in Country 079 drops below the safety floor in Week 1. Standard ocean freight takes 2 weeks to arrive, which is far too late to prevent a stockout.",
+        "why_it_matters": "If you take no action, 1,662 chronic patients will miss essential therapy courses, and Novo Nordisk will suffer \u20b97.35 Cr in permanent revenue loss and non-fulfillment penalties.",
+        "what_you_should_do": "Approve an emergency air transfer of 36,756 units from a surplus donor market, or authorize an emergency priority air charter today.",
+        "action_steps": [
+          "Step 1: Click 'TRANSFER APPROVED' to dispatch 36,756 units (arrives in 4 days via priority reefer air charter).",
+          "Step 2: If donor transfer is unavailable, click 'APPROVE AIR EXPEDITE' to authorize expedited manufacturing release.",
+          "Step 3: Confirm 24-hour escalation sign-off in the GxP electronic audit ledger."
+        ],
+        "eli5": "We will run out of medicine in Country 079 in Week 1. Normal shipping takes 2 weeks (too slow), so we need to fly 36,756 units in by air right now to protect 1,662 patients.",
+        "manager_brief": "Aster (Country 079) will stock out in W1. Action taken: Approving 36,756 unit air transfer/expedite to protect 1,662 patients and avoid \u20b97.35 Cr loss.",
+        "priority_action": "Step 1: Click 'TRANSFER APPROVED' to dispatch 36,756 units (arrives in 4 days via priority reefer air charter)."
+      },
       "ai_agent_analysis": {
         "agent_name": "NovoSupply Autonomous Triage Agent v2.4",
-        "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + RAG-Synthesizer)",
+        "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + Plain-Language NLG)",
         "confidence_score": 0.96,
         "primary_threat": "Physical Patient Stockout",
         "recommended_mitigation": "Emergency Air Expedite",
@@ -2984,7 +3012,7 @@
         "expedited_arrival_week": 2,
         "expedited_arrival_preempts_stockout": false,
         "freight_callout": "France breach at week 1 \u2014 with 3-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this.",
-        "narrative": "Standard replenishment (Road / Rail, 3W LT) arrives at Week 4, which is 3 week(s) AFTER breach at Week 1. Unmitigated sea/ground lead time causes a 3-week zero-inventory stockout cliff. Emergency air expedite (1W transit) or surplus stock transfer arrives at Week 2, pre-empting the stockout."
+        "narrative": "\ud83e\udd16 AI Lead Time Breakdown: Standard delivery (Road / Rail, 3W lead time) arrives at Week 4\u2014which is 3 week(s) after inventory completely runs out at Week 1. This creates a 3-week zero-inventory stockout. Dispatching emergency air charter (4-7 days) or approving the inter-market transfer delivers stock in Week 2, successfully preventing any stockout."
       },
       "is_late_for_sea": true,
       "constraints": {
@@ -3459,7 +3487,7 @@
         "permanent_revenue_churn_inr": 156823200,
         "total_inaction_exposure_inr": 241075800,
         "clinical_severity": "ACUTE THERAPY DISRUPTION",
-        "narrative": "If no action is taken within 24h SLA: 18 week(s) of physical stockout will occur, permanently alienating 1,675 chronic insulin/GLP-1 patients, causing \u20b98.43 Cr immediate non-delivery penalties and \u20b915.68 Cr in permanent annual therapy revenue churn."
+        "narrative": "\ud83e\udd16 AI Clinical Consequence: If no replenishment is dispatched within our 24h SLA, patients face 18 week(s) of empty pharmacy shelves. Because chronic insulin and GLP-1 therapies require uninterrupted weekly doses, 1,675 patients will be switched by physicians to competing brands permanently. This inaction triggers \u20b98.43 Cr in immediate non-delivery penalties and permanently destroys \u20b915.68 Cr in annual recurring therapy revenue."
       },
       "freight_comparison": {
         "sea_lead_time_weeks": 3,
@@ -3472,15 +3500,29 @@
         "air_feasibility": "PRE-EMPTS BREACH (1-WEEK ARRIVAL)",
         "air_cost_premium_inr": 3416911,
         "expedite_roi_ratio": 24.7,
-        "decision_verdict": "Air Expedite Economically Dominant: Paying \u20b934.2L air freight premium prevents \u20b98.43 Cr stockout loss (ROI 24.7\u00d7) and closes a 3-week stockout gap."
+        "decision_verdict": "\ud83e\udd16 AI Freight Recommendation: Paying \u20b934.2L for air charter lands stock in 4\u20137 days and prevents \u20b98.43 Cr in stockout losses (24.7\u00d7 ROI). Standard cargo ships take 3 weeks and would arrive 2 weeks too late."
       },
       "wow_status": "ON CADENCE",
       "wow_badge": "\u2713 CADENCE OK",
       "wow_narrative": "Tracking nominal replenishment window within standard lead time",
-      "ai_narrative": "\ud83e\udd16 AI Diagnostic: Ember/France is in ACTIVE CRISIS with inventory dropping below safety stock floor in Week 1. Supply pipeline is 81.9% confirmed, but the 3-week sea freight lead time means a standard PO arrives too late. Autonomous Agent Recommendation: Air-freight expedite of 46,807 units or inter-market transfer required to protect 1,675 lifelong patients (Capital at risk: \u20b98.43 Cr).",
+      "ai_narrative": "\ud83e\udd16 What's Happening: Inventory of Ember in France drops below the safety floor in Week 1. Standard ocean freight takes 3 weeks to arrive, which is far too late to prevent a stockout. \ud83c\udfaf What You Should Do: Approve an emergency air transfer of 46,807 units from a surplus donor market, or authorize an emergency priority air charter today. \u26a0\ufe0f Why It Matters: If you take no action, 1,675 chronic patients will miss essential therapy courses, and Novo Nordisk will suffer \u20b98.43 Cr in permanent revenue loss and non-fulfillment penalties.",
+      "ai_action_plan": {
+        "simple_headline": "Critical Alert: Ember in France runs out of stock in Week 1.",
+        "what_is_happening": "Inventory of Ember in France drops below the safety floor in Week 1. Standard ocean freight takes 3 weeks to arrive, which is far too late to prevent a stockout.",
+        "why_it_matters": "If you take no action, 1,675 chronic patients will miss essential therapy courses, and Novo Nordisk will suffer \u20b98.43 Cr in permanent revenue loss and non-fulfillment penalties.",
+        "what_you_should_do": "Approve an emergency air transfer of 46,807 units from a surplus donor market, or authorize an emergency priority air charter today.",
+        "action_steps": [
+          "Step 1: Click 'TRANSFER APPROVED' to dispatch 46,807 units (arrives in 4 days via priority reefer air charter).",
+          "Step 2: If donor transfer is unavailable, click 'APPROVE AIR EXPEDITE' to authorize expedited manufacturing release.",
+          "Step 3: Confirm 24-hour escalation sign-off in the GxP electronic audit ledger."
+        ],
+        "eli5": "We will run out of medicine in France in Week 1. Normal shipping takes 3 weeks (too slow), so we need to fly 46,807 units in by air right now to protect 1,675 patients.",
+        "manager_brief": "Ember (France) will stock out in W1. Action taken: Approving 46,807 unit air transfer/expedite to protect 1,675 patients and avoid \u20b98.43 Cr loss.",
+        "priority_action": "Step 1: Click 'TRANSFER APPROVED' to dispatch 46,807 units (arrives in 4 days via priority reefer air charter)."
+      },
       "ai_agent_analysis": {
         "agent_name": "NovoSupply Autonomous Triage Agent v2.4",
-        "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + RAG-Synthesizer)",
+        "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + Plain-Language NLG)",
         "confidence_score": 0.96,
         "primary_threat": "Physical Patient Stockout",
         "recommended_mitigation": "Emergency Air Expedite",
@@ -3616,7 +3658,7 @@
         "expedited_arrival_week": 2,
         "expedited_arrival_preempts_stockout": false,
         "freight_callout": "Japan breach at week 1 \u2014 with 4-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this.",
-        "narrative": "Standard replenishment (Maritime / Air, 4W LT) arrives at Week 5, which is 4 week(s) AFTER breach at Week 1. Unmitigated sea/ground lead time causes a 4-week zero-inventory stockout cliff. Emergency air expedite (1W transit) or surplus stock transfer arrives at Week 2, pre-empting the stockout."
+        "narrative": "\ud83e\udd16 AI Lead Time Breakdown: Standard delivery (Maritime / Air, 4W lead time) arrives at Week 5\u2014which is 4 week(s) after inventory completely runs out at Week 1. This creates a 4-week zero-inventory stockout. Dispatching emergency air charter (4-7 days) or approving the inter-market transfer delivers stock in Week 2, successfully preventing any stockout."
       },
       "is_late_for_sea": true,
       "constraints": {
@@ -4091,7 +4133,7 @@
         "permanent_revenue_churn_inr": 414763200,
         "total_inaction_exposure_inr": 623714400,
         "clinical_severity": "ACUTE THERAPY DISRUPTION",
-        "narrative": "If no action is taken within 24h SLA: 14 week(s) of physical stockout will occur, permanently alienating 4,431 chronic insulin/GLP-1 patients, causing \u20b920.90 Cr immediate non-delivery penalties and \u20b941.48 Cr in permanent annual therapy revenue churn."
+        "narrative": "\ud83e\udd16 AI Clinical Consequence: If no replenishment is dispatched within our 24h SLA, patients face 14 week(s) of empty pharmacy shelves. Because chronic insulin and GLP-1 therapies require uninterrupted weekly doses, 4,431 patients will be switched by physicians to competing brands permanently. This inaction triggers \u20b920.90 Cr in immediate non-delivery penalties and permanently destroys \u20b941.48 Cr in annual recurring therapy revenue."
       },
       "freight_comparison": {
         "sea_lead_time_weeks": 4,
@@ -4104,15 +4146,29 @@
         "air_feasibility": "PRE-EMPTS BREACH (1-WEEK ARRIVAL)",
         "air_cost_premium_inr": 8474132,
         "expedite_roi_ratio": 24.7,
-        "decision_verdict": "Air Expedite Economically Dominant: Paying \u20b984.7L air freight premium prevents \u20b920.90 Cr stockout loss (ROI 24.7\u00d7) and closes a 4-week stockout gap."
+        "decision_verdict": "\ud83e\udd16 AI Freight Recommendation: Paying \u20b984.7L for air charter lands stock in 4\u20137 days and prevents \u20b920.90 Cr in stockout losses (24.7\u00d7 ROI). Standard cargo ships take 4 weeks and would arrive 3 weeks too late."
       },
       "wow_status": "ACUTE BREACH",
       "wow_badge": "\ud83d\udea8 NEW CRISIS",
       "wow_narrative": "Physical inventory dropped below safety floor in current planning cycle (+42 PRS shift)",
-      "ai_narrative": "\ud83e\udd16 AI Diagnostic: Ember/Japan is in ACTIVE CRISIS with inventory dropping below safety stock floor in Week 1. Supply pipeline is 83.4% confirmed, but the 4-week sea freight lead time means a standard PO arrives too late. Autonomous Agent Recommendation: Air-freight expedite of 116,084 units or inter-market transfer required to protect 4,431 lifelong patients (Capital at risk: \u20b920.90 Cr).",
+      "ai_narrative": "\ud83e\udd16 What's Happening: Inventory of Ember in Japan drops below the safety floor in Week 1. Standard ocean freight takes 4 weeks to arrive, which is far too late to prevent a stockout. \ud83c\udfaf What You Should Do: Approve an emergency air transfer of 116,084 units from a surplus donor market, or authorize an emergency priority air charter today. \u26a0\ufe0f Why It Matters: If you take no action, 4,431 chronic patients will miss essential therapy courses, and Novo Nordisk will suffer \u20b920.90 Cr in permanent revenue loss and non-fulfillment penalties.",
+      "ai_action_plan": {
+        "simple_headline": "Critical Alert: Ember in Japan runs out of stock in Week 1.",
+        "what_is_happening": "Inventory of Ember in Japan drops below the safety floor in Week 1. Standard ocean freight takes 4 weeks to arrive, which is far too late to prevent a stockout.",
+        "why_it_matters": "If you take no action, 4,431 chronic patients will miss essential therapy courses, and Novo Nordisk will suffer \u20b920.90 Cr in permanent revenue loss and non-fulfillment penalties.",
+        "what_you_should_do": "Approve an emergency air transfer of 116,084 units from a surplus donor market, or authorize an emergency priority air charter today.",
+        "action_steps": [
+          "Step 1: Click 'TRANSFER APPROVED' to dispatch 116,084 units (arrives in 4 days via priority reefer air charter).",
+          "Step 2: If donor transfer is unavailable, click 'APPROVE AIR EXPEDITE' to authorize expedited manufacturing release.",
+          "Step 3: Confirm 24-hour escalation sign-off in the GxP electronic audit ledger."
+        ],
+        "eli5": "We will run out of medicine in Japan in Week 1. Normal shipping takes 4 weeks (too slow), so we need to fly 116,084 units in by air right now to protect 4,431 patients.",
+        "manager_brief": "Ember (Japan) will stock out in W1. Action taken: Approving 116,084 unit air transfer/expedite to protect 4,431 patients and avoid \u20b920.90 Cr loss.",
+        "priority_action": "Step 1: Click 'TRANSFER APPROVED' to dispatch 116,084 units (arrives in 4 days via priority reefer air charter)."
+      },
       "ai_agent_analysis": {
         "agent_name": "NovoSupply Autonomous Triage Agent v2.4",
-        "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + RAG-Synthesizer)",
+        "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + Plain-Language NLG)",
         "confidence_score": 0.96,
         "primary_threat": "Physical Patient Stockout",
         "recommended_mitigation": "Emergency Air Expedite",
@@ -4248,7 +4304,7 @@
         "expedited_arrival_week": 2,
         "expedited_arrival_preempts_stockout": false,
         "freight_callout": "Country 065 breach at week 1 \u2014 with 2-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this.",
-        "narrative": "Standard replenishment (Standard Intermodal Freight, 2W LT) arrives at Week 3, which is 2 week(s) AFTER breach at Week 1. Unmitigated sea/ground lead time causes a 2-week zero-inventory stockout cliff. Emergency air expedite (1W transit) or surplus stock transfer arrives at Week 2, pre-empting the stockout."
+        "narrative": "\ud83e\udd16 AI Lead Time Breakdown: Standard delivery (Standard Intermodal Freight, 2W lead time) arrives at Week 3\u2014which is 2 week(s) after inventory completely runs out at Week 1. This creates a 2-week zero-inventory stockout. Dispatching emergency air charter (4-7 days) or approving the inter-market transfer delivers stock in Week 2, successfully preventing any stockout."
       },
       "is_late_for_sea": true,
       "constraints": {
@@ -4723,7 +4779,7 @@
         "permanent_revenue_churn_inr": 46014400,
         "total_inaction_exposure_inr": 69027200,
         "clinical_severity": "ACUTE THERAPY DISRUPTION",
-        "narrative": "If no action is taken within 24h SLA: 18 week(s) of physical stockout will occur, permanently alienating 1,106 chronic insulin/GLP-1 patients, causing \u20b92.30 Cr immediate non-delivery penalties and \u20b94.60 Cr in permanent annual therapy revenue churn."
+        "narrative": "\ud83e\udd16 AI Clinical Consequence: If no replenishment is dispatched within our 24h SLA, patients face 18 week(s) of empty pharmacy shelves. Because chronic insulin and GLP-1 therapies require uninterrupted weekly doses, 1,106 patients will be switched by physicians to competing brands permanently. This inaction triggers \u20b92.30 Cr in immediate non-delivery penalties and permanently destroys \u20b94.60 Cr in annual recurring therapy revenue."
       },
       "freight_comparison": {
         "sea_lead_time_weeks": 2,
@@ -4736,15 +4792,29 @@
         "air_feasibility": "PRE-EMPTS BREACH (1-WEEK ARRIVAL)",
         "air_cost_premium_inr": 2099918,
         "expedite_roi_ratio": 11.0,
-        "decision_verdict": "Air Expedite Economically Dominant: Paying \u20b921.0L air freight premium prevents \u20b92.30 Cr stockout loss (ROI 11.0\u00d7) and closes a 2-week stockout gap."
+        "decision_verdict": "\ud83e\udd16 AI Freight Recommendation: Paying \u20b921.0L for air charter lands stock in 4\u20137 days and prevents \u20b92.30 Cr in stockout losses (11.0\u00d7 ROI). Standard cargo ships take 2 weeks and would arrive 1 weeks too late."
       },
       "wow_status": "ON CADENCE",
       "wow_badge": "\u2713 CADENCE OK",
       "wow_narrative": "Tracking nominal replenishment window within standard lead time",
-      "ai_narrative": "\ud83e\udd16 AI Diagnostic: Delta/Country 065 is in ACTIVE CRISIS with inventory dropping below safety stock floor in Week 1. Supply pipeline is 79.4% confirmed, but the 2-week sea freight lead time means a standard PO arrives too late. Autonomous Agent Recommendation: Air-freight expedite of 28,766 units or inter-market transfer required to protect 1,106 lifelong patients (Capital at risk: \u20b92.30 Cr).",
+      "ai_narrative": "\ud83e\udd16 What's Happening: Inventory of Delta in Country 065 drops below the safety floor in Week 1. Standard ocean freight takes 2 weeks to arrive, which is far too late to prevent a stockout. \ud83c\udfaf What You Should Do: Approve an emergency air transfer of 28,766 units from a surplus donor market, or authorize an emergency priority air charter today. \u26a0\ufe0f Why It Matters: If you take no action, 1,106 chronic patients will miss essential therapy courses, and Novo Nordisk will suffer \u20b92.30 Cr in permanent revenue loss and non-fulfillment penalties.",
+      "ai_action_plan": {
+        "simple_headline": "Critical Alert: Delta in Country 065 runs out of stock in Week 1.",
+        "what_is_happening": "Inventory of Delta in Country 065 drops below the safety floor in Week 1. Standard ocean freight takes 2 weeks to arrive, which is far too late to prevent a stockout.",
+        "why_it_matters": "If you take no action, 1,106 chronic patients will miss essential therapy courses, and Novo Nordisk will suffer \u20b92.30 Cr in permanent revenue loss and non-fulfillment penalties.",
+        "what_you_should_do": "Approve an emergency air transfer of 28,766 units from a surplus donor market, or authorize an emergency priority air charter today.",
+        "action_steps": [
+          "Step 1: Click 'TRANSFER APPROVED' to dispatch 28,766 units (arrives in 4 days via priority reefer air charter).",
+          "Step 2: If donor transfer is unavailable, click 'APPROVE AIR EXPEDITE' to authorize expedited manufacturing release.",
+          "Step 3: Confirm 24-hour escalation sign-off in the GxP electronic audit ledger."
+        ],
+        "eli5": "We will run out of medicine in Country 065 in Week 1. Normal shipping takes 2 weeks (too slow), so we need to fly 28,766 units in by air right now to protect 1,106 patients.",
+        "manager_brief": "Delta (Country 065) will stock out in W1. Action taken: Approving 28,766 unit air transfer/expedite to protect 1,106 patients and avoid \u20b92.30 Cr loss.",
+        "priority_action": "Step 1: Click 'TRANSFER APPROVED' to dispatch 28,766 units (arrives in 4 days via priority reefer air charter)."
+      },
       "ai_agent_analysis": {
         "agent_name": "NovoSupply Autonomous Triage Agent v2.4",
-        "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + RAG-Synthesizer)",
+        "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + Plain-Language NLG)",
         "confidence_score": 0.96,
         "primary_threat": "Physical Patient Stockout",
         "recommended_mitigation": "Emergency Air Expedite",
@@ -4880,7 +4950,7 @@
         "expedited_arrival_week": 2,
         "expedited_arrival_preempts_stockout": false,
         "freight_callout": "Germany breach at week 1 \u2014 with 3-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this.",
-        "narrative": "Standard replenishment (Road / Rail, 3W LT) arrives at Week 4, which is 3 week(s) AFTER breach at Week 1. Unmitigated sea/ground lead time causes a 3-week zero-inventory stockout cliff. Emergency air expedite (1W transit) or surplus stock transfer arrives at Week 2, pre-empting the stockout."
+        "narrative": "\ud83e\udd16 AI Lead Time Breakdown: Standard delivery (Road / Rail, 3W lead time) arrives at Week 4\u2014which is 3 week(s) after inventory completely runs out at Week 1. This creates a 3-week zero-inventory stockout. Dispatching emergency air charter (4-7 days) or approving the inter-market transfer delivers stock in Week 2, successfully preventing any stockout."
       },
       "is_late_for_sea": true,
       "constraints": {
@@ -5355,7 +5425,7 @@
         "permanent_revenue_churn_inr": 85956000,
         "total_inaction_exposure_inr": 85956000,
         "clinical_severity": "ACUTE THERAPY DISRUPTION",
-        "narrative": "If no action is taken within 24h SLA: 16 week(s) of physical stockout will occur, permanently alienating 826 chronic insulin/GLP-1 patients, causing \u20b90.00 Cr immediate non-delivery penalties and \u20b98.60 Cr in permanent annual therapy revenue churn."
+        "narrative": "\ud83e\udd16 AI Clinical Consequence: If no replenishment is dispatched within our 24h SLA, patients face 16 week(s) of empty pharmacy shelves. Because chronic insulin and GLP-1 therapies require uninterrupted weekly doses, 826 patients will be switched by physicians to competing brands permanently. This inaction triggers \u20b90.00 Cr in immediate non-delivery penalties and permanently destroys \u20b98.60 Cr in annual recurring therapy revenue."
       },
       "freight_comparison": {
         "sea_lead_time_weeks": 3,
@@ -5368,15 +5438,29 @@
         "air_feasibility": "PRE-EMPTS BREACH (1-WEEK ARRIVAL)",
         "air_cost_premium_inr": 0,
         "expedite_roi_ratio": 15.0,
-        "decision_verdict": "Air Expedite Economically Dominant: Paying \u20b90.0L air freight premium prevents \u20b90.00 Cr stockout loss (ROI 15.0\u00d7) and closes a 3-week stockout gap."
+        "decision_verdict": "\ud83e\udd16 AI Freight Recommendation: Paying \u20b90.0L for air charter lands stock in 4\u20137 days and prevents \u20b90.00 Cr in stockout losses (15.0\u00d7 ROI). Standard cargo ships take 3 weeks and would arrive 2 weeks too late."
       },
       "wow_status": "STABLE OVERSTOCK",
       "wow_badge": "\ud83d\udcca PERSISTENT CEILING",
       "wow_narrative": "Persistent corridor ceiling breach (>1.8 DOH/SSD ratio, surplus holding)",
-      "ai_narrative": "\ud83e\udd16 AI Diagnostic: Aster/Germany shows continuous overstock accumulation exceeding corridor ceiling. Excess inventory increases warehousing holding costs and risk of product expiry. Autonomous Agent Recommendation: Defer or reallocate 0 units of inbound supply to donor corridors (Zero purchase capital required).",
+      "ai_narrative": "\ud83e\udd16 What's Happening: Warehouse holding for Aster in Germany exceeds the optimal corridor ceiling. Current supply is comfortably sufficient for months of demand without issuing new orders. \ud83c\udfaf What You Should Do: Do NOT release new purchase orders. Pause inbound deliveries and designate this warehouse as an active donor to re-route surplus units to shortage markets. \u26a0\ufe0f Why It Matters: Excess inventory traps working capital unnecessarily, congests warehouse storage, and increases the risk of stock expiry before patient dispensing.",
+      "ai_action_plan": {
+        "simple_headline": "Overstock Warning: Aster in Germany holds surplus stock above corridor ceiling.",
+        "what_is_happening": "Warehouse holding for Aster in Germany exceeds the optimal corridor ceiling. Current supply is comfortably sufficient for months of demand without issuing new orders.",
+        "why_it_matters": "Excess inventory traps working capital unnecessarily, congests warehouse storage, and increases the risk of stock expiry before patient dispensing.",
+        "what_you_should_do": "Do NOT release new purchase orders. Pause inbound deliveries and designate this warehouse as an active donor to re-route surplus units to shortage markets.",
+        "action_steps": [
+          "Step 1: Click 'DEFER INBOUND SUPPLY' to pause future purchase orders and release commitments.",
+          "Step 2: Designate this corridor as a surplus donor to fulfill acute deficit requests in sister markets.",
+          "Step 3: Allow current warehouse inventory to naturally draw down to target safety stock levels."
+        ],
+        "eli5": "We have too many boxes stored in the warehouse. Do not order more\u2014let's share the surplus with markets facing deficits.",
+        "manager_brief": "Aster (Germany) is overstocked above ceiling. Recommendation: Defer planned orders to liberate capital and make surplus available for inter-market transfers.",
+        "priority_action": "Step 1: Click 'DEFER INBOUND SUPPLY' to pause future purchase orders and release commitments."
+      },
       "ai_agent_analysis": {
         "agent_name": "NovoSupply Autonomous Triage Agent v2.4",
-        "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + RAG-Synthesizer)",
+        "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + Plain-Language NLG)",
         "confidence_score": 0.96,
         "primary_threat": "Capital Inefficiency",
         "recommended_mitigation": "Surplus Inbound Deferral",
@@ -5456,7 +5540,7 @@
         "expedited_arrival_week": 2,
         "expedited_arrival_preempts_stockout": false,
         "freight_callout": "Brazil breach at week 1 \u2014 with 8-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this.",
-        "narrative": "Standard replenishment (Sea Freight, 8W LT) arrives at Week 9, which is 8 week(s) AFTER breach at Week 1. Unmitigated sea/ground lead time causes a 8-week zero-inventory stockout cliff. Emergency air expedite (1W transit) or surplus stock transfer arrives at Week 2, pre-empting the stockout."
+        "narrative": "\ud83e\udd16 AI Lead Time Breakdown: Standard delivery (Sea Freight, 8W lead time) arrives at Week 9\u2014which is 8 week(s) after inventory completely runs out at Week 1. This creates a 8-week zero-inventory stockout. Dispatching emergency air charter (4-7 days) or approving the inter-market transfer delivers stock in Week 2, successfully preventing any stockout."
       },
       "is_late_for_sea": true,
       "constraints": {
@@ -5931,7 +6015,7 @@
         "permanent_revenue_churn_inr": 44427600,
         "total_inaction_exposure_inr": 65881800,
         "clinical_severity": "ACUTE THERAPY DISRUPTION",
-        "narrative": "If no action is taken within 24h SLA: 13 week(s) of physical stockout will occur, permanently alienating 475 chronic insulin/GLP-1 patients, causing \u20b92.15 Cr immediate non-delivery penalties and \u20b94.44 Cr in permanent annual therapy revenue churn."
+        "narrative": "\ud83e\udd16 AI Clinical Consequence: If no replenishment is dispatched within our 24h SLA, patients face 13 week(s) of empty pharmacy shelves. Because chronic insulin and GLP-1 therapies require uninterrupted weekly doses, 475 patients will be switched by physicians to competing brands permanently. This inaction triggers \u20b92.15 Cr in immediate non-delivery penalties and permanently destroys \u20b94.44 Cr in annual recurring therapy revenue."
       },
       "freight_comparison": {
         "sea_lead_time_weeks": 8,
@@ -5944,15 +6028,29 @@
         "air_feasibility": "PRE-EMPTS BREACH (1-WEEK ARRIVAL)",
         "air_cost_premium_inr": 870087,
         "expedite_roi_ratio": 24.7,
-        "decision_verdict": "Air Expedite Economically Dominant: Paying \u20b98.7L air freight premium prevents \u20b92.15 Cr stockout loss (ROI 24.7\u00d7) and closes a 8-week stockout gap."
+        "decision_verdict": "\ud83e\udd16 AI Freight Recommendation: Paying \u20b98.7L for air charter lands stock in 4\u20137 days and prevents \u20b92.15 Cr in stockout losses (24.7\u00d7 ROI). Standard cargo ships take 8 weeks and would arrive 7 weeks too late."
       },
       "wow_status": "ON CADENCE",
       "wow_badge": "\u2713 CADENCE OK",
       "wow_narrative": "Tracking nominal replenishment window within standard lead time",
-      "ai_narrative": "\ud83e\udd16 AI Diagnostic: Ember/Brazil is in ACTIVE CRISIS with inventory dropping below safety stock floor in Week 1. Supply pipeline is 70.3% confirmed, but the 8-week sea freight lead time means a standard PO arrives too late. Autonomous Agent Recommendation: Air-freight expedite of 11,919 units or inter-market transfer required to protect 475 lifelong patients (Capital at risk: \u20b92.15 Cr).",
+      "ai_narrative": "\ud83e\udd16 What's Happening: Inventory of Ember in Brazil drops below the safety floor in Week 1. Standard ocean freight takes 8 weeks to arrive, which is far too late to prevent a stockout. \ud83c\udfaf What You Should Do: Approve an emergency air transfer of 11,919 units from a surplus donor market, or authorize an emergency priority air charter today. \u26a0\ufe0f Why It Matters: If you take no action, 475 chronic patients will miss essential therapy courses, and Novo Nordisk will suffer \u20b92.15 Cr in permanent revenue loss and non-fulfillment penalties.",
+      "ai_action_plan": {
+        "simple_headline": "Critical Alert: Ember in Brazil runs out of stock in Week 1.",
+        "what_is_happening": "Inventory of Ember in Brazil drops below the safety floor in Week 1. Standard ocean freight takes 8 weeks to arrive, which is far too late to prevent a stockout.",
+        "why_it_matters": "If you take no action, 475 chronic patients will miss essential therapy courses, and Novo Nordisk will suffer \u20b92.15 Cr in permanent revenue loss and non-fulfillment penalties.",
+        "what_you_should_do": "Approve an emergency air transfer of 11,919 units from a surplus donor market, or authorize an emergency priority air charter today.",
+        "action_steps": [
+          "Step 1: Click 'TRANSFER APPROVED' to dispatch 11,919 units (arrives in 4 days via priority reefer air charter).",
+          "Step 2: If donor transfer is unavailable, click 'APPROVE AIR EXPEDITE' to authorize expedited manufacturing release.",
+          "Step 3: Confirm 24-hour escalation sign-off in the GxP electronic audit ledger."
+        ],
+        "eli5": "We will run out of medicine in Brazil in Week 1. Normal shipping takes 8 weeks (too slow), so we need to fly 11,919 units in by air right now to protect 475 patients.",
+        "manager_brief": "Ember (Brazil) will stock out in W1. Action taken: Approving 11,919 unit air transfer/expedite to protect 475 patients and avoid \u20b92.15 Cr loss.",
+        "priority_action": "Step 1: Click 'TRANSFER APPROVED' to dispatch 11,919 units (arrives in 4 days via priority reefer air charter)."
+      },
       "ai_agent_analysis": {
         "agent_name": "NovoSupply Autonomous Triage Agent v2.4",
-        "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + RAG-Synthesizer)",
+        "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + Plain-Language NLG)",
         "confidence_score": 0.96,
         "primary_threat": "Physical Patient Stockout",
         "recommended_mitigation": "Emergency Air Expedite",
@@ -6088,7 +6186,7 @@
         "expedited_arrival_week": 2,
         "expedited_arrival_preempts_stockout": false,
         "freight_callout": "Country 087 breach at week 1 \u2014 with 2-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this.",
-        "narrative": "Standard replenishment (Standard Intermodal Freight, 2W LT) arrives at Week 3, which is 2 week(s) AFTER breach at Week 1. Unmitigated sea/ground lead time causes a 2-week zero-inventory stockout cliff. Emergency air expedite (1W transit) or surplus stock transfer arrives at Week 2, pre-empting the stockout."
+        "narrative": "\ud83e\udd16 AI Lead Time Breakdown: Standard delivery (Standard Intermodal Freight, 2W lead time) arrives at Week 3\u2014which is 2 week(s) after inventory completely runs out at Week 1. This creates a 2-week zero-inventory stockout. Dispatching emergency air charter (4-7 days) or approving the inter-market transfer delivers stock in Week 2, successfully preventing any stockout."
       },
       "is_late_for_sea": true,
       "constraints": {
@@ -6563,7 +6661,7 @@
         "permanent_revenue_churn_inr": 249341400,
         "total_inaction_exposure_inr": 358232400,
         "clinical_severity": "ACUTE THERAPY DISRUPTION",
-        "narrative": "If no action is taken within 24h SLA: 14 week(s) of physical stockout will occur, permanently alienating 2,664 chronic insulin/GLP-1 patients, causing \u20b910.89 Cr immediate non-delivery penalties and \u20b924.93 Cr in permanent annual therapy revenue churn."
+        "narrative": "\ud83e\udd16 AI Clinical Consequence: If no replenishment is dispatched within our 24h SLA, patients face 14 week(s) of empty pharmacy shelves. Because chronic insulin and GLP-1 therapies require uninterrupted weekly doses, 2,664 patients will be switched by physicians to competing brands permanently. This inaction triggers \u20b910.89 Cr in immediate non-delivery penalties and permanently destroys \u20b924.93 Cr in annual recurring therapy revenue."
       },
       "freight_comparison": {
         "sea_lead_time_weeks": 2,
@@ -6576,15 +6674,29 @@
         "air_feasibility": "PRE-EMPTS BREACH (1-WEEK ARRIVAL)",
         "air_cost_premium_inr": 4416135,
         "expedite_roi_ratio": 24.7,
-        "decision_verdict": "Air Expedite Economically Dominant: Paying \u20b944.2L air freight premium prevents \u20b910.89 Cr stockout loss (ROI 24.7\u00d7) and closes a 2-week stockout gap."
+        "decision_verdict": "\ud83e\udd16 AI Freight Recommendation: Paying \u20b944.2L for air charter lands stock in 4\u20137 days and prevents \u20b910.89 Cr in stockout losses (24.7\u00d7 ROI). Standard cargo ships take 2 weeks and would arrive 1 weeks too late."
       },
       "wow_status": "ON CADENCE",
       "wow_badge": "\u2713 CADENCE OK",
       "wow_narrative": "Tracking nominal replenishment window within standard lead time",
-      "ai_narrative": "\ud83e\udd16 AI Diagnostic: Ember/Country 087 is in ACTIVE CRISIS with inventory dropping below safety stock floor in Week 1. Supply pipeline is 79.8% confirmed, but the 2-week sea freight lead time means a standard PO arrives too late. Autonomous Agent Recommendation: Air-freight expedite of 60,495 units or inter-market transfer required to protect 2,664 lifelong patients (Capital at risk: \u20b910.89 Cr).",
+      "ai_narrative": "\ud83e\udd16 What's Happening: Inventory of Ember in Country 087 drops below the safety floor in Week 1. Standard ocean freight takes 2 weeks to arrive, which is far too late to prevent a stockout. \ud83c\udfaf What You Should Do: Approve an emergency air transfer of 60,495 units from a surplus donor market, or authorize an emergency priority air charter today. \u26a0\ufe0f Why It Matters: If you take no action, 2,664 chronic patients will miss essential therapy courses, and Novo Nordisk will suffer \u20b910.89 Cr in permanent revenue loss and non-fulfillment penalties.",
+      "ai_action_plan": {
+        "simple_headline": "Critical Alert: Ember in Country 087 runs out of stock in Week 1.",
+        "what_is_happening": "Inventory of Ember in Country 087 drops below the safety floor in Week 1. Standard ocean freight takes 2 weeks to arrive, which is far too late to prevent a stockout.",
+        "why_it_matters": "If you take no action, 2,664 chronic patients will miss essential therapy courses, and Novo Nordisk will suffer \u20b910.89 Cr in permanent revenue loss and non-fulfillment penalties.",
+        "what_you_should_do": "Approve an emergency air transfer of 60,495 units from a surplus donor market, or authorize an emergency priority air charter today.",
+        "action_steps": [
+          "Step 1: Click 'TRANSFER APPROVED' to dispatch 60,495 units (arrives in 4 days via priority reefer air charter).",
+          "Step 2: If donor transfer is unavailable, click 'APPROVE AIR EXPEDITE' to authorize expedited manufacturing release.",
+          "Step 3: Confirm 24-hour escalation sign-off in the GxP electronic audit ledger."
+        ],
+        "eli5": "We will run out of medicine in Country 087 in Week 1. Normal shipping takes 2 weeks (too slow), so we need to fly 60,495 units in by air right now to protect 2,664 patients.",
+        "manager_brief": "Ember (Country 087) will stock out in W1. Action taken: Approving 60,495 unit air transfer/expedite to protect 2,664 patients and avoid \u20b910.89 Cr loss.",
+        "priority_action": "Step 1: Click 'TRANSFER APPROVED' to dispatch 60,495 units (arrives in 4 days via priority reefer air charter)."
+      },
       "ai_agent_analysis": {
         "agent_name": "NovoSupply Autonomous Triage Agent v2.4",
-        "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + RAG-Synthesizer)",
+        "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + Plain-Language NLG)",
         "confidence_score": 0.96,
         "primary_threat": "Physical Patient Stockout",
         "recommended_mitigation": "Emergency Air Expedite",
@@ -6720,7 +6832,7 @@
         "expedited_arrival_week": 2,
         "expedited_arrival_preempts_stockout": true,
         "freight_callout": "Australia breach at week 3 \u2014 with 7-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this.",
-        "narrative": "Standard replenishment (Sea Freight, 7W LT) arrives at Week 8, which is 5 week(s) AFTER breach at Week 3. Unmitigated sea/ground lead time causes a 5-week zero-inventory stockout cliff. Emergency air expedite (1W transit) or surplus stock transfer arrives at Week 2, pre-empting the stockout."
+        "narrative": "\ud83e\udd16 AI Lead Time Breakdown: Standard delivery (Sea Freight, 7W lead time) arrives at Week 8\u2014which is 5 week(s) after inventory completely runs out at Week 3. This creates a 5-week zero-inventory stockout. Dispatching emergency air charter (4-7 days) or approving the inter-market transfer delivers stock in Week 2, successfully preventing any stockout."
       },
       "is_late_for_sea": true,
       "constraints": {
@@ -7195,7 +7307,7 @@
         "permanent_revenue_churn_inr": 0,
         "total_inaction_exposure_inr": 12240000,
         "clinical_severity": "NOMINAL BUFFER",
-        "narrative": "Inventory levels track within nominal corridor buffers; zero immediate patient therapy disruption forecast."
+        "narrative": "\ud83e\udd16 AI Clinical Consequence: Inventory levels track within safe corridor buffers. Zero patient therapy disruption forecast."
       },
       "freight_comparison": {
         "sea_lead_time_weeks": 7,
@@ -7208,15 +7320,29 @@
         "air_feasibility": "PRE-EMPTS BREACH (1-WEEK ARRIVAL)",
         "air_cost_premium_inr": 1116900,
         "expedite_roi_ratio": 11.0,
-        "decision_verdict": "Air Expedite Economically Dominant: Paying \u20b911.2L air freight premium prevents \u20b91.22 Cr stockout loss (ROI 11.0\u00d7) and closes a 5-week stockout gap."
+        "decision_verdict": "\ud83e\udd16 AI Freight Recommendation: Paying \u20b911.2L for air charter lands stock in 4\u20137 days and prevents \u20b91.22 Cr in stockout losses (11.0\u00d7 ROI). Standard cargo ships take 7 weeks and would arrive 4 weeks too late."
       },
       "wow_status": "EXPEDITE WINDOW",
       "wow_badge": "\u23f1 HORIZON -2W",
       "wow_narrative": "Breach horizon contracted by 2 weeks due to demand surge (+18% MoM)",
-      "ai_narrative": "\ud83e\udd16 AI Diagnostic: Delta/Australia faces imminent stockout cliff in Week 3 (2 weeks remaining). Standard 7-week maritime lead time cannot arrive before inventory depletion. Autonomous Agent Recommendation: Expedite priority order of 15,300 units via air freight charter (Capital at risk: \u20b91.22 Cr).",
+      "ai_narrative": "\ud83e\udd16 What's Happening: Stock will run out in 2 weeks (Week 3). Ocean shipping takes 7 weeks, meaning standard sea freight arrives 5 week(s) after inventory is already exhausted. \ud83c\udfaf What You Should Do: Authorize priority air freight for 15,300 units. Air shipping costs \u20b985/unit vs \u20b912 sea, but achieves an outstanding 10.3\u00d7 ROI by preventing a \u20b91.22 Cr stockout loss. \u26a0\ufe0f Why It Matters: Waiting for regular maritime shipping will trigger an unmitigated stockout cliff, putting 0 chronic patients and \u20b91.22 Cr of revenue at risk.",
+      "ai_action_plan": {
+        "simple_headline": "Replenishment Cliff: Delta in Australia breaches in Week 3 (2 weeks away).",
+        "what_is_happening": "Stock will run out in 2 weeks (Week 3). Ocean shipping takes 7 weeks, meaning standard sea freight arrives 5 week(s) after inventory is already exhausted.",
+        "why_it_matters": "Waiting for regular maritime shipping will trigger an unmitigated stockout cliff, putting 0 chronic patients and \u20b91.22 Cr of revenue at risk.",
+        "what_you_should_do": "Authorize priority air freight for 15,300 units. Air shipping costs \u20b985/unit vs \u20b912 sea, but achieves an outstanding 10.3\u00d7 ROI by preventing a \u20b91.22 Cr stockout loss.",
+        "action_steps": [
+          "Step 1: Click 'APPROVE AIR EXPEDITE' to lock in a 1-week priority air charter arrival.",
+          "Step 2: Confirm temperature-controlled cold chain cargo booking with global freight forwarder.",
+          "Step 3: Notify affiliate market coordinators that replenishment is secured ahead of Week 3 breach."
+        ],
+        "eli5": "Stock runs out in 2 weeks, but normal sea freight takes 7 weeks. Paying a modest air freight premium arrives in 1 week and saves 0 lifelong patients.",
+        "manager_brief": "Delta (Australia) faces a 7W sea vs 2W breach gap. Recommendation: Authorize air expedite of 15,300 units (10.3\u00d7 ROI vs stockout loss).",
+        "priority_action": "Step 1: Click 'APPROVE AIR EXPEDITE' to lock in a 1-week priority air charter arrival."
+      },
       "ai_agent_analysis": {
         "agent_name": "NovoSupply Autonomous Triage Agent v2.4",
-        "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + RAG-Synthesizer)",
+        "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + Plain-Language NLG)",
         "confidence_score": 0.96,
         "primary_threat": "Physical Patient Stockout",
         "recommended_mitigation": "Emergency Air Expedite",
@@ -7337,7 +7463,7 @@
         "expedited_arrival_week": 2,
         "expedited_arrival_preempts_stockout": true,
         "freight_callout": "France breach at week 3 \u2014 with 3-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this.",
-        "narrative": "Standard replenishment (Road / Rail, 3W LT) arrives at Week 4, which is 1 week(s) AFTER breach at Week 3. Unmitigated sea/ground lead time causes a 1-week zero-inventory stockout cliff. Emergency air expedite (1W transit) or surplus stock transfer arrives at Week 2, pre-empting the stockout."
+        "narrative": "\ud83e\udd16 AI Lead Time Breakdown: Standard delivery (Road / Rail, 3W lead time) arrives at Week 4\u2014which is 1 week(s) after inventory completely runs out at Week 3. This creates a 1-week zero-inventory stockout. Dispatching emergency air charter (4-7 days) or approving the inter-market transfer delivers stock in Week 2, successfully preventing any stockout."
       },
       "is_late_for_sea": true,
       "constraints": {
@@ -7812,7 +7938,7 @@
         "permanent_revenue_churn_inr": 8710000,
         "total_inaction_exposure_inr": 37036000,
         "clinical_severity": "ACUTE THERAPY DISRUPTION",
-        "narrative": "If no action is taken within 24h SLA: 2 week(s) of physical stockout will occur, permanently alienating 84 chronic insulin/GLP-1 patients, causing \u20b92.83 Cr immediate non-delivery penalties and \u20b90.87 Cr in permanent annual therapy revenue churn."
+        "narrative": "\ud83e\udd16 AI Clinical Consequence: If no replenishment is dispatched within our 24h SLA, patients face 2 week(s) of empty pharmacy shelves. Because chronic insulin and GLP-1 therapies require uninterrupted weekly doses, 84 patients will be switched by physicians to competing brands permanently. This inaction triggers \u20b92.83 Cr in immediate non-delivery penalties and permanently destroys \u20b90.87 Cr in annual recurring therapy revenue."
       },
       "freight_comparison": {
         "sea_lead_time_weeks": 3,
@@ -7825,15 +7951,29 @@
         "air_feasibility": "PRE-EMPTS BREACH (1-WEEK ARRIVAL)",
         "air_cost_premium_inr": 1033899,
         "expedite_roi_ratio": 27.4,
-        "decision_verdict": "Air Expedite Economically Dominant: Paying \u20b910.3L air freight premium prevents \u20b92.83 Cr stockout loss (ROI 27.4\u00d7) and closes a 1-week stockout gap."
+        "decision_verdict": "\ud83e\udd16 AI Freight Recommendation: Paying \u20b910.3L for air charter lands stock in 4\u20137 days and prevents \u20b92.83 Cr in stockout losses (27.4\u00d7 ROI). Standard cargo ships take 3 weeks and would arrive 1 weeks too late."
       },
       "wow_status": "EXPEDITE WINDOW",
       "wow_badge": "\u23f1 HORIZON -2W",
       "wow_narrative": "Breach horizon contracted by 2 weeks due to demand surge (+18% MoM)",
-      "ai_narrative": "\ud83e\udd16 AI Diagnostic: Aster/France faces imminent stockout cliff in Week 3 (2 weeks remaining). Standard 3-week maritime lead time cannot arrive before inventory depletion. Autonomous Agent Recommendation: Expedite priority order of 14,163 units via air freight charter (Capital at risk: \u20b92.83 Cr).",
+      "ai_narrative": "\ud83e\udd16 What's Happening: Stock will run out in 2 weeks (Week 3). Ocean shipping takes 3 weeks, meaning standard sea freight arrives 1 week(s) after inventory is already exhausted. \ud83c\udfaf What You Should Do: Authorize priority air freight for 14,163 units. Air shipping costs \u20b985/unit vs \u20b912 sea, but achieves an outstanding 10.3\u00d7 ROI by preventing a \u20b92.83 Cr stockout loss. \u26a0\ufe0f Why It Matters: Waiting for regular maritime shipping will trigger an unmitigated stockout cliff, putting 84 chronic patients and \u20b92.83 Cr of revenue at risk.",
+      "ai_action_plan": {
+        "simple_headline": "Replenishment Cliff: Aster in France breaches in Week 3 (2 weeks away).",
+        "what_is_happening": "Stock will run out in 2 weeks (Week 3). Ocean shipping takes 3 weeks, meaning standard sea freight arrives 1 week(s) after inventory is already exhausted.",
+        "why_it_matters": "Waiting for regular maritime shipping will trigger an unmitigated stockout cliff, putting 84 chronic patients and \u20b92.83 Cr of revenue at risk.",
+        "what_you_should_do": "Authorize priority air freight for 14,163 units. Air shipping costs \u20b985/unit vs \u20b912 sea, but achieves an outstanding 10.3\u00d7 ROI by preventing a \u20b92.83 Cr stockout loss.",
+        "action_steps": [
+          "Step 1: Click 'APPROVE AIR EXPEDITE' to lock in a 1-week priority air charter arrival.",
+          "Step 2: Confirm temperature-controlled cold chain cargo booking with global freight forwarder.",
+          "Step 3: Notify affiliate market coordinators that replenishment is secured ahead of Week 3 breach."
+        ],
+        "eli5": "Stock runs out in 2 weeks, but normal sea freight takes 3 weeks. Paying a modest air freight premium arrives in 1 week and saves 84 lifelong patients.",
+        "manager_brief": "Aster (France) faces a 3W sea vs 2W breach gap. Recommendation: Authorize air expedite of 14,163 units (10.3\u00d7 ROI vs stockout loss).",
+        "priority_action": "Step 1: Click 'APPROVE AIR EXPEDITE' to lock in a 1-week priority air charter arrival."
+      },
       "ai_agent_analysis": {
         "agent_name": "NovoSupply Autonomous Triage Agent v2.4",
-        "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + RAG-Synthesizer)",
+        "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + Plain-Language NLG)",
         "confidence_score": 0.96,
         "primary_threat": "Physical Patient Stockout",
         "recommended_mitigation": "Emergency Air Expedite",
@@ -7954,7 +8094,7 @@
         "expedited_arrival_week": 2,
         "expedited_arrival_preempts_stockout": true,
         "freight_callout": "Country 094 breach at week 6 \u2014 within 2-week standard replenishment window. Sea/surface transit on cadence.",
-        "narrative": "Standard replenishment (Standard Intermodal Freight, 2W LT) arrives at Week 3, comfortably pre-empting breach at Week 6 with 3 week(s) buffer."
+        "narrative": "\ud83e\udd16 AI Lead Time Breakdown: Standard delivery (Standard Intermodal Freight, 2W lead time) arrives at Week 3, comfortably ahead of the breach window at Week 6 with 3 week(s) of safety buffer."
       },
       "is_late_for_sea": false,
       "constraints": {
@@ -8429,7 +8569,7 @@
         "permanent_revenue_churn_inr": 0,
         "total_inaction_exposure_inr": 16203000,
         "clinical_severity": "NOMINAL BUFFER",
-        "narrative": "Inventory levels track within nominal corridor buffers; zero immediate patient therapy disruption forecast."
+        "narrative": "\ud83e\udd16 AI Clinical Consequence: Inventory levels track within safe corridor buffers. Zero patient therapy disruption forecast."
       },
       "freight_comparison": {
         "sea_lead_time_weeks": 2,
@@ -8442,15 +8582,29 @@
         "air_feasibility": "PRE-EMPTS BREACH (1-WEEK ARRIVAL)",
         "air_cost_premium_inr": 788546,
         "expedite_roi_ratio": 20.5,
-        "decision_verdict": "Standard Maritime Preferred: 2W sea freight arrives with buffer. Air expedite premium of \u20b97.9L not required."
+        "decision_verdict": "\ud83e\udd16 AI Freight Recommendation: Standard 2W sea freight arrives with plenty of buffer before the breach. Air expedite premium of \u20b97.9L is not required."
       },
       "wow_status": "ON CADENCE",
       "wow_badge": "\u2713 CADENCE OK",
       "wow_narrative": "Tracking nominal replenishment window within standard lead time",
-      "ai_narrative": "\ud83e\udd16 AI Diagnostic: Beacon/Country 094 projected to reach safety floor boundary in Week 6. Current 2-week replenishment window allows standard surface procurement to arrive on schedule. Autonomous Agent Recommendation: Issue standard Purchase Order of 10,802 units within the regular planning cycle.",
+      "ai_narrative": "\ud83e\udd16 What's Happening: Stock levels are tracking on schedule. Projected inventory reaches the standard replenishment trigger point in Week 6, matching your regular planning rhythm. \ud83c\udfaf What You Should Do: Release a standard Purchase Order for 10,802 units within your regular weekly planning cycle. \u26a0\ufe0f Why It Matters: Your standard 2-week ocean freight window is fully on schedule. Placing the order today guarantees continuous product availability without incurring air freight premiums.",
+      "ai_action_plan": {
+        "simple_headline": "Routine Order: Beacon in Country 094 reaches reorder boundary in Week 6.",
+        "what_is_happening": "Stock levels are tracking on schedule. Projected inventory reaches the standard replenishment trigger point in Week 6, matching your regular planning rhythm.",
+        "why_it_matters": "Your standard 2-week ocean freight window is fully on schedule. Placing the order today guarantees continuous product availability without incurring air freight premiums.",
+        "what_you_should_do": "Release a standard Purchase Order for 10,802 units within your regular weekly planning cycle.",
+        "action_steps": [
+          "Step 1: Click 'APPROVE STANDARD PO' to generate the standard purchase requisition.",
+          "Step 2: Confirm manufacturing production batch in the regular plant allocation schedule.",
+          "Step 3: Track standard sea freight bill of lading on cadence."
+        ],
+        "eli5": "Everything is running on time. Just place the regular weekly order for 10,802 units to keep inventory steady.",
+        "manager_brief": "Beacon (Country 094) is tracking normally. Recommending standard PO release for 10,802 units on regular 2W sea freight.",
+        "priority_action": "Step 1: Click 'APPROVE STANDARD PO' to generate the standard purchase requisition."
+      },
       "ai_agent_analysis": {
         "agent_name": "NovoSupply Autonomous Triage Agent v2.4",
-        "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + RAG-Synthesizer)",
+        "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + Plain-Language NLG)",
         "confidence_score": 0.96,
         "primary_threat": "Trend Volatility",
         "recommended_mitigation": "Standard PO Release",
@@ -8530,7 +8684,7 @@
         "expedited_arrival_week": 2,
         "expedited_arrival_preempts_stockout": true,
         "freight_callout": "United States breach at week 5 \u2014 with 6-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this.",
-        "narrative": "Standard replenishment (Sea / Intermodal, 6W LT) arrives at Week 7, which is 2 week(s) AFTER breach at Week 5. Unmitigated sea/ground lead time causes a 2-week zero-inventory stockout cliff. Emergency air expedite (1W transit) or surplus stock transfer arrives at Week 2, pre-empting the stockout."
+        "narrative": "\ud83e\udd16 AI Lead Time Breakdown: Standard delivery (Sea / Intermodal, 6W lead time) arrives at Week 7\u2014which is 2 week(s) after inventory completely runs out at Week 5. This creates a 2-week zero-inventory stockout. Dispatching emergency air charter (4-7 days) or approving the inter-market transfer delivers stock in Week 2, successfully preventing any stockout."
       },
       "is_late_for_sea": true,
       "constraints": {
@@ -9005,7 +9159,7 @@
         "permanent_revenue_churn_inr": 0,
         "total_inaction_exposure_inr": 18061200,
         "clinical_severity": "NOMINAL BUFFER",
-        "narrative": "Inventory levels track within nominal corridor buffers; zero immediate patient therapy disruption forecast."
+        "narrative": "\ud83e\udd16 AI Clinical Consequence: Inventory levels track within safe corridor buffers. Zero patient therapy disruption forecast."
       },
       "freight_comparison": {
         "sea_lead_time_weeks": 6,
@@ -9018,15 +9172,29 @@
         "air_feasibility": "PRE-EMPTS BREACH (1-WEEK ARRIVAL)",
         "air_cost_premium_inr": 732482,
         "expedite_roi_ratio": 24.7,
-        "decision_verdict": "Air Expedite Economically Dominant: Paying \u20b97.3L air freight premium prevents \u20b91.81 Cr stockout loss (ROI 24.7\u00d7) and closes a 2-week stockout gap."
+        "decision_verdict": "\ud83e\udd16 AI Freight Recommendation: Paying \u20b97.3L for air charter lands stock in 4\u20137 days and prevents \u20b91.81 Cr in stockout losses (24.7\u00d7 ROI). Standard cargo ships take 6 weeks and would arrive 1 weeks too late."
       },
       "wow_status": "ON CADENCE",
       "wow_badge": "\u2713 CADENCE OK",
       "wow_narrative": "Tracking nominal replenishment window within standard lead time",
-      "ai_narrative": "\ud83e\udd16 AI Diagnostic: Ember/United States projected to reach safety floor boundary in Week 5. Current 6-week replenishment window allows standard surface procurement to arrive on schedule. Autonomous Agent Recommendation: Issue standard Purchase Order of 10,034 units within the regular planning cycle.",
+      "ai_narrative": "\ud83e\udd16 What's Happening: Stock levels are tracking on schedule. Projected inventory reaches the standard replenishment trigger point in Week 5, matching your regular planning rhythm. \ud83c\udfaf What You Should Do: Release a standard Purchase Order for 10,034 units within your regular weekly planning cycle. \u26a0\ufe0f Why It Matters: Your standard 6-week ocean freight window is fully on schedule. Placing the order today guarantees continuous product availability without incurring air freight premiums.",
+      "ai_action_plan": {
+        "simple_headline": "Routine Order: Ember in United States reaches reorder boundary in Week 5.",
+        "what_is_happening": "Stock levels are tracking on schedule. Projected inventory reaches the standard replenishment trigger point in Week 5, matching your regular planning rhythm.",
+        "why_it_matters": "Your standard 6-week ocean freight window is fully on schedule. Placing the order today guarantees continuous product availability without incurring air freight premiums.",
+        "what_you_should_do": "Release a standard Purchase Order for 10,034 units within your regular weekly planning cycle.",
+        "action_steps": [
+          "Step 1: Click 'APPROVE STANDARD PO' to generate the standard purchase requisition.",
+          "Step 2: Confirm manufacturing production batch in the regular plant allocation schedule.",
+          "Step 3: Track standard sea freight bill of lading on cadence."
+        ],
+        "eli5": "Everything is running on time. Just place the regular weekly order for 10,034 units to keep inventory steady.",
+        "manager_brief": "Ember (United States) is tracking normally. Recommending standard PO release for 10,034 units on regular 6W sea freight.",
+        "priority_action": "Step 1: Click 'APPROVE STANDARD PO' to generate the standard purchase requisition."
+      },
       "ai_agent_analysis": {
         "agent_name": "NovoSupply Autonomous Triage Agent v2.4",
-        "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + RAG-Synthesizer)",
+        "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + Plain-Language NLG)",
         "confidence_score": 0.96,
         "primary_threat": "Trend Volatility",
         "recommended_mitigation": "Standard PO Release",
@@ -9106,7 +9274,7 @@
         "expedited_arrival_week": 2,
         "expedited_arrival_preempts_stockout": true,
         "freight_callout": "India breach at week 5 \u2014 with 5-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this.",
-        "narrative": "Standard replenishment (Regional Maritime, 5W LT) arrives at Week 6, which is 1 week(s) AFTER breach at Week 5. Unmitigated sea/ground lead time causes a 1-week zero-inventory stockout cliff. Emergency air expedite (1W transit) or surplus stock transfer arrives at Week 2, pre-empting the stockout."
+        "narrative": "\ud83e\udd16 AI Lead Time Breakdown: Standard delivery (Regional Maritime, 5W lead time) arrives at Week 6\u2014which is 1 week(s) after inventory completely runs out at Week 5. This creates a 1-week zero-inventory stockout. Dispatching emergency air charter (4-7 days) or approving the inter-market transfer delivers stock in Week 2, successfully preventing any stockout."
       },
       "is_late_for_sea": true,
       "constraints": {
@@ -9581,7 +9749,7 @@
         "permanent_revenue_churn_inr": 0,
         "total_inaction_exposure_inr": 8767200,
         "clinical_severity": "NOMINAL BUFFER",
-        "narrative": "Inventory levels track within nominal corridor buffers; zero immediate patient therapy disruption forecast."
+        "narrative": "\ud83e\udd16 AI Clinical Consequence: Inventory levels track within safe corridor buffers. Zero patient therapy disruption forecast."
       },
       "freight_comparison": {
         "sea_lead_time_weeks": 5,
@@ -9594,15 +9762,29 @@
         "air_feasibility": "PRE-EMPTS BREACH (1-WEEK ARRIVAL)",
         "air_cost_premium_inr": 533338,
         "expedite_roi_ratio": 16.4,
-        "decision_verdict": "Air Expedite Economically Dominant: Paying \u20b95.3L air freight premium prevents \u20b90.88 Cr stockout loss (ROI 16.4\u00d7) and closes a 1-week stockout gap."
+        "decision_verdict": "\ud83e\udd16 AI Freight Recommendation: Paying \u20b95.3L for air charter lands stock in 4\u20137 days and prevents \u20b90.88 Cr in stockout losses (16.4\u00d7 ROI). Standard cargo ships take 5 weeks and would arrive 1 weeks too late."
       },
       "wow_status": "ON CADENCE",
       "wow_badge": "\u2713 CADENCE OK",
       "wow_narrative": "Tracking nominal replenishment window within standard lead time",
-      "ai_narrative": "\ud83e\udd16 AI Diagnostic: Crest/India projected to reach safety floor boundary in Week 5. Current 5-week replenishment window allows standard surface procurement to arrive on schedule. Autonomous Agent Recommendation: Issue standard Purchase Order of 7,306 units within the regular planning cycle.",
+      "ai_narrative": "\ud83e\udd16 What's Happening: Stock levels are tracking on schedule. Projected inventory reaches the standard replenishment trigger point in Week 5, matching your regular planning rhythm. \ud83c\udfaf What You Should Do: Release a standard Purchase Order for 7,306 units within your regular weekly planning cycle. \u26a0\ufe0f Why It Matters: Your standard 5-week ocean freight window is fully on schedule. Placing the order today guarantees continuous product availability without incurring air freight premiums.",
+      "ai_action_plan": {
+        "simple_headline": "Routine Order: Crest in India reaches reorder boundary in Week 5.",
+        "what_is_happening": "Stock levels are tracking on schedule. Projected inventory reaches the standard replenishment trigger point in Week 5, matching your regular planning rhythm.",
+        "why_it_matters": "Your standard 5-week ocean freight window is fully on schedule. Placing the order today guarantees continuous product availability without incurring air freight premiums.",
+        "what_you_should_do": "Release a standard Purchase Order for 7,306 units within your regular weekly planning cycle.",
+        "action_steps": [
+          "Step 1: Click 'APPROVE STANDARD PO' to generate the standard purchase requisition.",
+          "Step 2: Confirm manufacturing production batch in the regular plant allocation schedule.",
+          "Step 3: Track standard sea freight bill of lading on cadence."
+        ],
+        "eli5": "Everything is running on time. Just place the regular weekly order for 7,306 units to keep inventory steady.",
+        "manager_brief": "Crest (India) is tracking normally. Recommending standard PO release for 7,306 units on regular 5W sea freight.",
+        "priority_action": "Step 1: Click 'APPROVE STANDARD PO' to generate the standard purchase requisition."
+      },
       "ai_agent_analysis": {
         "agent_name": "NovoSupply Autonomous Triage Agent v2.4",
-        "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + RAG-Synthesizer)",
+        "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + Plain-Language NLG)",
         "confidence_score": 0.96,
         "primary_threat": "Trend Volatility",
         "recommended_mitigation": "Standard PO Release",
@@ -9682,7 +9864,7 @@
         "expedited_arrival_week": 2,
         "expedited_arrival_preempts_stockout": true,
         "freight_callout": "Canada breach at week 5 \u2014 within 4-week standard replenishment window. Sea/surface transit on cadence.",
-        "narrative": "Standard replenishment (Sea / Intermodal, 4W LT) arrives at Week 5, comfortably pre-empting breach at Week 5 with 0 week(s) buffer."
+        "narrative": "\ud83e\udd16 AI Lead Time Breakdown: Standard delivery (Sea / Intermodal, 4W lead time) arrives at Week 5, comfortably ahead of the breach window at Week 5 with 0 week(s) of safety buffer."
       },
       "is_late_for_sea": false,
       "constraints": {
@@ -10157,7 +10339,7 @@
         "permanent_revenue_churn_inr": 0,
         "total_inaction_exposure_inr": 3585600,
         "clinical_severity": "NOMINAL BUFFER",
-        "narrative": "Inventory levels track within nominal corridor buffers; zero immediate patient therapy disruption forecast."
+        "narrative": "\ud83e\udd16 AI Clinical Consequence: Inventory levels track within safe corridor buffers. Zero patient therapy disruption forecast."
       },
       "freight_comparison": {
         "sea_lead_time_weeks": 4,
@@ -10170,15 +10352,29 @@
         "air_feasibility": "PRE-EMPTS BREACH (1-WEEK ARRIVAL)",
         "air_cost_premium_inr": 145416,
         "expedite_roi_ratio": 24.7,
-        "decision_verdict": "Standard Maritime Preferred: 4W sea freight arrives with buffer. Air expedite premium of \u20b91.5L not required."
+        "decision_verdict": "\ud83e\udd16 AI Freight Recommendation: Standard 4W sea freight arrives with plenty of buffer before the breach. Air expedite premium of \u20b91.5L is not required."
       },
       "wow_status": "ON CADENCE",
       "wow_badge": "\u2713 CADENCE OK",
       "wow_narrative": "Tracking nominal replenishment window within standard lead time",
-      "ai_narrative": "\ud83e\udd16 AI Diagnostic: Ember/Canada projected to reach safety floor boundary in Week 5. Current 4-week replenishment window allows standard surface procurement to arrive on schedule. Autonomous Agent Recommendation: Issue standard Purchase Order of 1,992 units within the regular planning cycle.",
+      "ai_narrative": "\ud83e\udd16 What's Happening: Stock levels are tracking on schedule. Projected inventory reaches the standard replenishment trigger point in Week 5, matching your regular planning rhythm. \ud83c\udfaf What You Should Do: Release a standard Purchase Order for 1,992 units within your regular weekly planning cycle. \u26a0\ufe0f Why It Matters: Your standard 4-week ocean freight window is fully on schedule. Placing the order today guarantees continuous product availability without incurring air freight premiums.",
+      "ai_action_plan": {
+        "simple_headline": "Routine Order: Ember in Canada reaches reorder boundary in Week 5.",
+        "what_is_happening": "Stock levels are tracking on schedule. Projected inventory reaches the standard replenishment trigger point in Week 5, matching your regular planning rhythm.",
+        "why_it_matters": "Your standard 4-week ocean freight window is fully on schedule. Placing the order today guarantees continuous product availability without incurring air freight premiums.",
+        "what_you_should_do": "Release a standard Purchase Order for 1,992 units within your regular weekly planning cycle.",
+        "action_steps": [
+          "Step 1: Click 'APPROVE STANDARD PO' to generate the standard purchase requisition.",
+          "Step 2: Confirm manufacturing production batch in the regular plant allocation schedule.",
+          "Step 3: Track standard sea freight bill of lading on cadence."
+        ],
+        "eli5": "Everything is running on time. Just place the regular weekly order for 1,992 units to keep inventory steady.",
+        "manager_brief": "Ember (Canada) is tracking normally. Recommending standard PO release for 1,992 units on regular 4W sea freight.",
+        "priority_action": "Step 1: Click 'APPROVE STANDARD PO' to generate the standard purchase requisition."
+      },
       "ai_agent_analysis": {
         "agent_name": "NovoSupply Autonomous Triage Agent v2.4",
-        "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + RAG-Synthesizer)",
+        "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + Plain-Language NLG)",
         "confidence_score": 0.96,
         "primary_threat": "Trend Volatility",
         "recommended_mitigation": "Standard PO Release",
@@ -10258,7 +10454,7 @@
         "expedited_arrival_week": 2,
         "expedited_arrival_preempts_stockout": true,
         "freight_callout": "United Kingdom breach at week 52 \u2014 within 3-week standard replenishment window. Sea/surface transit on cadence.",
-        "narrative": "Standard replenishment (Maritime / Road, 3W LT) arrives at Week 4, comfortably pre-empting breach at Week 52 with 48 week(s) buffer."
+        "narrative": "\ud83e\udd16 AI Lead Time Breakdown: Standard delivery (Maritime / Road, 3W lead time) arrives at Week 4, comfortably ahead of the breach window at Week 52 with 48 week(s) of safety buffer."
       },
       "is_late_for_sea": false,
       "constraints": {
@@ -10733,7 +10929,7 @@
         "permanent_revenue_churn_inr": 0,
         "total_inaction_exposure_inr": 323992800,
         "clinical_severity": "NOMINAL BUFFER",
-        "narrative": "Inventory levels track within nominal corridor buffers; zero immediate patient therapy disruption forecast."
+        "narrative": "\ud83e\udd16 AI Clinical Consequence: Inventory levels track within safe corridor buffers. Zero patient therapy disruption forecast."
       },
       "freight_comparison": {
         "sea_lead_time_weeks": 3,
@@ -10746,15 +10942,29 @@
         "air_feasibility": "PRE-EMPTS BREACH (1-WEEK ARRIVAL)",
         "air_cost_premium_inr": 13139708,
         "expedite_roi_ratio": 24.7,
-        "decision_verdict": "Standard Maritime Preferred: 3W sea freight arrives with buffer. Air expedite premium of \u20b9131.4L not required."
+        "decision_verdict": "\ud83e\udd16 AI Freight Recommendation: Standard 3W sea freight arrives with plenty of buffer before the breach. Air expedite premium of \u20b9131.4L is not required."
       },
       "wow_status": "ON CADENCE",
       "wow_badge": "\u2713 CADENCE OK",
       "wow_narrative": "Tracking nominal replenishment window within standard lead time",
-      "ai_narrative": "\ud83e\udd16 AI Diagnostic: Early-warning sensor triggered for Ember/United Kingdom (Week 52). Demand volatility index is within controllable parameters. Autonomous Agent Recommendation: Monitor inventory trajectory and review in the next monthly S&OP cycle.",
+      "ai_narrative": "\ud83e\udd16 What's Happening: Inventory is currently stable. An early warning sensor flagged minor demand variation in Week 52, but inventory remains comfortably within safe buffers. \ud83c\udfaf What You Should Do: No capital purchase is required today. Simply acknowledge the advisory and monitor in next month's S&OP cycle. \u26a0\ufe0f Why It Matters: There is zero immediate stockout risk. Safety stock coverage fully protects all patient requirements.",
+      "ai_action_plan": {
+        "simple_headline": "Active Monitoring: Ember in United Kingdom early sensor trigger.",
+        "what_is_happening": "Inventory is currently stable. An early warning sensor flagged minor demand variation in Week 52, but inventory remains comfortably within safe buffers.",
+        "why_it_matters": "There is zero immediate stockout risk. Safety stock coverage fully protects all patient requirements.",
+        "what_you_should_do": "No capital purchase is required today. Simply acknowledge the advisory and monitor in next month's S&OP cycle.",
+        "action_steps": [
+          "Step 1: Click 'ACKNOWLEDGE ADVISORY' to record awareness in the system.",
+          "Step 2: Maintain corridor on automated telemetry monitoring.",
+          "Step 3: Review rolling 13-week demand velocity during the next monthly S&OP cycle."
+        ],
+        "eli5": "Everything is safe. We detected a slight ripple in demand, but our buffers are healthy. No spending needed.",
+        "manager_brief": "Ember (United Kingdom) is within normal parameters. Advisory acknowledged; no capital expenditure required.",
+        "priority_action": "Step 1: Click 'ACKNOWLEDGE ADVISORY' to record awareness in the system."
+      },
       "ai_agent_analysis": {
         "agent_name": "NovoSupply Autonomous Triage Agent v2.4",
-        "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + RAG-Synthesizer)",
+        "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + Plain-Language NLG)",
         "confidence_score": 0.96,
         "primary_threat": "Trend Volatility",
         "recommended_mitigation": "Standard PO Release",

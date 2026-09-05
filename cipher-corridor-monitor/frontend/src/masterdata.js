@@ -120,11 +120,13 @@ function getFilteredRecords() {
   return _records;
 }
 
-function ratioStyle(r) {
+export function ratioStyle(r) {
   if (r < 0.5) return { bg:'#FDEBEC', color:'#9F2F2D' };
   if (r <= 0.8) return { bg:'#FBF3DB', color:'#956400' };
   return { bg:'#EDF3EC', color:'#346538' };
 }
+export const getRatioStyle = ratioStyle;
+
 
 function renderRows() {
   const tbody = document.getElementById('tbody-masterdata');

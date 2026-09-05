@@ -76,7 +76,7 @@ function buildCommentsHtml(comments) {
   }).join('');
 }
 
-function getApprovalLabel(actionType, qty) {
+export function getApprovalLabel(actionType, qty) {
   const b = getBadgeConfig(actionType);
   const q = Number(qty || 0).toLocaleString('en-IN');
   switch (b.label) {
@@ -88,6 +88,8 @@ function getApprovalLabel(actionType, qty) {
     default: return 'APPROVE ACTION';
   }
 }
+export const getApprovalButtonLabel = getApprovalLabel;
+
 
 function buildRecovery(sig) {
   const data = window.DATA || {};
@@ -265,6 +267,20 @@ export function openDetailDrawer(sig, approvedSignals) {
           </div>
         </div>
 
+        <!-- AI Plain-English Transfer Verdict -->
+        <div class="ai-section-translation-box" style="margin:12px 0;padding:10px 12px;background:#F0FDF4;border:1px solid #BBF7D0;border-left:4px solid #16A34A;border-radius:2px;">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+            <span style="font-size:13px;">🤖</span>
+            <span style="font-family:var(--font-mono);font-size:10px;font-weight:800;color:#166534;letter-spacing:0.04em;">AI PLAIN-ENGLISH TRANSFER VERDICT</span>
+          </div>
+          <div style="font-size:11.5px;color:#14532D;line-height:1.55;">
+            <strong>Why this works:</strong> ${transfer.donor_country} has <strong>${transfer.donor_pre_doh} days of stock</strong> in their warehouse and only needs ${transfer.donor_ssd} days. 
+            By flying ${Number(transfer.transfer_qty).toLocaleString()} units over, <strong>${sig.country} gets stock in 4 days</strong> without waiting for slow cargo ships. 
+            <strong>Is ${transfer.donor_country} safe?</strong> Yes! After the transfer, they still keep <strong>${transfer.donor_post_doh} days of inventory (over ${(transfer.donor_post_doh/30).toFixed(1)} months)</strong> with zero risk of running low.
+          </div>
+        </div>
+
+
         <!-- Section 6.5 Warehouse Headroom & Transfer Economics -->
         <div class="wh-capacity-box">
           <div class="wh-capacity-header">
@@ -350,6 +366,17 @@ export function openDetailDrawer(sig, approvedSignals) {
           <button class="btn-workflow-comment" id="btn-post-comment">+ POST RATIONALE</button>
         </div>
       </div>
+
+      <!-- AI Plain-English Workflow & Governance Guidance -->
+      <div class="ai-section-translation-box" style="margin-top:12px;padding:10px 12px;background:#F8FAFC;border:1px solid #E2E8F0;border-left:4px solid #64748B;border-radius:2px;">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+          <span style="font-size:13px;">🤖</span>
+          <span style="font-family:var(--font-mono);font-size:10px;font-weight:800;color:#334155;letter-spacing:0.04em;">AI PLAIN-ENGLISH GOVERNANCE GUIDE</span>
+        </div>
+        <div style="font-size:11.5px;color:#1E293B;line-height:1.55;">
+          <strong>What you should do:</strong> This alert has an active <strong>24-Hour Response SLA</strong>. Approving the transfer automatically timestamps your decision in the <strong>GxP audit trail (21 CFR Part 11 compliant)</strong>. If you are investigating or awaiting confirmation, snooze the alert or log a short rationale above to maintain full audit compliance.
+        </div>
+      </div>
     </div>
   `;
 
@@ -367,6 +394,15 @@ export function openDetailDrawer(sig, approvedSignals) {
       </p>
       <div class="stale-param-action">
         <strong>Recommended Master Data Recalibration:</strong> Initiate master data recalibration ticket in SAP/OMP to align corridor SSD with observed demand velocity.
+      </div>
+      <div class="ai-section-translation-box" style="margin-top:8px;padding:8px 10px;background:#FEF3C7;border:1px solid #FDE68A;border-left:3px solid #D97706;border-radius:2px;">
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px;">
+          <span style="font-size:12px;">🤖</span>
+          <span style="font-family:var(--font-mono);font-size:9.5px;font-weight:800;color:#92400E;letter-spacing:0.04em;">AI PARAMETER AUDIT TAKEAWAY</span>
+        </div>
+        <div style="font-size:11px;color:#78350F;line-height:1.5;">
+          Safety Stock Days in SAP is frozen at <strong>${staleParam.current_ssd || 42} days</strong> based on obsolete history. Calibrating this parameter to match current sales patterns eliminates phantom alerts and unlocks idle working capital.
+        </div>
       </div>
     </div>
   ` : '';
@@ -407,6 +443,21 @@ export function openDetailDrawer(sig, approvedSignals) {
       <div class="latency-narrative-text">
         ${lat.narrative || `Standard replenishment lead time causes stockout breach. Air freight or inter-market transfer is required to bridge the ${lat.latency_gap_weeks || 2}-week gap.`}
       </div>
+
+      <!-- AI Plain-English Timeline Breakdown -->
+      <div class="ai-section-translation-box" style="margin-top:10px;padding:8px 10px;background:#FFF7ED;border:1px solid #FFEDD5;border-left:3px solid #EA580C;border-radius:2px;">
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px;">
+          <span style="font-size:12px;">🤖</span>
+          <span style="font-family:var(--font-mono);font-size:9.5px;font-weight:800;color:#9A3412;letter-spacing:0.04em;">AI TIMELINE BREAKDOWN</span>
+        </div>
+        <div style="font-size:11px;color:#7C2D12;line-height:1.5;">
+          ${isLate ? `
+            <strong>The Problem:</strong> Inventory runs dry at <strong>Week ${sig.breach_week}</strong>, but standard factory shipping does not arrive until <strong>Week ${lat.standard_arrival_week || (sig.breach_week + 2)}</strong>. This creates a dangerous <strong>${lat.latency_gap_weeks || 2}-week stockout gap</strong>. Priority air transfer arrives in <strong>Week ${lat.expedited_arrival_week || 2}</strong>, closing the gap before empty shelves happen.
+          ` : `
+            Standard replenishment arrives ahead of the breach window. Pre-emptive replenishment is on track.
+          `}
+        </div>
+      </div>
     </div>
   `;
 
@@ -435,21 +486,25 @@ export function openDetailDrawer(sig, approvedSignals) {
         </div>
       </div>
       ${constr.in_frozen_horizon ? `
-        <div style="margin-top:12px;padding:10px 12px;background:#FEF2F2;border:1px solid #FECACA;font-size:11px;">
-          <div style="font-weight:700;color:#991B1B;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center;">
-            <span>⚠️ FROZEN PLANNING HORIZON COLLISION</span>
+        <div style="margin-top:12px;padding:12px;background:#FEF2F2;border:1px solid #FECACA;border-left:4px solid #DC2626;font-size:11px;">
+          <div style="font-weight:700;color:#991B1B;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;">
+            <span>🤖 AI CONSTRAINT ADVISORY · FROZEN HORIZON COLLISION</span>
             <span style="font-size:9px;background:#991B1B;color:#fff;padding:2px 6px;">WAIVER MANDATORY</span>
           </div>
-          <div style="color:#7F1D1D;line-height:1.5;margin-bottom:8px;">
-            Breach occurs at <strong>Week ${sig.breach_week}</strong> (inside the 4-week frozen manufacturing horizon). 
-            A standard SAP/OMP production order cannot be inserted into the Kalundborg/Hillerød schedule without breaking freeze governance.
+          <div style="color:#7F1D1D;line-height:1.55;margin-bottom:8px;font-size:11.5px;">
+            <strong>What is happening:</strong> The stockout occurs at <strong>Week ${sig.breach_week}</strong>. Manufacturing lines are locked 4 weeks in advance for regulatory cleaning and validation. A standard factory order cannot produce medicine in time.<br/>
+            <strong>What you should do:</strong> Approving the <strong>Inter-Market Stock Transfer</strong> above bypasses the factory schedule entirely by taking finished units already in stock from Country 059! If you must force new plant production instead, authorize the emergency VP override below.
           </div>
-          <label style="display:flex;align-items:center;gap:6px;font-weight:600;color:#991B1B;cursor:pointer;">
+          <label style="display:flex;align-items:center;gap:6px;font-weight:600;color:#991B1B;cursor:pointer;background:#FEE2E2;padding:6px 10px;border:1px solid #FCA5A5;">
             <input type="checkbox" id="chk-frozen-waiver" style="cursor:pointer;" ${approved ? 'checked disabled' : ''}>
             <span>Authorize Emergency Manufacturing Schedule Override (VP Production Authorization)</span>
           </label>
         </div>
-      ` : ''}
+      ` : `
+        <div style="margin-top:12px;padding:10px 12px;background:#F0FDF4;border:1px solid #BBF7D0;border-left:4px solid #16A34A;font-size:11.5px;color:#166534;">
+          <strong>🤖 AI Constraint Status:</strong> Breach horizon is outside the 4-week frozen window. Standard production scheduling can fulfill this order without emergency waivers.
+        </div>
+      `}
     </div>
   `;
 
@@ -481,39 +536,139 @@ export function openDetailDrawer(sig, approvedSignals) {
     </div>
   ` : '';
 
-  // Item 1: Plain-English AI Supply Chain Agent Diagnostic
+  // Item 1: Plain-English AI Supply Chain Agent Diagnostic & Action Copilot
   const aiAnalysis = sig.ai_agent_analysis || {};
+  const plan = sig.ai_action_plan || {};
+  const whatIsHappening = plan.what_is_happening || (sig.ai_narrative || '').split('🎯')[0].replace(/🤖\s*What's Happening:\s*/i, '').trim() ||
+    `Inventory of ${sig.brand} in ${countryDisplayName} will breach safe stock levels in Week ${sig.breach_week}. Standard cargo shipping takes ${leadWks} weeks, which is too slow to arrive before stock runs out.`;
+  const whyItMatters = plan.why_it_matters || (sig.ai_narrative || '').split('⚠️')[1] ||
+    `If no action is taken, ${Number(sig.lost_lifelong_patients || 0).toLocaleString()} chronic patients who depend on this daily treatment will face stockouts, risking ₹${((sig.capital_at_risk_inr || 0)/1e7).toFixed(2)} Cr in unfulfilled therapy courses.`;
+  const whatYouShouldDo = plan.what_you_should_do || (sig.action_type === 'ACTIVE CRISIS'
+    ? (transfer.has_transfer
+        ? `Approve emergency air transfer of ${Number(transfer.transfer_qty || sig.recommended_qty_units || 0).toLocaleString()} units from ${transfer.donor_country || 'surplus donor market'} (arrives in 4 days).`
+        : `Approve emergency air expedite for ${Number(sig.recommended_qty_units || 0).toLocaleString()} units to pre-empt stockout cliff.`)
+    : (sig.action_type === 'EXCESS HOLDING'
+        ? `Do NOT issue new purchase orders. Defer planned inbound deliveries and make surplus units available for donor transfer.`
+        : `Release standard Purchase Order for ${Number(sig.recommended_qty_units || 0).toLocaleString()} units within regular weekly cycle.`));
+  const actionSteps = (plan.action_steps && plan.action_steps.length > 0) ? plan.action_steps : [
+    `Step 1: Click the action button below to authorize immediate dispatch.`,
+    `Step 2: Logistics team coordinates temperature-controlled air shipment or expedited release.`,
+    `Step 3: Replenishment arrives safely ahead of breach, protecting all patients.`
+  ];
+  const eli5 = plan.eli5 ||
+    `We are about to run out of ${sig.brand} in ${countryDisplayName} in Week ${sig.breach_week}. Regular ships take ${leadWks} weeks which is too slow, so we need to fly units in by air right now to protect our patients.`;
+
   const aiAgentDiagnosticHtml = `
     <div class="ai-agent-box" id="ai-agent-box">
-      <div class="ai-agent-header">
-        <div class="ai-agent-title">
-          <span class="ai-agent-icon">🤖</span>
-          <span class="detail-section-label" style="margin-bottom:0">MULTI-AGENT AI SUPPLY CHAIN SYNTHESIS</span>
+      <!-- Copilot Header -->
+      <div class="ai-copilot-header">
+        <div class="ai-copilot-title-group">
+          <span class="ai-copilot-avatar">🤖</span>
+          <div>
+            <div class="ai-copilot-main-title">AI SUPPLY CHAIN COPILOT · ACTION DIRECTIVE</div>
+            <div class="ai-copilot-subtitle">Plain-English Diagnostic &amp; Step-by-Step Resolution Plan</div>
+          </div>
         </div>
-        <div class="ai-agent-pills">
-          <span class="ai-pill-badge">${aiAnalysis.model_architecture || 'Autonomous Triage Agent'}</span>
-          <span class="ai-confidence-badge">${Math.round((aiAnalysis.confidence_score || 0.96) * 100)}% CONFIDENCE</span>
+        <div class="ai-copilot-badges">
+          <button class="btn-ai-toggle-eli5" id="btn-toggle-eli5" type="button" title="Toggle Plain English / Non-Technical View">
+            ✨ Simple English Mode
+          </button>
+          <span class="ai-pill-badge">NATURAL LANGUAGE AI</span>
+          <span class="ai-confidence-badge">${Math.round((aiAnalysis.confidence_score || 0.98) * 100)}% CONFIDENCE</span>
         </div>
       </div>
-      <div class="ai-agent-narrative">
-        <p class="ai-agent-text">${esc(sig.ai_narrative || 'Autonomous AI evaluation completed. Signal triaged under 52-week corridor constraints.')}</p>
+
+      <!-- Action Directive Banner -->
+      <div class="ai-action-directive-banner">
+        <div class="ai-directive-icon">🎯</div>
+        <div class="ai-directive-content">
+          <div class="ai-directive-tag">YOUR RECOMMENDED NEXT STEP</div>
+          <div class="ai-directive-headline">${esc(whatYouShouldDo)}</div>
+          <div class="ai-directive-sub">${esc(actionSteps[0] || '')}</div>
+        </div>
+        <button class="ai-quick-action-btn ${approved ? 'ai-quick-action-btn--approved' : ''}" id="btn-ai-quick-act" type="button">
+          ${approved ? '✓ ACTION APPROVED &amp; SIGNED' : '⚡ EXECUTE THIS NOW'}
+        </button>
       </div>
-      <div class="ai-agent-meta-grid">
-        <div class="ai-meta-item">
-          <span class="ai-meta-k">PRIMARY NETWORK THREAT</span>
-          <span class="ai-meta-v" style="color:var(--crisis-text)">${esc(aiAnalysis.primary_threat || 'Corridor Stockout Cliff')}</span>
+
+      <!-- The 3 Core Pillars -->
+      <div class="ai-three-pillars">
+        <!-- Pillar 1: Situation -->
+        <div class="ai-pillar-card ai-pillar-situation">
+          <div class="ai-pillar-header">
+            <span class="ai-pillar-badge" style="background:#EFF6FF;color:#1D4ED8;border-color:#BFDBFE;">1. IN PLAIN ENGLISH</span>
+            <span class="ai-pillar-title">What is happening?</span>
+          </div>
+          <div class="ai-pillar-body" id="ai-text-situation">
+            ${esc(whatIsHappening)}
+          </div>
         </div>
-        <div class="ai-meta-item">
-          <span class="ai-meta-k">AUTONOMOUS MITIGATION</span>
-          <span class="ai-meta-v" style="color:var(--ok-text)">${esc(aiAnalysis.recommended_mitigation || 'Air Expedite / Re-allocation')}</span>
+
+        <!-- Pillar 2: Why it matters -->
+        <div class="ai-pillar-card ai-pillar-danger">
+          <div class="ai-pillar-header">
+            <span class="ai-pillar-badge" style="background:#FEF2F2;color:#991B1B;border-color:#FECACA;">2. THE CONSEQUENCE</span>
+            <span class="ai-pillar-title">Why does this matter?</span>
+          </div>
+          <div class="ai-pillar-body" id="ai-text-why">
+            ${esc(whyItMatters)}
+          </div>
         </div>
-        <div class="ai-meta-item">
-          <span class="ai-meta-k">GxP VALIDATION STATUS</span>
-          <span class="ai-meta-v">21 CFR Part 11 Traceable ✓</span>
+
+        <!-- Pillar 3: Exactly what to do -->
+        <div class="ai-pillar-card ai-pillar-action">
+          <div class="ai-pillar-header">
+            <span class="ai-pillar-badge" style="background:#ECFDF5;color:#047857;border-color:#A7F3D0;">3. YOUR ACTION PLAN</span>
+            <span class="ai-pillar-title">What should I do?</span>
+          </div>
+          <div class="ai-pillar-body" id="ai-text-action">
+            <div class="ai-steps-list">
+              ${actionSteps.map((step, sIdx) => `
+                <div class="ai-step-item">
+                  <span class="ai-step-num">${sIdx + 1}</span>
+                  <span class="ai-step-text">${esc(step.replace(/^Step \d+:\s*/, ''))}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Simple English ELI5 Box (Toggleable) -->
+      <div class="ai-eli5-callout" id="ai-eli5-callout" style="display:none;">
+        <div class="ai-eli5-header">
+          <span>💡 SIMPLE SUMMARY (PLAIN ENGLISH FOR NEW PLANNERS):</span>
+        </div>
+        <div class="ai-eli5-text">
+          ${esc(eli5)}
+        </div>
+      </div>
+
+      <!-- Interactive Ask AI Copilot Widget -->
+      <div class="ai-interactive-copilot-box">
+        <div class="ai-copilot-ask-header">
+          <span class="ai-copilot-ask-title">💬 ASK AI COPILOT A QUESTION:</span>
+          <span class="ai-copilot-ask-hint">Click a common question or ask your own</span>
+        </div>
+        <div class="ai-quick-chips">
+          <button class="ai-chip-btn" type="button" data-topic="summary_1s">⚡ Explain in 1 sentence</button>
+          <button class="ai-chip-btn" type="button" data-topic="what_to_do">🎯 Exact steps I should take</button>
+          <button class="ai-chip-btn" type="button" data-topic="why_not_sea">🚢 Why can't we use cargo ships?</button>
+          <button class="ai-chip-btn" type="button" data-topic="is_donor_safe">🛡️ Is the donor market safe?</button>
+          <button class="ai-chip-btn" type="button" data-topic="draft_email">✉️ Draft an email to my manager</button>
+        </div>
+        <div class="ai-input-row">
+          <input type="text" class="ai-input-field" id="input-ai-copilot" placeholder="Ask AI: e.g., What happens if I do nothing? Is there any risk?..." />
+          <button class="btn-ai-send" id="btn-send-ai-copilot" type="button">ASK AI</button>
+        </div>
+        <div class="ai-response-area" id="ai-response-area" style="display:none;">
+          <div class="ai-response-spinner" id="ai-response-spinner" style="display:none;">Thinking in plain English...</div>
+          <div class="ai-response-content" id="ai-response-content"></div>
         </div>
       </div>
     </div>
   `;
+
 
   // Item 4: Patient Health & Lifelong Chronic Subscriber Impact & Explicit Cost of Inaction
   const coi = sig.cost_of_inaction || {};
@@ -544,14 +699,19 @@ export function openDetailDrawer(sig, approvedSignals) {
         </div>
       </div>
       
-      <!-- Explicit Cost of Inaction Callout -->
-      <div style="margin-top:12px;padding:12px;background:#FFF5F5;border-left:4px solid #E61919;border-radius:0;">
-        <div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:#991B1B;display:flex;justify-content:space-between;margin-bottom:4px;">
-          <span>[ COST OF INACTION · 24-HOUR CONSEQUENCE PROFILE ]</span>
-          <span>${coi.clinical_severity || 'ACUTE THERAPY DISRUPTION'}</span>
+      <!-- AI Plain-English Clinical & Patient Consequence Profile -->
+      <div style="margin-top:12px;padding:12px 14px;background:#FFF5F5;border:1px solid #FECACA;border-left:4px solid #DC2626;border-radius:2px;">
+        <div style="font-family:var(--font-mono);font-size:10px;font-weight:800;color:#991B1B;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span>🤖 AI CLINICAL CONFLICT · 24-HOUR CONSEQUENCE PROFILE</span>
+          <span style="background:#FEE2E2;padding:2px 6px;border:1px solid #FCA5A5;">${coi.clinical_severity || 'ACUTE THERAPY DISRUPTION'}</span>
         </div>
-        <div style="font-size:11px;color:#7F1D1D;line-height:1.5;">
-          ${coi.narrative || `Failure to take replenishment action within 24h will cause ${coi.unmitigated_stockout_weeks || 1} week(s) of physical stockout, permanently losing ${Number(sig.lost_lifelong_patients || 0).toLocaleString()} chronic patients and ₹${((sig.lost_revenue_inr || 0) / 1e7).toFixed(2)} Cr in therapy revenue.`}
+        <div style="font-size:12px;color:#7F1D1D;line-height:1.6;margin-bottom:6px;">
+          <strong>Why chronic therapy patients never return:</strong> In diabetes and obesity care, patients cannot miss weekly injections. 
+          If shelves go empty for even 2 weeks, doctors will permanently switch <strong>${Number(sig.lost_lifelong_patients || 0).toLocaleString('en-IN')} chronic patients</strong> to competing therapies. 
+          Because chronic patients stay on the same brand for life, losing them today wipes out <strong>₹${((sig.lost_revenue_inr || 0) / 1e7).toFixed(2)} Cr</strong> in recurring annual revenue.
+        </div>
+        <div style="font-size:11.5px;color:#991B1B;line-height:1.5;background:#FEF2F2;padding:6px 10px;border-left:3px solid #EF4444;">
+          <strong>Cost of Inaction within 24h SLA:</strong> Inaction causes <strong>${coi.unmitigated_stockout_weeks || 1} week(s) of physical stockout</strong>, <strong>₹${((sig.capital_at_risk_inr || 0) / 1e7).toFixed(2)} Cr</strong> in immediate non-delivery penalties, and unserved chronic doses of <strong>${Number(sig.lost_patient_demand_units || 0).toLocaleString('en-IN')} units</strong>.
         </div>
       </div>
 
@@ -616,8 +776,25 @@ export function openDetailDrawer(sig, approvedSignals) {
           <span class="freight-metric-v tabular-nums" style="color:var(--ok-text)">${fc.expedite_roi_ratio || 10.4}×</span>
         </div>
       </div>
-      <div class="freight-decision-callout">
-        ${fc.decision_verdict || 'Air freight expedite recommended to close lead time cliff and protect chronic patient supply.'}
+
+      <!-- AI Plain-English Freight Recommendation -->
+      <div class="ai-section-translation-box" style="margin-top:12px;padding:12px 14px;background:#EFF6FF;border:1px solid #BFDBFE;border-left:4px solid #2563EB;border-radius:2px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:6px;">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-size:13px;">🤖</span>
+            <span style="font-family:var(--font-mono);font-size:10px;font-weight:800;color:#1E40AF;letter-spacing:0.04em;">AI FREIGHT DECISION &amp; LOGIC</span>
+          </div>
+          <span style="font-family:var(--font-mono);font-size:9.5px;font-weight:700;color:#1D4ED8;background:#DBEAFE;padding:2px 6px;">${isLateForSea ? 'AIR CHARTER DOMINANT' : 'SURFACE FEASIBLE'}</span>
+        </div>
+        <div style="font-size:12px;color:#1E3A8A;line-height:1.6;">
+          ${isLateForSea ? `
+            <strong>Why sea freight is impossible:</strong> Cargo ships take <strong>${leadWks} weeks (252 days)</strong> to arrive. Since inventory breaches at <strong>Week ${sig.breach_week}</strong>, standard ships arrive <strong>${Math.max(1, leadWks - sig.breach_week)} weeks too late</strong> when shelves are already bare.<br/>
+            <strong>Why air freight is the right choice:</strong> Priority air charter costs an extra <strong>₹${Number((fc.air_cost_premium_inr || 0) / 1e5).toFixed(1)} Lakhs</strong>, but arrives in <strong>4–7 days</strong> and protects <strong>₹${Number((sig.capital_at_risk_inr || 0) / 1e7).toFixed(2)} Cr</strong> of inventory.<br/>
+            <strong>Return on Investment:</strong> Every ₹1 spent on air freight returns <strong>₹${fc.expedite_roi_ratio || 20.50}</strong> in preserved capital (<strong>${fc.expedite_roi_ratio || 20.5}× ROI</strong>).
+          ` : `
+            <strong>Why surface transit works:</strong> Sea transit arrives well ahead of the breach window. Standard maritime replenishment is financially optimal.
+          `}
+        </div>
       </div>
     </div>
   `;
@@ -645,6 +822,18 @@ export function openDetailDrawer(sig, approvedSignals) {
           <div class="rc-bar-row">
             <div class="rc-bar-header"><span class="rc-bar-label">FLOOR SHOCK</span><span class="rc-bar-val tabular-nums">${fs}%</span></div>
             <div class="rc-track"><div class="rc-fill" style="width:${fs}%;background:#2563EB"></div></div>
+          </div>
+          <div class="ai-section-translation-box" style="margin-top:8px;padding:8px 10px;background:#F8FAFC;border:1px solid #E2E8F0;border-left:3px solid #6366F1;border-radius:2px;">
+            <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px;">
+              <span style="font-size:12px;">🤖</span>
+              <span style="font-family:var(--font-mono);font-size:9.5px;font-weight:800;color:#4338CA;letter-spacing:0.04em;">AI ROOT CAUSE DIAGNOSIS</span>
+            </div>
+            <div style="font-size:11px;color:#312E81;line-height:1.5;">
+              ${sd >= 50 ? `The primary driver (<strong>${sd}%</strong>) is an unexpected <strong>upstream factory supply shortfall</strong> (delayed shipments from manufacturing). ` : ''}
+              ${ds >= 20 ? `Compounding this is a <strong>${ds}% surge in patient prescriptions</strong> across regional clinics. ` : ''}
+              ${fs >= 20 ? `A recent upward adjustment in the safety stock floor (<strong>${fs}%</strong>) also raised the minimum reserve requirement. ` : ''}
+              ${(sd < 50 && ds < 20 && fs < 20) ? `Multiple converging factors (supply delays, demand shift, and floor requirements) created this corridor imbalance.` : ''}
+            </div>
           </div>
         </div>
         <div>
@@ -676,6 +865,16 @@ export function openDetailDrawer(sig, approvedSignals) {
             <div class="detail-meta-item"><span class="detail-meta-key">CAPITAL AT RISK</span><span class="detail-meta-val tabular-nums">₹${Number(sig.capital_at_risk_inr || 0).toLocaleString('en-IN')} ${sig.capital_at_risk_inr === 0 && (sig.action_type || '').includes('EXCESS') ? '<span style="font-size:10px;color:var(--muted);font-weight:normal">(SURPLUS · DEFER INBOUND)</span>' : ''}</span></div>
             <div class="detail-meta-item"><span class="detail-meta-key">52W OTIF / FULFILLMENT</span><span class="detail-meta-val tabular-nums" style="color:${(sig.otif_pct !== undefined ? sig.otif_pct : 98.5) >= 95 ? 'var(--ok-text)' : 'var(--crisis-text)'}">${sig.otif_pct !== undefined ? sig.otif_pct : 98.5}% (SLA: 95.0%)</span></div>
           </div>
+          <!-- AI Plain-English Metadata Briefing -->
+          <div class="ai-section-translation-box" style="margin-top:10px;padding:10px 12px;background:#F8FAFC;border:1px solid #E2E8F0;border-left:4px solid #3B82F6;border-radius:2px;">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+              <span style="font-size:13px;">🤖</span>
+              <span style="font-family:var(--font-mono);font-size:10px;font-weight:800;color:#1E40AF;letter-spacing:0.04em;">AI PLAIN-ENGLISH METADATA BRIEFING</span>
+            </div>
+            <div style="font-size:11.5px;color:#1E293B;line-height:1.55;">
+              <strong>Summary:</strong> ${sig.product} in ${sig.country} will run out of stock in <strong>Week ${sig.breach_week}</strong>. Standard ocean shipping takes <strong>${leadWks} weeks</strong>—meaning normal ships arrive <strong>${Math.max(1, leadWks - sig.breach_week)} weeks too late</strong>. Immediate action is needed to deliver <strong>${Number(sig.recommended_qty_units || 0).toLocaleString()} units</strong> to protect <strong>₹${Number((sig.capital_at_risk_inr || 0) / 1e7).toFixed(2)} Cr</strong> and maintain our 95%+ OTIF fulfillment rate.
+            </div>
+          </div>
         </div>
         ${patientImpactHtml}
         ${freightComparisonHtml}
@@ -684,7 +883,10 @@ export function openDetailDrawer(sig, approvedSignals) {
         ${workflowSectionHtml}
         <div class="narrative-box" id="narrative-container">
           <div class="narrative-header">
-            <div class="detail-section-label" style="margin-bottom:0;">[ EXECUTIVE STRATEGIC DOSSIER ]</div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="font-size:13px;">🤖</span>
+              <div class="detail-section-label" style="margin-bottom:0;">[ AI EXECUTIVE STRATEGIC DOSSIER ]</div>
+            </div>
             <span class="narrative-badge" id="narrative-badge-status">${approved ? 'APPROVED & SIGNED ✓' : 'SYNTHESIZED ✓'}</span>
           </div>
           <div class="narrative-dossier" id="narrative-dossier"></div>
@@ -839,66 +1041,170 @@ export function openDetailDrawer(sig, approvedSignals) {
       }
     });
   }
+
+  // Wire AI Copilot Interactive Features
+  const btnToggleEli5 = document.getElementById('btn-toggle-eli5');
+  const eli5Callout = document.getElementById('ai-eli5-callout');
+  if (btnToggleEli5 && eli5Callout) {
+    btnToggleEli5.addEventListener('click', () => {
+      const isHidden = eli5Callout.style.display === 'none';
+      eli5Callout.style.display = isHidden ? 'block' : 'none';
+      btnToggleEli5.textContent = isHidden ? '✕ Hide Simple English' : '✨ Simple English Mode';
+    });
+  }
+
+  const btnAiQuickAct = document.getElementById('btn-ai-quick-act');
+  if (btnAiQuickAct && !approved) {
+    btnAiQuickAct.addEventListener('click', () => {
+      const btnTransfer = document.getElementById('btn-execute-transfer');
+      const btnApprove = document.getElementById('btn-approve');
+      if (btnTransfer && !btnTransfer.disabled) {
+        btnTransfer.click();
+      } else if (btnApprove && !btnApprove.disabled) {
+        btnApprove.click();
+      }
+      btnAiQuickAct.disabled = true;
+      btnAiQuickAct.textContent = '✓ ACTION APPROVED & SIGNED';
+      btnAiQuickAct.classList.add('ai-quick-action-btn--approved');
+    });
+  }
+
+  // Ask AI Copilot Question & Quick Chips
+  const inputAi = document.getElementById('input-ai-copilot');
+  const btnSendAi = document.getElementById('btn-send-ai-copilot');
+  const respArea = document.getElementById('ai-response-area');
+  const respContent = document.getElementById('ai-response-content');
+  const respSpinner = document.getElementById('ai-response-spinner');
+
+  async function askAiCopilot(question, topic = 'general') {
+    if (!respArea || !respContent) return;
+    respArea.style.display = 'block';
+    respContent.innerHTML = '';
+    if (respSpinner) respSpinner.style.display = 'block';
+
+    try {
+      const res = await fetch('/api/ai/ask', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question, topic, signal: sig })
+      });
+      const data = await res.json();
+      if (respSpinner) respSpinner.style.display = 'none';
+
+      if (data && data.answer) {
+        const formatted = esc(data.answer)
+          .replace(/\n\n/g, '<div style="margin-bottom:8px"></div>')
+          .replace(/\n/g, '<br/>')
+          .replace(/•\s*/g, '•&nbsp;');
+        respContent.innerHTML = `
+          <div class="ai-answer-card">
+            <div class="ai-answer-header">
+              <span class="ai-answer-model">🤖 ${esc(data.model || 'AI Copilot')}</span>
+              <span class="ai-answer-badge">PLAIN ENGLISH ANSWER</span>
+            </div>
+            <div class="ai-answer-body">${formatted}</div>
+          </div>
+        `;
+      } else {
+        respContent.innerHTML = `<div class="ai-answer-body" style="color:var(--crisis-text)">Could not generate response. Please try again.</div>`;
+      }
+    } catch (err) {
+      if (respSpinner) respSpinner.style.display = 'none';
+      respContent.innerHTML = `<div class="ai-answer-body" style="color:var(--crisis-text)">Error connecting to AI service: ${esc(err.message)}</div>`;
+    }
+  }
+
+  const chips = document.querySelectorAll('.ai-chip-btn');
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      const topic = chip.dataset.topic;
+      const q = chip.textContent.replace(/^[^\w]+/, '');
+      askAiCopilot(q, topic);
+    });
+  });
+
+  if (btnSendAi && inputAi) {
+    btnSendAi.addEventListener('click', () => {
+      const q = inputAi.value.trim();
+      if (!q) return;
+      askAiCopilot(q, 'custom');
+      inputAi.value = '';
+    });
+    inputAi.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        btnSendAi.click();
+      }
+    });
+  }
 }
 
 function generateDossier(sig) {
   const brand = sig.brand || 'Product';
   const country = sig.country || 'Global';
-  const breachLen = sig.breach_length_weeks || Math.max(3, sig.delta_t_weeks || 4);
-  const cert = Math.round((sig.supply_certainty || 0.8) * 100);
-  const unconfirmedPct = 100 - cert;
+  const marketName = sig.market_name || country;
+  const breachWk = sig.breach_week || 1;
+  const leadWks = sig.market_lead_time || sig.market_lead_time_weeks || 4;
+  const isLateForSea = Boolean(sig.is_late_for_sea);
   const recQty = Number(sig.recommended_qty_units || 0).toLocaleString('en-IN');
-  const capRisk = `₹${Number(sig.capital_at_risk_inr || 0).toLocaleString('en-IN')}`;
-  const recoveryWks = sig.recovery_weeks || 2;
-  const standardWks = Math.max(recoveryWks + 2, Math.round(recoveryWks * 2.5));
-  const rc = sig.root_cause || {};
-  const primaryCause = rc.primary_cause || 'Supply Deficit';
-  const supDeficit = rc.supply_deficit_pct !== undefined ? `${rc.supply_deficit_pct}%` : '50%';
-  const demSurge = rc.demand_surge_pct !== undefined ? `${rc.demand_surge_pct}%` : '30%';
-  const floorShock = rc.floor_shock_pct !== undefined ? `${rc.floor_shock_pct}%` : '20%';
-  const mrpInfo = sig.mrp ? ` [MRP: ${sig.mrp}]` : '';
+  const capRisk = `₹${((sig.capital_at_risk_inr || 0) / 1e7).toFixed(2)} Cr`;
+  const patients = Number(sig.lost_lifelong_patients || 0).toLocaleString('en-IN');
+  const transfer = sig.intermarket_transfer || {};
+  const donorCountry = transfer.donor_country || 'surplus donor market';
 
-  // Dynamic clinical diagnosis based on the exact root cause mechanism
-  let diagnosisText = '';
-  if (primaryCause === 'Supply Deficit') {
-    diagnosisText = `Critical pipeline disruption: Upstream supply shortfall (${supDeficit} deficit component) triggers corridor breach at W${sig.breach_week || 1}. Unhedged deficit threatens product continuity for ${brand} in ${country}${mrpInfo}.`;
-  } else if (primaryCause === 'Demand Surge') {
-    diagnosisText = `Demand-driven corridor erosion: Commercial acceleration (+${demSurge} above baseline run-rate) outpaces replenishment cadence for ${brand} in ${country}${mrpInfo}, projecting a ${breachLen}-week corridor deficit.`;
-  } else {
-    diagnosisText = `Dynamic safety floor recalibration: Variable demand patterns triggered a ${floorShock} floor-shock shift for ${brand} in ${country}${mrpInfo}, elevating safety stock requirements above active inventory coverage.`;
-  }
-
-  // Pipeline bottleneck assessment
-  const bottleneckText = cert < 70
-    ? `Severe supply pipeline fragility: Pipeline certainty at ${cert}% (${unconfirmedPct}% uncommitted / in-transit risk). Inbound deliveries insufficient without expedited allocation prior to W${sig.arrival_target_week || 4}.`
-    : `Pipeline commitments verified at ${cert}% (${unconfirmedPct}% pending transit confirmation). Optimal replenishment arrival window targets W${sig.arrival_target_week || 4}.`;
-
-  // Context-specific strategic action
-  let actionText = '';
-  const leadWks = sig.market_lead_time || 3;
-  if (sig.is_late_for_sea) {
-    actionText = `Authorize Emergency Air-Freight Procurement: ${country} breach at week ${sig.breach_week || 1} — with ${leadWks}-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this. Inject ${recQty} units via priority charter directly into ${country} hub by W${sig.arrival_target_week || 4}.`;
-  } else if (sig.action_type === 'ACTIVE CRISIS') {
-    actionText = `Execute Immediate Inter-Affiliate Stock Transfer & Emergency Air Expedite: Authorize priority dispatch of ${recQty} units to prevent imminent stockout and avoid clinical non-fulfillment penalties.`;
+  let situationText = '';
+  if (sig.action_type === 'ACTIVE CRISIS') {
+    situationText = isLateForSea
+      ? `${marketName} will completely run out of ${brand} in Week ${breachWk}. Ocean cargo takes ${leadWks} weeks, which means standard ships arrive ${leadWks - breachWk} weeks too late to prevent empty shelves.`
+      : `${marketName} inventory drops below the safety floor in Week ${breachWk}. Immediate replenishment is required to prevent a zero-inventory stockout cliff.`;
   } else if (sig.action_type === 'EMERGENCY EXPEDITE') {
-    actionText = `Authorize Priority Air-Freight Procurement: Advance inbound shipment schedule to inject ${recQty} units directly into the ${country} regional depot by W${sig.arrival_target_week || 4}.`;
+    situationText = `${brand} in ${marketName} will breach its safety stock in Week ${breachWk}. Ocean transit takes ${leadWks} weeks, so fast air freight is required to beat the deadline.`;
   } else if (sig.action_type === 'EXCESS HOLDING') {
-    actionText = `Halt Inbound PO Commitments & Reallocate Quota: Suppress planned purchase orders to absorb excess working capital (${capRisk}) and burn down inventory toward corridor ceiling.`;
+    situationText = `${marketName} holds more ${brand} inventory than the warehouse ceiling. Stock is comfortably sufficient for months with zero risk of running out.`;
   } else if (sig.action_type === 'STANDARD PO') {
-    actionText = `Release Scheduled Corridor Replenishment PO: Standard purchase order for ${recQty} units to re-establish nominal corridor equilibrium within normal lead-time (${leadWks}W).`;
+    situationText = `${brand} in ${marketName} is tracking on schedule. Stock levels reach the regular reorder point in Week ${breachWk}, perfectly aligned with normal ${leadWks}-week ocean transit.`;
   } else {
-    actionText = `Maintain Monitored Buffer: Continue corridor tracking for ${brand} (${country}) with no immediate capital deployment required.`;
+    situationText = `${brand} in ${marketName} is stable within safe boundaries. Early-warning sensors flagged minor variance, but patient supply is fully protected.`;
   }
 
-  // Projected clinical and financial outcome
-  const outcomeText = `Expedited deployment achieves corridor equilibrium within ${recoveryWks} weeks (saving ${standardWks - recoveryWks} weeks vs. standard lead time), restoring CHI ≥ 95% and safeguarding patient availability.`;
+  let whyText = '';
+  if (sig.lost_lifelong_patients && sig.lost_lifelong_patients > 0) {
+    whyText = `If you take no action: ${patients} chronic patients who depend on this daily treatment will be left without medicine, and Novo Nordisk faces ${capRisk} in permanent therapy revenue loss.`;
+  } else if (sig.action_type === 'EXCESS HOLDING') {
+    whyText = `Excess inventory traps working capital unnecessarily, congests warehouse storage, and risks stock expiring before it can be dispensed to patients.`;
+  } else {
+    whyText = `Placing standard orders on regular cadence maintains product availability without having to pay expensive air freight premiums.`;
+  }
+
+  let actionText = '';
+  if (sig.action_type === 'ACTIVE CRISIS') {
+    actionText = transfer.has_transfer
+      ? `Click [TRANSFER APPROVED] to dispatch ${recQty} units from ${donorCountry} by air. The shipment arrives in 4 days, fixing the shortage with zero risk to ${donorCountry}.`
+      : `Click [APPROVE AIR EXPEDITE] to authorize expedited manufacturing dispatch for ${recQty} units via priority air charter today.`;
+  } else if (sig.action_type === 'EMERGENCY EXPEDITE') {
+    actionText = `Click [APPROVE AIR EXPEDITE] to book priority air freight for ${recQty} units. Air shipping arrives in 4-7 days and avoids ${capRisk} in stockout penalties.`;
+  } else if (sig.action_type === 'EXCESS HOLDING') {
+    actionText = `Click [DEFER INBOUND SUPPLY] to pause upcoming shipments. Designate this warehouse as a surplus donor so other markets facing deficits can borrow stock.`;
+  } else if (sig.action_type === 'STANDARD PO') {
+    actionText = `Click [APPROVE STANDARD PO] to release regular replenishment order for ${recQty} units into normal weekly production schedule.`;
+  } else {
+    actionText = `Click [ACKNOWLEDGE ADVISORY] to record awareness. Continue passive monitoring; no purchase capital is needed.`;
+  }
+
+  let outcomeText = '';
+  if (sig.action_type === 'ACTIVE CRISIS' || sig.action_type === 'EMERGENCY EXPEDITE') {
+    outcomeText = `Fast air delivery arrives in 4 to 7 days, fully restoring inventory above safe threshold, protecting ${patients} chronic patients, and safeguarding 95%+ service level.`;
+  } else if (sig.action_type === 'EXCESS HOLDING') {
+    outcomeText = `Pausing inbound supply frees working capital and allows warehouse stock to naturally draw down to optimal safety buffer.`;
+  } else {
+    outcomeText = `Corridor remains continuously balanced and compliant with global SLA standards.`;
+  }
 
   return [
-    { label: 'DIAGNOSIS', text: diagnosisText },
-    { label: 'SUPPLY BOTTLENECK', text: bottleneckText },
-    { label: 'RECOMMENDED ACTION', text: actionText, highlight: true },
-    { label: 'CAPITAL AT RISK', text: `${capRisk} total working capital exposure across ${country} corridor inventory.` },
-    { label: 'PROJECTED OUTCOME', text: outcomeText }
+    { label: '1. WHAT IS HAPPENING', text: situationText },
+    { label: '2. WHY THIS MATTERS', text: whyText },
+    { label: '3. EXACT ACTION TO TAKE', text: actionText, highlight: true },
+    { label: '4. CAPITAL & PATIENT EXPOSURE', text: `${capRisk} exposure · ${patients} chronic patients protected.` },
+    { label: '5. EXPECTED OUTCOME', text: outcomeText }
   ];
 }
 
@@ -1069,7 +1375,9 @@ export function toggleFullscreen(forceState) {
   }
   return isFs;
 }
-window._toggleDetailFullscreen = toggleFullscreen;
+if (typeof window !== 'undefined') {
+  window._toggleDetailFullscreen = toggleFullscreen;
+}
 
 export function closeDetailDrawer() {
   const drawer = document.getElementById('drawer-detail');

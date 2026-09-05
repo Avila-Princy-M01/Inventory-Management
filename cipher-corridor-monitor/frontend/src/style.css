@@ -4813,6 +4813,413 @@ button {
   color: #1E293B;
 }
 
+/* ── AI Supply Chain Copilot 3-Pillar & Interactive Styles ── */
+.ai-copilot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #CBD5E1;
+  margin-bottom: 14px;
+}
+
+.ai-copilot-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ai-copilot-avatar {
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  background: #EFF6FF;
+  border: 1px solid #BFDBFE;
+  border-radius: 4px;
+}
+
+.ai-copilot-main-title {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #0F172A;
+}
+
+.ai-copilot-subtitle {
+  font-size: 11.5px;
+  color: #64748B;
+  font-weight: 500;
+}
+
+.ai-copilot-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-ai-toggle-eli5 {
+  background: #F0FDF4;
+  border: 1px solid #86EFAC;
+  color: #166534;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 4px 10px;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.15s ease;
+}
+
+.btn-ai-toggle-eli5:hover {
+  background: #DCFCE7;
+  border-color: #4ADE80;
+  transform: translateY(-1px);
+}
+
+.ai-action-directive-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #F8FAFC;
+  border: 1px solid #0284C7;
+  border-left: 5px solid #0284C7;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.ai-directive-icon {
+  font-size: 24px;
+}
+
+.ai-directive-content {
+  flex: 1;
+  min-width: 240px;
+}
+
+.ai-directive-tag {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #0284C7;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+
+.ai-directive-headline {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0F172A;
+  line-height: 1.4;
+}
+
+.ai-directive-sub {
+  font-size: 11.5px;
+  color: #475569;
+  margin-top: 3px;
+}
+
+.ai-quick-action-btn {
+  background: #0284C7;
+  color: #FFFFFF;
+  border: none;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 8px 16px;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  border-radius: 2px;
+  box-shadow: 0 2px 4px rgba(2, 132, 199, 0.2);
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.ai-quick-action-btn:hover {
+  background: #0369A1;
+  transform: translateY(-1px);
+}
+
+.ai-quick-action-btn--approved {
+  background: #16A34A !important;
+  cursor: default;
+  box-shadow: none;
+}
+
+.ai-three-pillars {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.ai-pillar-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ai-pillar-situation {
+  border-top: 3px solid #2563EB;
+}
+
+.ai-pillar-danger {
+  border-top: 3px solid #DC2626;
+}
+
+.ai-pillar-action {
+  border-top: 3px solid #16A34A;
+}
+
+.ai-pillar-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ai-pillar-badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  padding: 2px 6px;
+  border: 1px solid;
+  border-radius: 2px;
+}
+
+.ai-pillar-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1E293B;
+}
+
+.ai-pillar-body {
+  font-size: 12px;
+  line-height: 1.55;
+  color: #334155;
+}
+
+.ai-steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ai-step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.ai-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  background: #DCFCE7;
+  color: #15803D;
+  border: 1px solid #86EFAC;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 800;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.ai-step-text {
+  font-size: 11.5px;
+  color: #1E293B;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.ai-eli5-callout {
+  background: #FEFCE8;
+  border: 1px solid #FEF08A;
+  border-left: 4px solid #EAB308;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+}
+
+.ai-eli5-header {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #854D0E;
+  margin-bottom: 6px;
+}
+
+.ai-eli5-text {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: #713F12;
+  font-weight: 500;
+}
+
+.ai-interactive-copilot-box {
+  background: #F1F5F9;
+  border: 1px solid #CBD5E1;
+  padding: 12px 14px;
+}
+
+.ai-copilot-ask-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.ai-copilot-ask-title {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #334155;
+}
+
+.ai-copilot-ask-hint {
+  font-size: 10.5px;
+  color: #64748B;
+  font-family: var(--font-mono);
+}
+
+.ai-quick-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.ai-chip-btn {
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  color: #334155;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 4px 8px;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.15s ease;
+}
+
+.ai-chip-btn:hover {
+  background: #EFF6FF;
+  border-color: #93C5FD;
+  color: #1D4ED8;
+  transform: translateY(-1px);
+}
+
+.ai-input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.ai-input-field {
+  flex: 1;
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  padding: 7px 12px;
+  font-size: 12px;
+  font-family: var(--font-sans);
+  color: #0F172A;
+  border-radius: 2px;
+}
+
+.ai-input-field:focus {
+  outline: none;
+  border-color: #0284C7;
+  box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+}
+
+.btn-ai-send {
+  background: #0F172A;
+  color: #FFFFFF;
+  border: none;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 0 14px;
+  cursor: pointer;
+  border-radius: 2px;
+  letter-spacing: 0.04em;
+  transition: all 0.15s ease;
+}
+
+.btn-ai-send:hover {
+  background: #1E293B;
+}
+
+.ai-response-area {
+  margin-top: 10px;
+}
+
+.ai-response-spinner {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: #0284C7;
+  padding: 8px;
+  background: #E0F2FE;
+  border: 1px solid #BAE6FD;
+  border-radius: 2px;
+}
+
+.ai-answer-card {
+  background: #FFFFFF;
+  border: 1px solid #93C5FD;
+  border-left: 4px solid #0284C7;
+  padding: 12px 14px;
+}
+
+.ai-answer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #F1F5F9;
+}
+
+.ai-answer-model {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #0284C7;
+}
+
+.ai-answer-badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  background: #F0FDF4;
+  color: #166534;
+  padding: 2px 6px;
+  border: 1px solid #BBF7D0;
+  border-radius: 2px;
+}
+
+.ai-answer-body {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #1E293B;
+}
+
 /* ── Detail Drawer: Item 4 Patient Health & Lifelong Subscriber Impact ── */
 .patient-impact-box {
   margin-bottom: 20px;
@@ -5586,12 +5993,175 @@ button {
 .btn-transfer-execute:hover:not(:disabled) { background: #1D4ED8; }
 .btn-transfer-execute:disabled { background: var(--ok-bg); color: var(--ok-text); }
 
+/* ── CHI Explainability Modal ── */
+.chi-explain-modal-card { max-width: 860px; width: 95%; }
+.chi-explain-body { padding: 20px; max-height: 75vh; overflow-y: auto; }
+
+/* ── AI Copilot Plain-Language Action Directive Styles ── */
+.card-ai-action-box {
+  background: #F0FDF4;
+  border: 1px solid #BBF7D0;
+  border-left: 4px solid #16A34A;
+  padding: 10px 12px;
+  margin-top: 8px;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.card-ai-action-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.card-ai-badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  color: #166534;
+  letter-spacing: 0.04em;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.card-ai-sub-tag {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  background: #DCFCE7;
+  color: #15803D;
+  padding: 1px 5px;
+  border: 1px solid #86EFAC;
+  font-weight: 700;
+}
+.card-ai-action-headline {
+  font-size: 11px;
+  color: #0F172A;
+  font-weight: 700;
+  line-height: 1.4;
+  background: #FFFFFF;
+  border: 1px solid #DCFCE7;
+  padding: 6px 8px;
+}
+.card-ai-details {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 10px;
+  line-height: 1.4;
+  color: #334155;
+}
+.card-ai-detail-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+.ai-bullet {
+  font-size: 10px;
+  flex-shrink: 0;
+}
+
+/* ── Interactive AI Copilot Dossier Tabs & Cards in Detail Drawer ── */
+.dossier-ai-toolbar {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 6px;
+  flex-wrap: wrap;
+}
+.dossier-ai-tab {
+  background: transparent;
+  border: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 5px 10px;
+  cursor: pointer;
+  color: var(--muted);
+  transition: all 0.15s ease;
+}
+.dossier-ai-tab:hover {
+  border-color: #0072CE;
+  color: #0072CE;
+}
+.dossier-ai-tab.active {
+  background: #0072CE;
+  color: #FFFFFF;
+  border-color: #0072CE;
+  font-weight: 700;
+}
+.dossier-ai-card {
+  background: #F8FAFC;
+  border: 1px solid #CBD5E1;
+  padding: 14px;
+  border-radius: 0;
+}
+.dossier-ai-card-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: #0F172A;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.dossier-ai-card-content {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #1E293B;
+}
+.dossier-ai-step-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+.dossier-ai-step-item {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  padding: 8px 12px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1.5;
+}
+.dossier-ai-step-num {
+  font-weight: 700;
+  color: #0072CE;
+  flex-shrink: 0;
+}
+.dossier-ai-copy-btn {
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 3px 8px;
+  cursor: pointer;
+  color: #0072CE;
+}
+.dossier-ai-copy-btn:hover {
+  background: #EFF6FF;
+}
+
 /* ── KPI delta tags ── */
 .kpi-delta { font-family: var(--font-mono); font-size: 9px; font-weight: 700; padding: 1px 5px; border: 1px solid; display: inline-block; }
 .kpi-delta--up { background: var(--ok-bg); color: var(--ok-text); border-color: var(--ok-text); }
 .kpi-delta--down { background: var(--crisis-bg); color: var(--crisis-text); border-color: #FECACA; }
-.mono-text { font-family: var(--font-mono); }
 
 /* ── CHI Explainability Modal ── */
 .chi-explain-modal-card { max-width: 860px; width: 95%; }
 .chi-explain-body { padding: 20px; max-height: 75vh; overflow-y: auto; }
+
+/* ── AI Section Translation Boxes ── */
+.ai-section-translation-box {
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+.ai-section-translation-box:hover {
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+

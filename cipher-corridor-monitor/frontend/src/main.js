@@ -249,6 +249,8 @@ function setupNav() {
   const btnMktLt = document.getElementById('btn-header-market-lt');
   if (btnMktLt) btnMktLt.addEventListener('click', () => openScenarioDrawer(window.DATA, { defaultTab: 'market' }));
 
+
+
   window.addEventListener('market-lt-mode-changed', () => {
     updateFilteredSignals();
   });

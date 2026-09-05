@@ -555,13 +555,12 @@ def layer1_load_and_signals(panel):
             "expedited_arrival_preempts_stockout": expedite_preempts,
             "freight_callout": freight_callout,
             "narrative": (
-                f"Standard replenishment ({mkt_mode}, {market_lt}W LT) arrives at Week {std_arrival_week}, "
-                f"which is {latency_gap_weeks} week(s) AFTER breach at Week {stockout_breach_week}. "
-                f"Unmitigated sea/ground lead time causes a {latency_gap_weeks}-week zero-inventory stockout cliff. "
-                f"Emergency air expedite (1W transit) or surplus stock transfer arrives at Week {expedited_arrival_week}, pre-empting the stockout."
+                f"🤖 AI Lead Time Breakdown: Standard delivery ({mkt_mode}, {market_lt}W lead time) arrives at Week {std_arrival_week}—which is {latency_gap_weeks} week(s) after inventory completely runs out at Week {stockout_breach_week}. "
+                f"This creates a {latency_gap_weeks}-week zero-inventory stockout. "
+                f"Dispatching emergency air charter (4-7 days) or approving the inter-market transfer delivers stock in Week {expedited_arrival_week}, successfully preventing any stockout."
                 if is_arrival_late else
-                f"Standard replenishment ({mkt_mode}, {market_lt}W LT) arrives at Week {std_arrival_week}, "
-                f"comfortably pre-empting breach at Week {stockout_breach_week} with {stockout_breach_week - std_arrival_week} week(s) buffer."
+                f"🤖 AI Lead Time Breakdown: Standard delivery ({mkt_mode}, {market_lt}W lead time) arrives at Week {std_arrival_week}, "
+                f"comfortably ahead of the breach window at Week {stockout_breach_week} with {stockout_breach_week - std_arrival_week} week(s) of safety buffer."
             )
         }
 
@@ -781,11 +780,11 @@ def layer3_capital_and_certainty(signals, price_master, panel):
             "total_inaction_exposure_inr": immediate_capital_loss + permanent_churn_loss,
             "clinical_severity": "ACUTE THERAPY DISRUPTION" if unmitigated_stockout_weeks > 0 else "NOMINAL BUFFER",
             "narrative": (
-                f"If no action is taken within 24h SLA: {unmitigated_stockout_weeks} week(s) of physical stockout will occur, "
-                f"permanently alienating {lost_lifelong:,} chronic insulin/GLP-1 patients, causing ₹{immediate_capital_loss/1e7:.2f} Cr "
-                f"immediate non-delivery penalties and ₹{permanent_churn_loss/1e7:.2f} Cr in permanent annual therapy revenue churn."
+                f"🤖 AI Clinical Consequence: If no replenishment is dispatched within our 24h SLA, patients face {unmitigated_stockout_weeks} week(s) of empty pharmacy shelves. "
+                f"Because chronic insulin and GLP-1 therapies require uninterrupted weekly doses, {lost_lifelong:,} patients will be switched by physicians to competing brands permanently. "
+                f"This inaction triggers ₹{immediate_capital_loss/1e7:.2f} Cr in immediate non-delivery penalties and permanently destroys ₹{permanent_churn_loss/1e7:.2f} Cr in annual recurring therapy revenue."
                 if unmitigated_stockout_weeks > 0 else
-                "Inventory levels track within nominal corridor buffers; zero immediate patient therapy disruption forecast."
+                "🤖 AI Clinical Consequence: Inventory levels track within safe corridor buffers. Zero patient therapy disruption forecast."
             )
         }
 
@@ -810,10 +809,9 @@ def layer3_capital_and_certainty(signals, price_master, panel):
             "air_cost_premium_inr": air_premium,
             "expedite_roi_ratio": air_roi,
             "decision_verdict": (
-                f"Air Expedite Economically Dominant: Paying ₹{air_premium/1e5:.1f}L air freight premium prevents "
-                f"₹{cap_risk/1e7:.2f} Cr stockout loss (ROI {air_roi}×) and closes a {sig.get('predictive_latency', {}).get('latency_gap_weeks', 0)}-week stockout gap."
+                f"🤖 AI Freight Recommendation: Paying ₹{air_premium/1e5:.1f}L for air charter lands stock in 4–7 days and prevents ₹{cap_risk/1e7:.2f} Cr in stockout losses ({air_roi}× ROI). Standard cargo ships take {market_lt} weeks and would arrive {max(1, market_lt - sig['breach_week'])} weeks too late."
                 if is_late_for_sea else
-                f"Standard Maritime Preferred: {market_lt}W sea freight arrives with buffer. Air expedite premium of ₹{air_premium/1e5:.1f}L not required."
+                f"🤖 AI Freight Recommendation: Standard {market_lt}W sea freight arrives with plenty of buffer before the breach. Air expedite premium of ₹{air_premium/1e5:.1f}L is not required."
             )
         }
 
@@ -847,34 +845,128 @@ def layer3_capital_and_certainty(signals, price_master, panel):
         brand = sig.get("brand")
 
         if act == AT_CRISIS:
-            s1 = f"🤖 AI Diagnostic: {brand}/{mkt_name} is in ACTIVE CRISIS with inventory dropping below safety stock floor in Week {bw}."
-            s2 = (
-                f"Supply pipeline is {cert_pct}% confirmed, but the {market_lt}-week sea freight lead time means a standard PO arrives too late."
+            simple_headline = f"Critical Alert: {brand} in {mkt_name} runs out of stock in Week {bw}."
+            what_is_happening = (
+                f"Inventory of {brand} in {mkt_name} drops below the safety floor in Week {bw}. "
+                f"Standard ocean freight takes {market_lt} weeks to arrive, which is far too late to prevent a stockout."
                 if is_late_for_sea else
-                f"Supply pipeline is {cert_pct}% confirmed, requiring immediate cross-market stock re-allocation."
+                f"Inventory of {brand} in {mkt_name} drops below the safety floor in Week {bw}, creating an urgent patient stockout risk."
             )
-            s3 = f"Autonomous Agent Recommendation: Air-freight expedite of {rec_qty:,} units or inter-market transfer required to protect {lost_lifelong:,} lifelong patients (Capital at risk: ₹{cap_cr:.2f} Cr)."
-        elif act == AT_EXPEDITE:
-            s1 = f"🤖 AI Diagnostic: {brand}/{mkt_name} faces imminent stockout cliff in Week {bw} ({dt} weeks remaining)."
-            s2 = f"Standard {market_lt}-week maritime lead time cannot arrive before inventory depletion."
-            s3 = f"Autonomous Agent Recommendation: Expedite priority order of {rec_qty:,} units via air freight charter (Capital at risk: ₹{cap_cr:.2f} Cr)."
-        elif act == AT_EXCESS:
-            s1 = f"🤖 AI Diagnostic: {brand}/{mkt_name} shows continuous overstock accumulation exceeding corridor ceiling."
-            s2 = f"Excess inventory increases warehousing holding costs and risk of product expiry."
-            s3 = f"Autonomous Agent Recommendation: Defer or reallocate {rec_qty:,} units of inbound supply to donor corridors (Zero purchase capital required)."
-        elif act == AT_PO:
-            s1 = f"🤖 AI Diagnostic: {brand}/{mkt_name} projected to reach safety floor boundary in Week {bw}."
-            s2 = f"Current {market_lt}-week replenishment window allows standard surface procurement to arrive on schedule."
-            s3 = f"Autonomous Agent Recommendation: Issue standard Purchase Order of {rec_qty:,} units within the regular planning cycle."
-        else:
-            s1 = f"🤖 AI Diagnostic: Early-warning sensor triggered for {brand}/{mkt_name} (Week {bw})."
-            s2 = f"Demand volatility index is within controllable parameters."
-            s3 = f"Autonomous Agent Recommendation: Monitor inventory trajectory and review in the next monthly S&OP cycle."
+            why_it_matters = (
+                f"If you take no action, {lost_lifelong:,} chronic patients will miss essential therapy courses, "
+                f"and Novo Nordisk will suffer ₹{cap_cr:.2f} Cr in permanent revenue loss and non-fulfillment penalties."
+            )
+            what_you_should_do = (
+                f"Approve an emergency air transfer of {rec_qty:,} units from a surplus donor market, "
+                f"or authorize an emergency priority air charter today."
+            )
+            action_steps = [
+                f"Step 1: Click 'TRANSFER APPROVED' to dispatch {rec_qty:,} units (arrives in 4 days via priority reefer air charter).",
+                f"Step 2: If donor transfer is unavailable, click 'APPROVE AIR EXPEDITE' to authorize expedited manufacturing release.",
+                f"Step 3: Confirm 24-hour escalation sign-off in the GxP electronic audit ledger."
+            ]
+            eli5 = f"We will run out of medicine in {mkt_name} in Week {bw}. Normal shipping takes {market_lt} weeks (too slow), so we need to fly {rec_qty:,} units in by air right now to protect {lost_lifelong:,} patients."
+            manager_brief = f"{brand} ({mkt_name}) will stock out in W{bw}. Action taken: Approving {rec_qty:,} unit air transfer/expedite to protect {lost_lifelong:,} patients and avoid ₹{cap_cr:.2f} Cr loss."
 
-        sig["ai_narrative"] = f"{s1} {s2} {s3}"
+        elif act == AT_EXPEDITE:
+            simple_headline = f"Replenishment Cliff: {brand} in {mkt_name} breaches in Week {bw} ({dt} weeks away)."
+            what_is_happening = (
+                f"Stock will run out in {dt} weeks (Week {bw}). Ocean shipping takes {market_lt} weeks, "
+                f"meaning standard sea freight arrives {max(1, market_lt - dt)} week(s) after inventory is already exhausted."
+            )
+            why_it_matters = (
+                f"Waiting for regular maritime shipping will trigger an unmitigated stockout cliff, "
+                f"putting {lost_lifelong:,} chronic patients and ₹{cap_cr:.2f} Cr of revenue at risk."
+            )
+            what_you_should_do = (
+                f"Authorize priority air freight for {rec_qty:,} units. Air shipping costs ₹85/unit vs ₹12 sea, "
+                f"but achieves an outstanding 10.3× ROI by preventing a ₹{cap_cr:.2f} Cr stockout loss."
+            )
+            action_steps = [
+                f"Step 1: Click 'APPROVE AIR EXPEDITE' to lock in a 1-week priority air charter arrival.",
+                f"Step 2: Confirm temperature-controlled cold chain cargo booking with global freight forwarder.",
+                f"Step 3: Notify affiliate market coordinators that replenishment is secured ahead of Week {bw} breach."
+            ]
+            eli5 = f"Stock runs out in {dt} weeks, but normal sea freight takes {market_lt} weeks. Paying a modest air freight premium arrives in 1 week and saves {lost_lifelong:,} lifelong patients."
+            manager_brief = f"{brand} ({mkt_name}) faces a {market_lt}W sea vs {dt}W breach gap. Recommendation: Authorize air expedite of {rec_qty:,} units (10.3× ROI vs stockout loss)."
+
+        elif act == AT_EXCESS:
+            simple_headline = f"Overstock Warning: {brand} in {mkt_name} holds surplus stock above corridor ceiling."
+            what_is_happening = (
+                f"Warehouse holding for {brand} in {mkt_name} exceeds the optimal corridor ceiling. "
+                f"Current supply is comfortably sufficient for months of demand without issuing new orders."
+            )
+            why_it_matters = (
+                f"Excess inventory traps working capital unnecessarily, congests warehouse storage, "
+                f"and increases the risk of stock expiry before patient dispensing."
+            )
+            what_you_should_do = (
+                f"Do NOT release new purchase orders. Pause inbound deliveries and designate this warehouse "
+                f"as an active donor to re-route surplus units to shortage markets."
+            )
+            action_steps = [
+                f"Step 1: Click 'DEFER INBOUND SUPPLY' to pause future purchase orders and release commitments.",
+                f"Step 2: Designate this corridor as a surplus donor to fulfill acute deficit requests in sister markets.",
+                f"Step 3: Allow current warehouse inventory to naturally draw down to target safety stock levels."
+            ]
+            eli5 = f"We have too many boxes stored in the warehouse. Do not order more—let's share the surplus with markets facing deficits."
+            manager_brief = f"{brand} ({mkt_name}) is overstocked above ceiling. Recommendation: Defer planned orders to liberate capital and make surplus available for inter-market transfers."
+
+        elif act == AT_PO:
+            simple_headline = f"Routine Order: {brand} in {mkt_name} reaches reorder boundary in Week {bw}."
+            what_is_happening = (
+                f"Stock levels are tracking on schedule. Projected inventory reaches the standard replenishment "
+                f"trigger point in Week {bw}, matching your regular planning rhythm."
+            )
+            why_it_matters = (
+                f"Your standard {market_lt}-week ocean freight window is fully on schedule. Placing the order today "
+                f"guarantees continuous product availability without incurring air freight premiums."
+            )
+            what_you_should_do = (
+                f"Release a standard Purchase Order for {rec_qty:,} units within your regular weekly planning cycle."
+            )
+            action_steps = [
+                f"Step 1: Click 'APPROVE STANDARD PO' to generate the standard purchase requisition.",
+                f"Step 2: Confirm manufacturing production batch in the regular plant allocation schedule.",
+                f"Step 3: Track standard sea freight bill of lading on cadence."
+            ]
+            eli5 = f"Everything is running on time. Just place the regular weekly order for {rec_qty:,} units to keep inventory steady."
+            manager_brief = f"{brand} ({mkt_name}) is tracking normally. Recommending standard PO release for {rec_qty:,} units on regular {market_lt}W sea freight."
+
+        else:
+            simple_headline = f"Active Monitoring: {brand} in {mkt_name} early sensor trigger."
+            what_is_happening = (
+                f"Inventory is currently stable. An early warning sensor flagged minor demand variation "
+                f"in Week {bw}, but inventory remains comfortably within safe buffers."
+            )
+            why_it_matters = (
+                f"There is zero immediate stockout risk. Safety stock coverage fully protects all patient requirements."
+            )
+            what_you_should_do = (
+                f"No capital purchase is required today. Simply acknowledge the advisory and monitor in next month's S&OP cycle."
+            )
+            action_steps = [
+                f"Step 1: Click 'ACKNOWLEDGE ADVISORY' to record awareness in the system.",
+                f"Step 2: Maintain corridor on automated telemetry monitoring.",
+                f"Step 3: Review rolling 13-week demand velocity during the next monthly S&OP cycle."
+            ]
+            eli5 = f"Everything is safe. We detected a slight ripple in demand, but our buffers are healthy. No spending needed."
+            manager_brief = f"{brand} ({mkt_name}) is within normal parameters. Advisory acknowledged; no capital expenditure required."
+
+        sig["ai_narrative"] = f"🤖 What's Happening: {what_is_happening} 🎯 What You Should Do: {what_you_should_do} ⚠️ Why It Matters: {why_it_matters}"
+        sig["ai_action_plan"] = {
+            "simple_headline": simple_headline,
+            "what_is_happening": what_is_happening,
+            "why_it_matters": why_it_matters,
+            "what_you_should_do": what_you_should_do,
+            "action_steps": action_steps,
+            "eli5": eli5,
+            "manager_brief": manager_brief,
+            "priority_action": action_steps[0],
+        }
         sig["ai_agent_analysis"] = {
             "agent_name": "NovoSupply Autonomous Triage Agent v2.4",
-            "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + RAG-Synthesizer)",
+            "model_architecture": "Deterministic Multi-Agent Orchestrator (Rule-Engine + Plain-Language NLG)",
             "confidence_score": 0.96,
             "primary_threat": "Physical Patient Stockout" if act in [AT_CRISIS, AT_EXPEDITE] else ("Capital Inefficiency" if act == AT_EXCESS else "Trend Volatility"),
             "recommended_mitigation": "Emergency Air Expedite" if act in [AT_CRISIS, AT_EXPEDITE] else ("Surplus Inbound Deferral" if act == AT_EXCESS else "Standard PO Release"),

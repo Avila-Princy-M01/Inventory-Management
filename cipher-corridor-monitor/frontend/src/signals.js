@@ -139,12 +139,40 @@ export function renderSignalCards(signals, approvedSignals = {}) {
       ? '₹0 (SURPLUS · DEFER)'
       : '₹' + (Number(sig.capital_at_risk_inr || 0) / 1e7).toFixed(2) + ' Cr';
 
-    const aiNarrativeHtml = sig.ai_narrative
-      ? `<div class="card-ai-box">
-           <span class="card-ai-badge">[AI DIAGNOSTIC]</span>
-           <p class="card-ai-text">${esc(sig.ai_narrative)}</p>
-         </div>`
-      : '';
+    const plan = sig.ai_action_plan || {};
+    const actionHeadline = plan.what_you_should_do || (sig.action_type === 'ACTIVE CRISIS'
+      ? `Approve emergency air transfer of ${fmtNum(sig.recommended_qty_units)} units or air expedite`
+      : (sig.action_type === 'EMERGENCY EXPEDITE'
+        ? `Approve priority air charter for ${fmtNum(sig.recommended_qty_units)} units (10.3× ROI)`
+        : (sig.action_type === 'EXCESS HOLDING'
+          ? `Do NOT order more stock; defer planned inbound supply and share surplus`
+          : `Release regular Purchase Order for ${fmtNum(sig.recommended_qty_units)} units on schedule`)));
+
+    const simpleSituation = plan.what_is_happening || (sig.action_type === 'ACTIVE CRISIS'
+      ? `Stock drops below safety floor in Week ${sig.breach_week}. Sea freight (${sig.market_lead_time || 3}W) is too slow.`
+      : (sig.action_type === 'EMERGENCY EXPEDITE'
+        ? `Runs out in Week ${sig.breach_week}. Ocean transit arrives after stockout starts.`
+        : (sig.action_type === 'EXCESS HOLDING'
+          ? `Inventory exceeds warehouse ceiling; multiple months of stock available.`
+          : `Inventory tracking normally; ready for regular weekly order placement.`)));
+
+    const simpleWhy = plan.why_it_matters || (sig.lost_lifelong_patients
+      ? `Protects ${fmtNum(sig.lost_lifelong_patients)} lifelong patients and prevents ₹${(Number(sig.capital_at_risk_inr || 0) / 1e7).toFixed(2)} Cr stockout loss.`
+      : `Maintains continuous supply without paying emergency freight premiums.`);
+
+    const aiNarrativeHtml = `
+      <div class="card-ai-action-box">
+        <div class="card-ai-action-header">
+          <span class="card-ai-badge">🤖 AI COPILOT · ACTION DIRECTIVE</span>
+          <span class="card-ai-sub-tag">1-CLICK EXECUTE</span>
+        </div>
+        <div class="card-ai-action-headline">👉 <strong>${esc(actionHeadline)}</strong></div>
+        <div class="card-ai-details">
+          <div class="card-ai-detail-row"><span class="ai-bullet">📌</span> <span><strong>Situation:</strong> ${esc(simpleSituation)}</span></div>
+          <div class="card-ai-detail-row"><span class="ai-bullet">⚠️</span> <span><strong>Why Care:</strong> ${esc(simpleWhy)}</span></div>
+        </div>
+      </div>
+    `;
 
     const patientRiskHtml = (sig.lost_lifelong_patients && sig.lost_lifelong_patients > 0)
       ? `<div class="card-patient-impact">
