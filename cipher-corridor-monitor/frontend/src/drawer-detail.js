@@ -1,5 +1,5 @@
 /**
- * drawer-detail.js — 52-week trajectory chart + GxP approval flow
+ * drawer-detail.js — 720px Analyst Decision Workspace + 4-Tab Evidence Terminal
  */
 import { getBadgeConfig, renderSignalCards } from './signals.js';
 import {
@@ -19,27 +19,27 @@ let _chart = null;
 let _sig = null;
 
 function esc(str) {
-  return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
 function buildSnoozeHtml(wf) {
   const isSnoozed = Boolean(wf.snooze && wf.snooze.snoozed_until > Date.now());
-  if (isSnoozed) {
-    return `
-      <div class="workflow-active-snooze">
-        <div class="active-snooze-left">
-          <span class="active-snooze-icon">💤</span>
-          <div>
-            <div class="active-snooze-title">ALERT SNOOZED (${wf.snooze.weeks} WEEKS)</div>
-            <div class="active-snooze-meta">Justification: <strong>${wf.snooze.reason}</strong>${wf.snooze.note ? ' · ' + wf.snooze.note : ''}</div>
-          </div>
-        </div>
-        <button class="btn-unsnooze" id="btn-unsnooze-alert">RESUME ALERT EARLY ▶</button>
-      </div>
-    `;
-  }
   return `
-    <div class="workflow-snooze-form">
+    <div class="workflow-active-snooze" id="snooze-active-card" style="${isSnoozed ? '' : 'display:none;'}">
+      <div class="active-snooze-left">
+        <span class="active-snooze-icon">[PAUSED]</span>
+        <div>
+          <div class="active-snooze-title">ALERT SNOOZED (${wf.snooze ? wf.snooze.weeks : 1} WEEKS)</div>
+          <div class="active-snooze-meta">Justification: <strong>${esc(wf.snooze ? wf.snooze.reason : '')}</strong>${wf.snooze && wf.snooze.note ? ' · ' + esc(wf.snooze.note) : ''}</div>
+        </div>
+      </div>
+      <button class="btn-unsnooze" id="btn-unsnooze-alert" type="button">RESUME ALERT EARLY ▶</button>
+    </div>
+    <div class="workflow-snooze-form" id="snooze-form-card" style="${isSnoozed ? 'display:none;' : ''}">
       <div class="workflow-field-label">SNOOZE ALERT (MANDATORY JUSTIFICATION):</div>
       <div class="workflow-snooze-grid">
         <select class="workflow-select" id="select-snooze-weeks">
@@ -49,7 +49,7 @@ function buildSnoozeHtml(wf) {
           ${SNOOZE_REASONS.map(r => `<option value="${r}">${r}</option>`).join('')}
         </select>
         <input type="text" class="workflow-input" id="input-snooze-note" placeholder="Operational rationale..." />
-        <button class="btn-snooze" id="btn-snooze-alert">💤 SNOOZE</button>
+        <button class="btn-snooze" id="btn-snooze-alert" type="button">[HOLD] SNOOZE</button>
       </div>
     </div>
   `;
@@ -66,11 +66,11 @@ function buildCommentsHtml(comments) {
     return `
       <div class="workflow-comment-item">
         <div class="workflow-comment-meta">
-          <span class="workflow-comment-author">${c.author}</span>
-          <span class="workflow-comment-role">${c.role || 'Planner'}</span>
+          <span class="workflow-comment-author">${esc(c.author)}</span>
+          <span class="workflow-comment-role">${esc(c.role || 'Planner')}</span>
           <span class="workflow-comment-time">${dateStr} ${timeStr}</span>
         </div>
-        <div class="workflow-comment-text">${c.text}</div>
+        <div class="workflow-comment-text">${esc(c.text)}</div>
       </div>
     `;
   }).join('');
@@ -89,7 +89,6 @@ export function getApprovalLabel(actionType, qty) {
   }
 }
 export const getApprovalButtonLabel = getApprovalLabel;
-
 
 function buildRecovery(sig) {
   const data = window.DATA || {};
@@ -111,7 +110,7 @@ function buildRecovery(sig) {
   };
 }
 
-export function openDetailDrawer(sig, approvedSignals) {
+export function openDrawer(sig, approvedSignals) {
   window.closeAllDrawers && window.closeAllDrawers();
   _sig = sig;
 
@@ -145,450 +144,28 @@ export function openDetailDrawer(sig, approvedSignals) {
   const countryDisplayName = sig.market_name || sig.country || 'China';
   const freightCallout = sig.freight_callout || `${countryDisplayName} breach at week ${sig.breach_week} — with ${leadWks}-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this.`;
 
-  let slaBannerHtml = '';
-  if (sla.isCritical) {
-    if (sla.status === 'RESOLVED') {
-      slaBannerHtml = `
-        <div class="detail-sla-banner sla-resolved">
-          <div class="sla-banner-header">
-            <div class="sla-header-left">
-              <span class="sla-pill-badge">✓ GxP COMPLIANT</span>
-              <span class="sla-status-title">Crisis Triage Complete — Order Approved &amp; Signed</span>
-            </div>
-            <span class="sla-deadline-tag">21 CFR Part 11 Verified</span>
-          </div>
-          <div class="sla-body-text">All replenishment parameters and quantities are recorded in the GxP audit ledger. SLA successfully resolved.</div>
-        </div>
-      `;
-    } else if (sla.status === 'SNOOZED') {
-      slaBannerHtml = `
-        <div class="detail-sla-banner sla-snoozed">
-          <div class="sla-banner-header">
-            <div class="sla-header-left">
-              <span class="sla-pill-badge">💤 SNOOZED</span>
-              <span class="sla-status-title">${sla.label}</span>
-            </div>
-            <span class="sla-deadline-tag">Governance Review on Hold</span>
-          </div>
-          <div class="sla-body-text">Alert temporarily deferred with operational justification. Triage countdown will resume after snooze period.</div>
-        </div>
-      `;
-    } else if (sla.status === 'ACKNOWLEDGED') {
-      slaBannerHtml = `
-        <div class="detail-sla-banner sla-assigned">
-          <div class="sla-banner-header">
-            <div class="sla-header-left">
-              <span class="sla-pill-badge">ACTIVE TRIAGE</span>
-              <span class="sla-status-title">${sla.label}</span>
-            </div>
-            <span class="sla-deadline-tag">Ownership Acknowledged</span>
-          </div>
-          <div class="sla-body-text">Corridor owner assigned. Authorize PO order or execute matched inter-market stock transfer below to complete resolution.</div>
-        </div>
-      `;
-    } else {
-      slaBannerHtml = `
-        <div class="detail-sla-banner sla-urgent">
-          <div class="sla-banner-header">
-            <div class="sla-header-left">
-              <span class="sla-pill-badge">⏱ 24-HOUR ACTION DEADLINE</span>
-              <span class="sla-timer-highlight"><strong>${sla.hoursLeft}h ${sla.minsLeft}m</strong> remaining</span>
-            </div>
-            <span class="sla-deadline-tag">Escalation Target: Tuesday 08:00 UTC</span>
-          </div>
-          <div class="sla-body-grid">
-            <div class="sla-body-main">
-              <strong>Action Required:</strong> Unassigned acute crisis. If not actioned within the 24h window, this signal automatically escalates to the <strong>VP of Global Supply Chain</strong>.
-            </div>
-            <div class="sla-body-steps">
-              <span class="sla-step-item">① Assign an owner</span>
-              <span class="sla-step-item">② Authorize transfer / PO</span>
-              <span class="sla-step-item">③ Or snooze with operational justification below</span>
-            </div>
-          </div>
-        </div>
-      `;
-    }
-  }
-
-  const cliffBannerHtml = isLateForSea
-    ? `<div class="detail-cliff-banner">
-         <div class="cliff-banner-badge">🚨 IRRECOVERABLE SEA FREIGHT CLIFF</div>
-         <div class="cliff-banner-quote">&ldquo;${freightCallout}&rdquo;</div>
-       </div>`
-    : '';
-
   const transfer = sig.intermarket_transfer || {};
   const whCap = transfer.warehouse_capacity || {};
   const econ = transfer.transfer_economics || {};
-  const transferCardHtml = transfer.has_transfer
-    ? `
-      <div class="transfer-corridor-box">
-        <div class="transfer-corridor-header">
-          <div class="detail-section-label" style="margin-bottom:0">INTER-MARKET STOCK RE-ALLOCATION CORRIDOR (SECTION 6.3)</div>
-          <span class="transfer-badge">MATCHED SURPLUS ROUTE ✓</span>
-        </div>
-        
-        <div class="transfer-visualizer">
-          <div class="transfer-node transfer-node--donor">
-            <div class="transfer-node-role">SURPLUS DONOR</div>
-            <div class="transfer-node-market">${transfer.donor_country}</div>
-            <div class="transfer-node-sub">${transfer.donor_region} · DOH ${transfer.donor_pre_doh}d</div>
-          </div>
-          <div class="transfer-arrow-block">
-            <div class="transfer-arrow-line">
-              <span class="transfer-arrow-pill">${Number(transfer.transfer_qty).toLocaleString()} UNITS</span>
-              <span class="transfer-arrow-mode">✈️ ${transfer.transit_days}D AIR CHARTER</span>
-            </div>
-            <div class="transfer-arrow-head">▶</div>
-          </div>
-          <div class="transfer-node transfer-node--recipient">
-            <div class="transfer-node-role">ACUTE RECIPIENT</div>
-            <div class="transfer-node-market">${sig.country}</div>
-            <div class="transfer-node-sub">Breach W${sig.breach_week} · Deficit ${Number(sig.recommended_qty_units).toLocaleString()} U</div>
-          </div>
-        </div>
-
-        <div class="transfer-impact-grid">
-          <div class="transfer-impact-item">
-            <span class="transfer-impact-k">DONOR POST-TRANSFER DOH</span>
-            <span class="transfer-impact-v" style="color:var(--ok-text)">${transfer.donor_post_doh} DAYS (${(transfer.donor_post_doh / Math.max(1, transfer.donor_ssd)).toFixed(2)}× SSD)</span>
-            <span class="transfer-impact-sub">SSD floor: ${transfer.donor_ssd}d · <strong>✓ ZERO CASCADE RISK</strong> (>1.5× SSD)</span>
-          </div>
-          <div class="transfer-impact-item">
-            <span class="transfer-impact-k">STOCKOUT RESOLUTION</span>
-            <span class="transfer-impact-v" style="color:var(--ok-text)">RESTORED IN ${transfer.transit_days} DAYS</span>
-            <span class="transfer-impact-sub">Prevents clinical penalty &amp; breach</span>
-          </div>
-          <div class="transfer-impact-item">
-            <span class="transfer-impact-k">CAPITAL PRESERVED</span>
-            <span class="transfer-impact-v">₹${(transfer.capital_saved_inr / 1e7).toFixed(2)} CR</span>
-            <span class="transfer-impact-sub">${econ.transfer_roi_ratio || 10.4}x Net Capital ROI</span>
-          </div>
-        </div>
-
-        <!-- AI Plain-English Transfer Verdict -->
-        <div class="ai-section-translation-box" style="margin:12px 0;padding:10px 12px;background:#F0FDF4;border:1px solid #BBF7D0;border-left:4px solid #16A34A;border-radius:2px;">
-          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
-            <span style="font-size:13px;">🤖</span>
-            <span style="font-family:var(--font-mono);font-size:10px;font-weight:800;color:#166534;letter-spacing:0.04em;">AI PLAIN-ENGLISH TRANSFER VERDICT</span>
-          </div>
-          <div style="font-size:11.5px;color:#14532D;line-height:1.55;">
-            <strong>Why this works:</strong> ${transfer.donor_country} has <strong>${transfer.donor_pre_doh} days of stock</strong> in their warehouse and only needs ${transfer.donor_ssd} days. 
-            By flying ${Number(transfer.transfer_qty).toLocaleString()} units over, <strong>${sig.country} gets stock in 4 days</strong> without waiting for slow cargo ships. 
-            <strong>Is ${transfer.donor_country} safe?</strong> Yes! After the transfer, they still keep <strong>${transfer.donor_post_doh} days of inventory (over ${(transfer.donor_post_doh/30).toFixed(1)} months)</strong> with zero risk of running low.
-          </div>
-        </div>
-
-
-        <!-- Section 6.5 Warehouse Headroom & Transfer Economics -->
-        <div class="wh-capacity-box">
-          <div class="wh-capacity-header">
-            <span class="wh-capacity-title">RECIPIENT WAREHOUSE CAPACITY &amp; HEADROOM VERIFICATION</span>
-            <span class="wh-capacity-tag">${whCap.headroom_status || 'HEADROOM CONFIRMED (<90%)'}</span>
-          </div>
-          <div class="wh-bar-wrap">
-            <div class="wh-bar-track">
-              <div class="wh-bar-fill" style="width:${whCap.recipient_utilization_pct || 83}%;background:var(--ok-text)"></div>
-            </div>
-            <div class="wh-bar-meta">
-              <span>Current: ${Number(whCap.recipient_current_inventory || 28400).toLocaleString()} U</span>
-              <span>Post-Transfer: <strong>${Number(whCap.recipient_post_inventory || 41574).toLocaleString()} U</strong> (${whCap.recipient_utilization_pct || 83.1}% / 50,000 U Limit)</span>
-            </div>
-          </div>
-          <div class="transfer-econ-grid">
-            <div class="econ-item">
-              <span class="econ-k">AIR FREIGHT REEFER</span>
-              <span class="econ-v tabular-nums">₹${((econ.cost_air_freight_inr || 1251530) / 1e5).toFixed(1)}L</span>
-            </div>
-            <div class="econ-item">
-              <span class="econ-k">CUSTOMS &amp; TARIFFS</span>
-              <span class="econ-v tabular-nums">₹${((econ.cost_tariffs_duties_inr || 461090) / 1e5).toFixed(1)}L</span>
-            </div>
-            <div class="econ-item">
-              <span class="econ-k">SECONDARY PACKAGING</span>
-              <span class="econ-v tabular-nums">₹${((econ.cost_relabeling_packaging_inr || 197610) / 1e5).toFixed(1)}L</span>
-            </div>
-            <div class="econ-item">
-              <span class="econ-k">TOTAL TRANSFER COST</span>
-              <span class="econ-v tabular-nums" style="color:var(--crisis-text)">₹${((econ.cost_total_transfer_inr || 1910230) / 1e5).toFixed(1)}L</span>
-            </div>
-            <div class="econ-item">
-              <span class="econ-k">NET ECONOMIC ROI</span>
-              <span class="econ-v tabular-nums" style="color:var(--ok-text)">${econ.roi_text || '10.4x Net Capital ROI'}</span>
-            </div>
-          </div>
-        </div>
-
-        <button class="btn-primary btn-transfer-execute" id="btn-execute-transfer" ${approved ? 'disabled' : ''}>
-          ${approved ? 'TRANSFER APPROVED & EXECUTED ✓' : `⚡ EXECUTE INTER-MARKET STOCK TRANSFER (${Number(transfer.transfer_qty).toLocaleString()} UNITS)`}
-        </button>
-      </div>
-    `
-    : '';
-
-  const workflowSectionHtml = `
-    <div class="workflow-box" id="workflow-container">
-      <div class="workflow-header">
-        <div class="detail-section-label" style="margin-bottom:0">ALERT WORKFLOW &amp; ESCALATION (SECTION 6.2)</div>
-        <span class="workflow-status-badge ${wf.owner !== 'Unassigned' ? 'workflow-status-badge--active' : ''}" id="workflow-status-badge">
-          ${wf.owner !== 'Unassigned' ? 'OWNER ASSIGNED ✓' : 'TRIAGE PENDING'}
-        </span>
-      </div>
-
-      <!-- Owner Assignment -->
-      <div class="workflow-row">
-        <div class="workflow-field-label">SUPPLY CHAIN OWNER / GOVERNANCE LEAD:</div>
-        <div class="workflow-select-wrap">
-          <select class="workflow-select" id="select-signal-owner">
-            ${OWNER_ROLES.map(r => `<option value="${r}" ${wf.owner === r ? 'selected' : ''}>${r}</option>`).join('')}
-          </select>
-          <span class="workflow-saved-pill" id="owner-saved-pill" style="display:none">SAVED ✓</span>
-        </div>
-      </div>
-
-      <!-- Snooze Area -->
-      <div id="workflow-snooze-area">
-        ${buildSnoozeHtml(wf)}
-      </div>
-
-      <!-- Planner Comments & Rationale Thread -->
-      <div class="workflow-comments-block">
-        <div class="workflow-comments-header">
-          <span class="workflow-field-label" style="margin-bottom:0">PLANNER OPERATIONAL RATIONALE &amp; AUDIT TRAIL</span>
-          <span class="workflow-count-badge tabular-nums" id="comment-count-badge">${(wf.comments || []).length} ENTRIES</span>
-        </div>
-        <div class="workflow-comments-list" id="workflow-comments-list">
-          ${buildCommentsHtml(wf.comments)}
-        </div>
-        <div class="workflow-comment-input-row">
-          <textarea class="workflow-textarea" id="input-new-comment" rows="2" placeholder="Record operational rationale (e.g. Flight capacity booked on LH Cargo for W14 delivery)..."></textarea>
-          <button class="btn-workflow-comment" id="btn-post-comment">+ POST RATIONALE</button>
-        </div>
-      </div>
-
-      <!-- AI Plain-English Workflow & Governance Guidance -->
-      <div class="ai-section-translation-box" style="margin-top:12px;padding:10px 12px;background:#F8FAFC;border:1px solid #E2E8F0;border-left:4px solid #64748B;border-radius:2px;">
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
-          <span style="font-size:13px;">🤖</span>
-          <span style="font-family:var(--font-mono);font-size:10px;font-weight:800;color:#334155;letter-spacing:0.04em;">AI PLAIN-ENGLISH GOVERNANCE GUIDE</span>
-        </div>
-        <div style="font-size:11.5px;color:#1E293B;line-height:1.55;">
-          <strong>What you should do:</strong> This alert has an active <strong>24-Hour Response SLA</strong>. Approving the transfer automatically timestamps your decision in the <strong>GxP audit trail (21 CFR Part 11 compliant)</strong>. If you are investigating or awaiting confirmation, snooze the alert or log a short rationale above to maintain full audit compliance.
-        </div>
-      </div>
-    </div>
-  `;
-
-  const staleParam = sig.stale_parameter || {};
-  const isStale = Boolean(sig.is_stale_parameter || staleParam.is_stale);
-  const staleAlertHtml = isStale ? `
-    <div class="stale-param-alert-box" id="stale-param-alert">
-      <div class="stale-param-top">
-        <span class="stale-alert-badge">⚠️ STALE MASTER DATA DETECTED · SECTION 6.4</span>
-        <span class="stale-alert-tag">DEMAND SHIFT ${staleParam.demand_shift_pct > 0 ? '+' : ''}${staleParam.demand_shift_pct}%</span>
-      </div>
-      <div class="stale-param-title">Safety Stock Days Static at ${staleParam.current_ssd || 42}d with Significant Demand Velocity Drift</div>
-      <p class="stale-param-desc">
-        The master planning parameter (SSD) in SAP/OMP has remained frozen at <strong>${staleParam.current_ssd || 42} days</strong> while observed rolling demand shifted by <strong>${staleParam.demand_shift_pct > 0 ? '+' : ''}${staleParam.demand_shift_pct}%</strong> across the horizon. This static configuration creates uncalibrated safety buffers, driving artificial corridor alarms.
-      </p>
-      <div class="stale-param-action">
-        <strong>Recommended Master Data Recalibration:</strong> Initiate master data recalibration ticket in SAP/OMP to align corridor SSD with observed demand velocity.
-      </div>
-      <div class="ai-section-translation-box" style="margin-top:8px;padding:8px 10px;background:#FEF3C7;border:1px solid #FDE68A;border-left:3px solid #D97706;border-radius:2px;">
-        <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px;">
-          <span style="font-size:12px;">🤖</span>
-          <span style="font-family:var(--font-mono);font-size:9.5px;font-weight:800;color:#92400E;letter-spacing:0.04em;">AI PARAMETER AUDIT TAKEAWAY</span>
-        </div>
-        <div style="font-size:11px;color:#78350F;line-height:1.5;">
-          Safety Stock Days in SAP is frozen at <strong>${staleParam.current_ssd || 42} days</strong> based on obsolete history. Calibrating this parameter to match current sales patterns eliminates phantom alerts and unlocks idle working capital.
-        </div>
-      </div>
-    </div>
-  ` : '';
-
-  // Section 6.7 Predictive Latency Timeline
-  const lat = sig.predictive_latency || {};
-  const isLate = Boolean(lat.is_arrival_late);
-  const latencyTimelineHtml = `
-    <div class="latency-timeline-box">
-      <div class="latency-timeline-header">
-        <div class="detail-section-label" style="margin-bottom:0">PREDICTIVE REPLENISHMENT LATENCY &amp; STOCKOUT PRE-EMPTION</div>
-        <span class="latency-status-tag ${isLate ? 'latency-status-tag--cliff' : 'latency-status-tag--ok'}">
-          ${isLate ? `⚠️ LATENCY DEFICIT: +${lat.latency_gap_weeks || 2}W STOCKOUT` : '✓ PRE-EMPTIVE ARRIVAL'}
-        </span>
-      </div>
-      <div class="latency-visual-track">
-        <div class="latency-step latency-step--dispatch">
-          <span class="latency-step-dot"></span>
-          <span class="latency-step-wk">W1</span>
-          <span class="latency-step-lbl">ORDER DISPATCH</span>
-        </div>
-        <div class="latency-step latency-step--breach">
-          <span class="latency-step-dot latency-step-dot--breach"></span>
-          <span class="latency-step-wk">W${sig.breach_week}</span>
-          <span class="latency-step-lbl">STOCKOUT BREACH</span>
-        </div>
-        <div class="latency-step latency-step--expedite">
-          <span class="latency-step-dot latency-step-dot--expedite"></span>
-          <span class="latency-step-wk">W${lat.expedited_arrival_week || 2}</span>
-          <span class="latency-step-lbl">AIR EXPEDITE ARRIVAL</span>
-        </div>
-        <div class="latency-step ${isLate ? 'latency-step--late' : 'latency-step--ok'}">
-          <span class="latency-step-dot ${isLate ? 'latency-step-dot--late' : 'latency-step-dot--ok'}"></span>
-          <span class="latency-step-wk">W${lat.standard_arrival_week || (sig.breach_week + 2)}</span>
-          <span class="latency-step-lbl">STANDARD PO ARRIVAL</span>
-        </div>
-      </div>
-      <div class="latency-narrative-text">
-        ${lat.narrative || `Standard replenishment lead time causes stockout breach. Air freight or inter-market transfer is required to bridge the ${lat.latency_gap_weeks || 2}-week gap.`}
-      </div>
-
-      <!-- AI Plain-English Timeline Breakdown -->
-      <div class="ai-section-translation-box" style="margin-top:10px;padding:8px 10px;background:#FFF7ED;border:1px solid #FFEDD5;border-left:3px solid #EA580C;border-radius:2px;">
-        <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px;">
-          <span style="font-size:12px;">🤖</span>
-          <span style="font-family:var(--font-mono);font-size:9.5px;font-weight:800;color:#9A3412;letter-spacing:0.04em;">AI TIMELINE BREAKDOWN</span>
-        </div>
-        <div style="font-size:11px;color:#7C2D12;line-height:1.5;">
-          ${isLate ? `
-            <strong>The Problem:</strong> Inventory runs dry at <strong>Week ${sig.breach_week}</strong>, but standard factory shipping does not arrive until <strong>Week ${lat.standard_arrival_week || (sig.breach_week + 2)}</strong>. This creates a dangerous <strong>${lat.latency_gap_weeks || 2}-week stockout gap</strong>. Priority air transfer arrives in <strong>Week ${lat.expedited_arrival_week || 2}</strong>, closing the gap before empty shelves happen.
-          ` : `
-            Standard replenishment arrives ahead of the breach window. Pre-emptive replenishment is on track.
-          `}
-        </div>
-      </div>
-    </div>
-  `;
-
-  // Section 6.8 Manufacturing & Production Constraints
   const constr = sig.constraints || {};
   const pc = constr.plant_contention || {};
-  const constraintsHtml = `
-    <div class="constraints-box">
-      <div class="constraints-header">
-        <div class="detail-section-label" style="margin-bottom:0">MANUFACTURING &amp; NETWORK CONSTRAINTS (SECTION 6.8)</div>
-        <span class="constraints-status-tag ${constr.in_frozen_horizon ? 'constraints-tag--locked' : 'constraints-tag--open'}">
-          ${constr.in_frozen_horizon ? '🔒 INSIDE FROZEN HORIZON (W1-4)' : '🔓 OPEN SCHEDULING HORIZON'}
-        </span>
-      </div>
-      <div class="constraints-grid">
-        <div class="constraint-item">
-          <span class="constraint-k">FROZEN HORIZON (4 WEEKS)</span>
-          <span class="constraint-v">${constr.in_frozen_horizon ? 'LOCKED — Emergency VP Waiver / Transfer Required' : 'OPEN — Standard Plant Batch Execution'}</span>
-        </div>
-        <div class="constraint-item">
-          <span class="constraint-k">CAMPAIGN BATCH ROUNDING (MOQ: 5K)</span>
-          <span class="constraint-v tabular-nums">Raw: ${Number(sig.recommended_qty_units || 0).toLocaleString()} U → <strong>${Number(constr.constrained_roq_units || sig.recommended_qty_units || 0).toLocaleString()} U</strong> (+${Number(constr.batch_rounding_delta || 0).toLocaleString()} U batch multiple)</span>
-        </div>
-        <div class="constraint-item">
-          <span class="constraint-k">NETWORK ALLOCATION CAP (85%)</span>
-          <span class="constraint-v" style="color:var(--ok-text)">COMPLIANT — Non-Starvation Verified</span>
-        </div>
-      </div>
-
-      <!-- Upstream Plant Contention & Portfolio Trade-off Sub-Panel -->
-      <div class="plant-contention-box" style="margin-top:12px;padding:11px 13px;background:#F8FAFC;border:1px solid #E2E8F0;border-left:4px solid ${pc.contention_color || '#2563EB'};font-family:var(--font-mono);font-size:11px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;">
-          <div style="display:flex;align-items:center;gap:6px;">
-            <span style="font-size:13px;">🏭</span>
-            <span style="font-weight:800;color:#0F172A;letter-spacing:0.04em;">UPSTREAM PLANT LINE CONTENTION &amp; PORTFOLIO CONFLICT</span>
-          </div>
-          <span style="font-size:9px;font-weight:800;padding:2px 6px;color:#fff;background:${pc.contention_color || '#2563EB'};border-radius:2px;">
-            ${pc.contention_level || 'NOMINAL'} CONTENTION RISK
-          </span>
-        </div>
-
-        <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:8px;margin-bottom:8px;font-size:10.5px;">
-          <div style="background:#fff;padding:6px 8px;border:1px solid #CBD5E1;">
-            <div style="color:#64748B;font-size:9.5px;">MANUFACTURING LINE</div>
-            <div style="font-weight:700;color:#0F172A;">${pc.line_id || 'Shared Line 04'}</div>
-            <div style="color:#64748B;font-size:9px;">${pc.plant_site || 'Kalundborg Site 1'}</div>
-          </div>
-          <div style="background:#fff;padding:6px 8px;border:1px solid #CBD5E1;">
-            <div style="color:#64748B;font-size:9.5px;">SHARED SISTER BRAND</div>
-            <div style="font-weight:700;color:#0F172A;">${pc.sister_brand || 'Beacon'}</div>
-            <div style="color:#DC2626;font-size:9px;font-weight:600;">Trade-off Collision Risk</div>
-          </div>
-          <div style="background:#fff;padding:6px 8px;border:1px solid #CBD5E1;">
-            <div style="color:#64748B;font-size:9.5px;">LINE UTILIZATION &amp; CHANGEOVER</div>
-            <div style="font-weight:700;color:#0F172A;">${pc.line_utilization_pct || 82.5}% Ceiling</div>
-            <div style="color:#B45309;font-size:9px;">${pc.changeover_hours || 48}h CIP/SIP (${pc.changeover_delay_days || 2}d)</div>
-          </div>
-        </div>
-
-        <div style="font-size:10.5px;color:#1E293B;line-height:1.55;background:#fff;padding:8px 10px;border:1px solid #E2E8F0;margin-bottom:4px;">
-          ${pc.tradeoff_narrative || 'Multi-brand portfolio line utilization within statistical baseline.'}
-        </div>
-        ${pc.is_correlated_upstream_shortfall ? `
-          <div style="display:flex;align-items:center;gap:5px;margin-top:6px;font-size:9.5px;color:#991B1B;font-weight:600;">
-            <span>⚠️ STATISTICAL PROXY:</span>
-            <span>Simultaneous confirmed drop across brand families in Week ${sig.breach_week} confirms bulk upstream plant constraint (not a transit delay).</span>
-          </div>
-        ` : ''}
-      </div>
-
-      ${constr.in_frozen_horizon ? `
-        <div style="margin-top:12px;padding:12px;background:#FEF2F2;border:1px solid #FECACA;border-left:4px solid #DC2626;font-size:11px;">
-          <div style="font-weight:700;color:#991B1B;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;">
-            <span>🤖 AI CONSTRAINT ADVISORY · FROZEN HORIZON COLLISION</span>
-            <span style="font-size:9px;background:#991B1B;color:#fff;padding:2px 6px;">WAIVER MANDATORY</span>
-          </div>
-          <div style="color:#7F1D1D;line-height:1.55;margin-bottom:8px;font-size:11.5px;">
-            <strong>What is happening:</strong> The stockout occurs at <strong>Week ${sig.breach_week}</strong>. Manufacturing lines are locked 4 weeks in advance for regulatory cleaning and validation. A standard factory order cannot produce medicine in time.<br/>
-            <strong>What you should do:</strong> Approving the <strong>Inter-Market Stock Transfer</strong> above bypasses the factory schedule entirely by taking finished units already in stock from Country 059! If you must force new plant production instead, authorize the emergency VP override below.
-          </div>
-          <label style="display:flex;align-items:center;gap:6px;font-weight:600;color:#991B1B;cursor:pointer;background:#FEE2E2;padding:6px 10px;border:1px solid #FCA5A5;">
-            <input type="checkbox" id="chk-frozen-waiver" style="cursor:pointer;" ${approved ? 'checked disabled' : ''}>
-            <span>Authorize Emergency Manufacturing Schedule Override (VP Production Authorization)</span>
-          </label>
-        </div>
-      ` : `
-        <div style="margin-top:12px;padding:10px 12px;background:#F0FDF4;border:1px solid #BBF7D0;border-left:4px solid #16A34A;font-size:11.5px;color:#166534;">
-          <strong>🤖 AI Constraint Status:</strong> Breach horizon is outside the 4-week frozen window. Standard production scheduling can fulfill this order without emergency waivers.
-        </div>
-      `}
-    </div>
-  `;
-
-  // Section 6.9 Cold-Start / New Product Launch Protocol
   const coldStart = sig.cold_start || {};
-  const coldStartHtml = sig.is_cold_start ? `
-    <div class="cold-start-box">
-      <div class="cold-start-header">
-        <div class="detail-section-label" style="margin-bottom:0">COLD-START / NEW PRODUCT LAUNCH PROTOCOL (SECTION 6.9)</div>
-        <span class="cold-start-badge">🚀 NEW LAUNCH PROFILE</span>
-      </div>
-      <div class="cold-start-grid">
-        <div class="cold-start-item">
-          <span class="cold-start-k">COMMERCIAL LAUNCH STAGE</span>
-          <span class="cold-start-v">${coldStart.launch_phase || 'Phase II Rollout (Month 2)'}</span>
-        </div>
-        <div class="cold-start-item">
-          <span class="cold-start-k">ANALOGUE REFERENCE MARKET</span>
-          <span class="cold-start-v">${coldStart.analogue_market || 'Country 045 (Beacon 2024 Analogue)'}</span>
-        </div>
-        <div class="cold-start-item">
-          <span class="cold-start-k">UNCERTAINTY BUFFER</span>
-          <span class="cold-start-v">${coldStart.demand_uncertainty_buffer || '90-Day Pre-Build Stock Buffer'}</span>
-        </div>
-      </div>
-      <div class="cold-start-desc">
-        ${coldStart.guidance || '52-week rolling statistical safety stock is bypassed due to limited historical series (<12 weeks). Replenishment targets are driven by analogue adoption curves.'}
-      </div>
-    </div>
-  ` : '';
-
-  // Item 1: Plain-English AI Supply Chain Agent Diagnostic & Action Copilot
+  const staleParam = sig.stale_parameter || {};
+  const isStale = Boolean(sig.is_stale_parameter || staleParam.is_stale);
+  const lat = sig.predictive_latency || {};
+  const isLate = Boolean(lat.is_arrival_late);
+  const fc = sig.freight_comparison || {};
+  const coi = sig.cost_of_inaction || {};
   const aiAnalysis = sig.ai_agent_analysis || {};
   const plan = sig.ai_action_plan || {};
+
   const whatIsHappening = plan.what_is_happening || (sig.ai_narrative || '').split('🎯')[0].replace(/🤖\s*What's Happening:\s*/i, '').trim() ||
     `Inventory of ${sig.brand} in ${countryDisplayName} will breach safe stock levels in Week ${sig.breach_week}. Standard cargo shipping takes ${leadWks} weeks, which is too slow to arrive before stock runs out.`;
   const whyItMatters = plan.why_it_matters || (sig.ai_narrative || '').split('⚠️')[1] ||
-    `If no action is taken, ${Number(sig.lost_lifelong_patients || 0).toLocaleString()} chronic patients who depend on this daily treatment will face stockouts, risking ₹${((sig.capital_at_risk_inr || 0)/1e7).toFixed(2)} Cr in unfulfilled therapy courses.`;
+    `If no action is taken, ${Number(sig.lost_lifelong_patients || 0).toLocaleString()} chronic patients face therapy disruption, risking ₹${((sig.capital_at_risk_inr || 0)/1e7).toFixed(2)} Cr.`;
   const whatYouShouldDo = plan.what_you_should_do || (sig.action_type === 'ACTIVE CRISIS'
     ? (transfer.has_transfer
-        ? `Approve emergency air transfer of ${Number(transfer.transfer_qty || sig.recommended_qty_units || 0).toLocaleString()} units from ${transfer.donor_country || 'surplus donor market'} (arrives in 4 days).`
+        ? `Approve emergency air transfer of ${Number(transfer.transfer_qty || sig.recommended_qty_units || 0).toLocaleString()} units from ${transfer.donor_country || 'donor market'} (arrives in 4 days).`
         : `Approve emergency air expedite for ${Number(sig.recommended_qty_units || 0).toLocaleString()} units to pre-empt stockout cliff.`)
     : (sig.action_type === 'EXCESS HOLDING'
         ? `Do NOT issue new purchase orders. Defer planned inbound deliveries and make surplus units available for donor transfer.`
@@ -601,109 +178,492 @@ export function openDetailDrawer(sig, approvedSignals) {
   const eli5 = plan.eli5 ||
     `We are about to run out of ${sig.brand} in ${countryDisplayName} in Week ${sig.breach_week}. Regular ships take ${leadWks} weeks which is too slow, so we need to fly units in by air right now to protect our patients.`;
 
-  const aiAgentDiagnosticHtml = `
-    <div class="ai-agent-box" id="ai-agent-box">
-      <!-- Copilot Header -->
-      <div class="ai-copilot-header">
-        <div class="ai-copilot-title-group">
-          <span class="ai-copilot-avatar">🤖</span>
-          <div>
-            <div class="ai-copilot-main-title">AI SUPPLY CHAIN COPILOT · ACTION DIRECTIVE</div>
-            <div class="ai-copilot-subtitle">Plain-English Diagnostic &amp; Step-by-Step Resolution Plan</div>
-          </div>
+  // ── MOVE 1 & 2 & 5: PERSISTENT DECISION HEADER ────────────────────────
+  let slaChipHtml = '';
+  if (sla.isCritical) {
+    if (sla.status === 'RESOLVED') {
+      slaChipHtml = '<span class="decision-sla-chip decision-sla-chip--resolved">[OK] GxP COMPLIANT · RESOLVED</span>';
+    } else if (sla.status === 'SNOOZED') {
+      slaChipHtml = `<span class="decision-sla-chip decision-sla-chip--snoozed">[HOLD] SNOOZED (${wf.snooze.weeks}W)</span>`;
+    } else if (sla.status === 'ACKNOWLEDGED') {
+      slaChipHtml = `<span class="decision-sla-chip">[ACTIVE] OWNER: ${esc(wf.owner)}</span>`;
+    } else {
+      slaChipHtml = `<span class="decision-sla-chip decision-sla-chip--urgent">[!] 24H SLA: ${sla.hoursLeft}h ${sla.minsLeft}m LEFT</span>`;
+    }
+  } else {
+    slaChipHtml = '<span class="decision-sla-chip">[OK] CADENCE NOMINAL</span>';
+  }
+
+  const headlineText = isLateForSea
+    ? `Breaches safety floor WEEK ${sig.breach_week} · sea freight needs ${leadWks} WEEKS · arrives ${Math.max(1, leadWks - sig.breach_week)} WEEKS LATE`
+    : `Breaches safety floor WEEK ${sig.breach_week} · replenishment transit ${leadWks} WEEKS · on cadence`;
+
+  const capSavedCr = ((sig.capital_at_risk_inr || 0) / 1e7).toFixed(2);
+  const directiveLine = transfer.has_transfer
+    ? `AIR CHARTER ${Number(transfer.transfer_qty).toLocaleString()} UNITS · arrives in 4d · protects ₹${capSavedCr} Cr · ROI ${econ.transfer_roi_ratio || 10.4}×`
+    : (sig.action_type === 'EXCESS HOLDING'
+        ? `DEFER INBOUND SUPPLY · surplus capacity available · protects ₹${capSavedCr} Cr capital`
+        : `EXPEDITE ${Number(sig.recommended_qty_units || 0).toLocaleString()} UNITS · protects ₹${capSavedCr} Cr · OTIF ${(sig.otif_pct !== undefined ? sig.otif_pct : 98.5)}%`);
+
+  const decisionHeaderHtml = `
+    <div class="drawer-decision-header" id="drawer-decision-header">
+      <div class="decision-meta-row">
+        <div class="decision-sku-ident">
+          <span class="badge ${badge.cls}">[ ${badge.label} ]</span>
+          <span>${esc(countryDisplayName).toUpperCase()} · ${esc(sig.brand).toUpperCase()} · PRS ${(sig.prs_score || 88.5).toFixed(1)}</span>
         </div>
-        <div class="ai-copilot-badges">
-          <button class="btn-ai-toggle-eli5" id="btn-toggle-eli5" type="button" title="Toggle Plain English / Non-Technical View">
-            ✨ Simple English Mode
-          </button>
-          <span class="ai-pill-badge">NATURAL LANGUAGE AI</span>
-          <span class="ai-confidence-badge">${Math.round((aiAnalysis.confidence_score || 0.98) * 100)}% CONFIDENCE</span>
+        ${slaChipHtml}
+      </div>
+
+      <div class="decision-headline ${isLateForSea ? 'decision-headline-cliff' : ''}">
+        ${headlineText}
+      </div>
+
+      <!-- Point 5: freight_callout guaranteed rendered in Decision Header -->
+      <div class="decision-directive-quote">
+        &ldquo;${esc(freightCallout)}&rdquo;
+      </div>
+
+      <div class="decision-metrics-bar">
+        <span>→ <strong>${directiveLine}</strong></span>
+      </div>
+    </div>
+  `;
+
+  // ── 4 TABS NAVIGATION BAR ─────────────────────────────────────────────
+  const tabsBarHtml = `
+    <div class="drawer-tabs-bar" id="drawer-tabs-bar">
+      <button class="drawer-tab-btn is-active" data-tab="evidence" type="button">EVIDENCE</button>
+      <button class="drawer-tab-btn" data-tab="impact" type="button">IMPACT</button>
+      <button class="drawer-tab-btn" data-tab="logistics" type="button">LOGISTICS</button>
+      <button class="drawer-tab-btn" data-tab="governance" type="button">GOVERNANCE</button>
+    </div>
+  `;
+
+  // ── PANE 1: EVIDENCE (DEFAULT) ─────────────────────────────────────────
+  const evidencePaneHtml = `
+    <div class="tab-pane is-active" id="pane-evidence">
+      <div>
+        <div class="detail-section-label">[ 52-WEEK INVENTORY TRAJECTORY &amp; DEFICIT CLIFF ]</div>
+        <div class="chart-container"><canvas id="detail-chart"></canvas></div>
+      </div>
+
+      <div>
+        <div class="detail-section-label">[ ROOT CAUSE ATTRIBUTION ]</div>
+        <div class="rc-bar-row">
+          <div class="rc-bar-header"><span class="rc-bar-label">SUPPLY DEFICIT</span><span class="rc-bar-val tabular-nums">${sd}%</span></div>
+          <div class="rc-track"><div class="rc-fill" style="width:${sd}%;background:var(--crisis-text)"></div></div>
+        </div>
+        <div class="rc-bar-row">
+          <div class="rc-bar-header"><span class="rc-bar-label">DEMAND SURGE</span><span class="rc-bar-val tabular-nums">${ds}%</span></div>
+          <div class="rc-track"><div class="rc-fill" style="width:${ds}%;background:var(--ink)"></div></div>
+        </div>
+        <div class="rc-bar-row">
+          <div class="rc-bar-header"><span class="rc-bar-label">FLOOR SHOCK</span><span class="rc-bar-val tabular-nums">${fs}%</span></div>
+          <div class="rc-track"><div class="rc-fill" style="width:${fs}%;background:var(--muted)"></div></div>
+        </div>
+        <div style="font-size:11px;color:var(--muted);line-height:1.5;margin-top:4px;">
+          ${sd >= 50 ? `Primary driver (${sd}%) is an unexpected upstream factory supply shortfall. ` : ''}
+          ${ds >= 20 ? `Compounding factor: ${ds}% demand surge across regional clinics. ` : ''}
+          ${fs >= 20 ? `Safety stock floor shock (+${fs}%) raised reserve requirements.` : ''}
         </div>
       </div>
 
-      <!-- Action Directive Banner -->
-      <div class="ai-action-directive-banner">
-        <div class="ai-directive-icon">🎯</div>
-        <div class="ai-directive-content">
-          <div class="ai-directive-tag">YOUR RECOMMENDED NEXT STEP</div>
-          <div class="ai-directive-headline">${esc(whatYouShouldDo)}</div>
-          <div class="ai-directive-sub">${esc(actionSteps[0] || '')}</div>
+      <div>
+        <div class="detail-section-label">[ SUPPLY PIPELINE CERTAINTY ]</div>
+        <div class="rc-bar-row">
+          <div class="rc-bar-header"><span class="rc-bar-label">CONFIRMED PO COMMITMENT</span><span class="rc-bar-val tabular-nums">${cert}%</span></div>
+          <div class="rc-track"><div class="rc-fill" style="width:${cert}%;background:var(--ink)"></div></div>
         </div>
-        <button class="ai-quick-action-btn ${approved ? 'ai-quick-action-btn--approved' : ''}" id="btn-ai-quick-act" type="button">
-          ${approved ? '✓ ACTION APPROVED &amp; SIGNED' : '⚡ EXECUTE THIS NOW'}
-        </button>
       </div>
 
-      <!-- The 3 Core Pillars -->
-      <div class="ai-three-pillars">
-        <!-- Pillar 1: Situation -->
-        <div class="ai-pillar-card ai-pillar-situation">
-          <div class="ai-pillar-header">
-            <span class="ai-pillar-badge" style="background:#EFF6FF;color:#1D4ED8;border-color:#BFDBFE;">1. IN PLAIN ENGLISH</span>
-            <span class="ai-pillar-title">What is happening?</span>
+      <!-- Predictive Replenishment Latency Track -->
+      <div class="latency-timeline-box">
+        <div class="latency-timeline-header">
+          <div class="detail-section-label" style="margin-bottom:0">PREDICTIVE REPLENISHMENT LATENCY &amp; STOCKOUT PRE-EMPTION</div>
+          <span class="latency-status-tag ${isLate ? 'latency-status-tag--cliff' : 'latency-status-tag--ok'}">
+            ${isLate ? `[ ! ] LATENCY DEFICIT: +${lat.latency_gap_weeks || 2}W STOCKOUT` : '✓ PRE-EMPTIVE ARRIVAL'}
+          </span>
+        </div>
+        <div class="latency-visual-track">
+          <div class="latency-step latency-step--dispatch">
+            <span class="latency-step-dot"></span>
+            <span class="latency-step-wk">W1</span>
+            <span class="latency-step-lbl">ORDER DISPATCH</span>
           </div>
-          <div class="ai-pillar-body" id="ai-text-situation">
-            ${esc(whatIsHappening)}
+          <div class="latency-step latency-step--breach">
+            <span class="latency-step-dot latency-step-dot--breach"></span>
+            <span class="latency-step-wk">W${sig.breach_week}</span>
+            <span class="latency-step-lbl">STOCKOUT BREACH</span>
+          </div>
+          <div class="latency-step latency-step--expedite">
+            <span class="latency-step-dot latency-step-dot--expedite"></span>
+            <span class="latency-step-wk">W${lat.expedited_arrival_week || 2}</span>
+            <span class="latency-step-lbl">AIR EXPEDITE ARRIVAL</span>
+          </div>
+          <div class="latency-step ${isLate ? 'latency-step--late' : 'latency-step--ok'}">
+            <span class="latency-step-dot ${isLate ? 'latency-step-dot--late' : 'latency-step-dot--ok'}"></span>
+            <span class="latency-step-wk">W${lat.standard_arrival_week || (sig.breach_week + 2)}</span>
+            <span class="latency-step-lbl">STANDARD PO ARRIVAL</span>
+          </div>
+        </div>
+        <div class="latency-narrative-text">
+          ${esc(lat.narrative || `Standard replenishment lead time causes stockout breach. Air freight or inter-market transfer is required to bridge the gap.`)}
+        </div>
+      </div>
+
+      ${isStale ? `
+        <div class="stale-param-alert-box" id="stale-param-alert">
+          <div class="stale-param-top">
+            <span class="stale-alert-badge">[ ! ] STALE MASTER DATA DETECTED · SECTION 6.4</span>
+            <span class="stale-alert-tag">DEMAND SHIFT ${staleParam.demand_shift_pct > 0 ? '+' : ''}${staleParam.demand_shift_pct}%</span>
+          </div>
+          <div class="stale-param-title">Safety Stock Days Static at ${staleParam.current_ssd || 42}d with Significant Demand Velocity Drift</div>
+          <p class="stale-param-desc">
+            Parameter SSD frozen in SAP/OMP while observed demand shifted by ${staleParam.demand_shift_pct > 0 ? '+' : ''}${staleParam.demand_shift_pct}%. Unlocks capital when aligned.
+          </p>
+        </div>
+      ` : ''}
+
+      ${sig.is_cold_start ? `
+        <div class="cold-start-box">
+          <div class="cold-start-header">
+            <div class="detail-section-label" style="margin-bottom:0">COLD-START / NEW PRODUCT LAUNCH PROTOCOL (SECTION 6.9)</div>
+            <span class="cold-start-badge">[LAUNCH] NEW LAUNCH PROFILE</span>
+          </div>
+          <div class="cold-start-grid">
+            <div class="cold-start-item"><span class="cold-start-k">COMMERCIAL LAUNCH STAGE</span><span class="cold-start-v">${esc(coldStart.launch_phase || 'Phase II Rollout')}</span></div>
+            <div class="cold-start-item"><span class="cold-start-k">ANALOGUE MARKET</span><span class="cold-start-v">${esc(coldStart.analogue_market || 'Country 045')}</span></div>
+            <div class="cold-start-item"><span class="cold-start-k">UNCERTAINTY BUFFER</span><span class="cold-start-v">${esc(coldStart.demand_uncertainty_buffer || '90-Day Pre-Build')}</span></div>
+          </div>
+        </div>
+      ` : ''}
+    </div>
+  `;
+
+  // ── PANE 2: IMPACT ────────────────────────────────────────────────────
+  const patientImpactHtml = `
+    <div class="tab-pane" id="pane-impact">
+      <div class="patient-impact-box" id="patient-impact-box">
+        <div class="patient-impact-header">
+          <div class="patient-impact-title">
+            <span class="patient-impact-icon">[PATIENT]</span>
+            <span class="detail-section-label" style="margin-bottom:0">PATIENT HEALTH &amp; LIFELONG SUBSCRIBER IMPACT</span>
+          </div>
+          <span class="patient-impact-badge">CHRONIC THERAPY RISK</span>
+        </div>
+        <div class="patient-impact-grid">
+          <div class="patient-stat-item">
+            <span class="patient-stat-k">LIFELONG PATIENTS AT RISK</span>
+            <span class="patient-stat-v tabular-nums" style="color:var(--crisis-text)">${Number(sig.lost_lifelong_patients || 0).toLocaleString('en-IN')} PATIENTS</span>
+            <span class="patient-stat-sub">Lifelong therapy course (52-week basis)</span>
+          </div>
+          <div class="patient-stat-item">
+            <span class="patient-stat-k">UNSERVED CHRONIC DOSES</span>
+            <span class="patient-stat-v tabular-nums">${Number(sig.lost_patient_demand_units || 0).toLocaleString('en-IN')} UNITS</span>
+            <span class="patient-stat-sub">Deficit during breach horizon</span>
+          </div>
+          <div class="patient-stat-item">
+            <span class="patient-stat-k">IRREVERSIBLE REVENUE CHURN</span>
+            <span class="patient-stat-v tabular-nums">₹${((sig.lost_revenue_inr || 0) / 1e7).toFixed(2)} CR</span>
+            <span class="patient-stat-sub">Lost chronic subscriber value</span>
           </div>
         </div>
 
-        <!-- Pillar 2: Why it matters -->
-        <div class="ai-pillar-card ai-pillar-danger">
-          <div class="ai-pillar-header">
-            <span class="ai-pillar-badge" style="background:#FEF2F2;color:#991B1B;border-color:#FECACA;">2. THE CONSEQUENCE</span>
-            <span class="ai-pillar-title">Why does this matter?</span>
-          </div>
-          <div class="ai-pillar-body" id="ai-text-why">
-            ${esc(whyItMatters)}
-          </div>
+        <!-- Unique Causal Reasoning as clean body text (Point 3) -->
+        <div style="font-size:12px;color:var(--ink);line-height:1.6;margin:12px 0;padding:10px 12px;background:var(--surface-alt);border:1px solid var(--border);">
+          <strong>Chronic Therapy Invariance:</strong> In diabetes and obesity care, patients cannot miss weekly injections. 
+          If shelves go empty, doctors permanently switch <strong>${Number(sig.lost_lifelong_patients || 0).toLocaleString('en-IN')} chronic patients</strong> to competing therapies. 
+          Because chronic patients stay on the same brand for life, so losing them today wipes out recurring annual revenue.
         </div>
 
-        <!-- Pillar 3: Exactly what to do -->
-        <div class="ai-pillar-card ai-pillar-action">
-          <div class="ai-pillar-header">
-            <span class="ai-pillar-badge" style="background:#ECFDF5;color:#047857;border-color:#A7F3D0;">3. YOUR ACTION PLAN</span>
-            <span class="ai-pillar-title">What should I do?</span>
+        <div style="font-size:11.5px;color:var(--crisis-text);line-height:1.5;">
+          <strong>Cost of Inaction within 24h SLA:</strong> Inaction causes <strong>${coi.unmitigated_stockout_weeks || 1} week(s) of physical stockout</strong>, <strong>₹${capSavedCr} Cr</strong> in immediate non-delivery penalties, and unserved chronic doses of <strong>${Number(sig.lost_patient_demand_units || 0).toLocaleString('en-IN')} units</strong>.
+        </div>
+      </div>
+    </div>
+  `;
+
+  // ── PANE 3: LOGISTICS ─────────────────────────────────────────────────
+  const logisticsPaneHtml = `
+    <div class="tab-pane" id="pane-logistics">
+      <!-- Freight Mode Economics -->
+      <div class="freight-comp-box" id="freight-comp-box">
+        <div class="freight-comp-header">
+          <div class="freight-comp-title">
+            <span class="freight-comp-icon">[LOGISTICS]</span>
+            <span class="detail-section-label" style="margin-bottom:0">FREIGHT MODE ECONOMICS: MARITIME VS AIR CHARTER</span>
           </div>
-          <div class="ai-pillar-body" id="ai-text-action">
-            <div class="ai-steps-list">
-              ${actionSteps.map((step, sIdx) => `
-                <div class="ai-step-item">
-                  <span class="ai-step-num">${sIdx + 1}</span>
-                  <span class="ai-step-text">${esc(step.replace(/^Step \d+:\s*/, ''))}</span>
-                </div>
-              `).join('')}
+          <span class="freight-verdict-badge ${isLateForSea ? 'freight-badge--air' : 'freight-badge--sea'}">
+            ${isLateForSea ? 'PRIORITY AIR CHARTER DOMINANT' : 'SURFACE MARITIME NOMINAL'}
+          </span>
+        </div>
+        <table class="freight-comp-table">
+          <thead>
+            <tr>
+              <th>LOGISTICS MODE</th>
+              <th>TRANSIT WINDOW</th>
+              <th>UNIT FREIGHT</th>
+              <th>TOTAL FREIGHT</th>
+              <th>STATUS &amp; FEASIBILITY</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="${isLateForSea ? 'freight-row--infeasible' : 'freight-row--active'}">
+              <td><strong>[SEA] Deep-Sea / Surface Transit</strong></td>
+              <td class="tabular-nums">${fc.sea_transit_label || `${leadWks} Weeks`}</td>
+              <td class="tabular-nums">₹12 / unit</td>
+              <td class="tabular-nums">₹${Number(fc.sea_freight_cost_inr || 0).toLocaleString('en-IN')}</td>
+              <td><span class="freight-feasibility-tag ${isLateForSea ? 'feasibility--failed' : 'feasibility--ok'}">${fc.sea_feasibility || (isLateForSea ? 'TOO LATE (CLIFF BREACH)' : 'FEASIBLE')}</span></td>
+            </tr>
+            <tr class="${isLateForSea ? 'freight-row--recommended' : 'freight-row--optional'}">
+              <td><strong>[AIR] Priority Air Freight Charter</strong></td>
+              <td class="tabular-nums">${fc.air_transit_label || '1 Week (4-7 Days)'}</td>
+              <td class="tabular-nums">₹85 / unit</td>
+              <td class="tabular-nums">₹${Number(fc.air_freight_cost_inr || 0).toLocaleString('en-IN')}</td>
+              <td><span class="freight-feasibility-tag feasibility--ok">${fc.air_feasibility || 'PRE-EMPTS BREACH'}</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="freight-verdict-footer">
+          <div class="freight-verdict-metric"><span class="freight-metric-k">AIR FREIGHT PREMIUM:</span><span class="freight-metric-v tabular-nums">₹${Number((fc.air_cost_premium_inr || 0) / 1e5).toFixed(1)} Lakhs</span></div>
+          <div class="freight-verdict-metric"><span class="freight-metric-k">CAPITAL PROTECTED:</span><span class="freight-metric-v tabular-nums" style="color:var(--ok-text)">₹${capSavedCr} Cr</span></div>
+          <div class="freight-verdict-metric"><span class="freight-metric-k">EXPEDITE ROI RATIO:</span><span class="freight-metric-v tabular-nums" style="color:var(--ok-text)">${fc.expedite_roi_ratio || 10.4}×</span></div>
+        </div>
+      </div>
+
+      <!-- Inter-Market Re-Allocation Corridor -->
+      ${transfer.has_transfer ? `
+        <div class="transfer-corridor-box">
+          <div class="transfer-corridor-header">
+            <div class="detail-section-label" style="margin-bottom:0">INTER-MARKET STOCK RE-ALLOCATION CORRIDOR (SECTION 6.3)</div>
+            <span class="transfer-badge">MATCHED SURPLUS ROUTE ✓</span>
+          </div>
+          
+          <div class="transfer-visualizer">
+            <div class="transfer-node transfer-node--donor">
+              <div class="transfer-node-role">SURPLUS DONOR</div>
+              <div class="transfer-node-market">${transfer.donor_country}</div>
+              <div class="transfer-node-sub">${transfer.donor_region} · DOH ${transfer.donor_pre_doh}d</div>
+            </div>
+            <div class="transfer-arrow-block">
+              <div class="transfer-arrow-line">
+                <span class="transfer-arrow-pill">${Number(transfer.transfer_qty).toLocaleString()} UNITS</span>
+                <span class="transfer-arrow-mode">[AIR] ${transfer.transit_days}D AIR CHARTER</span>
+              </div>
+              <div class="transfer-arrow-head">▶</div>
+            </div>
+            <div class="transfer-node transfer-node--recipient">
+              <div class="transfer-node-role">ACUTE RECIPIENT</div>
+              <div class="transfer-node-market">${sig.country}</div>
+              <div class="transfer-node-sub">Breach W${sig.breach_week} · Deficit ${Number(sig.recommended_qty_units).toLocaleString()} U</div>
+            </div>
+          </div>
+
+          <div class="transfer-impact-grid">
+            <div class="transfer-impact-item">
+              <span class="transfer-impact-k">DONOR POST-TRANSFER DOH</span>
+              <span class="transfer-impact-v" style="color:var(--ok-text)">${transfer.donor_post_doh} DAYS (${(transfer.donor_post_doh / Math.max(1, transfer.donor_ssd)).toFixed(2)}× SSD)</span>
+              <span class="transfer-impact-sub">SSD floor: ${transfer.donor_ssd}d · <strong>✓ ZERO CASCADE RISK</strong> (>1.5× SSD)</span>
+            </div>
+            <div class="transfer-impact-item">
+              <span class="transfer-impact-k">STOCKOUT RESOLUTION</span>
+              <span class="transfer-impact-v" style="color:var(--ok-text)">RESTORED IN ${transfer.transit_days} DAYS</span>
+              <span class="transfer-impact-sub">Prevents clinical penalty &amp; breach</span>
+            </div>
+            <div class="transfer-impact-item">
+              <span class="transfer-impact-k">CAPITAL PRESERVED</span>
+              <span class="transfer-impact-v">₹${(transfer.capital_saved_inr / 1e7).toFixed(2)} CR</span>
+              <span class="transfer-impact-sub">${econ.transfer_roi_ratio || 10.4}x Net Capital ROI</span>
+            </div>
+          </div>
+
+          <div class="wh-capacity-box">
+            <div class="wh-capacity-header">
+              <span class="wh-capacity-title">RECIPIENT WAREHOUSE CAPACITY &amp; HEADROOM VERIFICATION</span>
+              <span class="wh-capacity-tag">${whCap.headroom_status || 'HEADROOM CONFIRMED (<90%)'}</span>
+            </div>
+            <div class="wh-bar-wrap">
+              <div class="wh-bar-track"><div class="wh-bar-fill" style="width:${whCap.recipient_utilization_pct || 83}%;background:var(--ink)"></div></div>
+              <div class="wh-bar-meta">
+                <span>Current: ${Number(whCap.recipient_current_inventory || 28400).toLocaleString()} U</span>
+                <span>Post-Transfer: <strong>${Number(whCap.recipient_post_inventory || 41574).toLocaleString()} U</strong> (${whCap.recipient_utilization_pct || 83.1}% / 50,000 U Limit)</span>
+              </div>
             </div>
           </div>
         </div>
+      ` : ''}
+
+      <!-- Manufacturing & Network Constraints (Section 6.8) -->
+      <div class="constraints-box">
+        <div class="constraints-header">
+          <div class="detail-section-label" style="margin-bottom:0">MANUFACTURING &amp; NETWORK CONSTRAINTS (SECTION 6.8)</div>
+          <span class="constraints-status-tag ${constr.in_frozen_horizon ? 'constraints-tag--locked' : 'constraints-tag--open'}">
+            ${constr.in_frozen_horizon ? '[LOCKED] INSIDE FROZEN HORIZON (W1-4)' : '[OPEN] OPEN SCHEDULING HORIZON'}
+          </span>
+        </div>
+        <div class="constraints-grid">
+          <div class="constraint-item">
+            <span class="constraint-k">FROZEN HORIZON (4 WEEKS)</span>
+            <span class="constraint-v">${constr.in_frozen_horizon ? 'LOCKED — Emergency VP Waiver / Transfer Required' : 'OPEN — Standard Plant Batch Execution'}</span>
+          </div>
+          <div class="constraint-item">
+            <span class="constraint-k">CAMPAIGN BATCH ROUNDING (MOQ: 5K)</span>
+            <span class="constraint-v tabular-nums">Raw: ${Number(sig.recommended_qty_units || 0).toLocaleString()} U → <strong>${Number(constr.constrained_roq_units || sig.recommended_qty_units || 0).toLocaleString()} U</strong></span>
+          </div>
+          <div class="constraint-item">
+            <span class="constraint-k">NETWORK ALLOCATION CAP (85%)</span>
+            <span class="constraint-v" style="color:var(--ok-text)">COMPLIANT — Non-Starvation Verified</span>
+          </div>
+        </div>
+
+        <!-- Upstream Plant Contention & Portfolio Trade-off Sub-Panel -->
+        <div class="plant-contention-box" style="margin-top:12px;padding:12px 14px;background:var(--surface-alt);border:1px solid var(--border);border-left:4px solid var(--ink);font-family:var(--font-mono);font-size:11px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="font-size:13px;">[PLANT]</span>
+              <span style="font-weight:700;color:var(--ink);letter-spacing:0.04em;">UPSTREAM PLANT LINE CONTENTION &amp; PORTFOLIO CONFLICT</span>
+            </div>
+            <span style="font-size:9.5px;font-weight:700;padding:2px 8px;color:var(--surface);background:var(--ink);">
+              ${pc.contention_level || 'ELEVATED'} CONTENTION
+            </span>
+          </div>
+
+          <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:8px;margin-bottom:10px;font-size:10.5px;">
+            <div style="background:var(--surface);padding:8px 10px;border:1px solid var(--border);">
+              <div style="color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:0.04em;">MANUFACTURING LINE</div>
+              <div style="font-weight:700;color:var(--ink);margin-top:2px;">${esc(pc.line_id || 'Shared Line 04 (Aseptic Filling)')}</div>
+              <div style="color:var(--muted);font-size:9.5px;margin-top:1px;">${esc(pc.plant_site || 'Kalundborg Site 1')}</div>
+            </div>
+            <div style="background:var(--surface);padding:8px 10px;border:1px solid var(--border);">
+              <div style="color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:0.04em;">SHARED SISTER BRAND</div>
+              <div style="font-weight:700;color:var(--ink);margin-top:2px;">${esc(pc.sister_brand || 'Brand Beacon')}</div>
+              <div style="color:var(--crisis-text);font-size:9.5px;font-weight:600;margin-top:1px;">Trade-off Collision Risk</div>
+            </div>
+            <div style="background:var(--surface);padding:8px 10px;border:1px solid var(--border);">
+              <div style="color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:0.04em;">LINE UTILIZATION &amp; CHANGEOVER</div>
+              <div style="font-weight:700;color:${(pc.line_utilization_pct || 82.5) > 90 ? 'var(--crisis-text)' : 'var(--ink)'};margin-top:2px;">${pc.line_utilization_pct || 82.5}% Capacity</div>
+              <div style="color:var(--muted);font-size:9.5px;margin-top:1px;">${pc.changeover_hours || 48}h CIP/SIP (${pc.changeover_delay_days || 2}d delay)</div>
+            </div>
+          </div>
+
+          <div style="font-size:11px;color:var(--ink);line-height:1.55;background:var(--surface);padding:9px 12px;border:1px solid var(--border);margin-bottom:6px;">
+            ${esc(pc.tradeoff_narrative || 'Line utilization under capacity ceiling with scheduled multi-brand allocation.')}
+          </div>
+          ${pc.is_correlated_upstream_shortfall ? `
+            <div style="display:flex;align-items:flex-start;gap:6px;margin-top:8px;padding:6px 10px;background:var(--crisis-bg);border-left:3px solid var(--crisis-text);font-size:10px;color:var(--crisis-text);line-height:1.45;">
+              <span style="font-weight:700;">[STATISTICAL PROXY]:</span>
+              <span>Simultaneous confirmed drop across brand families in Week ${sig.breach_week} confirms bulk upstream plant constraint (not a transit delay).</span>
+            </div>
+          ` : ''}
+        </div>
+      </div>
+    </div>
+  `;
+
+  // ── PANE 4: GOVERNANCE ────────────────────────────────────────────────
+  const governancePaneHtml = `
+    <div class="tab-pane" id="pane-governance">
+      <div class="workflow-box" id="workflow-container">
+        <div class="workflow-header">
+          <div class="detail-section-label" style="margin-bottom:0">ALERT WORKFLOW &amp; ESCALATION (SECTION 6.2)</div>
+          <span class="workflow-status-badge ${wf.owner !== 'Unassigned' ? 'workflow-status-badge--active' : ''}" id="workflow-status-badge">
+            ${wf.owner !== 'Unassigned' ? 'OWNER ASSIGNED ✓' : 'TRIAGE PENDING'}
+          </span>
+        </div>
+
+        <!-- Owner Assignment -->
+        <div class="workflow-row">
+          <div class="workflow-field-label">SUPPLY CHAIN OWNER / GOVERNANCE LEAD:</div>
+          <div class="workflow-select-wrap">
+            <select class="workflow-select" id="select-signal-owner">
+              ${OWNER_ROLES.map(r => `<option value="${r}" ${wf.owner === r ? 'selected' : ''}>${r}</option>`).join('')}
+            </select>
+            <span class="workflow-saved-pill" id="owner-saved-pill" style="display:none">SAVED ✓</span>
+          </div>
+        </div>
+
+        <!-- Snooze Area -->
+        <div id="workflow-snooze-area">
+          ${buildSnoozeHtml(wf)}
+        </div>
+
+        <!-- Planner Comments & Rationale Thread -->
+        <div class="workflow-comments-block">
+          <div class="workflow-comments-header">
+            <span class="workflow-field-label" style="margin-bottom:0">PLANNER OPERATIONAL RATIONALE &amp; AUDIT TRAIL</span>
+            <span class="workflow-count-badge tabular-nums" id="comment-count-badge">${(wf.comments || []).length} ENTRIES</span>
+          </div>
+          <div class="workflow-comments-list" id="workflow-comments-list">
+            ${buildCommentsHtml(wf.comments)}
+          </div>
+          <div class="workflow-comment-input-row">
+            <textarea class="workflow-textarea" id="input-new-comment" rows="2" placeholder="Record operational rationale (e.g. Flight capacity booked on LH Cargo for delivery)..."></textarea>
+            <button class="btn-workflow-comment" id="btn-post-comment" type="button">+ POST RATIONALE</button>
+          </div>
+        </div>
       </div>
 
-      <!-- Simple English ELI5 Box (Toggleable) -->
-      <div class="ai-eli5-callout" id="ai-eli5-callout" style="display:none;">
-        <div class="ai-eli5-header">
-          <span>💡 SIMPLE SUMMARY (PLAIN ENGLISH FOR NEW PLANNERS):</span>
+      <!-- Explicit ROQ Mathematical Line for Executive Sign-off -->
+      <div class="roq-math-callout" style="padding:10px 12px;background:var(--surface-alt);border:1px solid var(--border);font-family:var(--font-mono);font-size:11px;line-height:1.5;">
+        <div style="font-weight:700;margin-bottom:4px;display:flex;justify-content:space-between;">
+          <span>[CALC] ROQ FORMULA (WHY ${Number(sig.recommended_qty_units || 0).toLocaleString()} U?):</span>
+          <span style="font-weight:800;">MIDPOINT RESTORATION</span>
         </div>
-        <div class="ai-eli5-text">
-          ${esc(eli5)}
+        <div style="color:var(--ink);font-size:10px;">
+          <strong>ROQ</strong> = max(0, ⌈Target Midpoint (${Number(sig.midpoint_target_units || Math.round((sig.recommended_qty_units || 0) * 1.3)).toLocaleString()} U) − Projected Inv⌉
+        </div>
+        <div style="color:var(--muted);font-size:9.5px;margin-top:2px;">
+          Target Midpoint = (Safety Floor + Ceiling) / 2 = 1.5× SSD Buffer (prevents secondary breach). ${sig.capital_at_risk_inr === 0 && (sig.action_type || '').includes('EXCESS') ? '<span style="font-size:10px;color:var(--muted);font-weight:normal">(SURPLUS · DEFER INBOUND)</span>' : ''}
         </div>
       </div>
 
-      <!-- Interactive Ask AI Copilot Widget -->
-      <div class="ai-interactive-copilot-box">
-        <div class="ai-copilot-ask-header">
-          <span class="ai-copilot-ask-title">💬 ASK AI COPILOT A QUESTION:</span>
-          <span class="ai-copilot-ask-hint">Click a common question or ask your own</span>
+      <!-- Strategic Dossier -->
+      <div class="narrative-box" id="narrative-container">
+        <div class="narrative-header">
+          <div class="detail-section-label" style="margin-bottom:0;">[ EXECUTIVE STRATEGIC DOSSIER ]</div>
+          <span class="narrative-badge" id="narrative-badge-status">${approved ? 'APPROVED & SIGNED ✓' : 'SYNTHESIZED ✓'}</span>
         </div>
+        <div class="narrative-dossier" id="narrative-dossier"></div>
+      </div>
+    </div>
+  `;
+
+  // ── COLLAPSIBLE COPILOT MODULE (Exactly 1 [ AI ] box) ──────────────────
+  const copilotModuleHtml = `
+    <div class="drawer-copilot-collapsible" id="drawer-copilot-collapsible">
+      <button class="btn-copilot-toggle" id="btn-toggle-copilot" type="button">
+        <span>[ AI ] COPILOT · ASK A QUESTION OR EXPLAIN IN PLAIN ENGLISH</span>
+        <span id="copilot-toggle-arrow">▼</span>
+      </button>
+      <div class="drawer-copilot-content" id="drawer-copilot-content" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <button class="btn-ai-toggle-eli5" id="btn-toggle-eli5" type="button">
+            [A/B] Simple English Mode
+          </button>
+          <button class="ai-quick-action-btn ${approved ? 'ai-quick-action-btn--approved' : ''}" id="btn-ai-quick-act" type="button">
+            ${approved ? '✓ ACTION APPROVED &amp; SIGNED' : '[→] EXECUTE THIS NOW'}
+          </button>
+        </div>
+
+        <div class="ai-eli5-callout" id="ai-eli5-callout" style="display:none;">
+          <div class="ai-eli5-header"><span>[NOTE] SIMPLE SUMMARY (PLAIN ENGLISH FOR NEW PLANNERS):</span></div>
+          <div class="ai-eli5-text">${esc(eli5)}</div>
+        </div>
+
         <div class="ai-quick-chips">
-          <button class="ai-chip-btn" type="button" data-topic="summary_1s">⚡ Explain in 1 sentence</button>
-          <button class="ai-chip-btn" type="button" data-topic="what_to_do">🎯 Exact steps I should take</button>
-          <button class="ai-chip-btn" type="button" data-topic="why_not_sea">🚢 Why can't we use cargo ships?</button>
-          <button class="ai-chip-btn" type="button" data-topic="is_donor_safe">🛡️ Is the donor market safe?</button>
-          <button class="ai-chip-btn" type="button" data-topic="draft_email">✉️ Draft an email to my manager</button>
+          <button class="ai-chip-btn" type="button" data-topic="summary_1s">[1-LINE] Explain in 1 sentence</button>
+          <button class="ai-chip-btn" type="button" data-topic="what_to_do">[STEPS] Exact steps I should take</button>
+          <button class="ai-chip-btn" type="button" data-topic="why_not_sea">[SEA] Why can't we use cargo ships?</button>
+          <button class="ai-chip-btn" type="button" data-topic="is_donor_safe">[SAFETY] Is the donor market safe?</button>
+          <button class="ai-chip-btn" type="button" data-topic="draft_email">[MEMO] Draft an email to my manager</button>
         </div>
+
         <div class="ai-input-row">
           <input type="text" class="ai-input-field" id="input-ai-copilot" placeholder="Ask AI: e.g., What happens if I do nothing? Is there any risk?..." />
           <button class="btn-ai-send" id="btn-send-ai-copilot" type="button">ASK AI</button>
         </div>
+
         <div class="ai-response-area" id="ai-response-area" style="display:none;">
           <div class="ai-response-spinner" id="ai-response-spinner" style="display:none;">Thinking in plain English...</div>
           <div class="ai-response-content" id="ai-response-content"></div>
@@ -712,249 +672,75 @@ export function openDetailDrawer(sig, approvedSignals) {
     </div>
   `;
 
-
-  // Item 4: Patient Health & Lifelong Chronic Subscriber Impact & Explicit Cost of Inaction
-  const coi = sig.cost_of_inaction || {};
-  const patientImpactHtml = (sig.lost_lifelong_patients > 0 || sig.lost_patient_demand_units > 0 || coi.unmitigated_stockout_weeks > 0) ? `
-    <div class="patient-impact-box" id="patient-impact-box">
-      <div class="patient-impact-header">
-        <div class="patient-impact-title">
-          <span class="patient-impact-icon">👥</span>
-          <span class="detail-section-label" style="margin-bottom:0">PATIENT HEALTH &amp; LIFELONG SUBSCRIBER IMPACT</span>
-        </div>
-        <span class="patient-impact-badge">CHRONIC THERAPY RISK</span>
+  // ── MOVE 5: STICKY ACTION FOOTER (Flex: 0 0 auto) ─────────────────────
+  const actionFooterHtml = `
+    <div class="drawer-action-footer">
+      <div class="footer-meta-status">
+        <span>STATUS:</span>
+        <strong id="footer-status-label">${approved ? 'APPROVED &amp; GxP LOGGED ✓' : 'ACTION REQUIRED'}</strong>
       </div>
-      <div class="patient-impact-grid">
-        <div class="patient-stat-item">
-          <span class="patient-stat-k">LIFELONG PATIENTS AT RISK</span>
-          <span class="patient-stat-v tabular-nums" style="color:var(--crisis-text)">${Number(sig.lost_lifelong_patients || 0).toLocaleString('en-IN')} PATIENTS</span>
-          <span class="patient-stat-sub">Lifelong therapy course (52-week basis)</span>
-        </div>
-        <div class="patient-stat-item">
-          <span class="patient-stat-k">UNSERVED CHRONIC DOSES</span>
-          <span class="patient-stat-v tabular-nums">${Number(sig.lost_patient_demand_units || 0).toLocaleString('en-IN')} UNITS</span>
-          <span class="patient-stat-sub">Deficit during unmitigated stockout</span>
-        </div>
-        <div class="patient-stat-item">
-          <span class="patient-stat-k">IRREVERSIBLE REVENUE CHURN</span>
-          <span class="patient-stat-v tabular-nums">₹${((sig.lost_revenue_inr || 0) / 1e7).toFixed(2)} CR</span>
-          <span class="patient-stat-sub">Lost chronic subscriber value</span>
-        </div>
-      </div>
-      
-      <!-- AI Plain-English Clinical & Patient Consequence Profile -->
-      <div style="margin-top:12px;padding:12px 14px;background:#FFF5F5;border:1px solid #FECACA;border-left:4px solid #DC2626;border-radius:2px;">
-        <div style="font-family:var(--font-mono);font-size:10px;font-weight:800;color:#991B1B;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-          <span>🤖 AI CLINICAL CONFLICT · 24-HOUR CONSEQUENCE PROFILE</span>
-          <span style="background:#FEE2E2;padding:2px 6px;border:1px solid #FCA5A5;">${coi.clinical_severity || 'ACUTE THERAPY DISRUPTION'}</span>
-        </div>
-        <div style="font-size:12px;color:#7F1D1D;line-height:1.6;margin-bottom:6px;">
-          <strong>Why chronic therapy patients never return:</strong> In diabetes and obesity care, patients cannot miss weekly injections. 
-          If shelves go empty for even 2 weeks, doctors will permanently switch <strong>${Number(sig.lost_lifelong_patients || 0).toLocaleString('en-IN')} chronic patients</strong> to competing therapies. 
-          Because chronic patients stay on the same brand for life, losing them today wipes out <strong>₹${((sig.lost_revenue_inr || 0) / 1e7).toFixed(2)} Cr</strong> in recurring annual revenue.
-        </div>
-        <div style="font-size:11.5px;color:#991B1B;line-height:1.5;background:#FEF2F2;padding:6px 10px;border-left:3px solid #EF4444;">
-          <strong>Cost of Inaction within 24h SLA:</strong> Inaction causes <strong>${coi.unmitigated_stockout_weeks || 1} week(s) of physical stockout</strong>, <strong>₹${((sig.capital_at_risk_inr || 0) / 1e7).toFixed(2)} Cr</strong> in immediate non-delivery penalties, and unserved chronic doses of <strong>${Number(sig.lost_patient_demand_units || 0).toLocaleString('en-IN')} units</strong>.
-        </div>
-      </div>
-
-      <div class="patient-quote-box">
-        <span class="patient-quote-icon">&ldquo;</span>
-        <span class="patient-quote-text">In chronic diabetes and obesity therapies, patients are lifelong subscribers — an unmitigated stockout leads to treatment discontinuation and permanent churn to competitors.</span>
-      </div>
-    </div>
-  ` : '';
-
-  // Item 5: Freight Mode Cost Comparison (Sea vs Priority Air Freight)
-  const fc = sig.freight_comparison || {};
-  const freightComparisonHtml = `
-    <div class="freight-comp-box" id="freight-comp-box">
-      <div class="freight-comp-header">
-        <div class="freight-comp-title">
-          <span class="freight-comp-icon">⚖️</span>
-          <span class="detail-section-label" style="margin-bottom:0">FREIGHT MODE ECONOMICS: MARITIME VS AIR CHARTER</span>
-        </div>
-        <span class="freight-verdict-badge ${isLateForSea ? 'freight-badge--air' : 'freight-badge--sea'}">
-          ${isLateForSea ? 'PRIORITY AIR CHARTER DOMINANT' : 'SURFACE MARITIME NOMINAL'}
-        </span>
-      </div>
-      <table class="freight-comp-table">
-        <thead>
-          <tr>
-            <th>LOGISTICS MODE</th>
-            <th>TRANSIT WINDOW</th>
-            <th>UNIT FREIGHT</th>
-            <th>TOTAL FREIGHT</th>
-            <th>STATUS &amp; FEASIBILITY</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="${isLateForSea ? 'freight-row--infeasible' : 'freight-row--active'}">
-            <td><strong>🌊 Deep-Sea / Surface Transit</strong></td>
-            <td class="tabular-nums">${fc.sea_transit_label || `${leadWks} Weeks`}</td>
-            <td class="tabular-nums">₹12 / unit</td>
-            <td class="tabular-nums">₹${Number(fc.sea_freight_cost_inr || 0).toLocaleString('en-IN')}</td>
-            <td><span class="freight-feasibility-tag ${isLateForSea ? 'feasibility--failed' : 'feasibility--ok'}">${fc.sea_feasibility || (isLateForSea ? 'TOO LATE (CLIFF BREACH)' : 'FEASIBLE')}</span></td>
-          </tr>
-          <tr class="${isLateForSea ? 'freight-row--recommended' : 'freight-row--optional'}">
-            <td><strong>✈️ Priority Air Freight Charter</strong></td>
-            <td class="tabular-nums">${fc.air_transit_label || '1 Week (4-7 Days)'}</td>
-            <td class="tabular-nums">₹85 / unit</td>
-            <td class="tabular-nums">₹${Number(fc.air_freight_cost_inr || 0).toLocaleString('en-IN')}</td>
-            <td><span class="freight-feasibility-tag feasibility--ok">${fc.air_feasibility || 'PRE-EMPTS BREACH'}</span></td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="freight-verdict-footer">
-        <div class="freight-verdict-metric">
-          <span class="freight-metric-k">AIR FREIGHT PREMIUM:</span>
-          <span class="freight-metric-v tabular-nums">₹${Number((fc.air_cost_premium_inr || 0) / 1e5).toFixed(1)} Lakhs</span>
-        </div>
-        <div class="freight-verdict-metric">
-          <span class="freight-metric-k">CAPITAL PROTECTED:</span>
-          <span class="freight-metric-v tabular-nums" style="color:var(--ok-text)">₹${Number((sig.capital_at_risk_inr || 0) / 1e7).toFixed(2)} Cr</span>
-        </div>
-        <div class="freight-verdict-metric">
-          <span class="freight-metric-k">EXPEDITE ROI RATIO:</span>
-          <span class="freight-metric-v tabular-nums" style="color:var(--ok-text)">${fc.expedite_roi_ratio || 10.4}×</span>
-        </div>
-      </div>
-
-      <!-- AI Plain-English Freight Recommendation -->
-      <div class="ai-section-translation-box" style="margin-top:12px;padding:12px 14px;background:#EFF6FF;border:1px solid #BFDBFE;border-left:4px solid #2563EB;border-radius:2px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:6px;">
-          <div style="display:flex;align-items:center;gap:6px;">
-            <span style="font-size:13px;">🤖</span>
-            <span style="font-family:var(--font-mono);font-size:10px;font-weight:800;color:#1E40AF;letter-spacing:0.04em;">AI FREIGHT DECISION &amp; LOGIC</span>
-          </div>
-          <span style="font-family:var(--font-mono);font-size:9.5px;font-weight:700;color:#1D4ED8;background:#DBEAFE;padding:2px 6px;">${isLateForSea ? 'AIR CHARTER DOMINANT' : 'SURFACE FEASIBLE'}</span>
-        </div>
-        <div style="font-size:12px;color:#1E3A8A;line-height:1.6;">
-          ${isLateForSea ? `
-            <strong>Why sea freight is impossible:</strong> Cargo ships take <strong>${leadWks} weeks (252 days)</strong> to arrive. Since inventory breaches at <strong>Week ${sig.breach_week}</strong>, standard ships arrive <strong>${Math.max(1, leadWks - sig.breach_week)} weeks too late</strong> when shelves are already bare.<br/>
-            <strong>Why air freight is the right choice:</strong> Priority air charter costs an extra <strong>₹${Number((fc.air_cost_premium_inr || 0) / 1e5).toFixed(1)} Lakhs</strong>, but arrives in <strong>4–7 days</strong> and protects <strong>₹${Number((sig.capital_at_risk_inr || 0) / 1e7).toFixed(2)} Cr</strong> of inventory.<br/>
-            <strong>Return on Investment:</strong> Every ₹1 spent on air freight returns <strong>₹${fc.expedite_roi_ratio || 20.50}</strong> in preserved capital (<strong>${fc.expedite_roi_ratio || 20.5}× ROI</strong>).
-          ` : `
-            <strong>Why surface transit works:</strong> Sea transit arrives well ahead of the breach window. Standard maritime replenishment is financially optimal.
-          `}
-        </div>
+      <div class="footer-actions-group">
+        <button class="btn-transfer-execute ${approved ? 'approval-btn--approved' : ''}" id="btn-execute-transfer" ${approved ? 'disabled' : ''} style="${transfer.has_transfer ? '' : 'display:none;'}">
+          ${approved ? '■ TRANSFER APPROVED — GxP LOGGED' : `[→] EXECUTE INTER-MARKET STOCK TRANSFER (${Number(transfer.transfer_qty || 0).toLocaleString()} UNITS)`}
+        </button>
+        <button class="approval-btn ${approved ? 'approval-btn--approved' : ''}" id="btn-approve" ${approved ? 'disabled' : ''}>
+          ${approved ? '■ ORDER APPROVED — GxP LOGGED' : btnLabel}
+        </button>
       </div>
     </div>
   `;
 
+  // ── POINT 1: RENDER ALL 4 PANES AT OPEN (NO CONDITIONAL RE-RENDERS) ───
   body.innerHTML = `
-    <div class="drawer-layout-grid">
-      <div class="drawer-column-left">
-        ${slaBannerHtml}
-        ${cliffBannerHtml}
-        <div>
-          <div class="detail-section-label">[ 52-WEEK INVENTORY TRAJECTORY &amp; DEFICIT CLIFF ]</div>
-          <div class="chart-container"><canvas id="detail-chart"></canvas></div>
-        </div>
-        ${aiAgentDiagnosticHtml}
-        <div>
-          <div class="detail-section-label">[ ROOT CAUSE ATTRIBUTION ]</div>
-          <div class="rc-bar-row">
-            <div class="rc-bar-header"><span class="rc-bar-label">SUPPLY DEFICIT</span><span class="rc-bar-val tabular-nums">${sd}%</span></div>
-            <div class="rc-track"><div class="rc-fill" style="width:${sd}%;background:var(--crisis-text)"></div></div>
-          </div>
-          <div class="rc-bar-row">
-            <div class="rc-bar-header"><span class="rc-bar-label">DEMAND SURGE</span><span class="rc-bar-val tabular-nums">${ds}%</span></div>
-            <div class="rc-track"><div class="rc-fill" style="width:${ds}%;background:var(--warn-text)"></div></div>
-          </div>
-          <div class="rc-bar-row">
-            <div class="rc-bar-header"><span class="rc-bar-label">FLOOR SHOCK</span><span class="rc-bar-val tabular-nums">${fs}%</span></div>
-            <div class="rc-track"><div class="rc-fill" style="width:${fs}%;background:#2563EB"></div></div>
-          </div>
-          <div class="ai-section-translation-box" style="margin-top:8px;padding:8px 10px;background:#F8FAFC;border:1px solid #E2E8F0;border-left:3px solid #6366F1;border-radius:2px;">
-            <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px;">
-              <span style="font-size:12px;">🤖</span>
-              <span style="font-family:var(--font-mono);font-size:9.5px;font-weight:800;color:#4338CA;letter-spacing:0.04em;">AI ROOT CAUSE DIAGNOSIS</span>
-            </div>
-            <div style="font-size:11px;color:#312E81;line-height:1.5;">
-              ${sd >= 50 ? `The primary driver (<strong>${sd}%</strong>) is an unexpected <strong>upstream factory supply shortfall</strong> (delayed shipments from manufacturing). ` : ''}
-              ${ds >= 20 ? `Compounding this is a <strong>${ds}% surge in patient prescriptions</strong> across regional clinics. ` : ''}
-              ${fs >= 20 ? `A recent upward adjustment in the safety stock floor (<strong>${fs}%</strong>) also raised the minimum reserve requirement. ` : ''}
-              ${(sd < 50 && ds < 20 && fs < 20) ? `Multiple converging factors (supply delays, demand shift, and floor requirements) created this corridor imbalance.` : ''}
-            </div>
-          </div>
-        </div>
-        <div>
-          <div class="detail-section-label">[ SUPPLY PIPELINE CERTAINTY ]</div>
-          <div class="rc-bar-row">
-            <div class="rc-bar-header"><span class="rc-bar-label">CONFIRMED PO COMMITMENT</span><span class="rc-bar-val tabular-nums">${cert}%</span></div>
-            <div class="rc-track"><div class="rc-fill" style="width:${cert}%;background:#2563EB"></div></div>
-          </div>
-        </div>
-        ${staleAlertHtml}
-        ${coldStartHtml}
-        ${latencyTimelineHtml}
-      </div>
-
-      <div class="drawer-column-right">
-        <!-- Explicit ROQ Mathematical Line for Executive Sign-off -->
-        <div class="roq-math-callout" style="margin-bottom:10px;padding:9px 12px;background:#F8FAFC;border:1px solid #E2E8F0;border-left:3px solid #0072CE;font-family:var(--font-mono);font-size:10.5px;line-height:1.5;">
-          <div style="font-weight:700;color:#0F172A;margin-bottom:3px;display:flex;justify-content:space-between;align-items:center;">
-            <span>📐 ROQ FORMULA (WHY ${Number(sig.recommended_qty_units || 0).toLocaleString()} U?):</span>
-            <span style="color:#0072CE;font-weight:800;">MIDPOINT RESTORATION</span>
-          </div>
-          <div style="color:#334155;font-size:10px;">
-            <strong>ROQ</strong> = max(0, ⌈Target Midpoint (${Number(sig.midpoint_target_units || Math.round((sig.recommended_qty_units || 0) * 1.3)).toLocaleString()} U) − Projected Inv (${Math.max(0, Math.round((sig.midpoint_target_units || (sig.recommended_qty_units * 1.3)) - (sig.recommended_qty_units || 0))).toLocaleString()} U)⌉
-          </div>
-          <div style="color:#64748B;font-size:9.5px;margin-top:2px;">
-            Target = (Safety Floor + Ceiling) / 2 = 1.5× SSD Buffer · Prevents secondary breach
-          </div>
-        </div>
-
-        <div>
-          <button class="approval-btn ${approved ? 'approval-btn--approved' : ''}" id="btn-approve"
-            ${approved ? 'disabled' : ''}>
-            ${approved ? '■ ORDER APPROVED — GxP LOGGED' : btnLabel}
-          </button>
-        </div>
-        <div>
-          <div class="detail-section-label">[ SIGNAL METADATA ]</div>
-          <div class="detail-meta-grid">
-            <div class="detail-meta-item"><span class="detail-meta-key">ACTION</span><span class="badge ${badge.cls}" style="display:inline-block;margin-top:2px">${badge.label}</span></div>
-            <div class="detail-meta-item"><span class="detail-meta-key">BREACH HORIZON</span><span class="detail-meta-val" style="color:var(--crisis-text)">WEEK ${sig.breach_week}</span></div>
-            <div class="detail-meta-item"><span class="detail-meta-key">MARKET LEAD TIME</span><span class="detail-meta-val tabular-nums" style="color:${isLateForSea ? 'var(--crisis-text)' : 'inherit'}">${leadWks} WEEKS (${modeName.split(' ')[0]})</span></div>
-            <div class="detail-meta-item"><span class="detail-meta-key">RECOMMENDED QTY</span><span class="detail-meta-val tabular-nums">${Number(sig.recommended_qty_units || 0).toLocaleString('en-IN')} UNITS ${sig.recommended_qty_units === 0 && (sig.action_type || '').includes('EXCESS') ? '<span style="font-size:10px;color:var(--muted);font-weight:normal">(SURPLUS)</span>' : ''}</span></div>
-            <div class="detail-meta-item"><span class="detail-meta-key">CAPITAL AT RISK</span><span class="detail-meta-val tabular-nums">₹${Number(sig.capital_at_risk_inr || 0).toLocaleString('en-IN')} ${sig.capital_at_risk_inr === 0 && (sig.action_type || '').includes('EXCESS') ? '<span style="font-size:10px;color:var(--muted);font-weight:normal">(SURPLUS · DEFER INBOUND)</span>' : ''}</span></div>
-            <div class="detail-meta-item"><span class="detail-meta-key">52W OTIF / FULFILLMENT</span><span class="detail-meta-val tabular-nums" style="color:${(sig.otif_pct !== undefined ? sig.otif_pct : 98.5) >= 95 ? 'var(--ok-text)' : 'var(--crisis-text)'}">${sig.otif_pct !== undefined ? sig.otif_pct : 98.5}% (SLA: 95.0%)</span></div>
-          </div>
-          <!-- AI Plain-English Metadata Briefing -->
-          <div class="ai-section-translation-box" style="margin-top:10px;padding:10px 12px;background:#F8FAFC;border:1px solid #E2E8F0;border-left:4px solid #3B82F6;border-radius:2px;">
-            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
-              <span style="font-size:13px;">🤖</span>
-              <span style="font-family:var(--font-mono);font-size:10px;font-weight:800;color:#1E40AF;letter-spacing:0.04em;">AI PLAIN-ENGLISH METADATA BRIEFING</span>
-            </div>
-            <div style="font-size:11.5px;color:#1E293B;line-height:1.55;">
-              <strong>Summary:</strong> ${sig.product} in ${sig.country} will run out of stock in <strong>Week ${sig.breach_week}</strong>. Standard ocean shipping takes <strong>${leadWks} weeks</strong>—meaning normal ships arrive <strong>${Math.max(1, leadWks - sig.breach_week)} weeks too late</strong>. Immediate action is needed to deliver <strong>${Number(sig.recommended_qty_units || 0).toLocaleString()} units</strong> to protect <strong>₹${Number((sig.capital_at_risk_inr || 0) / 1e7).toFixed(2)} Cr</strong> and maintain our 95%+ OTIF fulfillment rate.
-            </div>
-          </div>
-        </div>
-        ${patientImpactHtml}
-        ${freightComparisonHtml}
-        ${transferCardHtml}
-        ${constraintsHtml}
-        ${workflowSectionHtml}
-        <div class="narrative-box" id="narrative-container">
-          <div class="narrative-header">
-            <div style="display:flex;align-items:center;gap:6px;">
-              <span style="font-size:13px;">🤖</span>
-              <div class="detail-section-label" style="margin-bottom:0;">[ AI EXECUTIVE STRATEGIC DOSSIER ]</div>
-            </div>
-            <span class="narrative-badge" id="narrative-badge-status">${approved ? 'APPROVED & SIGNED ✓' : 'SYNTHESIZED ✓'}</span>
-          </div>
-          <div class="narrative-dossier" id="narrative-dossier"></div>
-        </div>
-      </div>
+    ${decisionHeaderHtml}
+    ${tabsBarHtml}
+    <div class="drawer-panes-wrapper" id="drawer-panes-wrapper">
+      ${evidencePaneHtml}
+      ${patientImpactHtml}
+      ${logisticsPaneHtml}
+      ${governancePaneHtml}
+      ${copilotModuleHtml}
     </div>
+    ${actionFooterHtml}
   `;
 
   drawer.classList.add('open');
   drawer.setAttribute('aria-hidden', 'false');
   if (overlay) overlay.classList.add('active');
+
+  // Wire Tab Navigation (toggling .is-active only)
+  const tabBtns = body.querySelectorAll('.drawer-tab-btn');
+  const panes = {
+    evidence: document.getElementById('pane-evidence'),
+    impact: document.getElementById('pane-impact'),
+    logistics: document.getElementById('pane-logistics'),
+    governance: document.getElementById('pane-governance')
+  };
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tabKey = btn.dataset.tab;
+      tabBtns.forEach(b => b.classList.toggle('is-active', b === btn));
+      Object.keys(panes).forEach(k => {
+        if (panes[k]) panes[k].classList.toggle('is-active', k === tabKey);
+      });
+      if (tabKey === 'evidence' && _chart) {
+        _chart.resize();
+      }
+    });
+  });
+
+  // Wire Collapsible Copilot Module
+  const btnToggleCopilot = document.getElementById('btn-toggle-copilot');
+  const copilotContent = document.getElementById('drawer-copilot-content');
+  const copilotArrow = document.getElementById('copilot-toggle-arrow');
+  if (btnToggleCopilot && copilotContent) {
+    btnToggleCopilot.addEventListener('click', () => {
+      const isClosed = copilotContent.style.display === 'none';
+      copilotContent.style.display = isClosed ? 'block' : 'none';
+      if (copilotArrow) copilotArrow.textContent = isClosed ? '▲' : '▼';
+    });
+  }
 
   // Wire Fullscreen Takeover Button
   const btnFs = document.getElementById('btn-toggle-fullscreen');
@@ -965,6 +751,7 @@ export function openDetailDrawer(sig, approvedSignals) {
     };
   }
 
+  // Render chart immediately (in EVIDENCE pane)
   renderChart(sig, approved);
 
   // Wire Owner Selection
@@ -1091,6 +878,9 @@ export function openDetailDrawer(sig, approvedSignals) {
 
       const badgeStatus = document.getElementById('narrative-badge-status');
       if (badgeStatus) badgeStatus.textContent = 'APPROVED & SIGNED ✓';
+      const footerStatus = document.getElementById('footer-status-label');
+      if (footerStatus) footerStatus.textContent = 'APPROVED & GxP LOGGED ✓';
+
       if (btnApprove) {
         btnApprove.disabled = true;
         btnApprove.textContent = '■ ORDER APPROVED — GxP LOGGED';
@@ -1106,7 +896,7 @@ export function openDetailDrawer(sig, approvedSignals) {
     btnToggleEli5.addEventListener('click', () => {
       const isHidden = eli5Callout.style.display === 'none';
       eli5Callout.style.display = isHidden ? 'block' : 'none';
-      btnToggleEli5.textContent = isHidden ? '✕ Hide Simple English' : '✨ Simple English Mode';
+      btnToggleEli5.textContent = isHidden ? '✕ Hide Simple English' : '[A/B] Simple English Mode';
     });
   }
 
@@ -1156,7 +946,7 @@ export function openDetailDrawer(sig, approvedSignals) {
         respContent.innerHTML = `
           <div class="ai-answer-card">
             <div class="ai-answer-header">
-              <span class="ai-answer-model">🤖 ${esc(data.model || 'AI Copilot')}</span>
+              <span class="ai-answer-model">[ AI ] ${esc(data.model || 'AI Copilot')}</span>
               <span class="ai-answer-badge">PLAIN ENGLISH ANSWER</span>
             </div>
             <div class="ai-answer-body">${formatted}</div>
@@ -1171,11 +961,11 @@ export function openDetailDrawer(sig, approvedSignals) {
     }
   }
 
-  const chips = document.querySelectorAll('.ai-chip-btn');
+  const chips = body.querySelectorAll('.ai-chip-btn');
   chips.forEach(chip => {
     chip.addEventListener('click', () => {
       const topic = chip.dataset.topic;
-      const q = chip.textContent.replace(/^[^\w]+/, '');
+      const q = chip.textContent.replace(/^\[[^\]]+\]\s*/, '');
       askAiCopilot(q, topic);
     });
   });
@@ -1194,6 +984,8 @@ export function openDetailDrawer(sig, approvedSignals) {
     });
   }
 }
+
+export const openDetailDrawer = openDrawer;
 
 function generateDossier(sig) {
   const brand = sig.brand || 'Product';
@@ -1349,14 +1141,17 @@ function renderChart(sig, approved) {
       type: 'bar',
       label: 'Lost Demand (Stockout)',
       data: traj.lost_patient_demand,
-      backgroundColor: 'rgba(220, 38, 38, 0.45)',
+      backgroundColor: 'rgba(220, 38, 38, 0.25)',
       borderColor: '#DC2626',
       borderWidth: 1,
       yAxisID: 'y1',
       barPercentage: 0.8
     });
   }
-  if (approved) datasets.push(buildRecovery(sig));
+
+  if (approved) {
+    datasets.push(buildRecovery(sig));
+  }
 
   _chart = new Chart(canvas, {
     type: 'line',
@@ -1365,59 +1160,51 @@ function renderChart(sig, approved) {
       responsive: true,
       maintainAspectRatio: false,
       animation: false,
-      interaction: {
-        mode: 'index',
-        intersect: false
-      },
+      interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: {
           display: true,
-          position: 'top',
+          position: 'bottom',
           labels: {
-            boxWidth: 8,
-            font: { family: "'JetBrains Mono', monospace", size: 9 },
-            color: '#787774',
+            boxWidth: 10,
+            boxHeight: 10,
+            font: { family: '"JetBrains Mono", monospace', size: 9 },
+            color: '#6B7280',
             padding: 8
           }
         },
         tooltip: {
-          mode: 'index',
-          intersect: false,
-          backgroundColor: '#050505',
-          titleFont: { family: "'JetBrains Mono', monospace", size: 10, weight: '700' },
-          bodyFont: { family: "'JetBrains Mono', monospace", size: 9.5 },
-          padding: 10,
-          cornerRadius: 0,
-          borderColor: '#333333',
-          borderWidth: 1,
-          displayColors: true,
-          boxWidth: 6,
-          boxHeight: 6
+          titleFont: { family: '"JetBrains Mono", monospace', size: 10 },
+          bodyFont: { family: '"JetBrains Mono", monospace', size: 10 },
         }
       },
       scales: {
         x: {
-          grid: { color: '#F4F4F0' },
+          grid: { color: 'rgba(0,0,0,0.04)' },
           ticks: {
-            maxTicksLimit: window.innerWidth < 1400 ? 8 : 13,
-            font: { family: "'JetBrains Mono', monospace", size: 9 },
-            color: '#787774'
+            font: { family: '"JetBrains Mono", monospace', size: 8.5 },
+            color: '#9CA3AF',
+            maxTicksLimit: 13,
+            callback: (val, idx) => (idx % 4 === 0 ? `W${idx + 1}` : '')
           }
         },
         y: {
-          type: 'linear',
           position: 'left',
-          grid: { color: '#EAEAEA' },
+          grid: { color: 'rgba(0,0,0,0.05)' },
           ticks: {
-            font: { family: "'JetBrains Mono', monospace", size: 9 },
-            color: '#787774'
+            font: { family: '"JetBrains Mono", monospace', size: 9 },
+            color: '#6B7280',
+            callback: v => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v
           }
         },
         y1: {
-          type: 'linear',
           position: 'right',
-          display: false,
-          grid: { drawOnChartArea: false }
+          grid: { drawOnChartArea: false },
+          ticks: {
+            font: { family: '"JetBrains Mono", monospace', size: 8.5 },
+            color: '#9CA3AF',
+            callback: v => `${v}`
+          }
         }
       }
     },
@@ -1425,81 +1212,89 @@ function renderChart(sig, approved) {
   });
 }
 
-function handleApproval(sig, btn) {
-  if (!sig) return;
-  btn.disabled = true;
-  btn.classList.add('approval-btn--approved');
-  btn.textContent = '■ ORDER APPROVED — GxP LOGGED';
+function handleApproval(sig, btnApprove) {
+  btnApprove.disabled = true;
+  btnApprove.textContent = '■ ORDER APPROVED — GxP LOGGED';
+  btnApprove.classList.add('approval-btn--approved');
 
-  // Add recovery dataset
-  if (_chart) {
-    _chart.data.datasets.push(buildRecovery(sig));
-    _chart.update();
-  }
-
-  // Update dossier status & trigger typewriter animation
-  const badgeStatus = document.getElementById('narrative-badge-status');
-  if (badgeStatus) badgeStatus.textContent = 'APPROVED & SIGNED ✓';
-  const narrativeDossierEl = document.getElementById('narrative-dossier');
-  if (narrativeDossierEl) {
-    renderDossier(sig, narrativeDossierEl, true);
-  }
-
-  // Construct AuditEntry
-  const badge = getBadgeConfig(sig.action_type);
-  const id = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `act-${Date.now()}`;
+  const id = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `po-${Date.now()}`;
   const entry = {
-    id, timestamp_utc: new Date().toISOString(),
+    id,
+    timestamp_utc: new Date().toISOString(),
     row_id: sig.row_id,
     sku: `${sig.brand}|${sig.country}`,
-    action_type: badge.label,
+    action_type: sig.action_type || 'STANDARD PO',
     approved_qty: sig.recommended_qty_units || 0,
-    reason_code: 'Standard Order',
+    reason_code: 'Routine Replenishment',
     signature: 'Analyst Session — GxP Compliant',
   };
 
   window._pushAudit && window._pushAudit(entry);
   window._setApproved && window._setApproved(sig.row_id);
+
+  if (_chart) {
+    _chart.data.datasets.push(buildRecovery(sig));
+    _chart.update();
+  }
+
+  const badgeStatus = document.getElementById('narrative-badge-status');
+  if (badgeStatus) badgeStatus.textContent = 'APPROVED & SIGNED ✓';
+  const footerStatus = document.getElementById('footer-status-label');
+  if (footerStatus) footerStatus.textContent = 'APPROVED & GxP LOGGED ✓';
+
+  const btnTransfer = document.getElementById('btn-execute-transfer');
+  if (btnTransfer) {
+    btnTransfer.disabled = true;
+    btnTransfer.textContent = '■ TRANSFER APPROVED — GxP LOGGED';
+    btnTransfer.classList.add('approval-btn--approved');
+  }
 }
 
 export function toggleFullscreen(forceState) {
   const drawer = document.getElementById('drawer-detail');
-  const ind = document.getElementById('drawer-mode-indicator');
+  const indicator = document.getElementById('drawer-mode-indicator');
   const btnFs = document.getElementById('btn-toggle-fullscreen');
   if (!drawer) return false;
 
   const isFs = forceState !== undefined ? forceState : !drawer.classList.contains('drawer--fullscreen');
   if (isFs) {
     drawer.classList.add('drawer--fullscreen');
-    if (ind) ind.textContent = '[ FULLSCREEN INVESTIGATION TAKEOVER ]';
-    if (btnFs) btnFs.innerHTML = '<span class="fs-icon">🗗</span> <span class="fs-label">COLLAPSE</span>';
+    if (indicator) indicator.textContent = '[ FULLSCREEN TAKEOVER ACTIVE ]';
+    if (btnFs) btnFs.innerHTML = '<span class="fs-icon">[-]</span> <span class="fs-label">EXIT FULLSCREEN</span>';
   } else {
     drawer.classList.remove('drawer--fullscreen');
-    if (ind) ind.textContent = '[ 520PX COMPACT ]';
-    if (btnFs) btnFs.innerHTML = '<span class="fs-icon">⛶</span> <span class="fs-label">FULLSCREEN</span>';
+    if (indicator) indicator.textContent = '[ 720PX ANALYST WORKSPACE ]';
+    if (btnFs) btnFs.innerHTML = '<span class="fs-icon">[+]</span> <span class="fs-label">FULLSCREEN</span>';
   }
-  if (_chart && _chart.resize) {
-    setTimeout(() => { _chart && _chart.resize && _chart.resize(); }, 160);
+  if (_chart) {
+    setTimeout(() => _chart && _chart.resize(), 50);
   }
   return isFs;
-}
-if (typeof window !== 'undefined') {
-  window._toggleDetailFullscreen = toggleFullscreen;
 }
 
 export function closeDetailDrawer() {
   const drawer = document.getElementById('drawer-detail');
+  const overlay = document.getElementById('drawer-overlay');
   if (drawer) {
     drawer.classList.remove('open');
     drawer.classList.remove('drawer--fullscreen');
     drawer.setAttribute('aria-hidden', 'true');
-    const ind = document.getElementById('drawer-mode-indicator');
-    if (ind) ind.textContent = '[ 520PX COMPACT ]';
+    const indicator = document.getElementById('drawer-mode-indicator');
+    if (indicator) indicator.textContent = '[ 720PX ANALYST WORKSPACE ]';
     const btnFs = document.getElementById('btn-toggle-fullscreen');
-    if (btnFs) btnFs.innerHTML = '<span class="fs-icon">⛶</span> <span class="fs-label">FULLSCREEN</span>';
+    if (btnFs) btnFs.innerHTML = '<span class="fs-icon">[+]</span> <span class="fs-label">FULLSCREEN</span>';
   }
-  if (_chart) { _chart.destroy(); _chart = null; }
+  if (overlay) overlay.classList.remove('active');
+  if (_chart) {
+    _chart.destroy();
+    _chart = null;
+  }
 }
 
-export const openDrawer = openDetailDrawer;
 export const closeDrawer = closeDetailDrawer;
+
+if (typeof window !== 'undefined') {
+  window._toggleDetailFullscreen = toggleFullscreen;
+  window.closeDetailDrawer = closeDetailDrawer;
+}
+
