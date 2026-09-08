@@ -60,9 +60,9 @@ export const MEETING_FORMATS = {
     chair: 'VP Global Supply Chain & S&OP Governance Committee',
     focusSummary: 'Strategic balancing of finished goods inventory across 5,000 corridors, cross-market quota allocation, and SAP/OMP master data parameter recalibration sign-off (Section 6.4).',
     sections: [
-      { num: '01', title: 'Executive Posture & WoW Delta', desc: 'Net CHI recovery (+1.2 pts), 3 acute crises resolved, ₹14.2 Cr active exposure mitigated.' },
+      { num: '01', title: 'Executive Posture & WoW Delta', desc: 'Net CHI recovery, acute crises resolved, and active exposure mitigated — refreshed from the live weekly delta.' },
       { num: '02', title: 'Regional Corridor Integrity', desc: 'Regional CHI performance evaluation (Region 01–05) vs 95.0% contractual OTIF SLA.' },
-      { num: '03', title: 'Parameter Recalibration Sign-Off', desc: 'Section 6.4 audit: 379 chronic series identified. Approval to reduce SSD in SAP/OMP to unlock ₹7.2 Cr.' },
+      { num: '03', title: 'Parameter Recalibration Sign-Off', desc: 'Section 6.4 audit of the chronic recalibration queue. Approval to reduce frozen SSD parameters in SAP/OMP.' },
       { num: '04', title: 'Executive Decision Scorecard', desc: 'Formal GxP sign-off, capital commitments, and supply chain allocation directives.' }
     ]
   },
@@ -157,15 +157,25 @@ export function generateMeetingEmail(meetingId = 'SOP_MONTHLY', data = null) {
   const totalCapAtRisk = topSigs.reduce((a, s) => a + (s.capital_at_risk_inr || 0), 0);
 
   const ex = (data && data.executive) || {};
-  const totalPatientsLost = topSigs.reduce((a, s) => a + (s.lost_lifelong_patients || 0), 0) || 1202;
+  const totalPatientsLost = topSigs.reduce((a, s) => a + (s.lost_lifelong_patients || 0), 0);
   const topCrisis = acuteSigs[0] || topSigs[0] || {};
   const tr0 = topCrisis.intermarket_transfer || {};
-  const donorStr = tr0.has_transfer ? `${tr0.donor_country || 'Country 059'} → ${topCrisis.country || 'Country 013'}` : 'Kalundborg Central Hub → Pacific Affiliate';
-  const transferQtyStr = tr0.has_transfer ? `${Number(tr0.transfer_qty).toLocaleString()} units` : '13,174 units';
+  const donorStr = tr0.has_transfer
+    ? `${tr0.donor_country || 'donor market'} → ${topCrisis.country || 'recipient market'}`
+    : `priority air charter for ${topCrisis.country || 'the affected market'}`;
+  const transferQtyStr = tr0.has_transfer
+    ? `${Number(tr0.transfer_qty).toLocaleString()} units`
+    : (topCrisis.recommended_qty_units ? `${Number(topCrisis.recommended_qty_units).toLocaleString()} units` : 'quantity per corridor directive');
 
   const bc = ch.baseline_comparison || {};
-  const staleCount = bc.stale_parameter_corridors !== undefined ? bc.stale_parameter_corridors : 164;
-  const trappedCr = bc.trapped_capital_cr !== undefined ? bc.trapped_capital_cr : '1,498.7';
+  const chronic = ((data && data.executive) || {}).chronic_summary || {};
+  const staleCount = bc.stale_parameter_corridors !== undefined ? bc.stale_parameter_corridors : (chronic.total_stale_parameters ?? '--');
+  const trappedCr = bc.trapped_capital_cr !== undefined ? bc.trapped_capital_cr : (chronic.total_capital_freed_inr !== undefined ? (chronic.total_capital_freed_inr / 1e7).toFixed(1) : '--');
+  const pureCount = chronic.total_pure_calibration_series ?? '--';
+  const staleSubsetCr = chronic.stale_capital_freed_inr !== undefined ? (chronic.stale_capital_freed_inr / 1e7).toFixed(1) : '--';
+  const falseAlertsEmail = chronic.total_false_alerts_eliminated !== undefined ? chronic.total_false_alerts_eliminated.toLocaleString() : (bc.false_alerts_eliminated !== undefined ? bc.false_alerts_eliminated.toLocaleString() : '--');
+  const holdingCr = trappedCr !== '--' ? (Number(trappedCr) * 0.10).toFixed(1) : '--';
+  const phase1Cr = trappedCr !== '--' ? (Number(trappedCr) * 0.01).toFixed(1) : '--';
 
   return `================================================================================
 NOVO NORDISK GLOBAL SUPPLY CHAIN EXECUTIVE MINUTES & BRIEFING
@@ -189,8 +199,8 @@ Chair: ${m.chair}
    -> Safety: Donor retains 45+ days DOH (Zero collateral stockout risk; Transfer ROI > 5.0x).
 2. [DECISION #2] ENFORCE 24-HOUR SLA OWNERSHIP FOR ${acuteSigs.length} ACUTE CRISES
    -> Mandate: Assign named regional planners to resolve unacknowledged alerts before VP escalation.
-3. [DECISION #3] SIGN OFF SAP/OMP PARAMETER RECALIBRATION FOR 164 STALE SERIES
-   -> Action: Batch-release SSD reductions (e.g. 42 -> 9 days), eliminating 19,708 false alerts/yr.
+3. [DECISION #3] SIGN OFF SAP/OMP PARAMETER RECALIBRATION FOR ${staleCount} STALE SERIES
+   -> Action: Batch-release SSD reductions, eliminating ${falseAlertsEmail} false alerts/yr.
 
 1. EXECUTIVE POSTURE & NETWORK EQUILIBRIUM
 --------------------------------------------------------------------------------
@@ -198,7 +208,7 @@ Global Corridor Health Index (CHI): ${ch.global_chi !== undefined ? ch.global_ch
 Network Fulfillment Rate (OTIF): ${ch.actual_otif !== undefined ? ch.actual_otif : '--'}% [SLA COMPLIANT]
 Active Immediate Crises: ${acuteSigs.length} Corridor(s) requiring emergency re-allocation / air expedite
 Active Capital at Risk: ₹${(totalCapAtRisk / 1e7).toFixed(1)} Cr (Top 15 Corridors)
-Data Source: 260,000 SKU-Week records evaluated directly from Excel corridor panel
+Data Source: ${(ch.total_raw_records !== undefined ? ch.total_raw_records.toLocaleString() : '260,000')} SKU-Week records evaluated directly from Excel corridor panel
 
 
 2. ACUTE CORRIDOR EXCEPTIONS & DIRECTIVES (SECTION 6.2 / 6.3)
@@ -211,19 +221,19 @@ ${acuteSigs.map((s, idx) => {
 
 3. MASTER DATA PARAMETER RECALIBRATION SIGN-OFF (SECTION 6.4)
 --------------------------------------------------------------------------------
-Identified Chronic Calibration Series: 379 Corridors (Pure SAP/OMP Parameter Mismatch)
-Stale Master Data Parameters: 164 Corridors (Static SSD despite ≥30% Demand Velocity Shift)
-Annual False Stockout Alerts Eliminated: 19,708 alerts/year
+Identified Chronic Calibration Series: ${pureCount} Corridors (Pure SAP/OMP Parameter Mismatch)
+Stale Master Data Parameters: ${staleCount} Corridors (Static SSD despite ≥30% Demand Velocity Shift)
+Annual False Stockout Alerts Eliminated: ${falseAlertsEmail} alerts/year
 Recommended Safety Stock Days (SSD) Adjustments: Ready for SAP/OMP transport
-Total Trapped Working Capital: ₹1,498.7 Cr (379 series; ₹643.8 Cr in 164 stale series)
-Annual Holding Cost Liberated (@ 10% WACC): ₹149.8 Cr / year recurring cash savings
-Phase 1 Immediate Fast-Track Release: ₹14.9 Cr (top-priority critical corridors)
+Total Trapped Working Capital: ₹${trappedCr} Cr (${pureCount} series; ₹${staleSubsetCr} Cr in ${staleCount} stale series)
+Annual Holding Cost Liberated (@ 10% WACC): ₹${holdingCr} Cr / year recurring cash savings
+Phase 1 Immediate Fast-Track Release: ₹${phase1Cr} Cr (top-priority critical corridors)
 
 4. GOVERNANCE DECISION & ACTION DIRECTIVES
 --------------------------------------------------------------------------------
 [x] Authorize matched inter-market stock transfers (Beacon C013 <- C059, Delta C045 <- C055)
 [x] Override sea freight cadence with priority air-freight charter for late sea corridors
-[x] Release automated SAP/OMP recalibration batch file for 379 misconfigured series
+[x] Release automated SAP/OMP recalibration batch file for ${pureCount} misconfigured series
 [x] Corporate SLA Compliance: All active acute crisis items logged in GxP audit trail
 
 ================================================================================
@@ -251,6 +261,27 @@ export function renderSlide(index, data) {
   const topSigs = (data && data.top_signals) || [];
   const acuteSigs = topSigs.filter(s => (s.action_type || '').includes('CRISIS') || (s.action_type || '').includes('EXPEDITE'));
   const m = MEETING_FORMATS[currentMeetingId] || MEETING_FORMATS['SOP_MONTHLY'];
+  const chronic = ex.chronic_summary || {};
+  const totalTrappedCr = chronic.total_capital_freed_inr !== undefined ? chronic.total_capital_freed_inr / 1e7 : null;
+  const staleSubsetCr = chronic.stale_capital_freed_inr !== undefined ? chronic.stale_capital_freed_inr / 1e7 : null;
+  // Live planner directive from the highest-priority stale series in the recalibration queue
+  const staleSeries = (chronic.sample_series || []).find(s => s.is_stale) || (chronic.sample_series || [])[0] || {};
+  const deckDirectiveHtml = staleSeries.current_ssd !== undefined
+    ? `<div><strong>Planner Directive:</strong> &ldquo;Series #${staleSeries.row_id} (${staleSeries.brand}, ${staleSeries.country}): Safety Stock Days is set to ${staleSeries.current_ssd} but the data shows DOH never drops below ${staleSeries.min_doh}. Recommended: reduce SSD from ${staleSeries.current_ssd} → ${staleSeries.recommended_ssd} days. This would eliminate ${staleSeries.false_alerts_eliminated || 52} false alerts per year and free ₹${((staleSeries.freed_capital_inr || 0) / 1e5).toFixed(1)}L in frozen capital.&rdquo;</div>`
+    : `<div><strong>Planner Directive:</strong> Load a workbook or expand the recalibration queue to view live series directives.</div>`;
+  // Live inter-market transfer routes for the deck (top 2 with an actual matched donor)
+  const topAcute = acuteSigs[0] || null;
+  const transferSigs = acuteSigs.filter(s => (s.intermarket_transfer || {}).has_transfer).slice(0, 2);
+  const transferCards = transferSigs.map(s => {
+    const t = s.intermarket_transfer;
+    const grossCr = (s.capital_at_risk_inr || 0) / 1e7;
+    return `<div style="background:#FFFFFF;border:1px solid var(--border);padding:10px">
+      <strong>${s.country}:</strong> ${Number(s.recommended_qty_units || t.transfer_qty || 0).toLocaleString()} U required.<br>
+      Matched Donor: <strong>${t.donor_country}</strong>.<br>
+      Donor Post-Transfer: <strong>${t.donor_post_doh}d DOH</strong> (safely above SSD floor).<br>
+      Arrival: <strong>Air Charter</strong> · Gross: ₹${grossCr.toFixed(2)} Cr
+    </div>`;
+  }).join('');
 
   if (title) title.textContent = `${m.title} · EXECUTIVE SLIDES`;
   if (indicator) indicator.textContent = `[ SLIDE ${_deckSlideIndex + 1} OF ${TOTAL_SLIDES} ]`;
@@ -263,7 +294,7 @@ export function renderSlide(index, data) {
             <div>
               <div class="deck-slide-topic">SLIDE 01 / EXECUTIVE POSTURE</div>
               <div class="deck-slide-heading">GLOBAL NETWORK HEALTH &amp; WEEK-OVER-WEEK TRAJECTORY</div>
-              <div class="deck-slide-sub">Evaluating 260,000 SKU-week records across 5,000 corridors (Cycle W32)</div>
+              <div class="deck-slide-sub">Evaluating ${(ch.total_raw_records !== undefined ? ch.total_raw_records.toLocaleString() : '260,000')} SKU-week records across 5,000 corridors (Cycle W${(window.DATA && window.DATA.metadata && window.DATA.metadata.current_week) || 32})</div>
             </div>
             <div class="meeting-gov-badges">
               <span class="meeting-gov-tag meeting-gov-tag--gxp">${m.docId}</span>
@@ -354,7 +385,7 @@ export function renderSlide(index, data) {
               <div class="deck-card-title">REGIONAL HEALTH BREAKDOWN</div>
               <div class="deck-card-body">
                 <div style="font-family:var(--font-mono);font-size:13px;line-height:1.8;margin-bottom:10px">
-                  ${regList || 'Region 01: 88.4 CHI · Region 02: 87.1 CHI · Region 03: 86.3 CHI · Region 04: 85.9 CHI · Region 05: 85.2 CHI'}
+                  ${regList || 'Regional CHI detail loads with the dataset — expand the methodology section or upload a workbook to populate.'}
                 </div>
                 <p style="font-size:11.5px;color:var(--muted)">All regions tracking within nominal equilibrium buffer, with Region 05 requiring lead-time buffer expansion.</p>
               </div>
@@ -363,7 +394,7 @@ export function renderSlide(index, data) {
               <div class="deck-card-title">80/20 DOES NOT HOLD — RISK IS SYSTEMIC</div>
               <div class="deck-card-body">
                 <p style="font-size:12px;line-height:1.6;margin-bottom:8px">
-                  Top 5 corridors account for only <strong>12.1%</strong> of total stockout exposure; Top 10 account for <strong>21.9%</strong>.
+                  Top 5 corridors account for only <strong>${ex.top_5_share_pct !== undefined ? ex.top_5_share_pct : '--'}%</strong> of total stockout exposure; Top 10 account for <strong>${ex.top_10_share_pct !== undefined ? ex.top_10_share_pct : '--'}%</strong>.
                 </p>
                 <div style="font-family:var(--font-mono);font-size:11px;color:#9F2F2D;background:#FDEBEC;padding:8px 10px;border-left:3px solid #E61919">
                   KEY FINDING: Supply disruptions cannot be cured by firefighting top SKUs alone. Automated, systemic corridor governance is mandatory.
@@ -401,7 +432,7 @@ export function renderSlide(index, data) {
             <div class="deck-content-card" style="border-left:4px solid #DC2626">
               <div class="deck-card-title" style="color:#DC2626">[ ! ] IRRECOVERABLE SEA FREIGHT CLIFF OVERRIDE</div>
               <div class="deck-card-body" style="font-size:12px">
-                Country 013 breach at week 14 — with 36-week sea lead time, standard ocean replenishment is <strong>ALREADY TOO LATE</strong>.
+                ${topAcute ? `${topAcute.country} breach at week ${topAcute.breach_week} — with ${topAcute.market_lead_time || 36}-week sea lead time, standard ocean replenishment is <strong>ALREADY TOO LATE</strong>.` : 'No acute corridor currently exceeds its sea-freight recovery horizon.'}
                 Direct air charter dispatch authorized to protect market supply continuity.
               </div>
             </div>
@@ -409,20 +440,7 @@ export function renderSlide(index, data) {
               <div class="deck-card-title" style="color:#0072CE">[↔] MATCHED INTER-MARKET SURPLUS TRANSFER ROUTES</div>
               <div class="deck-card-body">
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-family:var(--font-mono);font-size:11px">
-                  <div style="background:#FFFFFF;border:1px solid var(--border);padding:10px">
-                    <strong>BEACON (Country 013):</strong> 13,174 U required.<br>
-                    Matched Donor: <strong>Country 059</strong> (1.29M inv, 342.0d DOH).<br>
-                    Donor Post-Transfer: <strong>338.6d DOH</strong> (safely &gt; 84d SSD floor).<br>
-                    Arrival: <strong>4-Day Air Charter</strong> · Gross: ₹1.98 Cr · Freight &amp; Duty: ₹19.1L<br>
-                    <strong>Net Economic Benefit: ₹1.79 Cr (10.3× Net ROI)</strong>
-                  </div>
-                  <div style="background:#FFFFFF;border:1px solid var(--border);padding:10px">
-                    <strong>DELTA (Country 045):</strong> 15,300 U required.<br>
-                    Matched Donor: <strong>Country 055</strong> (309k inv, 163.2d DOH).<br>
-                    Donor Post-Transfer: <strong>155.1d DOH</strong> (safely &gt; 42d SSD floor).<br>
-                    Arrival: <strong>4-Day Air Charter</strong> · Gross: ₹1.24 Cr · Freight &amp; Duty: ₹22.2L<br>
-                    <strong>Net Economic Benefit: ₹1.02 Cr (5.6× Net ROI)</strong>
-                  </div>
+                  ${transferCards || '<div style="grid-column:1/-1;padding:10px">No inter-market transfer routes required in the current dataset.</div>'}
                 </div>
               </div>
             </div>
@@ -447,31 +465,31 @@ export function renderSlide(index, data) {
           </div>
           <div class="deck-kpi-grid" style="grid-template-columns:repeat(4,1fr)">
             <div class="deck-kpi-tile">
-              <div class="deck-kpi-val">379</div>
+              <div class="deck-kpi-val">${chronic.total_pure_calibration_series !== undefined ? chronic.total_pure_calibration_series : '--'}</div>
               <div class="deck-kpi-lbl">CHRONIC SERIES</div>
               <div class="deck-kpi-note">100% false-alert prone</div>
             </div>
             <div class="deck-kpi-tile">
-              <div class="deck-kpi-val" style="color:#D97706">164</div>
+              <div class="deck-kpi-val" style="color:#D97706">${chronic.total_stale_parameters !== undefined ? chronic.total_stale_parameters : '--'}</div>
               <div class="deck-kpi-lbl">STALE PARAMETERS</div>
               <div class="deck-kpi-note">Demand shift ≥30% with static SSD</div>
             </div>
             <div class="deck-kpi-tile">
-              <div class="deck-kpi-val" style="color:var(--ok-text)">19,708</div>
+              <div class="deck-kpi-val" style="color:var(--ok-text)">${chronic.total_false_alerts_eliminated !== undefined ? chronic.total_false_alerts_eliminated.toLocaleString() : '--'}</div>
               <div class="deck-kpi-lbl">FALSE ALERTS / YR</div>
-              <div class="deck-kpi-note">52 weeks × 379 series eliminated</div>
+              <div class="deck-kpi-note">52 weeks × ${chronic.total_pure_calibration_series !== undefined ? chronic.total_pure_calibration_series : '--'} series eliminated</div>
             </div>
             <div class="deck-kpi-tile">
-              <div class="deck-kpi-val" style="color:#0072CE">₹1,498.7 CR</div>
+              <div class="deck-kpi-val" style="color:#0072CE">${totalTrappedCr !== null ? '₹' + totalTrappedCr.toFixed(1) + ' CR' : '--'}</div>
               <div class="deck-kpi-lbl">TOTAL TRAPPED CAPITAL</div>
-              <div class="deck-kpi-note">₹149.8 Cr/yr WACC saved · Phase-1: ₹14.9 Cr</div>
+              <div class="deck-kpi-note">${totalTrappedCr !== null ? '₹' + (totalTrappedCr * 0.10).toFixed(1) + ' Cr/yr WACC saved · Phase-1: ₹' + (totalTrappedCr * 0.01).toFixed(1) + ' Cr' : 'Populates from live payload'}</div>
             </div>
           </div>
           <div class="deck-content-card">
             <div class="deck-card-title">SECTION 6.4 STALE PARAMETER &amp; DIRECTIVE AUDIT</div>
             <div class="deck-card-body" style="font-family:var(--font-mono);font-size:12px;background:#F9FAFB;padding:12px;border-left:4px solid #D97706">
-              <div style="margin-bottom:6px"><strong>Stale Master Data Flag:</strong> 164 of 379 chronic series flagged with frozen SSD settings despite &gt;30% demand velocity shifts over 6 months (Total Trapped: ₹1,498.7 Cr; Stale subset: ₹643.8 Cr; Phase 1 immediate: ₹14.9 Cr).</div>
-              <div><strong>Planner Directive:</strong> &ldquo;Series #2847 (Ember, Country 013): Safety Stock Days is set to 42 but the data shows DOH never drops below 28. Recommended: reduce SSD from 42 → 28 days. This would eliminate 52 false alerts per year and free ₹12.4L in frozen capital.&rdquo;</div>
+              <div style="margin-bottom:6px"><strong>Stale Master Data Flag:</strong> ${chronic.total_stale_parameters !== undefined ? chronic.total_stale_parameters : '--'} of ${chronic.total_pure_calibration_series !== undefined ? chronic.total_pure_calibration_series : '--'} chronic series flagged with frozen SSD settings despite &gt;30% demand velocity shifts over 6 months (Total Trapped: ${totalTrappedCr !== null ? '₹' + totalTrappedCr.toFixed(1) + ' Cr' : '--'}; Stale subset: ${staleSubsetCr !== null ? '₹' + staleSubsetCr.toFixed(1) + ' Cr' : '--'}; Phase 1 immediate: ${totalTrappedCr !== null ? '₹' + (totalTrappedCr * 0.01).toFixed(1) + ' Cr' : '--'}).</div>
+              ${deckDirectiveHtml}
             </div>
           </div>
         </div>
@@ -620,7 +638,7 @@ export function hydrateStaticSections(data) {
     const topCrisis = acuteSigs[0] || topSigs[0] || {};
     const tr = topCrisis.intermarket_transfer || {};
     if (tr.has_transfer) {
-      synthCol2.innerHTML = `Authorize the <strong>${tr.donor_country} → ${topCrisis.country} air transfer (${Number(tr.transfer_qty).toLocaleString()} units)</strong>. Donor retains ${tr.donor_post_doh || 45} days of stock (zero cascade risk). This closes a sea gap, saves ₹${((topCrisis.capital_at_risk_inr || 0) / 1e7).toFixed(2)} Cr, and protects ${(topCrisis.lost_lifelong_patients || 1202).toLocaleString()} chronic patients.`;
+      synthCol2.innerHTML = `Authorize the <strong>${tr.donor_country} → ${topCrisis.country} air transfer (${Number(tr.transfer_qty).toLocaleString()} units)</strong>. Donor retains ${tr.donor_post_doh || 45} days of stock (zero cascade risk). This closes a sea gap, saves ₹${((topCrisis.capital_at_risk_inr || 0) / 1e7).toFixed(2)} Cr, and protects ${Number(topCrisis.lost_lifelong_patients || 0).toLocaleString()} chronic patients.`;
     } else {
       synthCol2.innerHTML = `Authorize priority replenishment for <strong>${topCrisis.brand || 'top priority corridor'} · ${topCrisis.country || ''}</strong>. Expedited routing protects chronic patients from therapy disruption.`;
     }
@@ -628,16 +646,14 @@ export function hydrateStaticSections(data) {
 
   const synthCol3 = document.getElementById('synth-col-3-text');
   if (synthCol3) {
-    const staleCount = bc.stale_parameter_corridors !== undefined ? bc.stale_parameter_corridors : 164;
-    const falseAlerts = bc.false_alerts_eliminated !== undefined ? bc.false_alerts_eliminated.toLocaleString() : '19,708';
-    const trappedCr = bc.trapped_capital_cr !== undefined ? bc.trapped_capital_cr : '1,498.7';
+    const staleCount = bc.stale_parameter_corridors !== undefined ? bc.stale_parameter_corridors : '--';
     synthCol3.innerHTML = `Our parameter audit identified <strong>${staleCount} corridors with stale safety stock in SAP</strong>. Recalibrating SSD eliminates <strong>${falseAlerts} false alarms/year</strong> and frees up <strong>₹${trappedCr} Cr</strong> in frozen working capital.`;
   }
 
   const synthCol4 = document.getElementById('synth-col-4-text');
   if (synthCol4) {
     const noisePct = bc.noise_reduction_pct !== undefined ? bc.noise_reduction_pct : 91.9;
-    const falseAlerts = bc.false_alerts_eliminated !== undefined ? bc.false_alerts_eliminated.toLocaleString() : '19,708';
+    const falseAlerts = bc.false_alerts_eliminated !== undefined ? bc.false_alerts_eliminated.toLocaleString() : '--';
     const savedHrs = (bc.legacy_triage_hours_per_day && bc.optimized_triage_minutes_per_day) 
       ? (bc.legacy_triage_hours_per_day - bc.optimized_triage_minutes_per_day / 60).toFixed(1) 
       : '3.9';
@@ -709,7 +725,7 @@ export function hydrateStaticSections(data) {
   }
   const bAlertsImpact = document.getElementById('base-alerts-impact');
   if (bAlertsImpact) {
-    const fa = bc.false_alerts_eliminated !== undefined ? bc.false_alerts_eliminated.toLocaleString() : '19,708';
+    const fa = bc.false_alerts_eliminated !== undefined ? bc.false_alerts_eliminated.toLocaleString() : '--';
     bAlertsImpact.textContent = `−${fa} false alarms / yr`;
   }
   const bChronicBefore = document.getElementById('base-chronic-before');
@@ -738,12 +754,12 @@ export function hydrateStaticSections(data) {
   }
   const bCapBefore = document.getElementById('base-capital-before');
   if (bCapBefore) {
-    const tc = bc.trapped_capital_cr !== undefined ? bc.trapped_capital_cr : '1,498.7';
+    const tc = bc.trapped_capital_cr !== undefined ? bc.trapped_capital_cr : '--';
     bCapBefore.textContent = `₹${tc} Cr trapped by stale SSD`;
   }
   const bCapAfter = document.getElementById('base-capital-after');
   if (bCapAfter) {
-    const tc = bc.trapped_capital_cr !== undefined ? bc.trapped_capital_cr : '1,498.7';
+    const tc = bc.trapped_capital_cr !== undefined ? bc.trapped_capital_cr : '--';
     bCapAfter.textContent = `₹${tc} Cr parameter unlock queue`;
   }
 
@@ -1623,7 +1639,7 @@ export function renderEmergencyBriefingSection(data) {
           <span style="color:#DC2626;">ACUTE EXPOSURE</span>
         </div>
         <div class="emergency-point-v">
-          <strong>${Number(totalPatients || 1202).toLocaleString('en-IN')} chronic diabetes patients</strong> face imminent treatment interruption across <strong>${acuteSigs.length} corridors</strong>. In chronic metabolic care, missed doses cause irreversible physician brand switching, permanently destroying <strong>₹${((totalAcuteCap || 142000000) / 1e7).toFixed(1)} Cr</strong> in lifetime annual value.
+          <strong>${Number(totalPatients).toLocaleString('en-IN')} chronic diabetes patients</strong> face imminent treatment interruption across <strong>${acuteSigs.length} corridors</strong>. In chronic metabolic care, missed doses cause irreversible physician brand switching, permanently destroying <strong>₹${(totalAcuteCap / 1e7).toFixed(1)} Cr</strong> in lifetime annual value.
         </div>
       </div>
 
@@ -1684,7 +1700,7 @@ export function renderEmergencyBriefingSection(data) {
       <div class="emergency-action-step-row">
         <span class="emergency-step-badge">STEP 04</span>
         <div class="emergency-step-text">
-          <strong>Export SAP/OMP Parameter Recalibration Queue:</strong> Submit Master Data update to reduce frozen SSD parameters from 42 → 9 days for 164 stale corridors, eliminating 19,708 false alarms/yr.
+          <strong>Export SAP/OMP Parameter Recalibration Queue:</strong> Submit the Master Data update to reduce frozen SSD parameters across the stale corridor queue, eliminating false alarms at source.
         </div>
         <button class="emergency-step-action-btn" id="btn-emergency-action-4">OPEN PARAMETER QUEUE →</button>
       </div>

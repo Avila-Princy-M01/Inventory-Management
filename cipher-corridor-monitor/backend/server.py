@@ -11,6 +11,7 @@ Routes:
 import os
 import sys
 import json
+import shutil
 import tempfile
 import subprocess
 from datetime import datetime
@@ -64,6 +65,14 @@ GENERATE_SCRIPT = next((p for p in GENERATE_CANDIDATES if os.path.isfile(p)), GE
 
 # ── Flask app ──────────────────────────────────────────────────────────────────
 app = Flask(__name__, static_folder=None)
+
+# Subprocess budget for pipeline work triggered by a judge upload.
+PIPELINE_TIMEOUT_SECONDS = 300
+
+# ── Benchmark protection: snapshot current artifacts before an upload overwrites them ──
+BENCHMARK_XLSX = "Inventry_Corridor_Alert_Weekly_Aug2026_Jul2027.xlsx"
+SNAPSHOT_DIR = os.path.join(BACKEND_DIR, "benchmark_snapshot")
+SNAPSHOT_FILES = ["dashboard_data.json", "corridor_panel.parquet", "corridor_findings.json"]
 
 
 # ── Static file serving — frontend/ ───────────────────────────────────────────
@@ -187,6 +196,18 @@ def upload():
         # relative-path references inside the scripts resolve correctly.
         cwd = BACKEND_DIR
 
+        # ── 5b. Snapshot current artifacts so the pristine benchmark is never lost ──
+        # (A judge upload overwrites dashboard_data.json / parquet / findings; this
+        # guarantees the demo benchmark can always be restored afterwards.)
+        try:
+            os.makedirs(SNAPSHOT_DIR, exist_ok=True)
+            for fname in SNAPSHOT_FILES:
+                sf = os.path.join(BACKEND_DIR, fname)
+                if os.path.isfile(sf):
+                    shutil.copy2(sf, os.path.join(SNAPSHOT_DIR, fname))
+        except Exception as snap_exc:
+            print(f"[server] WARNING: benchmark snapshot failed: {snap_exc}", file=sys.stderr)
+
         # ── 6. Run corridor_pipeline.py --rebuild ──────────────────────────
         if not os.path.isfile(PIPELINE_SCRIPT):
             return jsonify(
@@ -203,12 +224,20 @@ def upload():
                 text=True,
                 cwd=cwd,
                 env=pipeline_env,
+                timeout=PIPELINE_TIMEOUT_SECONDS,
             )
         except FileNotFoundError as exc:
             return jsonify(
                 {
                     "error": "FILE_NOT_FOUND",
                     "detail": f"Failed to execute pipeline script {PIPELINE_SCRIPT}: {exc}",
+                }
+            ), 500
+        except subprocess.TimeoutExpired:
+            return jsonify(
+                {
+                    "error": "PIPELINE_TIMEOUT",
+                    "detail": f"Pipeline exceeded {PIPELINE_TIMEOUT_SECONDS}s budget. The workbook may be malformed or too large for this prototype.",
                 }
             ), 500
 
@@ -236,12 +265,20 @@ def upload():
                 text=True,
                 cwd=cwd,
                 env=pipeline_env,
+                timeout=PIPELINE_TIMEOUT_SECONDS,
             )
         except FileNotFoundError as exc:
             return jsonify(
                 {
                     "error": "FILE_NOT_FOUND",
                     "detail": f"Failed to execute generator script {GENERATE_SCRIPT}: {exc}",
+                }
+            ), 500
+        except subprocess.TimeoutExpired:
+            return jsonify(
+                {
+                    "error": "PIPELINE_TIMEOUT",
+                    "detail": f"Dashboard generation exceeded {PIPELINE_TIMEOUT_SECONDS}s budget.",
                 }
             ), 500
 
@@ -255,7 +292,6 @@ def upload():
 
         # ── 8. Synchronize parquet & findings to parent directory if applicable ──
         try:
-            import shutil
             for fname in ["corridor_panel.parquet", "corridor_findings.json"]:
                 sf = os.path.join(BACKEND_DIR, fname)
                 df = os.path.join(PARENT_DIR, fname)
@@ -281,6 +317,78 @@ def upload():
             pass
 
 
+# ── GxP audit persistence ─────────────────────────────────────────────────────
+
+# Append-only JSONL ledger (21 CFR-style audit trail that survives page
+# refreshes and server restarts).
+AUDIT_LOG_PATH = os.path.join(BACKEND_DIR, "gxp_audit_ledger.jsonl")
+
+
+def _load_audit_entries():
+    entries = []
+    try:
+        if os.path.isfile(AUDIT_LOG_PATH):
+            with open(AUDIT_LOG_PATH, "r", encoding="utf-8") as fh:
+                for line in fh:
+                    line = line.strip()
+                    if line:
+                        entries.append(json.loads(line))
+    except Exception as exc:
+        print(f"[server] WARNING: could not read audit ledger: {exc}", file=sys.stderr)
+    return entries
+
+
+@app.route("/audit/log", methods=["GET", "POST"])
+def audit_log_endpoint():
+    """
+    GET:  returns all persisted GxP audit entries.
+    POST: appends one entry (the frontend pushes every analyst action here).
+    """
+    if request.method == "GET":
+        return jsonify({"entries": _load_audit_entries()}), 200
+
+    if not request.is_json or not request.get_json(silent=True):
+        return jsonify({"error": "INVALID_PAYLOAD", "detail": "JSON audit entry required"}), 400
+    entry = request.get_json(silent=True)
+    try:
+        with open(AUDIT_LOG_PATH, "a", encoding="utf-8") as fh:
+            fh.write(json.dumps(entry, ensure_ascii=False) + "\n")
+    except Exception as exc:
+        return jsonify({"error": "WRITE_ERROR", "detail": str(exc)}), 500
+    return jsonify({"success": True}), 200
+
+
+# ── Benchmark restore endpoint ────────────────────────────────────────────────
+@app.route("/restore-benchmark", methods=["POST"])
+def restore_benchmark():
+    """
+    Restores the pristine benchmark artifacts from the snapshot taken before the
+    most recent judge upload. Guarantees the [ LOAD HACKATHON BENCHMARK ] button
+    always loads the real 260,000 SKU-week baseline, even after uploads.
+    """
+    missing = [f for f in SNAPSHOT_FILES if not os.path.isfile(os.path.join(SNAPSHOT_DIR, f))]
+    if missing:
+        return jsonify({
+            "error": "NO_SNAPSHOT",
+            "detail": f"No pre-upload benchmark snapshot found (missing: {', '.join(missing)}). The benchmark artifacts on disk are untouched.",
+        }), 404
+    try:
+        for fname in SNAPSHOT_FILES:
+            src = os.path.join(SNAPSHOT_DIR, fname)
+            dst = os.path.join(BACKEND_DIR, fname)
+            if os.path.isfile(src):
+                shutil.copy2(src, dst)
+        # Keep the root-level copies in sync as well
+        for fname in ["dashboard_data.json", "corridor_findings.json"]:
+            src = os.path.join(BACKEND_DIR, fname)
+            dst = os.path.join(PARENT_DIR, fname)
+            if os.path.isfile(src) and os.path.isdir(PARENT_DIR):
+                shutil.copy2(src, dst)
+    except Exception as exc:
+        return jsonify({"error": "RESTORE_FAILED", "detail": str(exc)}), 500
+    return jsonify({"success": True, "restored": SNAPSHOT_FILES}), 200
+
+
 # ── Demo / default dataset loader endpoint ─────────────────────────────────────
 @app.route("/load-demo", methods=["POST", "GET"])
 def load_demo():
@@ -290,6 +398,18 @@ def load_demo():
     """
     if os.path.isfile(DASHBOARD_DATA_PATH):
         try:
+            # If a judge upload previously overwrote the benchmark, silently restore it first
+            snap_dash = os.path.join(SNAPSHOT_DIR, "dashboard_data.json")
+            if os.path.isfile(snap_dash):
+                for fname in SNAPSHOT_FILES:
+                    src = os.path.join(SNAPSHOT_DIR, fname)
+                    dst = os.path.join(BACKEND_DIR, fname)
+                    if os.path.isfile(src):
+                        shutil.copy2(src, dst)
+                for fname in ["dashboard_data.json", "corridor_findings.json"]:
+                    dst = os.path.join(PARENT_DIR, fname)
+                    if os.path.isdir(PARENT_DIR) and os.path.isfile(os.path.join(BACKEND_DIR, fname)):
+                        shutil.copy2(os.path.join(BACKEND_DIR, fname), dst)
             with open(DASHBOARD_DATA_PATH, "r", encoding="utf-8") as fh:
                 payload = fh.read()
             return Response(payload, status=200, mimetype="application/json")
@@ -649,8 +769,11 @@ if __name__ == "__main__":
     print(f"[server] Dashboard data : {DASHBOARD_DATA_PATH}")
     print(f"[server] Pipeline script: {PIPELINE_SCRIPT} (exists: {os.path.isfile(PIPELINE_SCRIPT)})")
     print(f"[server] Generate script: {GENERATE_SCRIPT} (exists: {os.path.isfile(GENERATE_SCRIPT)})")
-    print("[server] Listening on    http://0.0.0.0:8000")
+    print("[server] Listening on    http://127.0.0.1:8000")
 
-    app.run(host="0.0.0.0", port=8000, debug=False, threaded=True, use_reloader=False)
+    # Bind to loopback only: binding 0.0.0.0 triggers a Windows Firewall prompt
+    # on judge machines (demo-killer). Use the CHM_BIND env var to override.
+    bind_host = os.environ.get("CHM_BIND", "127.0.0.1")
+    app.run(host=bind_host, port=8000, debug=False, threaded=True, use_reloader=False)
 
 

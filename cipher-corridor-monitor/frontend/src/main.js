@@ -34,6 +34,15 @@ export const auditLog = new Proxy(_rawLog, {
 // ── Exported helpers ────────────────────────────────────────────
 export function pushAudit(entry) {
   auditLog.push(entry);
+  // Persist to backend so the GxP trail survives page refreshes (best-effort;
+  // the in-session ledger remains authoritative for the live UI).
+  try {
+    fetch('/audit/log', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(entry),
+    }).catch(() => { /* offline persistence is non-blocking */ });
+  } catch (e) { /* non-blocking */ }
 }
 window._pushAudit = pushAudit;
 
@@ -850,6 +859,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   initAuditTable(auditLog);
   initUploader({ activateDashboard, replaceData });
   setupKeyboardShortcuts();
+
+  // Rehydrate the GxP audit trail from the persistent backend ledger so prior
+  // session records survive page refreshes and server restarts.
+  try {
+    const res = await fetch('/audit/log');
+    if (res.ok) {
+      const payload = await res.json();
+      (payload.entries || []).forEach(e => { if (e && e.id) auditLog.push(e); });
+    }
+  } catch (e) { /* ledger unavailable — start with an empty in-session trail */ }
 
   // Data Ingestion Gate: Stays on View 00 (DATA INGESTION) by default.
   // Awaits user workbook upload or explicit pre-seeded benchmark trigger ('dashboard_data.json').

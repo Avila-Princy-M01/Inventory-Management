@@ -1759,12 +1759,15 @@ def _build_chi_matrix(panel):
 
 _build_exact_chi_matrix = _build_chi_matrix
 
-def _build_email(chi, signals, worst10, executive, metadata):
+def _build_email(chi, signals, worst10, executive, metadata, corridor_health=None):
     try:
         from email_service import build_email_digest
         digest = build_email_digest({
             "top_signals": signals,
-            "corridor_health": {"global_chi": chi},
+            # Pass the full corridor_health section so the email engine computes
+            # master-data, OTIF and WoW figures from real values (no fallbacks).
+            "corridor_health": corridor_health if corridor_health is not None else {"global_chi": chi},
+            "executive": executive,
             "metadata": metadata,
         })
         return digest["text_body"]
@@ -1802,9 +1805,18 @@ def _build_email(chi, signals, worst10, executive, metadata):
         ]
         return "\n".join(lines)
 
-def layer5_serialise(signals, corridor_health, executive, panel):
+def layer5_serialise(signals, corridor_health, executive, panel, perm_breaching_count=None):
     n_series = int(panel["row_id"].nunique())
-    perm_breaching_count = 860
+    if perm_breaching_count is None:
+        # Prefer the count computed by the findings layer; otherwise measure it
+        # directly from the panel instead of trusting a hardcoded benchmark value.
+        perm_breaching_count = corridor_health.get("dataset_record_breakdown", {}).get(
+            "chronic_master_data_corridors"
+        )
+    if perm_breaching_count is None:
+        breach_by_series = panel.groupby("row_id")["breach"].sum()
+        n_weeks = int(panel["week"].nunique()) if "week" in panel.columns else 52
+        perm_breaching_count = int((breach_by_series == n_weeks).sum())
     pure_count = len(executive["chronic_summary"]["sample_series"])
     total_op = corridor_health["total_evaluated_records"]
 
@@ -1836,7 +1848,7 @@ def layer5_serialise(signals, corridor_health, executive, panel):
         "matrix":         chi_matrix,
     }
     worst10    = executive.get("worst_10_countries", [])
-    email      = _build_email(corridor_health["global_chi"], signals, worst10, executive, metadata)
+    email      = _build_email(corridor_health["global_chi"], signals, worst10, executive, metadata, corridor_health=corridor_health)
 
     # Section 6.7 / Category A: Administrative Settings & Market Overrides
     administrative_settings = {

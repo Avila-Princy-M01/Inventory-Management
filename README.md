@@ -43,9 +43,10 @@ Modern pharmaceutical supply networks face severe friction when global ERP/OMP s
 |---|---|---|---|
 | **Total Raw Dataset** | **260,000** | **5,000** | Complete 52-week horizon across all global brand corridors (5,000 corridors × 52 weeks). |
 | **Operational Active Corridors** | **215,280** | **4,140** | Active commercial network evaluated for daily exception triage and PRS ranking. |
-| **Chronic Master Data Errors** | **44,720** | **860** | Corridors with static/frozen safety parameters causing artificial 52-week breaches without physical stockouts. |
+| **Permanently Breaching (Parameter Review)** | **44,720** | **860** | Corridors breaching their safety floor in all 52 weeks — recalled from the operational queue and routed to Parameter Review only (never in the analyst's daily triage). |
+| **Pure Chronic Recalibration Queue** | **19,708** | **379** | The subset of the 860 with *zero* physical stockouts in 52 weeks — pure SAP/OMP parameter errors; the actionable recalibration set (Section 6.4). |
 
-*Why this distinction matters:* Traditional dashboards dump all 5,000 corridors onto planners, forcing them to review 860 phantom errors every Monday. Team CIPHER segments these 860 corridors into an automated Master Data Recalibration Queue, leaving **215,280 operational SKU-weeks** for active exception triage.
+*Why this distinction matters:* Traditional dashboards dump all 5,000 corridors onto planners, forcing them to review 860 permanently-breaching corridors every Monday. Team CIPHER recalls all 860 to Parameter Review, isolates the **379 pure-parameter series** (zero physical stockouts, hence 379 × 52 = 19,708 pure false alerts/yr) into an automated Master Data Recalibration Queue, leaving **215,280 operational SKU-weeks** for active exception triage.
 
 ### 2. Why CHI (86.8%) ≠ Contractual OTIF (98.5%)?
 - **OTIF (98.5%) is a LAGGING METRIC**: Measures rear-view historical delivery (did physical inventory drop $\le 0$ during demand?). Across 260,000 SKU-weeks, physical stockouts occurred in only 1.5% of weeks.
@@ -56,7 +57,7 @@ Modern pharmaceutical supply networks face severe friction when global ERP/OMP s
 | Metric | Legacy SAP / OMP Baseline | Corridor Health Monitor | Quantifiable Improvement |
 |---|---|---|---|
 | **Annual Alert Volume** | 21,450 alerts / year | 1,742 actionable alerts / year | **91.9% Noise Elimination** (−19,708 false alarms/yr) |
-| **Chronic Master Data Alarms** | 379 series ringing 52w | 0 ringing (routed to master data queue) | **100% of phantom alarm noise removed** |
+| **Pure-Parameter Chronic Alarms** | 379 series ringing 52w (zero physical stockouts) | 0 ringing (routed to the recalibration queue) | **100% of pure phantom alarm noise removed** |
 | **Daily Planner Triage Load** | 4.2 hours / day per planner | 18 minutes / day (PRS rank-ordered) | **+3.9 hours/day recovered per planner** |
 | **Trapped Buffer Capital** | ₹1,498.7 Cr frozen in static SSD | ₹1,498.7 Cr parameter unlock queue | **Capital liberated to corporate treasury** |
 | **Breach Detection Horizon** | Reactive (post-stockout) | Predictive (1–12 weeks prior to breach) | **Pre-empts 36W deep-sea shipping cliffs** |

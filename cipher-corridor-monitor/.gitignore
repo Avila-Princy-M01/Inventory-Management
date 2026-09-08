@@ -84,4 +84,6 @@ Thumbs.db
 .settings/
 *.sublime-project
 *.sublime-workspace
+# Runtime artifacts
+backend/benchmark_snapshot/
 *.jsonl
