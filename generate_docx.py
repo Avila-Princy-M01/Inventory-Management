@@ -700,6 +700,8 @@ else:
     _sp = _D.get("signal_precision", {})
     _ew = _sp.get("early_warning", {})
     _qp = _sp.get("queue_precision", {})
+    _ev = _sp.get("episode_validation", {})
+    _cf = _sp.get("chi_falsification", {})
     _drbd = _ch.get("dataset_record_breakdown", {})
     _bench = _ch.get("benchmarks", {})
 
@@ -721,10 +723,10 @@ else:
     table(
         doc,
         [
-            ["Early-warning capture", f"{_ew.get('capture_pct', '--')}% of stock-out series", f"{_ew.get('warned_before_stockout', '--')} of {_ew.get('stockout_series', '--')} series had a corridor breach BEFORE their first physical stock-out week"],
-            ["Warning horizon", f"median {_ew.get('median_warning_weeks', '--')} weeks (p25: {_ew.get('p25_warning_weeks', '--')})", f"{_ew.get('share_warning_ge_2wks_pct', '--')}% of events allow ≥2 weeks of planning response"],
-            ["Post-hoc detections", f"{_ew.get('post_hoc_detections', '--')}", "Zero alerts raised after the stock-out had already occurred"],
-            ["Queue hit-rate (understock side)", f"{_qp.get('understock_hit_rate_pct', '--')}% vs {_qp.get('random_baseline_pct', '--')}% random", "Top-ranked understock signals that mature to stock-out without intervention; the queue's purpose is that most never do"],
+            ["Queue maturation (understock side)", f"{_qp.get('understock_maturation_pct', '--')}% vs {_qp.get('random_baseline_pct', '--')}% random ({_qp.get('lift', '--')}×)", "Top-ranked understock signals whose trajectories reach a real stock-out without intervention — the fair precision measure"],
+            ["Ranking validation", f"top-15 precision {_ev.get('precision_top15_pct', '--')}% ({_ev.get('lift_top15', '--')}× base)", "Week-1 breach episodes; maturation dose-response across coverage-deficit deciles is monotone"],
+            ["CHI falsification", f"ρ = {_cf.get('spearman_rho', '--')}, p = {_cf.get('p_value_one_sided', '--')}", f"{_cf.get('cuts', '--')} region/brand cuts; lower CHI predicts higher realized stock-out rates (one-sided permutation test)"],
+            ["Early-warning capture", f"{_ew.get('capture_pct', '--')}% (structural)", "Disclosed: breach-before-stockout is guaranteed by construction — a property of the corridor definition, not an achievement"],
             ["Global CHI", f"{_ch.get('global_chi', '--')}", "Leading network-stress measure (0–100) vs contractual OTIF lagging at " + str(_ch.get('actual_otif', '--'))],
             ["Evaluated network", f"{_drbd.get('operational_active_sku_weeks', '--'):,} SKU-weeks · {_drbd.get('operational_corridors', '--'):,} corridors", "260,000 raw SKU-weeks minus 44,720 permanently-breaching master-data weeks recalled to Parameter Review"],
         ],

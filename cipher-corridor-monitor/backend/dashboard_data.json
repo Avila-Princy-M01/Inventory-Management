@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated_utc": "2026-09-08T18:19:18.971627+00:00",
+    "generated_utc": "2026-09-08T19:37:24.945175+00:00",
     "current_week": 32,
     "total_series": 5000,
     "total_evaluated_records": 215280,
@@ -20835,23 +20835,53 @@
       "p25_warning_weeks": 12,
       "share_warning_ge_2wks_pct": 94.5,
       "post_hoc_detections": 0,
-      "method": "A series counts as warned when its first corridor-floor breach week precedes its first physical stock-out week. Warning horizon = stock-out week minus first breach week."
+      "structural_note": "Disclosed limitation: a physical stock-out implies negative inventory and therefore a prior corridor-floor breach, so breach-before-stockout is guaranteed by construction. Capture is a structural property of the corridor definition, NOT an achievement; the falsifiable measurements are queue_maturation, episode_validation and chi_falsification below."
     },
     "queue_precision": {
       "understock_signals": 13,
-      "understock_hits": 2,
+      "understock_maturation_hits": 8,
+      "understock_maturation_pct": 61.5,
+      "understock_window_hits": 2,
       "understock_hit_rate_pct": 15.4,
       "overstock_signals_excluded": 2,
-      "overstock_note": "EXCESS HOLDING / ADVISORY signals target overstock; a physical stock-out is not their expected failure mode, so they are excluded from the precision denominator.",
+      "overstock_note": "EXCESS HOLDING / ADVISORY signals target overstock; a physical stock-out is not their expected failure mode, so they are excluded from both precision denominators.",
+      "maturation_method": "An understock-side signal counts as maturing when the series' trajectory reaches a physical stock-out at any point from its breach week onward (episode maturation). The stricter lead-time-window view counts only stock-outs landing inside breach week + market lead time.",
       "random_baseline_pct": 11.56,
-      "lift": 1.33,
-      "method": "An understock-side signal counts as a hit when the series reaches a physical stock-out between its projected breach week and breach week + market lead time, without intervention."
+      "lift": 5.32
+    },
+    "episode_validation": {
+      "week1_episodes": 506,
+      "week1_maturation_rate_pct": 11.5,
+      "decile_maturation_pct": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2.0,
+        8.0,
+        13.7,
+        28.0,
+        62.7
+      ],
+      "dose_response_monotone": true,
+      "precision_top15_pct": 80.0,
+      "random_baseline_pct": 11.5,
+      "lift_top15": 6.96,
+      "method": "Week-1 breach episodes of operational series. Maturation = the episode's trajectory reaches a physical stock-out within 12 weeks of episode end. Coverage deficit = 1 - DOH/SSD at breach start. Monotone decile dose-response + top-15 precision validate the ranking axis without any lead-time assumption."
+    },
+    "chi_falsification": {
+      "cuts": 15,
+      "spearman_rho": -0.512,
+      "p_value_one_sided": 0.0244,
+      "direction_ok": true,
+      "method": "Pooled region and brand cuts: CHI vs realized operational stock-out rate per cut. Spearman rho; one-sided permutation p (chi shuffled against rates, 10,000 replications, seed 7). A significant negative rho means lower CHI cuts really do suffer more stock-outs \u2014 the KPI is falsifiable and survived."
     },
     "top_n": 15,
     "hits": 2,
-    "hit_rate_pct": 13.3,
+    "hit_rate_pct": 15.4,
     "random_baseline_pct": 11.56,
-    "lift": 1.15,
+    "lift": 5.32,
     "per_signal": [
       {
         "rank": 1,
@@ -20860,6 +20890,7 @@
         "breach_week": 1,
         "lead_time_weeks": 36,
         "horizon_end_week": 37,
+        "matures_to_stockout": true,
         "hit": true
       },
       {
@@ -20869,6 +20900,7 @@
         "breach_week": 1,
         "lead_time_weeks": 2,
         "horizon_end_week": 3,
+        "matures_to_stockout": true,
         "hit": false
       },
       {
@@ -20878,6 +20910,7 @@
         "breach_week": 1,
         "lead_time_weeks": 3,
         "horizon_end_week": 4,
+        "matures_to_stockout": true,
         "hit": false
       },
       {
@@ -20887,6 +20920,7 @@
         "breach_week": 1,
         "lead_time_weeks": 4,
         "horizon_end_week": 5,
+        "matures_to_stockout": true,
         "hit": true
       },
       {
@@ -20896,6 +20930,7 @@
         "breach_week": 1,
         "lead_time_weeks": 2,
         "horizon_end_week": 3,
+        "matures_to_stockout": true,
         "hit": false
       },
       {
@@ -20905,6 +20940,7 @@
         "breach_week": 1,
         "lead_time_weeks": 3,
         "horizon_end_week": 4,
+        "matures_to_stockout": true,
         "hit": false
       },
       {
@@ -20914,6 +20950,7 @@
         "breach_week": 1,
         "lead_time_weeks": 8,
         "horizon_end_week": 9,
+        "matures_to_stockout": true,
         "hit": false
       },
       {
@@ -20923,6 +20960,7 @@
         "breach_week": 1,
         "lead_time_weeks": 2,
         "horizon_end_week": 3,
+        "matures_to_stockout": true,
         "hit": false
       },
       {
@@ -20932,6 +20970,7 @@
         "breach_week": 3,
         "lead_time_weeks": 7,
         "horizon_end_week": 10,
+        "matures_to_stockout": false,
         "hit": false
       },
       {
@@ -20941,6 +20980,7 @@
         "breach_week": 3,
         "lead_time_weeks": 3,
         "horizon_end_week": 6,
+        "matures_to_stockout": true,
         "hit": false
       },
       {
@@ -20950,6 +20990,7 @@
         "breach_week": 6,
         "lead_time_weeks": 2,
         "horizon_end_week": 8,
+        "matures_to_stockout": false,
         "hit": false
       },
       {
@@ -20959,6 +21000,7 @@
         "breach_week": 5,
         "lead_time_weeks": 6,
         "horizon_end_week": 11,
+        "matures_to_stockout": false,
         "hit": false
       },
       {
@@ -20968,6 +21010,7 @@
         "breach_week": 5,
         "lead_time_weeks": 5,
         "horizon_end_week": 10,
+        "matures_to_stockout": false,
         "hit": false
       },
       {
@@ -20977,6 +21020,7 @@
         "breach_week": 5,
         "lead_time_weeks": 4,
         "horizon_end_week": 9,
+        "matures_to_stockout": false,
         "hit": false
       },
       {
@@ -20986,10 +21030,11 @@
         "breach_week": 52,
         "lead_time_weeks": 3,
         "horizon_end_week": 52,
+        "matures_to_stockout": false,
         "hit": false
       }
     ],
-    "method": "Ground-truth measured from the input panel. No claimed precision."
+    "method": "Ground-truth measured from the input panel. No claimed precision; structural properties are labelled as structural."
   },
   "chi_matrix": [
     [

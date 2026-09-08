@@ -1,0 +1,37 @@
+{
+  "method": "Direction-aware rank-ensemble over breach episodes; features known at episode start; directions and weights derived on episodes starting weeks 1-40 only; validated on held-out episodes starting weeks 41-52. Label: episode matures into a physical stock-out within 12 weeks of its end.",
+  "features": {
+    "coverage_deficit": 0.961,
+    "demand_erosion": 0.548,
+    "demand_stability": 0.607,
+    "supply_drop": 0.502,
+    "unconfirmed_share": 0.534,
+    "first_episode": 0.376
+  },
+  "directions": {
+    "coverage_deficit": 1,
+    "demand_erosion": 1,
+    "demand_stability": 1,
+    "supply_drop": 1,
+    "unconfirmed_share": 1,
+    "first_episode": -1
+  },
+  "weights": {
+    "coverage_deficit": 0.5939,
+    "demand_erosion": 0.062,
+    "demand_stability": 0.1386,
+    "supply_drop": 0.0024,
+    "unconfirmed_share": 0.0433,
+    "first_episode": 0.1597
+  },
+  "validation": {
+    "train_episodes": 4256,
+    "train_matured": 618,
+    "train_auc": 0.959,
+    "test_episodes": 937,
+    "test_matured": 27,
+    "test_auc": 0.871,
+    "naive_coverage_train_auc": 0.961,
+    "naive_coverage_test_auc": 0.949
+  }
+}

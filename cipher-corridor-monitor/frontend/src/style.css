@@ -6207,3 +6207,12 @@ th.col-action { width: 18%; }
 .precision-sub { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); }
 .precision-note { font-size: 11px; line-height: 1.6; color: var(--text-muted); margin: 10px 0 0; }
 @media (max-width: 900px) { .precision-stats { grid-template-columns: repeat(2, 1fr); } }
+
+/* ── Precision audit: dose-response bars ── */
+.precision-doserow { margin-top: 12px; }
+.precision-dose-lbl { font-size: 9.5px; font-weight: 600; letter-spacing: 0.08em; color: var(--text-muted); }
+.precision-deciles { display: flex; align-items: flex-end; gap: 6px; height: 56px; margin-top: 6px; }
+.precision-dec { display: flex; flex-direction: column; align-items: center; gap: 3px; flex: 1; height: 100%; }
+.precision-dec-bar { flex: 1; width: 100%; display: flex; align-items: flex-end; background: var(--surface-subtle); border: 1px solid var(--border); }
+.precision-dec-bar span { display: block; width: 100%; background: var(--ink); }
+.precision-dec-lbl { font-size: 9px; color: var(--text-muted); }

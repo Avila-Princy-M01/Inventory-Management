@@ -425,6 +425,36 @@ except (KeyError, TypeError) as exc:
     fail(f"Could not read signal_precision: {exc}")
     failures.append(str(exc))
 
+# N.2 falsifiability extensions: episode validation + CHI permutation test
+try:
+    sp2 = data["signal_precision"]
+    ev2 = sp2["episode_validation"]
+    cf2 = sp2["chi_falsification"]
+    assert_check(
+        ev2.get("week1_episodes", 0) > 0
+        and 0 <= ev2.get("precision_top15_pct", -1) <= 100
+        and ev2.get("dose_response_monotone") is True,
+        f"episode_validation: {ev2.get('week1_episodes')} week-1 episodes, "
+        f"precision@15 {ev2.get('precision_top15_pct')}%, monotone dose-response",
+        "episode_validation inconsistent",
+    )
+    assert_check(
+        "structural_note" in sp2.get("early_warning", {}),
+        "early_warning carries structural disclosure note",
+        "structural disclosure missing",
+    )
+    assert_check(
+        cf2.get("cuts", 0) >= 6
+        and cf2.get("direction_ok") is True
+        and 0 <= cf2.get("p_value_one_sided", 1) <= 0.05,
+        f"chi_falsification: {cf2.get('cuts')} cuts, rho {cf2.get('spearman_rho')}, "
+        f"permutation p {cf2.get('p_value_one_sided')}",
+        "chi_falsification inconsistent",
+    )
+except (KeyError, TypeError) as exc:
+    fail(f"Could not read signal_precision extensions: {exc}")
+    failures.append(str(exc))
+
 # ---------------------------------------------------------------------------
 # Summary
 # ---------------------------------------------------------------------------

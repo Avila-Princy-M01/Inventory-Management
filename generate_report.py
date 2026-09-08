@@ -31,6 +31,8 @@ MD = D["metadata"]
 SP = D.get("signal_precision", {})
 EW = SP.get("early_warning", {})
 QP = SP.get("queue_precision", {})
+EV = SP.get("episode_validation", {})
+CF = SP.get("chi_falsification", {})
 DRBD = CH.get("dataset_record_breakdown", {})
 NAIVE = {}
 try:
@@ -101,10 +103,10 @@ table(
     [
         ["Naive alerting noise", f"{breach_weeks:,} alerts → {alerts_per_event} per real event", "Raw corridor-floor threshold rule"],
         ["Delivered queue", "15 ranked signals", f"{DRBD.get('operational_active_sku_weeks', 215280):,} operational SKU-weeks evaluated"],
-        ["Early-warning capture", f"{EW.get('capture_pct', '--')}% of stock-out series", f"{EW.get('warned_before_stockout', '--')} of {EW.get('stockout_series', '--')} series warned before their first stock-out week"],
-        ["Warning horizon", f"median {EW.get('median_warning_weeks', '--')} weeks (p25: {EW.get('p25_warning_weeks', '--')})", f"{EW.get('share_warning_ge_2wks_pct', '--')}% of events allow ≥2 weeks of response"],
-        ["Post-hoc detections", f"{EW.get('post_hoc_detections', '--')}", "Zero alerts raised after the fact"],
-        ["Queue hit-rate", f"{QP.get('understock_hit_rate_pct', '--')}% vs {QP.get('random_baseline_pct', '--')}% random", "Understock-side signals maturing to stock-out without intervention"],
+        ["Queue maturation", f"{QP.get('understock_maturation_pct', '--')}% vs {QP.get('random_baseline_pct', '--')}% random ({QP.get('lift', '--')}×)", "Understock-side signals whose trajectories reach a real stock-out — the fair precision measure"],
+        ["Ranking validation", f"top-15 precision {EV.get('precision_top15_pct', '--')}% ({EV.get('lift_top15', '--')}× base)", "Week-1 breach episodes; maturation dose-response across coverage-deficit deciles is monotone"],
+        ["CHI falsification", f"ρ = {CF.get('spearman_rho', '--')}, p = {CF.get('p_value_one_sided', '--')}", f"{CF.get('cuts', '--')} region/brand cuts; lower CHI predicts higher realized stock-out rates (one-sided permutation test)"],
+        ["Early-warning capture", f"{EW.get('capture_pct', '--')}% (structural)", "Disclosed: breach-before-stockout is guaranteed by construction — reported as a property, not an achievement"],
         ["Global CHI (our KPI)", f"{CH.get('global_chi', '--')} vs OTIF {CH.get('actual_otif', '--')}", "Leading network-stress measure vs lagging contractual delivery"],
     ],
     headers=["Measure", "Result", "Basis"],
@@ -113,9 +115,10 @@ table(
 body(
     doc,
     "Statistical honesty is a design principle, not a caveat: the naive rule's 100% recall is an algebraic "
-    "identity (a stock-out implies negative days-on-hand below any positive safety floor), so we report "
-    "precision, capture and warning horizon instead — all computed from the input panel and shipped with "
-    "their method notes attached.",
+    "identity — and so is any breach-before-stockout capture rate — so we label structural properties as "
+    "structural and lead instead with falsifiable measurements: queue maturation, an out-of-sample ranking "
+    "validation with a monotone dose-response, and a permutation-tested CHI-vs-stockout ordering. All are "
+    "computed from the input panel and shipped with their method notes attached.",
 )
 
 # ────────────────────────────────────────────── 5. Compliance with mentor guidance

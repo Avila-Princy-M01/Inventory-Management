@@ -29,6 +29,8 @@ CH = D["corridor_health"]
 SP = D.get("signal_precision", {})
 EW = SP.get("early_warning", {})
 QP = SP.get("queue_precision", {})
+EV = SP.get("episode_validation", {})
+CF = SP.get("chi_falsification", {})
 DRBD = CH.get("dataset_record_breakdown", {})
 NAIVE = {}
 try:
@@ -217,14 +219,14 @@ s = add_slide()
 textbox(s, Inches(0.7), Inches(0.55), Inches(11), Inches(0.6),
         [("MEASURED, NOT CLAIMED — GROUND TRUTH FROM THE PANEL", 15, True, MUTED, MONO, 0)])
 tiles = [
-    (f"{EW.get('capture_pct', '--')}%", "OF STOCK-OUT SERIES WARNED IN ADVANCE",
-     f"{EW.get('warned_before_stockout', '--')} of {EW.get('stockout_series', '--')} series had a breach BEFORE the stock-out"),
-    (f"median {EW.get('median_warning_weeks', '--')} wks", "OF WARNING, MEASURED",
-     f"p25 {EW.get('p25_warning_weeks', '--')} weeks · {EW.get('share_warning_ge_2wks_pct', '--')}% of events allow ≥2 weeks of response"),
-    (f"{EW.get('post_hoc_detections', '--')}", "POST-HOC DETECTIONS",
-     "zero alerts raised after the fact"),
-    (f"{QP.get('understock_hit_rate_pct', '--')}% vs {QP.get('random_baseline_pct', '--')}%", "QUEUE HIT-RATE vs RANDOM",
-     "the queue's purpose is that most breaches never mature"),
+    (f"{QP.get('understock_maturation_pct', '--')}%", "QUEUE MATURATION (UNDERSTOCK SIDE)",
+     f"{QP.get('understock_maturation_hits', '--')} of {QP.get('understock_signals', '--')} signals' trajectories reach a real stock-out · {QP.get('lift', '--')}× random baseline"),
+    (f"{EV.get('precision_top15_pct', '--')}%", "RANKING VALIDATION · TOP-15 PRECISION",
+     f"week-1 breach episodes · {EV.get('lift_top15', '--')}× base rate · {'monotone' if EV.get('dose_response_monotone') else 'non-monotone'} dose-response"),
+    (f"ρ={CF.get('spearman_rho', '--')}, p={CF.get('p_value_one_sided', '--')}", "CHI FALSIFICATION TEST",
+     f"{CF.get('cuts', '--')} region/brand cuts · lower CHI ⇒ more realized stock-outs"),
+    (f"{EW.get('capture_pct', '--')}%*", "EARLY-WARNING CAPTURE (*STRUCTURAL)",
+     "breach-before-stockout is guaranteed by construction — disclosed, not claimed"),
 ]
 positions = [(Inches(0.7), Inches(1.5)), (Inches(6.9), Inches(1.5)),
              (Inches(0.7), Inches(4.0)), (Inches(6.9), Inches(4.0))]

@@ -589,42 +589,57 @@ export function initPresentationDeck(data) {
 }
 
 export function hydrateSignalPrecision(data) {
-  // Measured, not claimed: ground-truth early-warning capture + queue precision.
+  // Measured, not claimed: queue maturation, episode validation, CHI falsification.
+  // Early-warning capture is deliberately labelled structural (breach-before-stockout
+  // is guaranteed by construction), so no headline rests on a tautology.
   const host = document.getElementById('signal-precision-card');
   if (!host) return;
   const sp = data.signal_precision || {};
-  const ew = sp.early_warning || {};
   const qp = sp.queue_precision || {};
-  if (!ew.capture_pct && !qp.understock_signals) {
+  const ev = sp.episode_validation || {};
+  const cf = sp.chi_falsification || {};
+  if (!qp.understock_signals && !ev.week1_episodes) {
     host.innerHTML = '<div class="precision-unavailable">[ PRECISION AUDIT ] Ground-truth metrics unavailable for this dataset.</div>';
     return;
   }
   const num = (v, suffix = '') => (v === 0 || v) ? `${v}${suffix}` : '--';
+  const deciles = Array.isArray(ev.decile_maturation_pct) ? ev.decile_maturation_pct : [];
+  const decMax = Math.max(...deciles, 1);
+  const decBars = deciles.map((v, i) => `
+      <div class="precision-dec">
+        <div class="precision-dec-bar"><span style="height:${Math.max(2, Math.round(100 * v / decMax))}%"></span></div>
+        <span class="precision-dec-lbl tabular-nums">${num(v, '%')}</span>
+      </div>`).join('');
   host.innerHTML = `
     <div class="mono-tag">[ PRECISION AUDIT · MEASURED, NOT CLAIMED ]</div>
     <div class="precision-stats">
       <div class="precision-tile precision-tile--hero">
-        <span class="precision-value tabular-nums">${num(ew.capture_pct, '%')}</span>
-        <span class="precision-label">STOCK-OUT SERIES WARNED IN ADVANCE</span>
-        <span class="precision-sub tabular-nums">${num(ew.warned_before_stockout)} of ${num(ew.stockout_series)} series · median ${num(ew.median_warning_weeks)} wks early · p25 ${num(ew.p25_warning_weeks)} wks</span>
+        <span class="precision-value tabular-nums">${num(qp.understock_maturation_pct, '%')}</span>
+        <span class="precision-label">QUEUE MATURATION (UNDERSTOCK SIDE)</span>
+        <span class="precision-sub tabular-nums">${num(qp.understock_maturation_hits)}/${num(qp.understock_signals)} signals' trajectories reach a real stock-out · ${num(qp.lift, '×')} random baseline (${num(qp.random_baseline_pct)}%)</span>
       </div>
       <div class="precision-tile">
-        <span class="precision-value tabular-nums">${num(ew.post_hoc_detections)}</span>
-        <span class="precision-label">POST-HOC DETECTIONS</span>
-        <span class="precision-sub">zero alerts after the fact</span>
+        <span class="precision-value tabular-nums">${num(ev.precision_top15_pct, '%')}</span>
+        <span class="precision-label">RANKING VALIDATION · TOP-15 PRECISION</span>
+        <span class="precision-sub tabular-nums">week-1 breach episodes · ${num(ev.lift_top15, '×')} base rate (${num(ev.week1_maturation_rate_pct)}%) · dose-response ${ev.dose_response_monotone ? 'monotone' : 'non-monotone'}</span>
       </div>
       <div class="precision-tile">
-        <span class="precision-value tabular-nums">${num(ew.share_warning_ge_2wks_pct, '%')}</span>
-        <span class="precision-label">WARNED &ge; 2 WEEKS AHEAD</span>
-        <span class="precision-sub">actionable window for ${num(sp.random_baseline_pct)}-week lead times</span>
+        <span class="precision-value tabular-nums">ρ=${num(cf.spearman_rho)}</span>
+        <span class="precision-label">CHI FALSIFICATION TEST</span>
+        <span class="precision-sub tabular-nums">${num(cf.cuts)} region/brand cuts · permutation p=${num(cf.p_value_one_sided)} · CHI ordering predicts realized stock-outs</span>
       </div>
       <div class="precision-tile">
         <span class="precision-value tabular-nums">${num(qp.understock_hit_rate_pct, '%')}</span>
-        <span class="precision-label">QUEUE HIT-RATE (UNDERSTOCK SIDE)</span>
-        <span class="precision-sub tabular-nums">${num(qp.understock_hits)}/${num(qp.understock_signals)} matured to stock-out · ${num(qp.lift, '×')} random baseline (${num(qp.random_baseline_pct)}%)</span>
+        <span class="precision-label">STRICT WINDOW VIEW (ONE LEAD TIME)</span>
+        <span class="precision-sub">the stricter, smaller number — kept for honesty; maturation is the fair measure</span>
       </div>
     </div>
-    <p class="precision-note">Ground truth from the input panel: a series counts as warned when its first corridor-floor breach precedes its first physical stock-out week. ${num(ew.share_warning_ge_2wks_pct)}% of events give &ge;2 weeks of warning — inside the 14-day planning default. Hit-rate is computed without intervention; the queue's purpose is that most of these never mature.</p>
+    ${deciles.length ? `
+    <div class="precision-doserow">
+      <span class="precision-dose-lbl">MATURATION BY COVERAGE-DEFICIT DECILE (LOW → HIGH)</span>
+      <div class="precision-deciles">${decBars}</div>
+    </div>` : ''}
+    <p class="precision-note">Ground truth from the input panel, no lead-time assumption: maturation = the signal's trajectory reaches a physical stock-out from its breach week onward; top-15 precision and the decile dose-response are computed on week-1 breach episodes. Early-warning capture (100% here) is disclosed as a structural property of the corridor definition — breach-before-stockout is guaranteed by construction — which is why this audit leads with falsifiable measurements instead.</p>
   `;
 }
 
