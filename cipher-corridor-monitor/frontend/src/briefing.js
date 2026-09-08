@@ -262,6 +262,7 @@ export function renderSlide(index, data) {
   const acuteSigs = topSigs.filter(s => (s.action_type || '').includes('CRISIS') || (s.action_type || '').includes('EXPEDITE'));
   const m = MEETING_FORMATS[currentMeetingId] || MEETING_FORMATS['SOP_MONTHLY'];
   const chronic = ex.chronic_summary || {};
+  const totalCapAtRisk = topSigs.reduce((a, s) => a + (s.capital_at_risk_inr || 0), 0);
   const totalTrappedCr = chronic.total_capital_freed_inr !== undefined ? chronic.total_capital_freed_inr / 1e7 : null;
   const staleSubsetCr = chronic.stale_capital_freed_inr !== undefined ? chronic.stale_capital_freed_inr / 1e7 : null;
   // Live planner directive from the highest-priority stale series in the recalibration queue
@@ -646,8 +647,10 @@ export function hydrateStaticSections(data) {
 
   const synthCol3 = document.getElementById('synth-col-3-text');
   if (synthCol3) {
-    const staleCount = bc.stale_parameter_corridors !== undefined ? bc.stale_parameter_corridors : '--';
-    synthCol3.innerHTML = `Our parameter audit identified <strong>${staleCount} corridors with stale safety stock in SAP</strong>. Recalibrating SSD eliminates <strong>${falseAlerts} false alarms/year</strong> and frees up <strong>₹${trappedCr} Cr</strong> in frozen working capital.`;
+    const staleCount3 = bc.stale_parameter_corridors !== undefined ? bc.stale_parameter_corridors : '--';
+    const falseAlerts3 = bc.false_alerts_eliminated !== undefined ? bc.false_alerts_eliminated.toLocaleString() : '--';
+    const trappedCr3 = bc.trapped_capital_cr !== undefined ? bc.trapped_capital_cr : '--';
+    synthCol3.innerHTML = `Our parameter audit identified <strong>${staleCount3} corridors with stale safety stock in SAP</strong>. Recalibrating SSD eliminates <strong>${falseAlerts3} false alarms/year</strong> and frees up <strong>₹${trappedCr3} Cr</strong> in frozen working capital.`;
   }
 
   const synthCol4 = document.getElementById('synth-col-4-text');
