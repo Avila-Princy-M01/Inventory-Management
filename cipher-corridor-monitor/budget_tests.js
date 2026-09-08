@@ -15,7 +15,7 @@ const cssLines  = css.trimEnd().split('\n').length;
 const htmlLines = html.trimEnd().split('\n').length;
 
 // Line count ratchets
-check('style.css lines <= 6200', cssLines <= 9400, String(cssLines));
+check('style.css lines <= 9400', cssLines <= 9400, String(cssLines));
 check('index.html lines <= 1261', htmlLines <= 1261, String(htmlLines));
 
 // Hardcoded 86.8 -- zero tolerance
@@ -42,6 +42,25 @@ check('[AI] boxes in briefing <= 2', aiBriefing <= 2, String(aiBriefing));
 // No inline hex in JS string literals
 const jsHexLiterals = (allJS.match(/'#[0-9A-Fa-f]{3,6}'/g)||[]).length;
 check('Inline hex literals in JS <= 60', jsHexLiterals <= 60, String(jsHexLiterals));
+
+// ── Honest hygiene gates (added: count reality, not a subset) ──
+
+// Guard: the Google Fonts link must not download Inter (design spec says no Inter)
+const fontLink = (html.match(/fonts\.googleapis\.com[^"']*/) || [''])[0];
+check('No Inter in Google Fonts link', !/family=Inter/i.test(fontLink), /family=Inter/i.test(fontLink) ? 'Inter still downloaded' : 'clean');
+
+// Cosmetic inline styles in index.html (display:none toggles are functional state anchors, allowed)
+const inlineStyles = (html.match(/style="/g) || []).length;
+const functionalDisplay = (html.match(/style="[^"]*display/g) || []).length;
+const cosmeticInline = inlineStyles - functionalDisplay;
+check('Cosmetic inline styles in index.html = 0', cosmeticInline === 0, cosmeticInline + ' cosmetic (' + functionalDisplay + ' functional display toggles)');
+
+// Raw hex occurrences across JS, EXCLUDING style="..." attribute content (CSS context uses var())
+// and excluding quoted Chart.js/canvas palette literals (counted by the gate above).
+const rawJsHex = (allJS.match(/#[0-9A-Fa-f]{6}\b/g) || []).length;
+const styleAttrHex = (allJS.match(/style="[^"]*"/g) || []).join('').match(/#[0-9A-Fa-f]{6}\b/g);
+const jsRawHexOutsideStyles = rawJsHex - (styleAttrHex ? styleAttrHex.length : 0);
+check('JS hex occurrences outside style attrs <= 60', jsRawHexOutsideStyles <= 60, String(jsRawHexOutsideStyles));
 
 // Backend tests
 const { execSync } = require('child_process');
