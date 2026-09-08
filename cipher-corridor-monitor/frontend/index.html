@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;600;700&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="src/style.css">
   <!-- Offline Insurance: Primary Local Chart.js with CDN Fallback -->
@@ -719,7 +719,7 @@
                 </div>
               </div>
 
-              <div class="callout-block" style="margin-top:16px;">
+              <div class="callout-block u-mt-16">
                 <div class="callout-tag">[ TEAM CIPHER ORIGINAL KPI ]</div>
                 <div class="callout-heading">CORRIDOR HEALTH INDEX (CHI)</div>
                 <p class="callout-body">Novel inventory corridor integrity metric based on Weighted Severity Penalty (WSP) evaluated over 260,000+ SKU-week records.</p>
@@ -806,10 +806,10 @@
 
           <!-- Masterdata Interactive Workflow Toolbar -->
           <div class="masterdata-toolbar-row">
-            <div class="masterdata-callout" style="margin-bottom:0;">
+            <div class="masterdata-callout u-mb-0">
               <span id="masterdata-summary-stats" class="tabular-nums">Loading chronic series data…</span>
             </div>
-            <div style="display:flex; align-items:center; gap:10px;">
+            <div class="u-flex-row">
               <button class="btn-batch-sync" id="btn-batch-stage-sap" disabled>
                 <span>⚡ STAGE SELECTED FOR SAP/OMP (<span id="selected-count">0</span>)</span>
               </button>
@@ -823,12 +823,12 @@
                   <th class="sap-checkbox-col">
                     <input type="checkbox" id="cb-masterdata-select-all" class="sap-select-cb" title="Select All Visible Series" />
                   </th>
-                  <th style="width: 5%">ID</th>
-                  <th style="width: 25%">PRODUCT &amp; CORRIDOR</th>
-                  <th style="width: 16%">AUDIT STATUS</th>
-                  <th class="text-right" style="width: 14%">METRICS (DOH/SSD)</th>
-                  <th style="width: 22%">RECALIBRATION VECTOR</th>
-                  <th class="text-right" style="width: 18%">ACTION &amp; FINANCIAL LIBERATION</th>
+                  <th class="col-id">ID</th>
+                  <th class="col-product">PRODUCT &amp; CORRIDOR</th>
+                  <th class="col-audit">AUDIT STATUS</th>
+                  <th class="text-right col-metrics">METRICS (DOH/SSD)</th>
+                  <th class="col-vector">RECALIBRATION VECTOR</th>
+                  <th class="text-right col-action">ACTION &amp; FINANCIAL LIBERATION</th>
                 </tr>
               </thead>
               <tbody id="tbody-masterdata">
@@ -897,7 +897,7 @@
         <section id="view-scenario" class="view-section">
           <div class="view-header">
             <div>
-              <div class="mono-tag" style="margin-bottom:4px;">[ ORIGINAL CIPHER METRIC · NOVO NORDISK INNOVATION ]</div>
+              <div class="mono-tag u-mb-4">[ ORIGINAL CIPHER METRIC · NOVO NORDISK INNOVATION ]</div>
               <h1 class="view-title">CORRIDOR HEALTH INDEX (CHI) DERIVATION &amp; SENSITIVITY MATRIX</h1>
               <p class="view-subtitle">Mathematical derivation, WSP penalty formulation, 12×20 multi-parametric stress matrix, and OTIF comparison</p>
             </div>
@@ -1001,7 +1001,7 @@
             <div class="chi-controls-panel">
               <div class="chi-panel-title">INTERACTIVE PARAMETER CONTROLS</div>
 
-              <div class="slider-group" style="margin-bottom:14px;">
+              <div class="slider-group u-mb-14">
                 <div class="slider-row">
                   <span class="slider-label-text">GLOBAL LEAD TIME PARAMETER</span>
                   <span class="slider-val-text tabular-nums" id="view-val-lt">03 WEEKS</span>
@@ -1014,7 +1014,7 @@
                 </div>
               </div>
 
-              <div class="slider-group" style="margin-bottom:16px;">
+              <div class="slider-group u-mb-16">
                 <div class="slider-row">
                   <span class="slider-label-text">CEILING MULTIPLIER (BUFFER)</span>
                   <span class="slider-val-text tabular-nums" id="view-val-cm">2.0×</span>
@@ -1027,8 +1027,8 @@
                 </div>
               </div>
 
-              <div class="detail-section-label" style="margin-bottom:8px;">ALERT PERSISTENCE GATES</div>
-              <div class="gates-grid" style="margin-bottom:16px;">
+              <div class="detail-section-label u-mb-8">ALERT PERSISTENCE GATES</div>
+              <div class="gates-grid u-mb-16">
                 <div class="gate-tile">
                   <div class="gate-tile-label">UNDERSTOCK GATE</div>
                   <div class="gate-row">
@@ -1046,7 +1046,7 @@
               </div>
 
               <div class="chi-quick-scenarios">
-                <div class="detail-section-label" style="margin-bottom:6px;">PRE-SET STRESS TEST PROFILES</div>
+                <div class="detail-section-label u-mb-6">PRE-SET STRESS TEST PROFILES</div>
                 <button class="btn-scenario-preset" data-lt="1" data-cm="3.0">
                   <span class="preset-name">BEST-CASE ELASTIC</span>
                   <span class="preset-meta">L=1W, 3.0× · CHI: 91.3%</span>

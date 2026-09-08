@@ -231,14 +231,14 @@ function renderRows() {
         #${r.row_id}
       </td>
       <td style="vertical-align: middle;">
-        <div style="font-weight:700; font-size:13px; color:#0F172A; display:flex; align-items:center; gap:6px;">
+        <div style="font-weight:700; font-size:13px; color:var(--ink); display:flex; align-items:center; gap:6px;">
           <span>${r.brand||''}</span>
-          <span style="font-size:9.5px; font-family:var(--font-mono); font-weight:600; color:#64748B; background:#F1F5F9; padding:1px 5px; border-radius:3px;">${r.mrp || 'MRP'}</span>
+          <span style="font-size:9.5px; font-family:var(--font-mono); font-weight:600; color:var(--text-muted); background:var(--surface-subtle); padding:1px 5px; border-radius:3px;">${r.mrp || 'MRP'}</span>
         </div>
-        <div style="font-size:11px; color:#475569; margin-top:2px;">
+        <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">
           <strong>${r.country||''}</strong> &middot; ${r.region||''}
         </div>
-        <div style="font-size:10px; color:#64748B; max-width:260px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-top:2px;" title="${r.product_group||''}">
+        <div style="font-size:10px; color:var(--text-muted); max-width:260px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-top:2px;" title="${r.product_group||''}">
           ${r.product_group||''}
         </div>
       </td>
@@ -250,7 +250,7 @@ function renderRows() {
               ? `<span class="status-chip status-chip-stale" title="Safety Stock Days unchanged for 52W while demand shifted ±${shiftPct.toFixed(1)}%">⚡ STALE SSD</span>` 
               : `<span class="status-chip status-chip-monitored" title="Safety stock buffer within operational bounds">MONITORED</span>`}
         </div>
-        <div style="font-size: 11px; font-family:var(--font-mono); color: #475569;">
+        <div style="font-size: 11px; font-family:var(--font-mono); color: var(--text-muted);">
           Demand: <strong class="${isStale ? 'shift-val-alert' : 'shift-val-normal'}">${shiftPct > 0 ? '+' : ''}${shiftPct.toFixed(1)}%</strong>
         </div>
       </td>
@@ -258,7 +258,7 @@ function renderRows() {
         <div style="background:${rs.bg}; color:${rs.color}; border:1px solid ${rs.border}; font-weight:700; display:inline-block; padding:2px 8px; border-radius:4px; font-size:11.5px; font-family:var(--font-mono); margin-bottom:3px;">
           Ratio: ${ratio.toFixed(2)}
         </div>
-        <div style="font-size: 10.5px; color: #64748B; font-family:var(--font-mono);">Min DOH: <strong>${minDOH}d</strong></div>
+        <div style="font-size: 10.5px; color: var(--text-muted); font-family:var(--font-mono);">Min DOH: <strong>${minDOH}d</strong></div>
       </td>
       <td style="vertical-align: middle;">
         <div class="recal-vector">

@@ -6177,3 +6177,21 @@ button {
 .overflow-menu-item:hover { background: var(--bg); }
 
 
+
+/* ── Layout & Typography Utilities (inline-style elimination) ── */
+.u-mt-16 { margin-top: 16px; }
+.u-mb-0 { margin-bottom: 0; }
+.u-mb-4 { margin-bottom: 4px; }
+.u-mb-6 { margin-bottom: 6px; }
+.u-mb-8 { margin-bottom: 8px; }
+.u-mb-14 { margin-bottom: 14px; }
+.u-mb-16 { margin-bottom: 16px; }
+.u-flex-row { display: flex; align-items: center; gap: 10px; }
+
+/* Masterdata recalibration queue column widths */
+th.col-id { width: 5%; }
+th.col-product { width: 25%; }
+th.col-audit { width: 16%; }
+th.col-metrics { width: 14%; }
+th.col-vector { width: 22%; }
+th.col-action { width: 18%; }

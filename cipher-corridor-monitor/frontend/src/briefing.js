@@ -276,7 +276,7 @@ export function renderSlide(index, data) {
   const transferCards = transferSigs.map(s => {
     const t = s.intermarket_transfer;
     const grossCr = (s.capital_at_risk_inr || 0) / 1e7;
-    return `<div style="background:#FFFFFF;border:1px solid var(--border);padding:10px">
+    return `<div style="background:var(--surface);border:1px solid var(--border);padding:10px">
       <strong>${s.country}:</strong> ${Number(s.recommended_qty_units || t.transfer_qty || 0).toLocaleString()} U required.<br>
       Matched Donor: <strong>${t.donor_country}</strong>.<br>
       Donor Post-Transfer: <strong>${t.donor_post_doh}d DOH</strong> (safely above SSD floor).<br>
@@ -304,7 +304,7 @@ export function renderSlide(index, data) {
           </div>
           <div class="deck-kpi-grid">
             <div class="deck-kpi-tile">
-              <div class="deck-kpi-val" style="color:#0072CE">${ch.global_chi !== undefined ? ch.global_chi : '--'}</div>
+              <div class="deck-kpi-val" style="color:var(--info-line)">${ch.global_chi !== undefined ? ch.global_chi : '--'}</div>
               <div class="deck-kpi-lbl">GLOBAL CHI SCORE</div>
               <div class="deck-kpi-note" style="color:var(--ok-text)">${(ch.global_chi || 0) >= 85 ? 'Operational (≥85% target)' : 'Critical Risk'}</div>
             </div>
@@ -325,13 +325,13 @@ export function renderSlide(index, data) {
             </div>
           </div>
           <div class="deck-split-grid">
-            <div class="deck-content-card" style="border-left: 4px solid #0072CE;">
-              <div class="deck-card-title" style="color: #0072CE;">[ PIONEERING METRIC ] CORRIDOR HEALTH INDEX (CHI) DERIVATION</div>
+            <div class="deck-content-card" style="border-left: 4px solid var(--info-line);">
+              <div class="deck-card-title" style="color: var(--info-line);">[ PIONEERING METRIC ] CORRIDOR HEALTH INDEX (CHI) DERIVATION</div>
               <div class="deck-card-body">
-                <div style="font-family:var(--font-mono);font-size:12px;font-weight:700;color:#0F172A;background:#EFF6FF;padding:6px 8px;margin-bottom:6px;border:1px solid #BFDBFE;">
+                <div style="font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--ink);background:var(--surface-subtle);padding:6px 8px;margin-bottom:6px;border:1px solid var(--border);">
                   CHI = max(0, 100 × (1 − Σ WSPₜ / (N × 1.5))) = ${ch.global_chi !== undefined ? ch.global_chi : '--'}%
                 </div>
-                <div style="font-size:11.5px;line-height:1.5;color:#334155;">
+                <div style="font-size:11.5px;line-height:1.5;color:var(--text-muted);">
                   • <strong>Why WSP:</strong> Stockout = 1.50 penalty; floor breach = quadratic <code>(1 - DOH/SSD)²</code>.<br>
                   • <strong>Why N × 1.5:</strong> Scale-free invariant denominator. Guaranteed 0% on catastrophic total stockout, 100% on perfect equilibrium.<br>
                   • <strong>Why CHI ≠ OTIF:</strong> OTIF reads 98.5% (lagging); CHI uncovers an <strong>11.7% latent risk gap</strong> where safety stock is collapsing before shelves run dry.
@@ -341,23 +341,23 @@ export function renderSlide(index, data) {
             <div class="deck-content-card">
               <div class="deck-card-title">12×20 MULTI-PARAMETRIC SENSITIVITY DEFENSE</div>
               <div class="deck-card-body">
-                <div style="font-size:11.5px;line-height:1.5;color:#334155;margin-bottom:8px;">
+                <div style="font-size:11.5px;line-height:1.5;color:var(--text-muted);margin-bottom:8px;">
                   Validated across 240 scenarios varying lead times (1–12W) and ceiling multipliers (1.1×–3.0×).
                 </div>
-                <div style="font-family:var(--font-mono);font-size:11px;background:#F8FAFC;border:1px solid #E2E8F0;padding:8px 10px;">
+                <div style="font-family:var(--font-mono);font-size:11px;background:var(--surface-subtle);border:1px solid var(--border);padding:8px 10px;">
                   <div>• Elastic Ceiling (1.1× → 3.0×): CHI climbs 71.8% → 91.3%</div>
                   <div>• Replenishment Horizon (1W → 12W): CHI drops 71.8% → 69.4%</div>
-                  <div style="color:#166534;font-weight:700;margin-top:2px;">• Baseline Sweet Spot (L=3W, 2.0×): ${ch.global_chi !== undefined ? ch.global_chi : "--"}% (≥85.0% SLA Target)</div>
+                  <div style="color:var(--status-ok-text);font-weight:700;margin-top:2px;">• Baseline Sweet Spot (L=3W, 2.0×): ${ch.global_chi !== undefined ? ch.global_chi : "--"}% (≥85.0% SLA Target)</div>
                 </div>
               </div>
             </div>
           </div>
           ${(ex.ai_briefing || (typeof window !== 'undefined' && window.DATA?.executive?.ai_briefing)) ? `
-            <div class="deck-content-card" style="margin-top: 14px; border-left: 4px solid #0072CE; background: #F8FAFC;">
-              <div class="deck-card-title" style="color: #0072CE; display: flex; align-items: center; gap: 6px;">
+            <div class="deck-content-card" style="margin-top: 14px; border-left: 4px solid var(--info-line); background: var(--surface-subtle);">
+              <div class="deck-card-title" style="color: var(--info-line); display: flex; align-items: center; gap: 6px;">
                 <span>[ AI ]</span> MULTI-AGENT AI EXECUTIVE SYNTHESIS
               </div>
-              <div class="deck-card-body" style="font-size: 12px; line-height: 1.6; color: #0F172A; font-weight: 500;">
+              <div class="deck-card-body" style="font-size: 12px; line-height: 1.6; color: var(--ink); font-weight: 500;">
                 ${ex.ai_briefing || window.DATA?.executive?.ai_briefing}
               </div>
             </div>
@@ -397,7 +397,7 @@ export function renderSlide(index, data) {
                 <p style="font-size:12px;line-height:1.6;margin-bottom:8px">
                   Top 5 corridors account for only <strong>${ex.top_5_share_pct !== undefined ? ex.top_5_share_pct : '--'}%</strong> of total stockout exposure; Top 10 account for <strong>${ex.top_10_share_pct !== undefined ? ex.top_10_share_pct : '--'}%</strong>.
                 </p>
-                <div style="font-family:var(--font-mono);font-size:11px;color:#9F2F2D;background:#FDEBEC;padding:8px 10px;border-left:3px solid #E61919">
+                <div style="font-family:var(--font-mono);font-size:11px;color:var(--status-crisis-text);background:var(--status-crisis-bg);padding:8px 10px;border-left:3px solid var(--hazard-red)">
                   KEY FINDING: Supply disruptions cannot be cured by firefighting top SKUs alone. Automated, systemic corridor governance is mandatory.
                 </div>
               </div>
@@ -430,15 +430,15 @@ export function renderSlide(index, data) {
             </div>
           </div>
           <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:14px">
-            <div class="deck-content-card" style="border-left:4px solid #DC2626">
-              <div class="deck-card-title" style="color:#DC2626">[ ! ] IRRECOVERABLE SEA FREIGHT CLIFF OVERRIDE</div>
+            <div class="deck-content-card" style="border-left:4px solid var(--hazard-red)">
+              <div class="deck-card-title" style="color:var(--hazard-red)">[ ! ] IRRECOVERABLE SEA FREIGHT CLIFF OVERRIDE</div>
               <div class="deck-card-body" style="font-size:12px">
                 ${topAcute ? `${topAcute.country} breach at week ${topAcute.breach_week} — with ${topAcute.market_lead_time || 36}-week sea lead time, standard ocean replenishment is <strong>ALREADY TOO LATE</strong>.` : 'No acute corridor currently exceeds its sea-freight recovery horizon.'}
                 Direct air charter dispatch authorized to protect market supply continuity.
               </div>
             </div>
-            <div class="deck-content-card" style="border-left:4px solid #0072CE">
-              <div class="deck-card-title" style="color:#0072CE">[↔] MATCHED INTER-MARKET SURPLUS TRANSFER ROUTES</div>
+            <div class="deck-content-card" style="border-left:4px solid var(--info-line)">
+              <div class="deck-card-title" style="color:var(--info-line)">[↔] MATCHED INTER-MARKET SURPLUS TRANSFER ROUTES</div>
               <div class="deck-card-body">
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-family:var(--font-mono);font-size:11px">
                   ${transferCards || '<div style="grid-column:1/-1;padding:10px">No inter-market transfer routes required in the current dataset.</div>'}
@@ -471,7 +471,7 @@ export function renderSlide(index, data) {
               <div class="deck-kpi-note">100% false-alert prone</div>
             </div>
             <div class="deck-kpi-tile">
-              <div class="deck-kpi-val" style="color:#D97706">${chronic.total_stale_parameters !== undefined ? chronic.total_stale_parameters : '--'}</div>
+              <div class="deck-kpi-val" style="color:var(--status-warn-text)">${chronic.total_stale_parameters !== undefined ? chronic.total_stale_parameters : '--'}</div>
               <div class="deck-kpi-lbl">STALE PARAMETERS</div>
               <div class="deck-kpi-note">Demand shift ≥30% with static SSD</div>
             </div>
@@ -481,14 +481,14 @@ export function renderSlide(index, data) {
               <div class="deck-kpi-note">52 weeks × ${chronic.total_pure_calibration_series !== undefined ? chronic.total_pure_calibration_series : '--'} series eliminated</div>
             </div>
             <div class="deck-kpi-tile">
-              <div class="deck-kpi-val" style="color:#0072CE">${totalTrappedCr !== null ? '₹' + totalTrappedCr.toFixed(1) + ' CR' : '--'}</div>
+              <div class="deck-kpi-val" style="color:var(--info-line)">${totalTrappedCr !== null ? '₹' + totalTrappedCr.toFixed(1) + ' CR' : '--'}</div>
               <div class="deck-kpi-lbl">TOTAL TRAPPED CAPITAL</div>
               <div class="deck-kpi-note">${totalTrappedCr !== null ? '₹' + (totalTrappedCr * 0.10).toFixed(1) + ' Cr/yr WACC saved · Phase-1: ₹' + (totalTrappedCr * 0.01).toFixed(1) + ' Cr' : 'Populates from live payload'}</div>
             </div>
           </div>
           <div class="deck-content-card">
             <div class="deck-card-title">SECTION 6.4 STALE PARAMETER &amp; DIRECTIVE AUDIT</div>
-            <div class="deck-card-body" style="font-family:var(--font-mono);font-size:12px;background:#F9FAFB;padding:12px;border-left:4px solid #D97706">
+            <div class="deck-card-body" style="font-family:var(--font-mono);font-size:12px;background:var(--surface-subtle);padding:12px;border-left:4px solid var(--status-warn-text)">
               <div style="margin-bottom:6px"><strong>Stale Master Data Flag:</strong> ${chronic.total_stale_parameters !== undefined ? chronic.total_stale_parameters : '--'} of ${chronic.total_pure_calibration_series !== undefined ? chronic.total_pure_calibration_series : '--'} chronic series flagged with frozen SSD settings despite &gt;30% demand velocity shifts over 6 months (Total Trapped: ${totalTrappedCr !== null ? '₹' + totalTrappedCr.toFixed(1) + ' Cr' : '--'}; Stale subset: ${staleSubsetCr !== null ? '₹' + staleSubsetCr.toFixed(1) + ' Cr' : '--'}; Phase 1 immediate: ${totalTrappedCr !== null ? '₹' + (totalTrappedCr * 0.01).toFixed(1) + ' Cr' : '--'}).</div>
               ${deckDirectiveHtml}
             </div>
@@ -1035,12 +1035,12 @@ export function initBriefingCharts(data) {
         const contentEl = document.getElementById('ai-briefing-summary-content');
         if (contentEl && json.answer) {
           contentEl.innerHTML = `
-            <div style="grid-column:1/-1;background:#FFFFFF;border:1px solid #BAE6FD;padding:14px;border-radius:2px;">
+            <div style="grid-column:1/-1;background:var(--surface);border:1px solid var(--border);padding:14px;border-radius:2px;">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                <span style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:#0284C7;">[ LIVE ] REAL-TIME EXECUTIVE DOSSIER (${json.model || 'Deterministic GxP Engine'})</span>
-                <span style="font-family:var(--font-mono);font-size:9px;color:#64748B;">Just now</span>
+                <span style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--info-line);">[ LIVE ] REAL-TIME EXECUTIVE DOSSIER (${json.model || 'Deterministic GxP Engine'})</span>
+                <span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted);">Just now</span>
               </div>
-              <div style="font-size:12px;color:#0F172A;line-height:1.65;white-space:pre-wrap;">${json.answer}</div>
+              <div style="font-size:12px;color:var(--ink);line-height:1.65;white-space:pre-wrap;">${json.answer}</div>
             </div>
           `;
         }
@@ -1240,53 +1240,53 @@ export function initBriefingCharts(data) {
 
     embeddedDiffEl.innerHTML = `
       <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:12px;">
-        <div style="background:#F0FDF4;border:1px solid #BBF7D0;padding:12px;">
-          <div style="font-size:11px;font-family:var(--font-mono);font-weight:700;color:#166534;margin-bottom:8px;display:flex;justify-content:space-between;">
+        <div style="background:var(--status-ok-bg);border:1px solid var(--status-ok-bg);padding:12px;">
+          <div style="font-size:11px;font-family:var(--font-mono);font-weight:700;color:var(--status-ok-text);margin-bottom:8px;display:flex;justify-content:space-between;">
             <span>[OK] RESOLVED CRISES (${resList.length})</span>
             <span>RESTORED [OK]</span>
           </div>
           ${resList.slice(0, 3).map(r => `
-            <div style="background:#FFFFFF;border:1px solid #DCFCE7;padding:8px;margin-bottom:6px;font-size:11px;">
-              <div style="font-weight:700;color:#166534;display:flex;justify-content:space-between;">
+            <div style="background:var(--surface);border:1px solid var(--status-ok-bg);padding:8px;margin-bottom:6px;font-size:11px;">
+              <div style="font-weight:700;color:var(--status-ok-text);display:flex;justify-content:space-between;">
                 <span>${r.brand} · ${r.country}</span>
                 <span>Wk ${r.prior_breach_week || 1}</span>
               </div>
-              <div style="color:#374151;margin-top:2px;font-size:10px;">${r.action_taken}</div>
-              <div style="color:#059669;font-size:10px;font-weight:600;margin-top:4px;">${r.current_status}</div>
+              <div style="color:var(--text-muted);margin-top:2px;font-size:10px;">${r.action_taken}</div>
+              <div style="color:var(--status-ok-text);font-size:10px;font-weight:600;margin-top:4px;">${r.current_status}</div>
             </div>
           `).join('')}
         </div>
 
-        <div style="background:#FEF2F2;border:1px solid #FECACA;padding:12px;">
-          <div style="font-size:11px;font-family:var(--font-mono);font-weight:700;color:#991B1B;margin-bottom:8px;display:flex;justify-content:space-between;">
+        <div style="background:var(--status-crisis-bg);border:1px solid var(--status-crisis-bg);padding:12px;">
+          <div style="font-size:11px;font-family:var(--font-mono);font-weight:700;color:var(--status-crisis-text);margin-bottom:8px;display:flex;justify-content:space-between;">
             <span>[ ! ] NEWLY EMERGED (${newList.length})</span>
             <span>ACUTE RISK [WARN]</span>
           </div>
           ${newList.slice(0, 2).map(n => `
-            <div style="background:#FFFFFF;border:1px solid #FEE2E2;padding:8px;margin-bottom:6px;font-size:11px;">
-              <div style="font-weight:700;color:#991B1B;display:flex;justify-content:space-between;">
+            <div style="background:var(--surface);border:1px solid var(--status-crisis-bg);padding:8px;margin-bottom:6px;font-size:11px;">
+              <div style="font-weight:700;color:var(--status-crisis-text);display:flex;justify-content:space-between;">
                 <span>${n.brand} · ${n.country}</span>
                 <span>Breach W${n.breach_week}</span>
               </div>
-              <div style="color:#4B5563;margin-top:2px;font-size:10px;">${n.trigger || 'Demand spike broke safety floor'}</div>
-              <div style="color:#DC2626;font-size:10px;font-weight:600;margin-top:4px;">Exposure: ₹${((n.capital_at_risk_inr || 120000000) / 1e7).toFixed(1)} Cr</div>
+              <div style="color:var(--text-muted);margin-top:2px;font-size:10px;">${n.trigger || 'Demand spike broke safety floor'}</div>
+              <div style="color:var(--hazard-red);font-size:10px;font-weight:600;margin-top:4px;">Exposure: ₹${((n.capital_at_risk_inr || 120000000) / 1e7).toFixed(1)} Cr</div>
             </div>
           `).join('')}
         </div>
 
-        <div style="background:#FFFBEB;border:1px solid #FDE68A;padding:12px;">
-          <div style="font-size:11px;font-family:var(--font-mono);font-weight:700;color:#92400E;margin-bottom:8px;display:flex;justify-content:space-between;">
+        <div style="background:var(--status-warn-bg);border:1px solid var(--status-warn-bg);padding:12px;">
+          <div style="font-size:11px;font-family:var(--font-mono);font-weight:700;color:var(--status-warn-text);margin-bottom:8px;display:flex;justify-content:space-between;">
             <span>[~] PRIORITY SHIFTS (${shiftList.length})</span>
             <span>DRIFT [SHIFT]</span>
           </div>
           ${shiftList.slice(0, 2).map(s => `
-            <div style="background:#FFFFFF;border:1px solid #FEF3C7;padding:8px;margin-bottom:6px;font-size:11px;">
-              <div style="font-weight:700;color:#92400E;display:flex;justify-content:space-between;">
+            <div style="background:var(--surface);border:1px solid var(--status-warn-bg);padding:8px;margin-bottom:6px;font-size:11px;">
+              <div style="font-weight:700;color:var(--status-warn-text);display:flex;justify-content:space-between;">
                 <span>${s.brand} · ${s.country}</span>
                 <span>${s.rank_change}</span>
               </div>
-              <div style="color:#4B5563;margin-top:2px;font-size:10px;"><strong>Shift:</strong> ${s.prior_action} → ${s.current_action}</div>
-              <div style="color:#B45309;font-size:10px;margin-top:4px;">${s.reason}</div>
+              <div style="color:var(--text-muted);margin-top:2px;font-size:10px;"><strong>Shift:</strong> ${s.prior_action} → ${s.current_action}</div>
+              <div style="color:var(--status-warn-text);font-size:10px;margin-top:4px;">${s.reason}</div>
             </div>
           `).join('')}
         </div>
@@ -1639,7 +1639,7 @@ export function renderEmergencyBriefingSection(data) {
       <div class="emergency-point-item">
         <div class="emergency-point-k">
           <span>POINT 1: LIFELONG THERAPY CHURN</span>
-          <span style="color:#DC2626;">ACUTE EXPOSURE</span>
+          <span style="color:var(--hazard-red);">ACUTE EXPOSURE</span>
         </div>
         <div class="emergency-point-v">
           <strong>${Number(totalPatients).toLocaleString('en-IN')} chronic diabetes patients</strong> face imminent treatment interruption across <strong>${acuteSigs.length} corridors</strong>. In chronic metabolic care, missed doses cause irreversible physician brand switching, permanently destroying <strong>₹${(totalAcuteCap / 1e7).toFixed(1)} Cr</strong> in lifetime annual value.
@@ -1649,7 +1649,7 @@ export function renderEmergencyBriefingSection(data) {
       <div class="emergency-point-item">
         <div class="emergency-point-k">
           <span>POINT 2: IRRECOVERABLE MARITIME CLIFF</span>
-          <span style="color:#D97706;">LEAD-TIME BREACH</span>
+          <span style="color:var(--status-warn-text);">LEAD-TIME BREACH</span>
         </div>
         <div class="emergency-point-v">
           Standard deep-sea freight takes <strong>${primaryEmergency.market_lead_time || 36} weeks</strong> to reach high-demand Pacific ports. Because breach occurs at <strong>Week ${primaryEmergency.breach_week || 1}</strong>, surface ocean shipping is mathematically powerless. <strong>Air charter intervention is the only viable physical supply bridge.</strong>
@@ -1659,7 +1659,7 @@ export function renderEmergencyBriefingSection(data) {
       <div class="emergency-point-item">
         <div class="emergency-point-k">
           <span>POINT 3: DONOR CORRIDOR SAFETY FLOOR</span>
-          <span style="color:#15803D;">ZERO RISK SPREAD</span>
+          <span style="color:var(--status-ok-text);">ZERO RISK SPREAD</span>
         </div>
         <div class="emergency-point-v">
           Inter-market re-allocation algorithm selected donor <strong>${primaryTransfer.donor_country || 'Country 059'}</strong> (338 days stock on hand). After dispatching <strong>${Number(primaryTransfer.transfer_qty || 13174).toLocaleString('en-IN')} units</strong>, donor retains <strong>${primaryTransfer.donor_post_doh || 45} days DOH</strong>, well above the SSD floor. Zero collateral stockouts created.

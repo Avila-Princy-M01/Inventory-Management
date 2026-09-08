@@ -399,7 +399,7 @@ export function openScenarioDrawer(data, options = {}) {
       </div>
 
       <button class="btn-primary" id="btn-reset-market-defaults" style="width:100%;margin-top:14px">RESET CORRIDORS TO DEFAULTS</button>
-      <button class="btn-action" id="btn-save-market-settings" style="width:100%;margin-top:8px;background:#F8FAFC;border:1px solid #CBD5E1;color:#0F172A;font-weight:700;">[SYNC] PERSIST SETTINGS TO BACKEND</button>
+      <button class="btn-action" id="btn-save-market-settings" style="width:100%;margin-top:8px;background:var(--surface-subtle);border:1px solid var(--border);color:var(--ink);font-weight:700;">[SYNC] PERSIST SETTINGS TO BACKEND</button>
       <div id="save-settings-feedback" style="display:none;font-size:11px;font-family:var(--font-mono);color:var(--ok-text);text-align:center;margin-top:6px;font-weight:700;"></div>
     </div>
   `;

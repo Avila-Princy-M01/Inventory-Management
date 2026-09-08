@@ -459,7 +459,7 @@ function showError(msg) {
   el.style.color = 'var(--status-crisis-text)';
   el.style.fontFamily = "'JetBrains Mono', monospace";
   el.innerHTML = `
-    <div style="font-weight:700;margin-bottom:8px;font-size:12px;color:#9F2F2D">[ SYSTEM TELEMETRY ERROR · #E61919 ]</div>
+    <div style="font-weight:700;margin-bottom:8px;font-size:12px;color:var(--status-crisis-text)">[ SYSTEM TELEMETRY ERROR · #E61919 ]</div>
     <div style="font-size:12px;margin-bottom:6px">ENSURE BACKEND HAS GENERATED DASHBOARD_DATA.JSON AND SERVER IS RUNNING ON PORT 8000.</div>
     <div style="font-size:11px;opacity:0.8">${msg || 'Fetch failed.'}</div>
   `;
@@ -797,47 +797,47 @@ function setupCHIExplainabilityModal() {
     };
 
     body.innerHTML = `
-      <div style="background:#F8FAFC;border:1px solid #E2E8F0;padding:16px;margin-bottom:16px;">
-        <div style="font-size:12px;font-family:var(--font-mono);color:#64748B;margin-bottom:4px;">MATHEMATICAL FORMULATION (EXACT WSP RATIO)</div>
-        <div style="font-size:16px;font-family:var(--font-mono);font-weight:700;color:#0F172A;margin-bottom:8px;">${math.formula_text}</div>
-        <div style="font-size:12px;color:#475569;line-height:1.5;">
+      <div style="background:var(--surface-subtle);border:1px solid var(--border);padding:16px;margin-bottom:16px;">
+        <div style="font-size:12px;font-family:var(--font-mono);color:var(--text-muted);margin-bottom:4px;">MATHEMATICAL FORMULATION (EXACT WSP RATIO)</div>
+        <div style="font-size:16px;font-family:var(--font-mono);font-weight:700;color:var(--ink);margin-bottom:8px;">${math.formula_text}</div>
+        <div style="font-size:12px;color:var(--text-muted);line-height:1.5;">
           The Corridor Health Index is not an arbitrary black-box metric. It measures the aggregate integrity of all active supply corridors weighted by clinical urgency, stockout severity, and product criticality.
         </div>
       </div>
 
       <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:10px;margin-bottom:16px;">
-        <div style="background:#FFFFFF;border:1px solid #E2E8F0;padding:12px;">
-          <div style="font-size:10px;font-family:var(--font-mono);color:#64748B;">TOTAL RECORDS (N)</div>
-          <div style="font-size:18px;font-family:var(--font-mono);font-weight:700;color:#0F172A;">${Number(math.total_sku_weeks).toLocaleString()}</div>
-          <div style="font-size:10px;color:#059669;">260K SKU-Weeks</div>
+        <div style="background:var(--surface);border:1px solid var(--border);padding:12px;">
+          <div style="font-size:10px;font-family:var(--font-mono);color:var(--text-muted);">TOTAL RECORDS (N)</div>
+          <div style="font-size:18px;font-family:var(--font-mono);font-weight:700;color:var(--ink);">${Number(math.total_sku_weeks).toLocaleString()}</div>
+          <div style="font-size:10px;color:var(--status-ok-text);">260K SKU-Weeks</div>
         </div>
-        <div style="background:#FFFFFF;border:1px solid #E2E8F0;padding:12px;">
-          <div style="font-size:10px;font-family:var(--font-mono);color:#64748B;">STRESSED WEEKS</div>
-          <div style="font-size:18px;font-family:var(--font-mono);font-weight:700;color:#DC2626;">${Number(math.stressed_sku_weeks).toLocaleString()}</div>
-          <div style="font-size:10px;color:#DC2626;">Breached Safety Floor</div>
+        <div style="background:var(--surface);border:1px solid var(--border);padding:12px;">
+          <div style="font-size:10px;font-family:var(--font-mono);color:var(--text-muted);">STRESSED WEEKS</div>
+          <div style="font-size:18px;font-family:var(--font-mono);font-weight:700;color:var(--hazard-red);">${Number(math.stressed_sku_weeks).toLocaleString()}</div>
+          <div style="font-size:10px;color:var(--hazard-red);">Breached Safety Floor</div>
         </div>
-        <div style="background:#FFFFFF;border:1px solid #E2E8F0;padding:12px;">
-          <div style="font-size:10px;font-family:var(--font-mono);color:#64748B;">AGGREGATE WSP SUM</div>
-          <div style="font-size:18px;font-family:var(--font-mono);font-weight:700;color:#2563EB;">${Number(math.sum_wsp).toLocaleString()}</div>
-          <div style="font-size:10px;color:#2563EB;">Weighted Penalty Sum</div>
+        <div style="background:var(--surface);border:1px solid var(--border);padding:12px;">
+          <div style="font-size:10px;font-family:var(--font-mono);color:var(--text-muted);">AGGREGATE WSP SUM</div>
+          <div style="font-size:18px;font-family:var(--font-mono);font-weight:700;color:var(--info-line);">${Number(math.sum_wsp).toLocaleString()}</div>
+          <div style="font-size:10px;color:var(--info-line);">Weighted Penalty Sum</div>
         </div>
-        <div style="background:#FFFFFF;border:1px solid #E2E8F0;padding:12px;">
-          <div style="font-size:10px;font-family:var(--font-mono);color:#64748B;">GLOBAL CHI SCORE</div>
-          <div style="font-size:18px;font-family:var(--font-mono);font-weight:700;color:#059669;">${math.global_chi}%</div>
-          <div style="font-size:10px;color:#059669;">≥85% SLA Compliant</div>
+        <div style="background:var(--surface);border:1px solid var(--border);padding:12px;">
+          <div style="font-size:10px;font-family:var(--font-mono);color:var(--text-muted);">GLOBAL CHI SCORE</div>
+          <div style="font-size:18px;font-family:var(--font-mono);font-weight:700;color:var(--status-ok-text);">${math.global_chi}%</div>
+          <div style="font-size:10px;color:var(--status-ok-text);">≥85% SLA Compliant</div>
         </div>
       </div>
 
-      <div style="background:#FFFFFF;border:1px solid #E2E8F0;padding:14px;margin-bottom:16px;">
-        <div style="font-size:11px;font-family:var(--font-mono);font-weight:700;color:#0F172A;margin-bottom:10px;">STEP-BY-STEP ARITHMETIC PROOF</div>
-        <div style="font-size:12px;font-family:var(--font-mono);color:#334155;line-height:1.8;">
+      <div style="background:var(--surface);border:1px solid var(--border);padding:14px;margin-bottom:16px;">
+        <div style="font-size:11px;font-family:var(--font-mono);font-weight:700;color:var(--ink);margin-bottom:10px;">STEP-BY-STEP ARITHMETIC PROOF</div>
+        <div style="font-size:12px;font-family:var(--font-mono);color:var(--text-muted);line-height:1.8;">
           ${(math.step_by_step_proof || []).map(p => `<div>${p}</div>`).join('')}
         </div>
       </div>
 
-      <div style="background:#F0FDF4;border:1px solid #BBF7D0;padding:12px;display:flex;justify-content:space-between;align-items:center;font-size:11px;font-family:var(--font-mono);">
-        <span style="color:#166534;font-weight:700;">GxP REGULATORY AUDIT ATTESTATION:</span>
-        <span style="color:#15803D;">${math.audit_certification}</span>
+      <div style="background:var(--status-ok-bg);border:1px solid var(--status-ok-bg);padding:12px;display:flex;justify-content:space-between;align-items:center;font-size:11px;font-family:var(--font-mono);">
+        <span style="color:var(--status-ok-text);font-weight:700;">GxP REGULATORY AUDIT ATTESTATION:</span>
+        <span style="color:var(--status-ok-text);">${math.audit_certification}</span>
       </div>
     `;
   }
