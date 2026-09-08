@@ -147,7 +147,7 @@ async function animateStep(stepNum, durationMs = 600) {
   await new Promise(r => setTimeout(r, durationMs));
 
   if (statusEl) {
-    statusEl.textContent = 'DONE ✓';
+    statusEl.textContent = 'DONE [OK]';
     statusEl.className = 'step-status mono-text status-done';
   }
 }
@@ -204,16 +204,16 @@ async function startUploadPipeline(file) {
     elapsedSec++;
     if (elapsedEl) elapsedEl.textContent = elapsedSec;
     if (elapsedSec === 3) {
-      setStepState(1, 'DONE ✓', 'status-done');
+      setStepState(1, 'DONE [OK]', 'status-done');
       setStepState(2, 'RUNNING', 'status-running');
     } else if (elapsedSec === 15) {
-      setStepState(2, 'DONE ✓', 'status-done');
+      setStepState(2, 'DONE [OK]', 'status-done');
       setStepState(3, 'RUNNING', 'status-running');
     } else if (elapsedSec === 40) {
-      setStepState(3, 'DONE ✓', 'status-done');
+      setStepState(3, 'DONE [OK]', 'status-done');
       setStepState(4, 'RUNNING', 'status-running');
     } else if (elapsedSec === 65) {
-      setStepState(4, 'DONE ✓', 'status-done');
+      setStepState(4, 'DONE [OK]', 'status-done');
       setStepState(5, 'RUNNING', 'status-running');
     }
   }, 1000);
@@ -243,7 +243,7 @@ async function startUploadPipeline(file) {
     }
 
     for (let i = 1; i <= 5; i++) {
-      setStepState(i, 'DONE ✓', 'status-done');
+      setStepState(i, 'DONE [OK]', 'status-done');
     }
 
     await new Promise(r => setTimeout(r, 400));

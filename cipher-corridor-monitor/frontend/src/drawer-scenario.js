@@ -217,11 +217,11 @@ export function recomputeSignalScores(signals, leadTimeWeeks, ceilMult, marketOv
     const prs      = +clamp((0.6 * normUrgency + 0.4 * severity) * 100, 0, 100).toFixed(1);
 
     const breachWk = sig.breach_week || (origDt + 1);
-    const countryName = mktCfg.name || sig.country || 'China';
+    const countryName = mktCfg.name || sig.country || 'Country 013';
 
     // Feasibility & Cliff check per Ravi's specification:
     // When breach week occurs before replenishment lead time, standard sea freight cannot arrive in time!
-    // Example: China breach at week 14 — with 36-week lead time, this is ALREADY TOO LATE for sea freight.
+    // Example: Country 013 breach at week 14 — with 36-week lead time, this is ALREADY TOO LATE for sea freight.
     const isLateForSea = usePerMarket && (mktLt >= 6) && (breachWk < mktLt);
     let freightCallout = sig.freight_callout || '';
     if (isLateForSea) {
@@ -293,7 +293,7 @@ export function openScenarioDrawer(data, options = {}) {
     <!-- Administrative Configuration Tabs -->
     <div class="scenario-tab-bar">
       <button class="scenario-tab-btn ${defaultTab === 'global' ? 'active' : ''}" id="tab-btn-global">GLOBAL PARAMETERS</button>
-      <button class="scenario-tab-btn ${defaultTab === 'market' ? 'active' : ''}" id="tab-btn-market">⚙ PER-MARKET CONFIG</button>
+      <button class="scenario-tab-btn ${defaultTab === 'market' ? 'active' : ''}" id="tab-btn-market">[CFG] PER-MARKET CONFIG</button>
     </div>
 
     <!-- PANEL 1: Global Scenario Modeller -->
@@ -370,14 +370,14 @@ export function openScenarioDrawer(data, options = {}) {
       <div class="market-quote-card">
         <div class="market-quote-label">STRATEGIC FREIGHT RULE (SECTION 6.4)</div>
         <div class="market-quote-text">
-          &ldquo;China breach at week 14 — with 36-week lead time, this is <strong>ALREADY TOO LATE</strong> for sea freight. Only air freight can save this.&rdquo;
+          &ldquo;Country 013 breach at week 14 — with 36-week lead time, this is <strong>ALREADY TOO LATE</strong> for sea freight. Only air freight can save this.&rdquo;
         </div>
       </div>
 
       <!-- Quick Preset Actions -->
       <div class="market-preset-row">
-        <button class="btn-preset-sm" id="preset-sea-default">🌊 STANDARD SEA FREIGHT (36W China · 8W Brazil · 4W Japan)</button>
-        <button class="btn-preset-sm" id="preset-air-all">✈️ AIR EXPEDITE ALL CORRIDORS (1–2W)</button>
+        <button class="btn-preset-sm" id="preset-sea-default">[SEA] STANDARD SEA FREIGHT (36W Country 013 · 8W Country 017 · 4W Country 053)</button>
+        <button class="btn-preset-sm" id="preset-air-all">[AIR] AIR EXPEDITE ALL CORRIDORS (1–2W)</button>
       </div>
 
       <!-- Market Lead Times Table -->
@@ -399,7 +399,7 @@ export function openScenarioDrawer(data, options = {}) {
       </div>
 
       <button class="btn-primary" id="btn-reset-market-defaults" style="width:100%;margin-top:14px">RESET CORRIDORS TO DEFAULTS</button>
-      <button class="btn-action" id="btn-save-market-settings" style="width:100%;margin-top:8px;background:#F8FAFC;border:1px solid #CBD5E1;color:#0F172A;font-weight:700;">💾 PERSIST SETTINGS TO BACKEND (SYNC)</button>
+      <button class="btn-action" id="btn-save-market-settings" style="width:100%;margin-top:8px;background:#F8FAFC;border:1px solid #CBD5E1;color:#0F172A;font-weight:700;">[SYNC] PERSIST SETTINGS TO BACKEND</button>
       <div id="save-settings-feedback" style="display:none;font-size:11px;font-family:var(--font-mono);color:var(--ok-text);text-align:center;margin-top:6px;font-weight:700;"></div>
     </div>
   `;
@@ -587,7 +587,7 @@ export function openScenarioDrawer(data, options = {}) {
           }
           setTimeout(() => {
             btnSaveSettings.disabled = false;
-            btnSaveSettings.textContent = '💾 PERSIST SETTINGS TO BACKEND (SYNC)';
+            btnSaveSettings.textContent = '[SYNC] PERSIST SETTINGS TO BACKEND';
             if (saveFeedback) saveFeedback.style.display = 'none';
           }, 3000);
         } else {
@@ -597,7 +597,7 @@ export function openScenarioDrawer(data, options = {}) {
         btnSaveSettings.disabled = false;
         btnSaveSettings.textContent = 'RETRY PERSIST';
         if (saveFeedback) {
-          saveFeedback.textContent = '⚠️ Save failed: ' + err.message;
+          saveFeedback.textContent = '[ ! ] Save failed: ' + err.message;
           saveFeedback.style.color = 'var(--crisis-text)';
           saveFeedback.style.display = 'block';
         }
@@ -658,7 +658,7 @@ export function openScenarioDrawer(data, options = {}) {
       const isCliff = _perMarketActive && lt >= 6 && earliestBreach < lt;
 
       const statusBadge = isCliff
-        ? `<span class="feasibility-tag feasibility-tag--cliff">🚨 LATE FOR SEA (W${earliestBreach} &lt; ${lt}W)</span>`
+        ? `<span class="feasibility-tag feasibility-tag--cliff">[ ! ] LATE FOR SEA (W${earliestBreach} &lt; ${lt}W)</span>`
         : `<span class="feasibility-tag feasibility-tag--ok">✓ ON CADENCE</span>`;
 
       return `
@@ -669,7 +669,7 @@ export function openScenarioDrawer(data, options = {}) {
           </td>
           <td>
             <button class="mkt-mode-btn ${mode.includes('Air') ? 'mkt-mode-btn--air' : 'mkt-mode-btn--sea'}" data-mkt="${m.code}">
-              ${mode.includes('Air') ? '✈️ AIR' : '🌊 SEA'}
+              ${mode.includes('Air') ? '[AIR]' : '[SEA]'}
             </button>
           </td>
           <td class="text-right">
@@ -713,3 +713,148 @@ export function closeScenarioDrawer() {
   const drawer = document.getElementById('drawer-scenario');
   if (drawer) { drawer.classList.remove('open'); drawer.setAttribute('aria-hidden', 'true'); }
 }
+
+/**
+ * First-Class Section 05: Interactive Corridor Health Index Derivation & 12x20 Sensitivity Matrix
+ */
+export function initScenarioView(data) {
+  const tableHead = document.getElementById('chi-matrix-thead');
+  const tableBody = document.getElementById('chi-matrix-tbody');
+  const slLt = document.getElementById('view-sl-lt');
+  const slCm = document.getElementById('view-sl-cm');
+  const valLt = document.getElementById('view-val-lt');
+  const valCm = document.getElementById('view-val-cm');
+  const chiVal = document.getElementById('view-scenario-chi-val');
+  const chiNote = document.getElementById('view-scenario-chi-note');
+  const coordVal = document.getElementById('view-scenario-coord');
+  const btnReset = document.getElementById('btn-view-reset-scenario');
+  const btnOpenDrawer = document.getElementById('btn-open-drawer-scenario-sync');
+
+  if (!tableHead || !tableBody) return;
+
+  const dynMatrix = (data && data.chi_lookup_matrix && (data.chi_lookup_matrix.values || data.chi_lookup_matrix.matrix)) || CHI_LOOKUP_MATRIX;
+
+  // 1. Build Table Headers: Multipliers 1.1x to 3.0x
+  let theadHtml = '<tr><th class="chi-matrix-row-hdr">LEAD TIME</th>';
+  for (let c = 0; c < 20; c++) {
+    const cmVal = (1.1 + c * 0.1).toFixed(1);
+    theadHtml += `<th>${cmVal}×</th>`;
+  }
+  theadHtml += '</tr>';
+  tableHead.innerHTML = theadHtml;
+
+  // 2. Build Table Body: 12 Rows (1W to 12W) x 20 Cols
+  function renderMatrixCells(activeLt, activeCm) {
+    let tbodyHtml = '';
+    const activeRow = clamp(Math.round(activeLt) - 1, 0, 11);
+    const activeCol = clamp(Math.round((activeCm - 1.1) / 0.1), 0, 19);
+
+    for (let r = 0; r < 12; r++) {
+      const ltWeeks = r + 1;
+      tbodyHtml += `<tr><td class="chi-matrix-row-hdr">${String(ltWeeks).padStart(2, '0')} WKS</td>`;
+      for (let c = 0; c < 20; c++) {
+        const val = dynMatrix[r][c];
+        const isCurrent = (r === activeRow && c === activeCol);
+        const cmVal = (1.1 + c * 0.1).toFixed(1);
+        const tierClass = val >= 90 ? 'chi-cell--high' : val >= 85 ? 'chi-cell--ok' : val >= 80 ? 'chi-cell--warn' : 'chi-cell--crit';
+        const activeClass = isCurrent ? 'chi-cell--active' : '';
+
+        tbodyHtml += `<td class="chi-cell ${tierClass} ${activeClass}" data-lt="${ltWeeks}" data-cm="${cmVal}" title="Lead Time: ${ltWeeks}W · Multiplier: ${cmVal}× · CHI: ${val.toFixed(1)}%">${val.toFixed(1)}%</td>`;
+      }
+      tbodyHtml += '</tr>';
+    }
+    tableBody.innerHTML = tbodyHtml;
+
+    // Attach click listeners to cells
+    tableBody.querySelectorAll('.chi-cell').forEach(cell => {
+      cell.addEventListener('click', () => {
+        const lt = Number(cell.getAttribute('data-lt'));
+        const cm = Number(cell.getAttribute('data-cm'));
+        if (slLt) slLt.value = lt;
+        if (slCm) slCm.value = cm;
+        updateViewScenario(lt, cm);
+      });
+    });
+  }
+
+  function updateViewScenario(lt, cm) {
+    if (valLt) valLt.textContent = String(lt).padStart(2, '0') + ' WEEKS';
+    if (valCm) valCm.textContent = cm.toFixed(1) + '×';
+    if (coordVal) coordVal.textContent = `L=${lt}W · ${cm.toFixed(1)}×`;
+
+    const chi = lookupCHI(lt, cm, dynMatrix);
+    if (chiVal) {
+      chiVal.textContent = chi.toFixed(1) + '%';
+      chiVal.style.color = chi >= 90 ? '#166534' : chi >= 85 ? '#0369A1' : chi >= 80 ? '#B45309' : '#B91C1C';
+    }
+    if (chiNote) {
+      const isOk = chi >= 85.0;
+      chiNote.textContent = isOk ? '● COMPLIANT (≥85.0% TARGET)' : '▲ AT RISK (<85.0% THRESHOLD)';
+      chiNote.style.color = isOk ? '#166534' : '#B91C1C';
+    }
+
+    // Sync persistent KPI dial
+    window._updateKPICHI && window._updateKPICHI(chi);
+
+    // Re-score signals in Signal Console
+    const appData = window.DATA;
+    if (appData && appData.top_signals) {
+      const recomp = recomputeSignalScores(appData.top_signals, lt, cm, _marketOverrides, _perMarketActive);
+      const approved = window._approvedSignals || {};
+      renderSignalCards(recomp, approved);
+    }
+
+    renderMatrixCells(lt, cm);
+
+    // Sync presets active state
+    document.querySelectorAll('.btn-scenario-preset').forEach(b => {
+      const bLt = Number(b.getAttribute('data-lt'));
+      const bCm = Number(b.getAttribute('data-cm'));
+      if (bLt === lt && Math.abs(bCm - cm) < 0.05) {
+        b.classList.add('active');
+      } else {
+        b.classList.remove('active');
+      }
+    });
+  }
+
+  if (slLt) {
+    slLt.addEventListener('input', () => {
+      updateViewScenario(Number(slLt.value), Number(slCm ? slCm.value : 2.0));
+    });
+  }
+  if (slCm) {
+    slCm.addEventListener('input', () => {
+      updateViewScenario(Number(slLt ? slLt.value : 3), Number(slCm.value));
+    });
+  }
+
+  // Presets
+  document.querySelectorAll('.btn-scenario-preset').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const lt = Number(btn.getAttribute('data-lt'));
+      const cm = Number(btn.getAttribute('data-cm'));
+      if (slLt) slLt.value = lt;
+      if (slCm) slCm.value = cm;
+      updateViewScenario(lt, cm);
+    });
+  });
+
+  if (btnReset) {
+    btnReset.addEventListener('click', () => {
+      if (slLt) slLt.value = 3;
+      if (slCm) slCm.value = 2.0;
+      updateViewScenario(3, 2.0);
+    });
+  }
+
+  if (btnOpenDrawer) {
+    btnOpenDrawer.addEventListener('click', () => {
+      openScenarioDrawer(window.DATA, { defaultTab: 'market' });
+    });
+  }
+
+  // Initial draw
+  updateViewScenario(3, 2.0);
+}
+

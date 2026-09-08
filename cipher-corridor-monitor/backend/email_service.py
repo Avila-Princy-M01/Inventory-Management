@@ -122,7 +122,7 @@ def build_email_digest(dashboard_data=None):
     # High-impact decision items
     top_crisis = crises[0] if crises else (signals[0] if signals else {})
     tr = top_crisis.get("intermarket_transfer", {})
-    donor_str = f"{tr.get('donor_country', 'Country 059')} → {top_crisis.get('country', 'China')}" if tr.get("has_transfer") else "Kalundborg Central Hub → Pacific Affiliate"
+    donor_str = f"{tr.get('donor_country', 'Country 059')} → {top_crisis.get('country', 'Country 013')}" if tr.get("has_transfer") else "Kalundborg Central Hub → Pacific Affiliate"
     transfer_qty_str = f"{int(tr.get('transfer_qty', 13174)):,} units" if tr.get("has_transfer") else f"{int(top_crisis.get('recommended_qty_units', 12500)):,} units"
 
     subject = f"🚨 URGENT: Monday Morning Executive Supply Briefing — {n_crit} Acute Crises | {format_inr(total_cap_risk)} Capital Exposure | W{cur_week}"

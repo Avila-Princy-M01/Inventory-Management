@@ -6,11 +6,11 @@
 import { getWorkflowState, getEscalationSLA } from './workflow.js';
 
 export const BADGE_MAP = [
-  { prefix: 'ACTIVE CRISIS', cls: 'badge--crisis', label: 'ACTIVE CRISIS', borderColor: '#DC2626' },
-  { prefix: 'EMERGENCY EXPEDITE', cls: 'badge--expedite', label: 'EMERGENCY EXPEDITE', borderColor: '#F59E0B' },
-  { prefix: 'STANDARD PO', cls: 'badge--po', label: 'STANDARD PO', borderColor: '#0072CE' },
-  { prefix: 'ADVISORY', cls: 'badge--advisory', label: 'ADVISORY', borderColor: '#9CA3AF' },
-  { prefix: 'EXCESS HOLDING', cls: 'badge--excess', label: 'EXCESS HOLDING', borderColor: '#7C3AED' },
+  { prefix: 'ACTIVE CRISIS', cls: 'badge--crisis', label: 'ACTIVE CRISIS', borderColor: 'var(--hazard-red)' },
+  { prefix: 'EMERGENCY EXPEDITE', cls: 'badge--expedite', label: 'EMERGENCY EXPEDITE', borderColor: 'var(--status-warn-text)' },
+  { prefix: 'STANDARD PO', cls: 'badge--po', label: 'STANDARD PO', borderColor: 'var(--ink)' },
+  { prefix: 'ADVISORY', cls: 'badge--advisory', label: 'ADVISORY', borderColor: 'var(--text-muted)' },
+  { prefix: 'EXCESS HOLDING', cls: 'badge--excess', label: 'EXCESS HOLDING', borderColor: 'var(--text-muted)' },
 ];
 
 export function getBadgeConfig(raw) {
@@ -36,23 +36,23 @@ export function renderSignalCards(signals, approvedSignals = {}) {
 
   if (!signals || signals.length === 0) {
     grid.innerHTML = `
-      <div class="empty-state-telemetry" style="grid-column: 1 / -1; padding: 48px 32px; background: var(--surface); border: 1px solid var(--border-2); border-left: 4px solid var(--ok-text); display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px;">
-        <div style="font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; color: var(--ok-text); background: var(--ok-bg); padding: 4px 12px; border: 1px solid rgba(52, 101, 56, 0.2);">
+      <div class="empty-state-telemetry">
+        <div class="empty-state-header">
           [ CORRIDOR NETWORK STATUS: NOMINAL ]
         </div>
-        <div style="font-family: var(--font-head); font-weight: 700; font-size: 18px; color: var(--ink); letter-spacing: -0.02em;">
+        <div class="empty-state-title">
           ZERO THRESHOLD BREACHES IN ACTIVE FILTER VIEW
         </div>
-        <div style="font-family: var(--font-mono); font-size: 11px; color: var(--muted); max-width: 580px; line-height: 1.6;">
-          All corridors matching the current filter criteria are operating within certified Safety Stock Days (SSD) boundaries. 
+        <div class="empty-state-desc">
+          All corridors matching current filter criteria are operating within certified Safety Stock Days (SSD) boundaries. 
           No acute stockout risks, lead time cliffs, or pending replenishment expedites detected.
         </div>
-        <div style="margin-top: 8px; display: flex; gap: 8px; font-family: var(--font-mono); font-size: 10px;">
-          <span style="color: var(--muted);">SLAs: <strong style="color: var(--ok-text)">100% HEALTHY</strong></span>
-          <span style="color: var(--border-2);">|</span>
-          <span style="color: var(--muted);">BUFFER INTEGRITY: <strong style="color: var(--ok-text)">PASS</strong></span>
-          <span style="color: var(--border-2);">|</span>
-          <span style="color: var(--muted);">GxP AUDIT TRACE: <strong style="color: var(--ink)">VERIFIED</strong></span>
+        <div class="empty-state-stats">
+          <span>SLAs: <strong class="text-ok">100% HEALTHY</strong></span>
+          <span class="stat-sep">|</span>
+          <span>BUFFER INTEGRITY: <strong class="text-ok">PASS</strong></span>
+          <span class="stat-sep">|</span>
+          <span>GxP AUDIT TRACE: <strong class="text-ink">VERIFIED</strong></span>
         </div>
       </div>
     `;
@@ -103,7 +103,6 @@ export function renderSignalCards(signals, approvedSignals = {}) {
 
     const snoozeHtml = isSnoozed
       ? `<div class="card-snooze-pill">
-           <span class="snooze-icon">💤</span>
            <span class="snooze-text">[SNOOZED ${wf.snooze.weeks}W: ${esc(wf.snooze.reason)}]</span>
          </div>`
       : '';
@@ -118,19 +117,18 @@ export function renderSignalCards(signals, approvedSignals = {}) {
     const transfer = sig.intermarket_transfer || {};
     const transferHtml = (transfer.has_transfer && (isCrisis || badge.label === 'EMERGENCY EXPEDITE'))
       ? `<div class="card-transfer-pill">
-           <span class="transfer-pill-icon">🔄</span>
-           <span class="transfer-pill-text">TRANSFER ROUTE: <strong>${esc(transfer.donor_country)}</strong> → <strong>${esc(sig.country)}</strong> (${fmtNum(transfer.transfer_qty)} U)</span>
+           <span class="transfer-pill-text">>>> TRANSFER ROUTE: <strong>${esc(transfer.donor_country)}</strong> → <strong>${esc(sig.country)}</strong> (${fmtNum(transfer.transfer_qty)} U)</span>
          </div>`
       : '';
 
     const constr = sig.constraints || {};
     const frozenTag = (constr.in_frozen_horizon && !approved)
-      ? `<span class="card-frozen-tag" style="background:#FEF2F2;color:#991B1B;border:1px solid #F87171;font-size:9px;padding:2px 5px;font-family:var(--font-mono);font-weight:700;" title="Collision with 4-week frozen horizon. Standard PO impossible without emergency manufacturing waiver.">[FROZEN HORIZON · WAIVER REQ]</span>`
+      ? `<span class="card-frozen-tag" title="Collision with 4-week frozen horizon. Standard PO impossible without emergency manufacturing waiver.">[FROZEN HORIZON · WAIVER REQ]</span>`
       : '';
 
     const cascadeSafeguard = (transfer.donor_cascade_safeguard || {});
     const cascadeTag = transfer.has_transfer
-      ? `<span class="card-cascade-tag" style="background:#F0FDF4;color:#166534;border:1px solid #86EFAC;font-size:9px;padding:2px 5px;font-family:var(--font-mono);font-weight:700;" title="${esc(cascadeSafeguard.verification_text || 'Donor retains > 1.5× SSD')}">✓ ZERO CASCADE RISK</span>`
+      ? `<span class="card-cascade-tag" title="${esc(cascadeSafeguard.verification_text || 'Donor retains > 1.5× SSD')}">[ZERO CASCADE RISK]</span>`
       : '';
 
     const staleParam = sig.stale_parameter || {};
@@ -183,20 +181,19 @@ export function renderSignalCards(signals, approvedSignals = {}) {
     const aiNarrativeHtml = `
       <div class="card-ai-action-box">
         <div class="card-ai-action-header">
-          <span class="card-ai-badge">🤖 AI COPILOT · ACTION DIRECTIVE</span>
+          <span class="card-ai-badge">[ AI DIRECTIVE · DETERMINISTIC ]</span>
           <span class="card-ai-sub-tag">1-CLICK EXECUTE</span>
         </div>
-        <div class="card-ai-action-headline">👉 <strong>${esc(actionHeadline)}</strong></div>
+        <div class="card-ai-action-headline">>>> <strong>${esc(actionHeadline)}</strong></div>
         <div class="card-ai-details">
-          <div class="card-ai-detail-row"><span class="ai-bullet">📌</span> <span><strong>Situation:</strong> ${esc(simpleSituation)}</span></div>
-          <div class="card-ai-detail-row"><span class="ai-bullet">⚠️</span> <span><strong>Why Care:</strong> ${esc(simpleWhy)}</span></div>
+          <div class="card-ai-detail-row"><span class="ai-bullet">[SITUATION]</span> <span><strong>Situation:</strong> ${esc(simpleSituation)}</span></div>
+          <div class="card-ai-detail-row"><span class="ai-bullet">[IMPACT]</span> <span><strong>Why Care:</strong> ${esc(simpleWhy)}</span></div>
         </div>
       </div>
     `;
 
     const patientRiskHtml = (sig.lost_lifelong_patients && sig.lost_lifelong_patients > 0)
       ? `<div class="card-patient-impact">
-           <span class="patient-icon">👥</span>
            <span class="patient-text"><strong>${fmtNum(sig.lost_lifelong_patients)}</strong> Lifelong Patients at Risk (${fmtNum(sig.lost_patient_demand_units)} U unserved)</span>
          </div>`
       : '';
@@ -204,12 +201,11 @@ export function renderSignalCards(signals, approvedSignals = {}) {
     const fc = sig.freight_comparison;
     const freightCompHtml = (fc && isLateForSea)
       ? `<div class="card-freight-callout">
-           <span class="freight-icon">✈️</span>
            <span class="freight-text">Priority Air Charter saves <strong>₹${Number((sig.capital_at_risk_inr || 0) / 1e7).toFixed(2)} Cr</strong> (ROI <strong>${fc.expedite_roi_ratio}×</strong>)</span>
          </div>`
       : '';
 
-    // Stitch Design Taste: Priority sizing layout classes
+    // Hero ranking: #1 PRS exception reads as hero row
     const priorityClass = i === 0
       ? 'signal-card--hero'
       : (i <= 3 ? 'signal-card--mid' : 'signal-card--std');
@@ -217,7 +213,7 @@ export function renderSignalCards(signals, approvedSignals = {}) {
     return `<div class="signal-card ${priorityClass} ${isCrisis ? 'signal-card--crisis' : ''} ${isSnoozed ? 'signal-card--snoozed' : ''}" style="--i:${i}; --index:${i};" data-rid="${sig.row_id}" data-index="${i}" tabindex="0">
       <div class="card-row1">
         <span class="card-rank tabular-nums">#${rank}</span>
-        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        <div class="card-tags-cluster">
           ${ownerTag}
           ${slaTag}
           ${frozenTag}
@@ -245,22 +241,22 @@ export function renderSignalCards(signals, approvedSignals = {}) {
       <div class="card-glance-row tabular-nums">
         <div class="glance-cap">
           <span class="glance-k">CAPITAL AT RISK</span>
-          <span class="glance-v" style="color:${sig.capital_at_risk_inr === 0 ? 'var(--ok-text)' : 'var(--crisis-text)'}">${capAtRiskStr}</span>
+          <span class="glance-v ${sig.capital_at_risk_inr === 0 ? 'text-ok' : 'text-crisis'}">${capAtRiskStr}</span>
         </div>
         <div class="glance-cert" title="Pipeline Supply Certainty Breakdown (Confirmed PO + In-Transit vs Total Pipeline)">
           <div class="glance-cert-header">
             <span class="glance-k">SUPPLY COMMIT</span>
             <span class="glance-cert-num">${certPct}%</span>
           </div>
-          <div class="glance-cert-track" style="height:6px;background:#F1F5F9;display:flex;overflow:hidden;border:1px solid #E2E8F0;">
-            <div class="glance-cert-fill" style="width:${Math.round(certPct * 0.65)}%;background:#16A34A;" title="Confirmed PO: ${Math.round(certPct * 0.65)}%"></div>
-            <div class="glance-cert-fill" style="width:${Math.round(certPct * 0.35)}%;background:#0284C7;" title="In-Transit: ${Math.round(certPct * 0.35)}%"></div>
-            <div class="glance-cert-fill" style="width:${100 - certPct}%;background:#F87171;" title="Unconfirmed Planned: ${100 - certPct}%"></div>
+          <div class="glance-cert-track">
+            <div class="glance-cert-fill glance-cert-fill--conf" style="width:${Math.round(certPct * 0.65)}%;" title="Confirmed PO: ${Math.round(certPct * 0.65)}%"></div>
+            <div class="glance-cert-fill glance-cert-fill--transit" style="width:${Math.round(certPct * 0.35)}%;" title="In-Transit: ${Math.round(certPct * 0.35)}%"></div>
+            <div class="glance-cert-fill glance-cert-fill--unconf" style="width:${100 - certPct}%;" title="Unconfirmed Planned: ${100 - certPct}%"></div>
           </div>
-          <div style="font-size:8.5px;color:#64748B;display:flex;justify-content:space-between;margin-top:2px;font-family:var(--font-mono);">
-            <span style="color:#15803D;">● Conf ${Math.round(certPct * 0.65)}%</span>
-            <span style="color:#0369A1;">● Transit ${Math.round(certPct * 0.35)}%</span>
-            <span style="color:#B91C1C;">● Unconf ${100 - certPct}%</span>
+          <div class="glance-cert-legend">
+            <span class="text-ok">● Conf ${Math.round(certPct * 0.65)}%</span>
+            <span class="text-muted">● Transit ${Math.round(certPct * 0.35)}%</span>
+            <span class="text-crisis">● Unconf ${100 - certPct}%</span>
           </div>
         </div>
       </div>

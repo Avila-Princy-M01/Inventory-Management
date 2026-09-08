@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated_utc": "2026-09-05T19:19:27.266210+00:00",
+    "generated_utc": "2026-09-08T07:01:40.263737+00:00",
     "current_week": 32,
     "total_series": 5000,
     "total_evaluated_records": 215280,
@@ -1251,27 +1251,27 @@
     "historical_trend_4q": [
       {
         "quarter": "Q1 2026",
-        "chi": 82.4,
-        "status": "RECOVERING",
-        "note": "Post-ERP migration floor shock"
+        "chi": 87.5,
+        "status": "ON TARGET",
+        "note": "Initial migration period"
       },
       {
         "quarter": "Q2 2026",
-        "chi": 84.1,
-        "status": "RECOVERING",
-        "note": "Buffer recalibration wave 1"
+        "chi": 86.5,
+        "status": "ON TARGET",
+        "note": "Buffer recalibration period"
       },
       {
         "quarter": "Q3 2026",
-        "chi": 85.6,
+        "chi": 86.2,
         "status": "ON TARGET",
         "note": "Inter-market transfers operationalized"
       },
       {
-        "quarter": "Q4 2026 (Current)",
+        "quarter": "Q4 2026 (W32)",
         "chi": 86.8,
         "status": "ON TARGET",
-        "note": "Week 32 active cycle (\u2191 1.2 from last week)"
+        "note": "Active cycle (\u2191 1.2 from last week)"
       }
     ],
     "chi_math_explainability": {
@@ -11318,7 +11318,7 @@
       "stale_capital_freed_inr": 6437781800,
       "total_capital_freed_inr": 14987266700,
       "total_false_alerts_eliminated": 19708,
-      "featured_audit_insight": "Series #2847 (Ember, China): Safety Stock Days is set to 42 but the data shows DOH never drops below 28. Recommended: reduce SSD from 42 \u2192 28 days. This would eliminate 52 false alerts per year and free \u20b912.4L in frozen capital.",
+      "featured_audit_insight": "Series #2847 (Ember, Country 013): Safety Stock Days is set to 42 but the data shows DOH never drops below 28. Recommended: reduce SSD from 42 \u2192 28 days. This would eliminate 52 false alerts per year and free \u20b912.4L in frozen capital.",
       "narrative": "379 series remain permanently below the safety stock corridor floor across the full 52-week horizon without ever stocking out (164 flagged with frozen SSD despite \u226530% demand pattern shifts). The Parameter Audit Engine identifies \u20b91498.7 Cr in frozen capital and eliminates 19,708 false alerts per year by recalibrating SAP/OMP Safety Stock Days to observed operational floors.",
       "sample_series": [
         {

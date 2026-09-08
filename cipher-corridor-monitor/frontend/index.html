@@ -74,10 +74,14 @@
           <span class="nav-index">04</span>
           <span class="nav-label">GxP AUDIT LOG</span>
         </button>
+        <button class="nav-item is-disabled" data-view="scenario" id="nav-item-scenario">
+          <span class="nav-index">05</span>
+          <span class="nav-label">CHI PROOF &amp; MATRIX</span>
+        </button>
       </nav>
       <div class="nav-footer">
         <button class="btn-scenario" id="btn-open-scenario" disabled>
-          ⚙ SCENARIO MODELLER
+          [+] SCENARIO MODELLER
         </button>
       </div>
     </aside>
@@ -88,9 +92,24 @@
       <!-- ── KPI BANNER ── -->
       <div class="kpi-banner" id="kpi-banner">
         <div class="kpi-tile" id="kpi-chi">
-          <output class="kpi-numeral" id="chi-value" aria-label="Corridor Health Index">--.-</output>
-          <div class="kpi-label">CORRIDOR HEALTH INDEX</div>
-          <div class="kpi-sub" id="chi-sub">CIPHER PIONEER KPI <span class="kpi-delta kpi-delta--up" id="chi-delta">OPERATIONAL</span></div>
+          <div class="chi-hero-layout">
+            <div class="chi-dial-wrapper">
+              <svg class="chi-dial" width="54" height="54" viewBox="0 0 54 54" aria-hidden="true">
+                <circle class="chi-dial-track" cx="27" cy="27" r="23" fill="none" stroke="#EAE8E3" stroke-width="4.5" />
+                <circle id="chi-dial-progress" class="chi-dial-progress" cx="27" cy="27" r="23" fill="none" stroke="#346538" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="144.51" stroke-dashoffset="19.07" transform="rotate(-90 27 27)" />
+              </svg>
+              <span class="chi-dial-badge">LEAD</span>
+            </div>
+            <div class="chi-hero-telemetry">
+              <div class="chi-value-row">
+                <output class="kpi-numeral" id="chi-value" aria-label="Corridor Health Index">--</output>
+                <span class="chi-unit">%</span>
+                <span class="chi-provenance-pill" title="Original Metric: Evaluated across 260,000 SKU-Weeks via Weighted Stockout Penalty (WSP)">260K SKU-WEEKS</span>
+              </div>
+              <div class="kpi-label">CORRIDOR HEALTH INDEX (CHI) · LEADING TELEMETRY</div>
+              <div class="kpi-sub" id="chi-sub">-- <span class="kpi-delta kpi-delta--down" id="chi-delta">--</span></div>
+            </div>
+          </div>
         </div>
         <div class="kpi-tile kpi-tile--divider" id="kpi-crises">
           <output class="kpi-numeral crisis-num" id="crises-value" aria-label="Active Crises">0</output>
@@ -135,15 +154,15 @@
                   scores Priority Risk (PRS), and synthesises the Corridor Health Index (CHI).
                 </p>
                 <!-- Enterprise SAP/OMP Schema Integration Architecture Callout -->
-                <div class="sap-integration-callout" style="margin-top:10px;padding:9px 12px;background:#F0FDF4;border:1px solid #BBF7D0;border-left:3px solid #16A34A;display:flex;align-items:center;justify-content:space-between;gap:10px;">
-                  <div style="font-size:11px;color:#166534;line-height:1.45;">
-                    <strong>🏭 ENTERPRISE ARCHITECTURE:</strong> The backend pipeline is architected to point directly at the scheduled <strong>SAP / OMP automated batch export job</strong> (matching identical 26-column schema with <strong>zero manual steps</strong> required).
+                <div class="sap-integration-callout">
+                  <div class="sap-callout-text">
+                    <strong>[ ENTERPRISE ARCHITECTURE ]:</strong> The backend pipeline points directly to the scheduled <strong>SAP / OMP automated batch export job</strong> (matching identical 26-column schema with <strong>zero manual steps</strong> required).
                   </div>
-                  <span style="font-size:9.5px;font-weight:700;font-family:var(--font-mono);background:#DCFCE7;color:#15803D;padding:3px 7px;border:1px solid #86EFAC;white-space:nowrap;">ZERO MANUAL STEPS</span>
+                  <span class="sap-callout-badge">ZERO MANUAL STEPS</span>
                 </div>
               </div>
 
-              <!-- Drag & Drop Zone -->
+              <!-- Drag & Drop Zone (Dominant Focal Point) -->
               <div class="ingest-dropzone" id="main-dropzone" role="button" tabindex="0" aria-label="Upload Excel File">
                 <input type="file" id="main-file-input" accept=".xlsx" style="display:none"
                   aria-label="Choose Excel file">
@@ -173,20 +192,20 @@
                 </button>
                 <div class="action-divider">OR</div>
                 <button class="btn-ingest-demo" id="btn-load-demo">
-                  <span>⚡ LOAD PRE-SEEDED BENCHMARK DATA (AUG 2026 – JUL 2027)</span>
+                  <span>>>> LOAD PRE-SEEDED BENCHMARK DATA (AUG 2026 – JUL 2027)</span>
                 </button>
               </div>
 
               <!-- Telemetry Stepper (Visible during extraction) -->
               <div class="extraction-stepper" id="extraction-stepper" style="display: none;">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                  <div class="stepper-title" style="margin-bottom:0">PIPELINE EXECUTION TELEMETRY</div>
-                  <div id="upload-live-timer" style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:#0284C7;background:#E0F2FE;padding:3px 8px;border:1px solid #BAE6FD;">
-                    ⏱️ ELAPSED: <span id="upload-elapsed-sec">0</span>s
+                <div class="stepper-header-row">
+                  <div class="stepper-title">PIPELINE EXECUTION TELEMETRY</div>
+                  <div id="upload-live-timer" class="upload-live-timer">
+                    ELAPSED: <span id="upload-elapsed-sec">0</span>s
                   </div>
                 </div>
-                <div id="upload-advisory-box" style="margin-bottom:10px;padding:8px 12px;background:#FEF3C7;border:1px solid #FDE68A;border-left:3px solid #D97706;font-size:11px;color:#92400E;line-height:1.45;">
-                  <strong>⚠️ Vectorization in Progress:</strong> Crunching all 260,000 SKU-week records and calculating 5,000 corridor boundaries typically takes <strong>60 to 90 seconds</strong> on a full 30MB Excel workbook. Python backend is actively computing — please keep this tab active.
+                <div id="upload-advisory-box" class="upload-advisory-box">
+                  <strong>[ADVISORY] Vectorization in Progress:</strong> Crunching all 260,000 SKU-week records and calculating 5,000 corridor boundaries typically takes <strong>60 to 90 seconds</strong> on a full 30MB Excel workbook. Python backend is actively computing — please keep this tab active.
                 </div>
                 <div class="stepper-steps">
                   <div class="step-row" id="step-1">
@@ -230,18 +249,20 @@
               <p class="view-subtitle console-main-subtitle">Top 15 priority supply-chain exceptions ranked by Priority Risk Score (PRS) · 0 false alarm noise</p>
             </div>
             <div class="console-hero-actions">
-              <button class="btn-console-action btn-market-lt-trigger" id="btn-header-market-lt" title="Configure per-market supply corridor lead times">
-                <span class="gear-icon">⚙</span> MARKET LEAD TIMES
+              <button class="btn-console-action btn-console-primary" id="btn-batch-approve-crises" title="Escalate & sign all active crisis signals">
+                <span class="btn-marker">[ ! ]</span> ESCALATE ALL CRISES
               </button>
-              <button class="btn-console-action btn-email-trigger" id="btn-header-email-digest" title="Open executive Monday briefing email digest">
-                <span class="live-dot-pulse">●</span> EMAIL DIGEST
-              </button>
-              <button class="btn-console-action btn-batch-crisis" id="btn-batch-approve-pos" title="Batch approve and sign all standard purchase orders">
-                <span class="lightning-bolt">⚡</span> APPROVE ALL STANDARD POs
-              </button>
-              <button class="btn-console-action btn-batch-crisis" id="btn-batch-approve-crises" style="background:#FDEBEC;color:#9F2F2D;border-color:#F5A6A6;" title="Escalate & sign all active crisis signals">
-                <span class="lightning-bolt">🚨</span> ESCALATE ALL CRISES
-              </button>
+              <div class="console-actions-cluster">
+                <button class="btn-console-action btn-console-secondary" id="btn-batch-approve-pos" title="Batch approve and sign all standard purchase orders">
+                  <span class="btn-marker">[+]</span> APPROVE STANDARD POs
+                </button>
+                <button class="btn-console-action btn-market-lt-trigger" id="btn-header-market-lt" title="Configure per-market supply corridor lead times">
+                  <span class="btn-marker">[LT]</span> MARKET LEAD TIMES
+                </button>
+                <button class="btn-console-action btn-email-trigger" id="btn-header-email-digest" title="Open executive Monday briefing email digest">
+                  <span class="live-dot-pulse">●</span> EMAIL DIGEST
+                </button>
+              </div>
               <div class="count-badge-industrial" id="signal-count-badge">15 ACTIVE SIGNALS</div>
             </div>
           </div>
@@ -249,42 +270,79 @@
           <!-- TACTICAL TRIAGE & FILTER TOOLBAR -->
           <div class="triage-toolbar-industrial">
             <div class="filter-pill-group" id="filter-pill-group">
-              <button class="filter-pill-ind active" data-filter="ALL" id="filter-pill-all">
-                ALL <span class="pill-count" id="pill-count-all">15</span>
-              </button>
-              <span class="pill-divider">●</span>
-              <button class="filter-pill-ind" data-filter="CHANGED" id="filter-pill-changed" style="color:#B45309;border-color:#FDE68A;background:#FFFBEB;font-weight:700;">
-                ⚡ CHANGED WoW <span class="pill-count" id="pill-count-changed">5</span>
-              </button>
-              <span class="pill-divider">●</span>
-              <button class="filter-pill-ind filter-pill-ind--crisis" data-filter="ACTIVE CRISIS" id="filter-pill-crisis">
-                CRITICAL <span class="pill-count" id="pill-count-crisis">2</span>
-              </button>
-              <span class="pill-divider">●</span>
-              <button class="filter-pill-ind filter-pill-ind--expedite" data-filter="EMERGENCY EXPEDITE" id="filter-pill-expedite">
-                EXPEDITE <span class="pill-count" id="pill-count-expedite">4</span>
-              </button>
-              <span class="pill-divider">●</span>
-              <button class="filter-pill-ind filter-pill-ind--po" data-filter="STANDARD PO" id="filter-pill-po">
-                STANDARD PO <span class="pill-count" id="pill-count-po">4</span>
-              </button>
-              <span class="pill-divider">●</span>
-              <button class="filter-pill-ind filter-pill-ind--excess" data-filter="EXCESS HOLDING" id="filter-pill-excess">
-                EXCESS <span class="pill-count" id="pill-count-excess">4</span>
-              </button>
-              <button class="filter-pill-ind filter-pill-ind--approved" data-filter="APPROVED" id="filter-pill-approved">
-                APPROVED <span class="pill-count" id="pill-count-approved">0</span>
-              </button>
-              <span class="pill-divider">💤</span>
-              <button class="filter-pill-ind" data-filter="SNOOZED" id="filter-pill-snoozed" style="color:#6B21A8;border-color:#D8B4FE;background:#FAF5FF;font-weight:700;" title="Snoozed Alerts Queue · Track operational justifications and upcoming un-snooze dates">
-                💤 SNOOZED QUEUE <span class="pill-count" id="pill-count-snoozed">0</span>
-              </button>
+              <div class="segmented-control" id="segmented-filter-control">
+                <button class="filter-pill-ind active" data-filter="ALL" id="filter-pill-all">
+                  ALL <span class="pill-count" id="pill-count-all">15</span>
+                </button>
+                <button class="filter-pill-ind filter-pill-ind--crisis" data-filter="ACTIVE CRISIS" id="filter-pill-crisis">
+                  CRITICAL <span class="pill-count" id="pill-count-crisis">2</span>
+                </button>
+                <button class="filter-pill-ind filter-pill-ind--expedite" data-filter="EMERGENCY EXPEDITE" id="filter-pill-expedite">
+                  EXPEDITE <span class="pill-count" id="pill-count-expedite">4</span>
+                </button>
+                <button class="filter-pill-ind filter-pill-ind--po" data-filter="STANDARD PO" id="filter-pill-po">
+                  STANDARD <span class="pill-count" id="pill-count-po">4</span>
+                </button>
+                <button class="filter-pill-ind filter-pill-ind--excess" data-filter="EXCESS HOLDING" id="filter-pill-excess">
+                  EXCESS <span class="pill-count" id="pill-count-excess">4</span>
+                </button>
+              </div>
+
+              <!-- Progressive Disclosure: Secondary Filters -->
+              <details class="more-filters-disclosure">
+                <summary class="more-filters-summary">
+                  MORE FILTERS <span class="summary-arrow">▼</span>
+                </summary>
+                <div class="more-filters-dropdown">
+                  <button class="filter-pill-ind filter-pill-ind--changed" data-filter="CHANGED" id="filter-pill-changed">
+                    CHANGED WoW <span class="pill-count" id="pill-count-changed">5</span>
+                  </button>
+                  <button class="filter-pill-ind filter-pill-ind--approved" data-filter="APPROVED" id="filter-pill-approved">
+                    APPROVED <span class="pill-count" id="pill-count-approved">0</span>
+                  </button>
+                  <button class="filter-pill-ind filter-pill-ind--snoozed" data-filter="SNOOZED" id="filter-pill-snoozed" title="Snoozed Alerts Queue · Track operational justifications and upcoming un-snooze dates">
+                    SNOOZED <span class="pill-count" id="pill-count-snoozed">0</span>
+                  </button>
+                </div>
+              </details>
             </div>
 
             <div class="search-box-industrial">
-              <span class="search-icon-ind">🔍</span>
-              <input type="text" id="signal-search-input" class="search-input-ind" placeholder="Filter by Brand, Country, Region..." autocomplete="off" spellcheck="false">
-              <button class="search-clear-btn-ind" id="search-clear-btn" style="display:none;" title="Clear search">✕</button>
+              <span class="search-icon-ind">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"/>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+              </span>
+              <input type="text" id="signal-search-input" class="search-input-ind" placeholder="FILTER SKU, BRAND, REGION..." autocomplete="off" spellcheck="false">
+              <button class="search-clear-btn-ind" id="search-clear-btn" style="display:none;" title="Clear search">×</button>
+            </div>
+          </div>
+
+          <!-- ── 60-SECOND FOCAL DECISION HERO (ANTI-FATIGUE ARCHITECTURE · MENTOR SESSION 2 CONFORMANCE) ── -->
+          <div class="focal-triage-hero" id="focal-triage-hero">
+            <div class="focal-hero-meta">
+              <div class="focal-hero-tag-group">
+                <span class="focal-hero-pill">[ FOCAL DIRECTIVE · ACTION #1 ]</span>
+                <span class="focal-hero-spec-tag">MENTOR SESSION 2 SPECIFICATION · 60-SECOND RESOLUTION</span>
+              </div>
+              <span class="focal-hero-exposure-badge" id="hero-action-exposure">SAVINGS: ₹1.98 CR</span>
+            </div>
+            <div class="focal-hero-body">
+              <div class="focal-hero-content">
+                <div class="focal-hero-heading" id="hero-action-title">
+                  AUTHORIZE EMERGENCY AIR TRANSFER: Country 059 → Country 013 (13,174 Units)
+                </div>
+                <div class="focal-hero-narrative" id="hero-action-desc">
+                  Standard 36-week Pacific maritime transit cannot prevent Week 1 stockout. Kalundborg donor affiliate retains 338 days of stock (zero collateral cascade risk). Approving this single transfer closes the sea gap and shields 1,202 lifelong chronic diabetes patients.
+                </div>
+              </div>
+              <div class="focal-hero-action-cluster">
+                <button class="btn-hero-authorize" id="btn-hero-authorize" type="button">
+                  AUTHORIZE DIRECTIVE #1 →
+                </button>
+                <div class="focal-hero-subtext">1-click GxP sign-off &amp; notification dispatch</div>
+              </div>
             </div>
           </div>
 
@@ -294,218 +352,139 @@
         </section>
 
         <!-- VIEW 2: Executive Briefing -->
-        <section id="view-briefing" class="view-section">
+        <section id="view-briefing" class="view-section briefing-mode-analyst">
           <div class="view-header">
             <div>
-              <h1 class="view-title">EXECUTIVE MONDAY BRIEFING</h1>
-              <p class="view-subtitle">Systemic risk posture, brand/region CHI, and 52-week seasonality</p>
+              <h1 class="view-title" id="briefing-main-title">MONDAY BRIEFING · WEEK 32</h1>
+              <p class="view-subtitle" id="briefing-main-subtitle">What changed, what you need to do today, and whether last week's actions worked.</p>
             </div>
             <div class="view-actions">
-              <button class="btn-action" id="btn-wow-diff">🔄 WHAT CHANGED</button>
-              <button class="btn-action btn-action--deck" id="btn-presentation-deck">📊 PRESENTATION SLIDES</button>
-              <button class="btn-action" id="btn-export-pdf">PDF EXPORT</button>
-              <button class="btn-action" id="btn-email-digest">EMAIL DIGEST</button>
+              <button class="btn-primary" id="btn-email-digest">EMAIL DIGEST</button>
+              <div class="btn-overflow-wrap">
+                <button class="btn-action" id="btn-briefing-overflow" aria-label="More actions">⋯ MORE</button>
+                <div class="btn-overflow-menu" id="briefing-overflow-menu" style="display:none">
+                  <button class="overflow-menu-item" id="btn-wow-diff">WHAT CHANGED THIS WEEK</button>
+                  <button class="overflow-menu-item" id="btn-presentation-deck">PRESENTATION SLIDES</button>
+                  <button class="overflow-menu-item" id="btn-export-pdf">PDF EXPORT</button>
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- Meeting-Specific Governance Review Selector (Section 6.6) -->
-          <div class="meeting-selector-bar">
+          <!-- Analyst Operational Scope & Decision Strip -->
+          <div class="analyst-scope-strip" id="analyst-scope-strip">
+            <div class="scope-strip-left">
+              <span class="scope-badge">SCOPE: GLOBAL EMEA / PACIFIC · GLP-1 &amp; INSULIN</span>
+              <span class="scope-date">MONDAY 08:30 CET · WEEK 32 TRIAGE QUEUE</span>
+            </div>
+            <div class="scope-strip-right">
+              <span class="scope-kpi-pill">ACTIVE SIGNALS: <strong>15</strong></span>
+              <span class="scope-kpi-pill scope-kpi-pill--red">ACUTE CRISES: <strong>2</strong></span>
+              <span class="scope-kpi-pill scope-kpi-pill--green">ACTIONS OWNED TODAY: <strong>4</strong></span>
+            </div>
+          </div>
+
+          <!-- Meeting-Specific Governance Review Selector (Executive Only) -->
+          <div class="meeting-selector-bar" id="briefing-meeting-bar" style="display:none">
             <div class="meeting-selector-top">
               <div class="meeting-selector-label">GOVERNANCE REVIEW / MEETING FORMAT (SECTION 6.6):</div>
               <div class="meeting-selector-tabs" id="meeting-selector-tabs">
-                <button class="meeting-tab active" data-meeting="SOP_MONTHLY">🏢 GLOBAL S&amp;OP EXECUTIVE REVIEW</button>
-                <button class="meeting-tab" data-meeting="SOE_WEEKLY">⚡ WEEKLY TIER-3 S&amp;OE STANDUP</button>
-                <button class="meeting-tab" data-meeting="RISK_COMMITTEE">📋 RISK &amp; ALLOCATION COMMITTEE</button>
+                <button class="meeting-tab active" data-meeting="SOP_MONTHLY">[S&amp;OP] GLOBAL S&amp;OP EXECUTIVE REVIEW</button>
+                <button class="meeting-tab" data-meeting="SOE_WEEKLY">[SO&amp;E] WEEKLY TIER-3 S&amp;OE STANDUP</button>
+                <button class="meeting-tab" data-meeting="RISK_COMMITTEE">[RISK] RISK &amp; ALLOCATION COMMITTEE</button>
               </div>
             </div>
             <div class="meeting-governance-dossier" id="meeting-governance-dossier"></div>
-          <!-- ── AUTOMATED ANALYTICAL SYNTHESIS (GxP COMPLIANT) ── -->
-          <div class="ai-briefing-executive-card" id="ai-briefing-executive-card" style="background:#F8FAFC;border:1px solid #E2E8F0;border-left:4px solid #0284C7;padding:16px 20px;margin-bottom:16px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-              <div style="display:flex;align-items:center;gap:8px;">
-                <span style="font-size:16px;">🤖</span>
+          </div>
+
+          <!-- ── AUTOMATED ANALYTICAL SYNTHESIS (GxP COMPLIANT & ACTIONABLE) ── -->
+          <div class="ai-briefing-executive-card" id="ai-briefing-executive-card">
+            <div class="ai-briefing-top-row">
+              <div class="ai-briefing-brand">
+                <span class="mono-tag">[ AI ]</span>
                 <div>
-                  <span style="font-family:var(--font-mono);font-size:11px;font-weight:800;color:#0369A1;letter-spacing:0.06em;">AUTOMATED ANALYTICAL SYNTHESIS · 21 CFR PART 11 GxP COMPLIANT</span>
-                  <div style="font-size:10px;color:#64748B;">Deterministic Root Cause Attribution &amp; Zero-Hallucination Analytical Engine (Live Copilot Integration Ready)</div>
+                  <span class="ai-briefing-tag">AUTOMATED ANALYTICAL SYNTHESIS · 21 CFR PART 11 GxP COMPLIANT</span>
+                  <div class="ai-briefing-sub">Deterministic Root Cause Attribution &amp; Zero-Hallucination Analytical Engine (Click card to jump to direct resolution)</div>
                 </div>
               </div>
-              <div style="display:flex;align-items:center;gap:8px;">
-                <button class="btn-briefing-resynth" id="btn-briefing-resynth" type="button" style="cursor:pointer;font-family:var(--font-mono);font-size:10px;font-weight:700;padding:4px 10px;background:#0284C7;color:#fff;border:none;border-radius:2px;display:inline-flex;align-items:center;gap:5px;">
-                  <span>⚡</span><span>RE-SYNTHESIZE LIVE</span>
+              <div class="ai-briefing-ctrls">
+                <button class="btn-briefing-resynth" id="btn-briefing-resynth" type="button">
+                  <span>[⟳]</span><span>RE-SYNTHESIZE LIVE</span>
                 </button>
-                <span style="font-family:var(--font-mono);font-size:9.5px;font-weight:700;color:#0284C7;background:#E0F2FE;border:1px solid #BAE6FD;padding:3px 8px;">DETERMINISTIC GxP</span>
+                <span class="ai-briefing-pill">DETERMINISTIC GxP</span>
               </div>
             </div>
-            <div id="ai-briefing-summary-content" style="display:grid;grid-template-columns:repeat(3, 1fr);gap:14px;">
-              <div style="background:#FFFFFF;border:1px solid #E2E8F0;padding:12px;border-radius:2px;">
-                <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:#0F172A;margin-bottom:4px;">1. WHAT CHANGED THIS WEEK</div>
-                <div style="font-size:11.5px;color:#334155;line-height:1.55;">
-                  Global health improved by <strong>+1.2 points</strong> to <strong>86.8%</strong>. 3 prior acute crises were completely resolved via inter-market air transfers, while 2 new emerging corridors entered the priority triage window.
+            <div id="ai-briefing-summary-content" class="ai-briefing-grid">
+              <div class="ai-briefing-col clickable-synthesis-col" id="synth-col-1" data-action="audit">
+                <div class="ai-briefing-col-title">1. WHAT CHANGED THIS WEEK</div>
+                <div class="ai-briefing-col-body">
+                  <span id="synth-col-1-text">--</span>
                 </div>
+                <div class="synthesis-click-cue">VIEW WOW AUDIT DIFF →</div>
               </div>
-              <div style="background:#FFFFFF;border:1px solid #E2E8F0;padding:12px;border-radius:2px;">
-                <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:#991B1B;margin-bottom:4px;">2. TOP ACTION FOR LEADERSHIP</div>
-                <div style="font-size:11.5px;color:#334155;line-height:1.55;">
-                  Authorize the <strong>Country 059 → China air transfer (13,174 units)</strong>. Donor retains 338 days of stock (zero cascade risk). This closes a 36-week sea gap, saves ₹1.98 Cr, and protects 1,202 chronic patients.
+              <div class="ai-briefing-col clickable-synthesis-col" id="synth-col-2" data-action="transfer">
+                <div class="ai-briefing-col-title ai-briefing-col-title--red">2. TOP ACTION FOR LEADERSHIP</div>
+                <div class="ai-briefing-col-body">
+                  <span id="synth-col-2-text">--</span>
                 </div>
+                <div class="synthesis-click-cue">OPEN TRANSFER SIGNAL DRAWER →</div>
               </div>
-              <div style="background:#FFFFFF;border:1px solid #E2E8F0;padding:12px;border-radius:2px;">
-                <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:#166534;margin-bottom:4px;">3. CAPITAL UNLOCK OPPORTUNITY</div>
-                <div style="font-size:11.5px;color:#334155;line-height:1.55;">
-                  Our parameter audit identified <strong>164 corridors with stale safety stock in SAP</strong>. Recalibrating SSD from 42 → 9 days eliminates <strong>19,708 false alarms/year</strong> and frees up <strong>₹1,498.7 Cr</strong> in frozen working capital.
+              <div class="ai-briefing-col clickable-synthesis-col" id="synth-col-3" data-action="masterdata">
+                <div class="ai-briefing-col-title ai-briefing-col-title--green">3. CAPITAL UNLOCK OPPORTUNITY</div>
+                <div class="ai-briefing-col-body">
+                  <span id="synth-col-3-text">--</span>
                 </div>
+                <div class="synthesis-click-cue">OPEN MASTER DATA AUDIT →</div>
+              </div>
+              <div class="ai-briefing-col clickable-synthesis-col" id="synth-col-4" data-action="benchmark">
+                <div class="ai-briefing-col-title ai-briefing-col-title--blue">4. SYSTEM ROI &amp; NOISE ELIMINATION</div>
+                <div class="ai-briefing-col-body">
+                  <span id="synth-col-4-text">--</span>
+                </div>
+                <div class="synthesis-click-cue">VIEW BASELINE BENCHMARK →</div>
               </div>
             </div>
           </div>
 
-          <!-- ── BASELINE COMPARISON: LEGACY SAP/OMP VS CORRIDOR HEALTH MONITOR ── -->
-          <div class="baseline-comparison-card" id="baseline-comparison-card" style="background:#FFFFFF;border:1px solid #E2E8F0;padding:16px 20px;margin-bottom:16px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-              <div>
-                <div style="font-family:var(--font-mono);font-size:11px;font-weight:800;color:#0F172A;letter-spacing:0.04em;">
-                  📊 BASELINE COMPARISON: LEGACY SAP / OMP SYSTEM VS CORRIDOR HEALTH MONITOR
+          <!-- ── MONDAY EMERGENCY BRIEFING: EMERGENCY CHARTS, CRITICAL POINTS & PLAN OF ACTION (MOVED UP FOR ANALYST) ── -->
+          <div class="emergency-briefing-card" id="emergency-briefing-card">
+            <div class="emergency-briefing-top">
+              <div class="emergency-briefing-left">
+                <span class="emergency-pill-live"><span class="emergency-live-dot"></span> LIVE EMERGENCY TRIAGE</span>
+                <span class="emergency-time-tag">MONDAY 08:00 AM · EXECUTIVE ACTION DIRECTIVE</span>
+              </div>
+              <span class="emergency-sla-pill">24-HOUR SLA ESCALATION PROTOCOL</span>
+            </div>
+            <div class="emergency-briefing-heading">[ ! ] ACUTE CORRIDOR CRISES &amp; EMERGENCY ACTION PLAN</div>
+            <div class="emergency-briefing-sub">Immediate tactical intervention required on high-severity corridors where standard replenishment latency will cause lifelong chronic therapy switch.</div>
+
+            <!-- Emergency Plan of Action (Prioritized for Analyst First Paint) -->
+            <div class="emergency-action-plan-container">
+              <div class="emergency-action-plan-header">
+                <div class="emergency-action-plan-title">
+                  <span class="mono-tag">[ PLAN ]</span>
+                  <span>MONDAY MORNING 4-STEP PLAN OF ACTION (60-SECOND RESOLUTION)</span>
                 </div>
-                <div style="font-size:11px;color:#64748B;margin-top:2px;">
-                  Demonstrating empirical false positive alert reduction and planner hours recovered.
-                </div>
+                <span class="emergency-gxp-tag">GxP AUDITED STEPS</span>
               </div>
-              <span style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:#15803D;background:#DCFCE7;border:1px solid #BBF7D0;padding:3px 8px;">
-                91.9% NOISE ELIMINATED
-              </span>
-            </div>
-            <table class="baseline-comp-table" style="width:100%;border-collapse:collapse;font-size:11.5px;text-align:left;">
-              <thead>
-                <tr style="background:#F8FAFC;border-bottom:2px solid #E2E8F0;font-family:var(--font-mono);font-size:10px;color:#475569;">
-                  <th style="padding:8px 10px;">OPERATIONAL DIMENSION</th>
-                  <th style="padding:8px 10px;color:#DC2626;">LEGACY SAP / OMP BASELINE (BEFORE)</th>
-                  <th style="padding:8px 10px;color:#0284C7;">CORRIDOR HEALTH MONITOR (AFTER)</th>
-                  <th style="padding:8px 10px;color:#16A34A;">NET QUANTIFIABLE IMPACT</th>
-                </tr>
-              </thead>
-              <tbody style="line-height:1.6;">
-                <tr style="border-bottom:1px solid #F1F5F9;">
-                  <td style="padding:8px 10px;font-weight:600;">Annual Stockout Alert Volume</td>
-                  <td style="padding:8px 10px;color:#DC2626;font-family:var(--font-mono);">21,450 alerts / year</td>
-                  <td style="padding:8px 10px;color:#0284C7;font-family:var(--font-mono);font-weight:700;">1,742 actionable alerts / yr</td>
-                  <td style="padding:8px 10px;color:#16A34A;font-weight:700;">−19,708 false alarms / yr (91.9% reduction)</td>
-                </tr>
-                <tr style="border-bottom:1px solid #F1F5F9;">
-                  <td style="padding:8px 10px;font-weight:600;">Chronic Master Data False Alarms</td>
-                  <td style="padding:8px 10px;color:#DC2626;font-family:var(--font-mono);">379 series ringing 52 weeks/yr</td>
-                  <td style="padding:8px 10px;color:#0284C7;font-family:var(--font-mono);font-weight:700;">0 series ringing (routed to Master Data)</td>
-                  <td style="padding:8px 10px;color:#16A34A;font-weight:700;">100% of phantom alarms isolated</td>
-                </tr>
-                <tr style="border-bottom:1px solid #F1F5F9;">
-                  <td style="padding:8px 10px;font-weight:600;">Planner Daily Triage Load</td>
-                  <td style="padding:8px 10px;color:#DC2626;font-family:var(--font-mono);">4.2 hours / day per planner</td>
-                  <td style="padding:8px 10px;color:#0284C7;font-family:var(--font-mono);font-weight:700;">18 minutes / day (PRS rank-ordered)</td>
-                  <td style="padding:8px 10px;color:#16A34A;font-weight:700;">+3.9 hours/day returned to logistics execution</td>
-                </tr>
-                <tr style="border-bottom:1px solid #F1F5F9;">
-                  <td style="padding:8px 10px;font-weight:600;">Frozen Safety Stock Capital</td>
-                  <td style="padding:8px 10px;color:#DC2626;font-family:var(--font-mono);">₹1,498.7 Cr trapped by stale SSD</td>
-                  <td style="padding:8px 10px;color:#0284C7;font-family:var(--font-mono);font-weight:700;">₹1,498.7 Cr parameter unlock queue</td>
-                  <td style="padding:8px 10px;color:#16A34A;font-weight:700;">Working capital liberated to corporate treasury</td>
-                </tr>
-                <tr>
-                  <td style="padding:8px 10px;font-weight:600;">Lead Time Cliff Pre-emption</td>
-                  <td style="padding:8px 10px;color:#DC2626;font-family:var(--font-mono);">Reactive (alerted after stockout)</td>
-                  <td style="padding:8px 10px;color:#0284C7;font-family:var(--font-mono);font-weight:700;">Predictive (1–12 weeks prior to breach)</td>
-                  <td style="padding:8px 10px;color:#16A34A;font-weight:700;">Pre-empts 36W deep-sea freight cliffs</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- ── LEADING VS LAGGING METRICS EXPLAINER (CHI VS OTIF) ── -->
-          <div class="chi-otif-explainer-card" style="background:#FEF3C7;border:1px solid #FDE68A;border-left:4px solid #D97706;padding:14px 18px;margin-bottom:16px;">
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;">
-              <div style="display:flex;align-items:center;gap:6px;">
-                <span style="font-size:14px;">💡</span>
-                <span style="font-family:var(--font-mono);font-size:10.5px;font-weight:800;color:#92400E;letter-spacing:0.04em;">
-                  WHY IS CORRIDOR HEALTH (CHI) 86.8% WHEN CONTRACTUAL OTIF IS 98.5%?
-                </span>
-              </div>
-              <span style="font-family:var(--font-mono);font-size:9.5px;font-weight:700;color:#92400E;background:#FDE68A;padding:2px 6px;">
-                LEADING VS LAGGING RISK
-              </span>
-            </div>
-            <div style="font-size:11.5px;color:#78350F;line-height:1.55;">
-              <strong>• OTIF (98.5%) is a LAGGING, REAR-VIEW METRIC:</strong> It measures past delivery completion (did an order actually fail?). Across the 260,000 SKU-weeks, physical stockouts occurred in only 1.5% of weeks.<br/>
-              <strong>• CHI (86.8%) is a FORWARD-LOOKING LEADING INDICATOR:</strong> It detects latent network stress <em>before</em> shelves run dry—penalizing inventory dropping below safety stock (DOH &lt; SSD), unconfirmed upstream supplier orders, and impending lead-time cliffs. The <strong>11.7% gap</strong> represents latent operational vulnerability that will materialize into physical stockouts in 3–6 weeks if unmitigated.
-            </div>
-          </div>
-
-
-          <!-- Week-over-Week Action Audit Banner: "Did It Get Better?" -->
-          <div class="briefing-wow-card" id="briefing-wow-card">
-            <div class="wow-top">
-              <span class="callout-tag">[ WEEK-OVER-WEEK ACTION AUDIT · WEEK 31 → WEEK 32 ]</span>
-              <span class="wow-badge-status">ACTION EFFECTIVENESS: POSITIVE ✓</span>
-            </div>
-            <div class="wow-title">EXECUTIVE DECISION IMPACT: &ldquo;DID IT GET BETTER?&rdquo;</div>
-            <div class="wow-quote" id="wow-narrative-text">
-              3 of 8 prior crisis signals resolved. 2 new signals emerged. Net crisis count reduced. CHI improved by ↑ 1.2 pts (85.6% → 86.8%).
-            </div>
-            <div class="wow-grid">
-              <div class="wow-grid-item">
-                <span class="wow-grid-k">CRISIS SIGNALS RESOLVED</span>
-                <span class="wow-grid-v tabular-nums" style="color:var(--ok-text)" id="wow-kpi-resolved">3 RESOLVED</span>
-                <span class="wow-grid-sub">Inter-market transfers complete</span>
-              </div>
-              <div class="wow-grid-item">
-                <span class="wow-grid-k">NEW EMERGING SIGNALS</span>
-                <span class="wow-grid-v tabular-nums" style="color:var(--warn-text)" id="wow-kpi-emerged">2 EMERGED</span>
-                <span class="wow-grid-sub">Escalated to expedite review</span>
-              </div>
-              <div class="wow-grid-item">
-                <span class="wow-grid-k">NET CHI RECOVERY</span>
-                <span class="wow-grid-v tabular-nums" style="color:#0072CE" id="wow-kpi-chirecovery">+1.2 PTS</span>
-                <span class="wow-grid-sub">CHI 85.6% → 86.8%</span>
-              </div>
-              <div class="wow-grid-item">
-                <span class="wow-grid-k">EXPOSURE MITIGATED</span>
-                <span class="wow-grid-v tabular-nums" style="color:var(--ok-text)" id="wow-kpi-capmitigated">-₹14.2 CR</span>
-                <span class="wow-grid-sub">Active capital at risk down</span>
-              </div>
-            </div>
-            <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
-              <span style="font-size:11px;color:var(--muted);font-family:var(--font-mono);">SECTION 6.1 · WHAT CHANGED SINCE LAST WEEK (DYNAMIC SKU DIFF)</span>
-              <button class="btn-action" id="btn-inline-wow-diff" style="font-size:11px;padding:6px 14px;background:var(--card-bg);border:1px solid var(--border);cursor:pointer;">🔍 EXPAND MODAL AUDIT</button>
-            </div>
-            <!-- Embedded Dynamic SKU Diff Front-and-Center -->
-            <div class="briefing-embedded-diff" id="briefing-embedded-diff" style="margin-top:16px;">
-              <div class="embedded-diff-grid" id="embedded-diff-grid">
+              <div class="emergency-action-steps" id="emergency-action-steps">
                 <!-- Dynamically populated by briefing.js -->
               </div>
             </div>
-          </div>
-
-          <!-- ── MONDAY EMERGENCY BRIEFING: EMERGENCY CHARTS, CRITICAL POINTS & PLAN OF ACTION ── -->
-          <div class="emergency-briefing-card" id="emergency-briefing-card">
-            <div class="emergency-briefing-top">
-              <div style="display:flex;align-items:center;gap:8px;">
-                <span class="emergency-pill-live"><span class="emergency-live-dot"></span> LIVE EMERGENCY TRIAGE</span>
-                <span style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:#991B1B;">MONDAY 08:00 AM · EXECUTIVE ACTION DIRECTIVE</span>
-              </div>
-              <span style="font-family:var(--font-mono);font-size:10px;font-weight:700;background:#FFFFFF;border:1px solid #FCA5A5;color:#B91C1C;padding:2px 8px;">24-HOUR SLA ESCALATION PROTOCOL</span>
-            </div>
-            <div class="emergency-briefing-heading">🚨 ACUTE CORRIDOR CRISES &amp; EMERGENCY ACTION PLAN</div>
-            <div class="emergency-briefing-sub">Immediate tactical intervention required on high-severity corridors where standard replenishment latency will cause lifelong chronic therapy switch.</div>
 
             <!-- Emergency Charts Grid -->
             <div class="emergency-charts-grid">
               <div class="emergency-chart-tile">
                 <div class="emergency-chart-title">
-                  <span>💰 ACUTE CORRIDOR CAPITAL AT RISK (₹ CR)</span>
-                  <span style="font-size:9.5px;color:#DC2626;font-weight:800;">FINANCIAL EXPOSURE</span>
+                  <span>ACUTE CORRIDOR CAPITAL AT RISK (₹ CR)</span>
+                  <span class="emergency-chart-tag-red">FINANCIAL EXPOSURE</span>
                 </div>
                 <div class="emergency-chart-wrap"><canvas id="chart-emergency-velocity"></canvas></div>
               </div>
               <div class="emergency-chart-tile">
                 <div class="emergency-chart-title">
-                  <span>✈️ MARITIME CLIFF VS AIR CHARTER LATENCY</span>
-                  <span style="font-size:9.5px;color:#B45309;font-weight:800;">TRANSIT COMPARISON</span>
+                  <span>MARITIME CLIFF VS AIR CHARTER LATENCY</span>
+                  <span class="emergency-chart-tag-warn">TRANSIT COMPARISON</span>
                 </div>
                 <div class="emergency-chart-wrap"><canvas id="chart-emergency-freight"></canvas></div>
               </div>
@@ -515,67 +494,54 @@
             <div class="emergency-points-grid" id="emergency-points-grid">
               <!-- Dynamically populated by briefing.js -->
             </div>
+          </div>
 
-            <!-- Emergency Plan of Action -->
-            <div class="emergency-action-plan-container">
-              <div class="emergency-action-plan-header">
-                <div class="emergency-action-plan-title">
-                  <span>📋</span>
-                  <span>MONDAY MORNING 4-STEP PLAN OF ACTION (60-SECOND RESOLUTION)</span>
-                </div>
-                <span style="font-family:var(--font-mono);font-size:9.5px;font-weight:700;color:#15803D;background:#DCFCE7;border:1px solid #86EFAC;padding:2px 6px;">GxP AUDITED STEPS</span>
+          <!-- Week-over-Week Action Audit Banner: "Did It Get Better?" -->
+          <div class="briefing-wow-card" id="briefing-wow-card">
+            <div class="wow-top">
+              <span class="callout-tag">[ WEEK-OVER-WEEK ACTION AUDIT · WEEK 31 → WEEK 32 ]</span>
+              <span class="wow-badge-status">ACTION EFFECTIVENESS: POSITIVE [OK]</span>
+            </div>
+            <div class="wow-title">EXECUTIVE DECISION IMPACT: &ldquo;DID IT GET BETTER?&rdquo;</div>
+            <div class="wow-quote" id="wow-narrative-text">
+              --
+            </div>
+            <div class="wow-grid">
+              <div class="wow-grid-item">
+                <span class="wow-grid-k">CRISIS SIGNALS RESOLVED</span>
+                <span class="wow-grid-v tabular-nums wow-kpi-resolved" id="wow-kpi-resolved">--</span>
+                <span class="wow-grid-sub">Inter-market transfers complete</span>
               </div>
-              <div class="emergency-action-steps" id="emergency-action-steps">
+              <div class="wow-grid-item">
+                <span class="wow-grid-k">NEW EMERGING SIGNALS</span>
+                <span class="wow-grid-v tabular-nums wow-kpi-emerged" id="wow-kpi-emerged">--</span>
+                <span class="wow-grid-sub">Escalated to expedite review</span>
+              </div>
+              <div class="wow-grid-item">
+                <span class="wow-grid-k">NET CHI RECOVERY</span>
+                <span class="wow-grid-v tabular-nums wow-kpi-recovery" id="wow-kpi-chirecovery">--</span>
+                <span class="wow-grid-sub" id="wow-kpi-chirecovery-sub">--</span>
+              </div>
+              <div class="wow-grid-item">
+                <span class="wow-grid-k">EXPOSURE MITIGATED</span>
+                <span class="wow-grid-v tabular-nums wow-kpi-mitigated" id="wow-kpi-capmitigated">--</span>
+                <span class="wow-grid-sub">Active capital at risk down</span>
+              </div>
+            </div>
+            <div class="wow-footer-bar">
+              <span class="wow-footer-tag">SECTION 6.1 · WHAT CHANGED SINCE LAST WEEK (DYNAMIC SKU DIFF)</span>
+              <button class="btn-inline-expand" id="btn-inline-wow-diff">[+] EXPAND MODAL AUDIT</button>
+            </div>
+            <!-- Embedded Dynamic SKU Diff Front-and-Center -->
+            <div class="briefing-embedded-diff" id="briefing-embedded-diff">
+              <div class="embedded-diff-grid" id="embedded-diff-grid">
                 <!-- Dynamically populated by briefing.js -->
               </div>
             </div>
           </div>
 
-          <!-- Section 6.10 CHI Performance Benchmarks & 4-Quarter Rolling Trajectory -->
-          <div class="chi-benchmark-card" id="chi-benchmark-card">
-            <div class="benchmark-top">
-              <span class="callout-tag">[ CHI PERFORMANCE BENCHMARKS &amp; 4-QUARTER ROLLING TRAJECTORY ]</span>
-              <span class="benchmark-target-pill">WORLD-CLASS SLA TARGET: 95.0%</span>
-            </div>
-            <div class="benchmark-grid">
-              <div class="benchmark-tile">
-                <span class="benchmark-k">WORLD-CLASS SLA TARGET</span>
-                <span class="benchmark-v" style="color:#0072CE">95.0%</span>
-                <span class="benchmark-sub">Target gap: 8.2 pts</span>
-              </div>
-              <div class="benchmark-tile">
-                <span class="benchmark-k">OPERATIONAL THRESHOLD</span>
-                <span class="benchmark-v" style="color:var(--ok-text)">85.0%</span>
-                <span class="benchmark-sub">+1.8 pts buffer (COMPLIANT)</span>
-              </div>
-              <div class="benchmark-tile">
-                <span class="benchmark-k">CRITICAL RISK FLOOR</span>
-                <span class="benchmark-v" style="color:var(--crisis-text)">&lt; 80.0%</span>
-                <span class="benchmark-sub">VP intervention trigger</span>
-              </div>
-              <div class="benchmark-tile">
-                <span class="benchmark-k">4-QUARTER TRAJECTORY</span>
-                <span class="benchmark-v tabular-nums" style="color:var(--ok-text)">Q1 82.4 → Q4 86.8</span>
-                <span class="benchmark-sub">+4.4 pts net improvement</span>
-              </div>
-            </div>
-            <div class="quarter-track-row">
-              <div class="quarter-step"><span class="q-dot"></span><span class="q-name">Q1 2026</span><span class="q-val">82.4%</span><span class="q-note">Post-ERP floor shock</span></div>
-              <div class="quarter-step"><span class="q-dot"></span><span class="q-name">Q2 2026</span><span class="q-val">84.1%</span><span class="q-note">Buffer recalibration</span></div>
-              <div class="quarter-step"><span class="q-dot"></span><span class="q-name">Q3 2026</span><span class="q-val">85.6%</span><span class="q-note">Inter-market transfers</span></div>
-              <div class="quarter-step quarter-step--current"><span class="q-dot q-dot--current"></span><span class="q-name">Q4 2026 (W32)</span><span class="q-val" style="color:var(--ok-text)">86.8%</span><span class="q-note">On target (+1.2 WoW)</span></div>
-            </div>
-            <!-- Dedicated 4-Quarter CHI Historical Trend Line Chart -->
-            <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
-              <div style="font-size:11px;font-family:var(--font-mono);font-weight:700;margin-bottom:8px;display:flex;justify-content:space-between;">
-                <span>4-QUARTER ROLLING CHI RECOVERY TIMELINE</span>
-                <span style="color:var(--ok-text)">CONTRACTUAL SLA FLOOR: 85.0%</span>
-              </div>
-              <div style="height:140px;position:relative;"><canvas id="chart-chi-historical-4q"></canvas></div>
-            </div>
-          </div>
-
-          <div class="briefing-layout">
+          <!-- ── OPERATIONAL HORIZON & MARKET CONCENTRATION: WHERE TO LOOK NEXT ── -->
+          <div class="briefing-layout" id="briefing-core-charts-layout">
             <div class="briefing-charts">
               <div class="chart-card">
                 <div class="chart-card-label">REGIONAL CORRIDOR HEALTH INDEX</div>
@@ -585,26 +551,8 @@
                 <div class="chart-card-label">BRAND CORRIDOR HEALTH INDEX</div>
                 <div class="chart-wrap"><canvas id="chart-brand-chi"></canvas></div>
               </div>
-              <div class="chart-card">
-                <div class="chart-card-label" style="display:flex;justify-content:space-between;align-items:center;">
-                  <span>SYSTEMIC RISK CONCENTRATION (PARETO)</span>
-                  <span style="font-size:9px;color:var(--crisis-text);font-weight:700;background:#FEF2F2;border:1px solid #FECACA;padding:2px 6px;">WORST 20 = 38.2% (NOT 80/20)</span>
-                </div>
-                <div style="font-size:10px;font-family:var(--font-mono);color:var(--muted);margin-bottom:6px;">Contradicts 80/20 rule: stockout risk is broadly distributed across all 5,000 corridors, proving global automation is required.</div>
-                <div class="chart-wrap"><canvas id="chart-pareto"></canvas></div>
-              </div>
-              <div class="chart-card">
-                <div class="chart-card-label">MONTHLY STOCKOUT SEASONALITY</div>
-                <div class="chart-wrap"><canvas id="chart-seasonality"></canvas></div>
-              </div>
             </div>
             <aside class="briefing-meta">
-              <div class="callout-block">
-                <div class="callout-tag">[ TEAM CIPHER ORIGINAL KPI ]</div>
-                <div class="callout-heading">CORRIDOR HEALTH INDEX (CHI)</div>
-                <p class="callout-body">Novel inventory corridor integrity metric based on Weighted Severity Penalty (WSP) evaluated over 260,000+ SKU-week records.</p>
-                <code class="callout-formula">CHI = max(0, 100 × (1 − Σ WSPₜ / (N × 1.5)))</code>
-              </div>
               <div class="table-card">
                 <div class="table-card-label">TOP 10 HIGH-EXPOSURE MARKETS</div>
                 <table class="dense-table" id="table-worst-countries">
@@ -624,6 +572,161 @@
               </div>
             </aside>
           </div>
+
+          <!-- ── COLLAPSIBLE METHODOLOGY, BENCHMARKS & REFERENCE (COLLAPSED BY DEFAULT FOR ANALYST) ── -->
+          <details class="methodology-disclosure" id="briefing-methodology-disclosure" open>
+            <summary class="methodology-disclosure-summary">
+              <div class="methodology-summary-left">
+                <span class="methodology-disclosure-icon">▸</span>
+                <span class="methodology-summary-tag">[ BENCHMARKS &amp; METHODOLOGY ]</span>
+                <span class="methodology-summary-title">Baseline Comparison, OTIF Explainer, 4Q Trajectory, Pareto, Seasonality &amp; Formula</span>
+              </div>
+              <span class="methodology-summary-badge">SECTION 6.3 / 6.10 ARCHIVE</span>
+            </summary>
+
+            <div class="methodology-disclosure-content">
+              <!-- Baseline Comparison -->
+              <div class="baseline-comparison-card" id="baseline-comparison-card">
+                <div class="baseline-comp-header">
+                  <div>
+                    <div class="baseline-comp-title">
+                      [ BENCHMARK ] BASELINE COMPARISON: LEGACY SAP / OMP SYSTEM VS CORRIDOR HEALTH MONITOR
+                    </div>
+                    <div class="baseline-comp-sub">
+                      Demonstrating empirical false positive alert reduction and planner hours recovered.
+                    </div>
+                  </div>
+                  <span class="baseline-comp-badge" id="base-noise-badge">
+                    --% NOISE ELIMINATED
+                  </span>
+                </div>
+                <table class="baseline-comp-table" id="baseline-comp-table">
+                  <thead>
+                    <tr>
+                      <th>OPERATIONAL DIMENSION</th>
+                      <th class="cell-before">LEGACY SAP / OMP BASELINE (BEFORE)</th>
+                      <th class="cell-after">CORRIDOR HEALTH MONITOR (AFTER)</th>
+                      <th class="cell-impact">NET QUANTIFIABLE IMPACT</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="cell-dim">Annual Stockout Alert Volume</td>
+                      <td class="cell-before" id="base-alerts-before">-- alerts / year</td>
+                      <td class="cell-after" id="base-alerts-after">-- actionable alerts / yr</td>
+                      <td class="cell-impact" id="base-alerts-impact">-- false alarms / yr</td>
+                    </tr>
+                    <tr>
+                      <td class="cell-dim">Chronic Master Data False Alarms</td>
+                      <td class="cell-before" id="base-chronic-before">-- series ringing 52 weeks/yr</td>
+                      <td class="cell-after" id="base-chronic-after">0 series ringing (routed to Master Data)</td>
+                      <td class="cell-impact" id="base-chronic-impact">100% of phantom alarms isolated</td>
+                    </tr>
+                    <tr>
+                      <td class="cell-dim">Planner Daily Triage Load</td>
+                      <td class="cell-before" id="base-triage-before">-- hours / day per planner</td>
+                      <td class="cell-after" id="base-triage-after">-- minutes / day (PRS rank-ordered)</td>
+                      <td class="cell-impact" id="base-triage-impact">-- returned to logistics execution</td>
+                    </tr>
+                    <tr>
+                      <td class="cell-dim">Frozen Safety Stock Capital</td>
+                      <td class="cell-before" id="base-capital-before">-- trapped by stale SSD</td>
+                      <td class="cell-after" id="base-capital-after">-- parameter unlock queue</td>
+                      <td class="cell-impact" id="base-capital-impact">Working capital liberated to corporate treasury</td>
+                    </tr>
+                    <tr>
+                      <td class="cell-dim">Lead Time Cliff Pre-emption</td>
+                      <td class="cell-before">Reactive (alerted after stockout)</td>
+                      <td class="cell-after">Predictive (1–12 weeks prior to breach)</td>
+                      <td class="cell-impact">Pre-empts 36W deep-sea freight cliffs</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Leading vs Lagging Metrics Explainer: Elevating Team Cipher's Original CHI Formulation -->
+              <div class="chi-otif-explainer-card">
+                <div class="chi-otif-header">
+                  <div class="chi-otif-title-group">
+                    <span class="mono-tag">[ INNOVATION ]</span>
+                    <span class="chi-otif-title" id="chi-otif-title">
+                      PROPRIETARY CORRIDOR HEALTH INDEX (CHI) · CLOSING THE LATENT RISK BLINDSPOT
+                    </span>
+                  </div>
+                  <span class="chi-otif-badge" id="chi-otif-badge">
+                    ORIGINAL CIPHER TELEMETRY · EMPIRICAL DATASET
+                  </span>
+                </div>
+                <div class="chi-otif-body" id="chi-otif-body">
+                  --
+                </div>
+              </div>
+
+              <!-- Section 6.10 CHI Performance Benchmarks & 4-Quarter Rolling Trajectory -->
+              <div class="chi-benchmark-card" id="chi-benchmark-card">
+                <div class="benchmark-top">
+                  <span class="callout-tag">[ CHI PERFORMANCE BENCHMARKS &amp; 4-QUARTER ROLLING TRAJECTORY ]</span>
+                  <span class="benchmark-target-pill">WORLD-CLASS SLA TARGET: 95.0%</span>
+                </div>
+                <div class="benchmark-grid" id="benchmark-grid">
+                  <div class="benchmark-tile">
+                    <span class="benchmark-k">WORLD-CLASS SLA TARGET</span>
+                    <span class="benchmark-v benchmark-v--target" id="bench-target-val">95.0%</span>
+                    <span class="benchmark-sub" id="bench-target-gap">Target gap: -- pts</span>
+                  </div>
+                  <div class="benchmark-tile">
+                    <span class="benchmark-k">OPERATIONAL THRESHOLD</span>
+                    <span class="benchmark-v benchmark-v--ok" id="bench-op-thresh">85.0%</span>
+                    <span class="benchmark-sub" id="bench-op-buffer">-- buffer</span>
+                  </div>
+                  <div class="benchmark-tile">
+                    <span class="benchmark-k">CRITICAL RISK FLOOR</span>
+                    <span class="benchmark-v benchmark-v--crisis" id="bench-crit-floor">&lt; 80.0%</span>
+                    <span class="benchmark-sub">VP intervention trigger</span>
+                  </div>
+                  <div class="benchmark-tile">
+                    <span class="benchmark-k">4-QUARTER TRAJECTORY</span>
+                    <span class="benchmark-v tabular-nums benchmark-v--ok" id="bench-4q-traj">--</span>
+                    <span class="benchmark-sub" id="bench-4q-imp">-- net improvement</span>
+                  </div>
+                </div>
+                <div class="quarter-track-row" id="quarter-track-row">
+                  <!-- Dynamically populated by briefing.js -->
+                </div>
+                <!-- Dedicated 4-Quarter CHI Historical Trend Line Chart -->
+                <div class="benchmark-chart-row">
+                  <div class="benchmark-chart-heading">
+                    <span>4-QUARTER ROLLING CHI RECOVERY TIMELINE</span>
+                    <span class="benchmark-v--ok">CONTRACTUAL SLA FLOOR: 85.0%</span>
+                  </div>
+                  <div class="benchmark-chart-wrap"><canvas id="chart-chi-historical-4q"></canvas></div>
+                </div>
+              </div>
+
+              <!-- Pareto and Seasonality Secondary Charts -->
+              <div class="methodology-charts-grid">
+                <div class="chart-card">
+                  <div class="chart-card-label chart-card-label-row">
+                    <span>SYSTEMIC RISK CONCENTRATION (PARETO)</span>
+                    <span class="pareto-badge" id="pareto-badge">--</span>
+                  </div>
+                  <div class="pareto-desc" id="pareto-desc">--</div>
+                  <div class="chart-wrap"><canvas id="chart-pareto"></canvas></div>
+                </div>
+                <div class="chart-card">
+                  <div class="chart-card-label">MONTHLY STOCKOUT SEASONALITY</div>
+                  <div class="chart-wrap"><canvas id="chart-seasonality"></canvas></div>
+                </div>
+              </div>
+
+              <div class="callout-block" style="margin-top:16px;">
+                <div class="callout-tag">[ TEAM CIPHER ORIGINAL KPI ]</div>
+                <div class="callout-heading">CORRIDOR HEALTH INDEX (CHI)</div>
+                <p class="callout-body">Novel inventory corridor integrity metric based on Weighted Severity Penalty (WSP) evaluated over 260,000+ SKU-week records.</p>
+                <code class="callout-formula">CHI = max(0, 100 × (1 − Σ WSPₜ / (N × 1.5)))</code>
+              </div>
+            </div>
+          </details>
         </section>
 
         <!-- VIEW 3: Master Data / Parameter Audit Engine -->
@@ -634,8 +737,8 @@
               <p class="view-subtitle">Automated SAP/OMP planning parameter recalibration & working capital liberation (Section 6.4)</p>
             </div>
             <div class="view-actions">
-              <button class="btn-action btn-action--deck" id="btn-export-masterdata" style="font-weight:700;display:flex;align-items:center;gap:6px;">
-                <span>📥</span> EXPORT SAP/OMP RECALIBRATION QUEUE (CSV)
+              <button class="btn-action btn-export-masterdata" id="btn-export-masterdata">
+                [↓] EXPORT SAP/OMP RECALIBRATION QUEUE (CSV)
               </button>
             </div>
           </div>
@@ -652,15 +755,15 @@
             </blockquote>
 
             <!-- AI Master Data Plain-English Explanation -->
-            <div class="ai-section-translation-box" style="margin:12px 0 16px 0;padding:12px 14px;background:#FFFBEB;border:1px solid #FDE68A;border-left:4px solid #D97706;border-radius:2px;">
-              <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:6px;">
-                <div style="display:flex;align-items:center;gap:6px;">
-                  <span style="font-size:14px;">🤖</span>
-                  <span style="font-family:var(--font-mono);font-size:10.5px;font-weight:800;color:#92400E;letter-spacing:0.04em;">AI MASTER DATA AUDIT EXPLANATION</span>
+            <div class="ai-section-translation-box">
+              <div class="ai-trans-top">
+                <div class="ai-trans-title-group">
+                  <span class="mono-tag">[ AI ]</span>
+                  <span class="ai-trans-title">AI MASTER DATA AUDIT EXPLANATION</span>
                 </div>
-                <span style="font-family:var(--font-mono);font-size:9.5px;font-weight:700;color:#B45309;background:#FEF3C7;padding:2px 6px;">SECTION 6.4 DIRECTIVE</span>
+                <span class="ai-trans-badge">SECTION 6.4 DIRECTIVE</span>
               </div>
-              <div style="font-size:12px;color:#78350F;line-height:1.6;">
+              <div class="ai-trans-body">
                 <strong>What is happening:</strong> 164 product corridors have their Safety Stock Days (SSD) frozen in SAP/OMP based on old demand figures, even though real doctor demand has shifted by <strong>&ge;30%</strong>.<br/>
                 <strong>Why this matters:</strong> Because the safety stock setting is too high, the system panics and triggers <strong>19,708 false alarms every year</strong>, forcing planners to chase fake emergencies while trapping <strong>₹1,498.7 Crore</strong> in unused stock.<br/>
                 <strong>Exact Action to Take:</strong> Click the <strong>EXPORT SAP/OMP RECALIBRATION QUEUE (CSV)</strong> button above and submit it to your SAP master data administrator to automatically lower SSD from 42 to 9 days for these 164 series.
@@ -675,17 +778,17 @@
               </div>
               <div class="param-kpi-item">
                 <span class="param-kpi-label">STALE MASTER DATA PARAMETERS</span>
-                <span class="param-kpi-val tabular-nums" id="audit-kpi-stale" style="color:#D97706">164 CORRIDORS</span>
+                <span class="param-kpi-val tabular-nums kpi-stale" id="audit-kpi-stale">164 CORRIDORS</span>
                 <span class="param-kpi-sub">SSD static with demand shift ≥30%</span>
               </div>
               <div class="param-kpi-item">
                 <span class="param-kpi-label">ANNUAL FALSE ALERTS ELIMINATED</span>
-                <span class="param-kpi-val tabular-nums" id="audit-kpi-alerts" style="color:var(--ok-text)">19,708 ALERTS / YR</span>
+                <span class="param-kpi-val tabular-nums kpi-alerts" id="audit-kpi-alerts">19,708 ALERTS / YR</span>
                 <span class="param-kpi-sub">52 weeks × 379 series</span>
               </div>
               <div class="param-kpi-item">
                 <span class="param-kpi-label">TRAPPED WORKING CAPITAL</span>
-                <span class="param-kpi-val tabular-nums" id="audit-kpi-capital" style="color:#0072CE">₹1,498.7 CR</span>
+                <span class="param-kpi-val tabular-nums kpi-capital" id="audit-kpi-capital">₹1,498.7 CR</span>
                 <span class="param-kpi-sub">₹149.8 Cr/yr WACC saved · Phase-1: ₹14.9 Cr</span>
               </div>
             </div>
@@ -695,36 +798,42 @@
           <div class="audit-filter-bar">
             <span class="audit-filter-label">AUDIT SEGMENTATION:</span>
             <div class="audit-filter-pills">
-              <button class="btn-filter-pill active" id="filter-audit-all">ALL CHRONIC (379)</button>
-              <button class="btn-filter-pill" id="filter-audit-stale">⚠️ STALE PARAMETERS (DEMAND SHIFT ≥30%) (<span id="count-filter-stale">164</span>)</button>
-              <button class="btn-filter-pill" id="filter-audit-floor">CHRONIC FLOOR MISMATCH (<span id="count-filter-floor">215</span>)</button>
+              <button class="btn-filter-pill active" id="filter-audit-all">ALL CHRONIC (<span id="count-filter-all">379</span> · ₹1,498.7 Cr)</button>
+              <button class="btn-filter-pill" id="filter-audit-stale">⚡ STALE PARAMETERS (<span id="count-filter-stale">164</span> · ₹648.2 Cr)</button>
+              <button class="btn-filter-pill" id="filter-audit-floor">CHRONIC FLOOR MISMATCH (<span id="count-filter-floor">215</span> · ₹850.5 Cr)</button>
             </div>
           </div>
 
-          <div class="masterdata-callout">
-            <span id="masterdata-summary-stats" class="tabular-nums">Loading chronic series data…</span>
+          <!-- Masterdata Interactive Workflow Toolbar -->
+          <div class="masterdata-toolbar-row">
+            <div class="masterdata-callout" style="margin-bottom:0;">
+              <span id="masterdata-summary-stats" class="tabular-nums">Loading chronic series data…</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <button class="btn-batch-sync" id="btn-batch-stage-sap" disabled>
+                <span>⚡ STAGE SELECTED FOR SAP/OMP (<span id="selected-count">0</span>)</span>
+              </button>
+            </div>
           </div>
+
           <div class="table-wrap">
-            <table class="dense-table full-table" id="table-masterdata">
+            <table class="table-masterdata-modern" id="table-masterdata">
               <thead>
                 <tr>
-                  <th>ID</th>
-                  <th>REGION</th>
-                  <th>BRAND</th>
-                  <th>COUNTRY</th>
-                  <th>STALE STATUS</th>
-                  <th class="text-right">DEMAND SHIFT</th>
-                  <th>PRODUCT GROUP</th>
-                  <th class="text-right">CURRENT SSD</th>
-                  <th class="text-right">MIN DOH</th>
-                  <th class="text-right">RECOMMENDED SSD</th>
-                  <th class="text-right">DOH/SSD</th>
-                  <th>PARAMETER AUDIT ACTION / CAPITAL FREED</th>
+                  <th class="sap-checkbox-col">
+                    <input type="checkbox" id="cb-masterdata-select-all" class="sap-select-cb" title="Select All Visible Series" />
+                  </th>
+                  <th style="width: 5%">ID</th>
+                  <th style="width: 25%">PRODUCT &amp; CORRIDOR</th>
+                  <th style="width: 16%">AUDIT STATUS</th>
+                  <th class="text-right" style="width: 14%">METRICS (DOH/SSD)</th>
+                  <th style="width: 22%">RECALIBRATION VECTOR</th>
+                  <th class="text-right" style="width: 18%">ACTION &amp; FINANCIAL LIBERATION</th>
                 </tr>
               </thead>
               <tbody id="tbody-masterdata">
                 <tr>
-                  <td colspan="12" class="empty-cell">Loading…</td>
+                  <td colspan="7" class="empty-cell">Loading…</td>
                 </tr>
               </tbody>
             </table>
@@ -742,20 +851,20 @@
               <p class="view-subtitle">Electronic signature ledger of all approved supply-chain corrective actions</p>
             </div>
             <div class="view-actions">
-              <button class="btn-action" id="btn-export-audit">EXPORT AUDIT CSV</button>
+              <button class="btn-action" id="btn-export-audit">[↓] EXPORT AUDIT CSV</button>
             </div>
           </div>
 
           <!-- AI Plain-English GxP Compliance Guide -->
-          <div class="ai-section-translation-box" style="margin-bottom:16px;padding:12px 14px;background:#F8FAFC;border:1px solid #E2E8F0;border-left:4px solid #16A34A;border-radius:2px;">
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:6px;">
-              <div style="display:flex;align-items:center;gap:6px;">
-                <span style="font-size:14px;">🤖</span>
-                <span style="font-family:var(--font-mono);font-size:10.5px;font-weight:800;color:#166534;letter-spacing:0.04em;">AI GxP AUDIT TRAIL GUIDE · 21 CFR PART 11</span>
+          <div class="gxp-guide-box">
+            <div class="gxp-guide-top">
+              <div class="gxp-guide-title-group">
+                <span class="mono-tag">[ AI ]</span>
+                <span class="gxp-guide-title">AI GxP AUDIT TRAIL GUIDE · 21 CFR PART 11</span>
               </div>
-              <span style="font-family:var(--font-mono);font-size:9.5px;font-weight:700;color:#15803D;background:#DCFCE7;padding:2px 6px;">COMPLIANCE VERIFIED ✓</span>
+              <span class="gxp-guide-badge">COMPLIANCE VERIFIED [OK]</span>
             </div>
-            <div style="font-size:12px;color:#1E293B;line-height:1.6;">
+            <div class="gxp-guide-body">
               <strong>What this log does:</strong> Under FDA 21 CFR Part 11 and European GxP standards, every supply-chain decision (approving air freight, releasing inter-market stock, or overriding factory schedules) must be legally traceable.<br/>
               <strong>How it works:</strong> Whenever you click <em>[APPROVE]</em> or <em>[EXECUTE INTER-MARKET TRANSFER]</em> on any signal, the system instantly logs an immutable cryptographic hash, user role signature, timestamp, and regulatory reason code below.<br/>
               <strong>Inspector-Ready:</strong> Click <strong>EXPORT AUDIT CSV</strong> anytime to hand an official, tamper-evident regulatory audit trail to quality assurance auditors.
@@ -784,6 +893,208 @@
           </div>
         </section>
 
+        <!-- VIEW 5: Corridor Health Index (CHI) Derivation & 12x20 Sensitivity Console -->
+        <section id="view-scenario" class="view-section">
+          <div class="view-header">
+            <div>
+              <div class="mono-tag" style="margin-bottom:4px;">[ ORIGINAL CIPHER METRIC · NOVO NORDISK INNOVATION ]</div>
+              <h1 class="view-title">CORRIDOR HEALTH INDEX (CHI) DERIVATION &amp; SENSITIVITY MATRIX</h1>
+              <p class="view-subtitle">Mathematical derivation, WSP penalty formulation, 12×20 multi-parametric stress matrix, and OTIF comparison</p>
+            </div>
+            <div class="view-actions">
+              <button class="btn-action" id="btn-view-reset-scenario">[↺] RESET SCENARIO DEFAULTS</button>
+              <button class="btn-action" id="btn-open-drawer-scenario-sync">[⚙] CONFIGURE PER-MARKET LATENCY</button>
+            </div>
+          </div>
+
+          <!-- The 4 Defense Pillars Grid -->
+          <div class="chi-pillars-grid">
+            <div class="chi-pillar-card">
+              <div class="chi-pillar-header">
+                <span class="chi-pillar-num">PILLAR 01</span>
+                <span class="chi-pillar-tag">WSP MECHANICS</span>
+              </div>
+              <div class="chi-pillar-title">WHAT WSP ACTUALLY PENALIZES</div>
+              <div class="chi-pillar-body">
+                Evaluates 3 discrete operational states per SKU-week:
+                <ul class="chi-pillar-list">
+                  <li><strong>Physical Stockout:</strong> Fixed <strong>1.50 penalty</strong> (immediate loss of lifelong therapy).</li>
+                  <li><strong>Safety Floor Penetration (0 &lt; DOH &lt; SSD):</strong> Quadratic penalty <code>(1 − DOH/SSD)² ∈ [0, 1.0]</code>. Minor dips draw gentle penalties; approaching 0 accelerates quadratically.</li>
+                  <li><strong>Ceiling Overstock (DOH &gt; Ceiling):</strong> Linear working capital and storage penalty capped at 1.0.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="chi-pillar-card">
+              <div class="chi-pillar-header">
+                <span class="chi-pillar-num">PILLAR 02</span>
+                <span class="chi-pillar-tag">MATHEMATICAL PROOF</span>
+              </div>
+              <div class="chi-pillar-title">WHY THE N × 1.5 DENOMINATOR</div>
+              <div class="chi-pillar-body">
+                Guarantees an invariant, scale-free percentage <code>[0, 100%]</code>:
+                <ul class="chi-pillar-list">
+                  <li><strong>Catastrophic Lower Bound:</strong> If all <em>N = 260,000</em> SKU-weeks experienced physical stockout, <code>Σ WSP = 1.5 × N</code>. Denominator ensures <code>CHI = 0%</code>.</li>
+                  <li><strong>Theoretical Optimum:</strong> Zero corridor breaches across all weeks yields <code>Σ WSP = 0 → CHI = 100%</code>.</li>
+                  <li><strong>Comparative Standard:</strong> Enables unbiased cross-brand and cross-affiliate benchmarking across any planning horizon.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="chi-pillar-card">
+              <div class="chi-pillar-header">
+                <span class="chi-pillar-num">PILLAR 03</span>
+                <span class="chi-pillar-tag">OPERATIONAL CONTRAST</span>
+              </div>
+              <div class="chi-pillar-title">WHY CHI ≠ OTIF (11.7% BLINDSPOT)</div>
+              <div class="chi-pillar-body">
+                Eliminates the false sense of operational security:
+                <ul class="chi-pillar-list">
+                  <li><strong>Contractual OTIF = 98.5%:</strong> Lagging indicator. Only confirms failure after stockouts hit the market.</li>
+                  <li><strong>Empirical Global CHI = <span id="chi-pillar-val">--.-</span>%:</strong> Predictive leading telemetry. Reveals <strong><span id="chi-pillar-gap">--.-</span>%</strong> of the network is bleeding buffer health.</li>
+                  <li><strong>11.7% Latent Risk Gap:</strong> The brewing crisis zone where safety stock is collapsing before OTIF drops.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="chi-pillar-card">
+              <div class="chi-pillar-header">
+                <span class="chi-pillar-num">PILLAR 04</span>
+                <span class="chi-pillar-tag">STRESS TEST</span>
+              </div>
+              <div class="chi-pillar-title">12×20 SENSITIVITY MATRIX DEFENSE</div>
+              <div class="chi-pillar-body">
+                Deterministic stability verified across 240 scenarios:
+                <ul class="chi-pillar-list">
+                  <li><strong>Lead Times (1–12 Weeks):</strong> Evaluates supply chain latency impact from regional trucking to deep-sea maritime.</li>
+                  <li><strong>Ceiling Buffers (1.1×–3.0×):</strong> Models inventory holding capital elasticity versus stockout buffer safety.</li>
+                  <li><strong>Empirical Benchmark (3W, 2.0×):</strong> Exactly reproduces baseline <strong><span id="chi-pillar-baseline">--.-</span>%</strong>, comfortably above the 85.0% SLA floor.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Formula Callout Banner -->
+          <div class="chi-formula-hero-card">
+            <div class="chi-formula-left">
+              <span class="chi-formula-tag">[ FORMULATION ] CORRIDOR HEALTH INDEX FORMULA</span>
+              <div class="chi-formula-math">CHI = max(0, 100 × (1 − Σ WSPₜ / (N × 1.5)))</div>
+              <div class="chi-formula-sub">Computed across 260,000 empirical SKU-weeks · 5,000 corridors · Evaluated dynamically in O(1) time</div>
+            </div>
+            <div class="chi-formula-metrics">
+              <div class="chi-fmetric-item">
+                <span class="chi-fm-lbl">ACTIVE SIMULATED CHI</span>
+                <span class="chi-fm-val tabular-nums" id="view-scenario-chi-val">--.-</span>
+                <span class="chi-fm-note" id="view-scenario-chi-note">● COMPLIANT (≥85.0% TARGET)</span>
+              </div>
+              <div class="chi-fmetric-item">
+                <span class="chi-fm-lbl">SELECTED COORDINATE</span>
+                <span class="chi-fm-val tabular-nums" id="view-scenario-coord">L=3W · 2.0×</span>
+                <span class="chi-fm-note">STANDARD ENTERPRISE BASELINE</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Controls & Sensitivity Heatmap Section -->
+          <div class="chi-interactive-layout">
+            <!-- Left: Interactive Sliders & Gates -->
+            <div class="chi-controls-panel">
+              <div class="chi-panel-title">INTERACTIVE PARAMETER CONTROLS</div>
+
+              <div class="slider-group" style="margin-bottom:14px;">
+                <div class="slider-row">
+                  <span class="slider-label-text">GLOBAL LEAD TIME PARAMETER</span>
+                  <span class="slider-val-text tabular-nums" id="view-val-lt">03 WEEKS</span>
+                </div>
+                <input type="range" class="custom-slider" id="view-sl-lt" min="1" max="12" step="1" value="3">
+                <div class="slider-hints">
+                  <span class="slider-hint">1 WK (SHORT)</span>
+                  <span class="slider-hint">BASELINE: 3W</span>
+                  <span class="slider-hint">12 WK (LONG)</span>
+                </div>
+              </div>
+
+              <div class="slider-group" style="margin-bottom:16px;">
+                <div class="slider-row">
+                  <span class="slider-label-text">CEILING MULTIPLIER (BUFFER)</span>
+                  <span class="slider-val-text tabular-nums" id="view-val-cm">2.0×</span>
+                </div>
+                <input type="range" class="custom-slider" id="view-sl-cm" min="1.1" max="3.0" step="0.1" value="2.0">
+                <div class="slider-hints">
+                  <span class="slider-hint">1.1× (TIGHT)</span>
+                  <span class="slider-hint">BASELINE: 2.0×</span>
+                  <span class="slider-hint">3.0× (WIDE)</span>
+                </div>
+              </div>
+
+              <div class="detail-section-label" style="margin-bottom:8px;">ALERT PERSISTENCE GATES</div>
+              <div class="gates-grid" style="margin-bottom:16px;">
+                <div class="gate-tile">
+                  <div class="gate-tile-label">UNDERSTOCK GATE</div>
+                  <div class="gate-row">
+                    <input type="number" class="gate-input tabular-nums" id="view-gate-under" min="1" max="52" value="5">
+                    <span class="gate-unit">WKS</span>
+                  </div>
+                </div>
+                <div class="gate-tile">
+                  <div class="gate-tile-label">OVERSTOCK GATE</div>
+                  <div class="gate-row">
+                    <input type="number" class="gate-input tabular-nums" id="view-gate-over" min="1" max="52" value="4">
+                    <span class="gate-unit">WKS</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="chi-quick-scenarios">
+                <div class="detail-section-label" style="margin-bottom:6px;">PRE-SET STRESS TEST PROFILES</div>
+                <button class="btn-scenario-preset" data-lt="1" data-cm="3.0">
+                  <span class="preset-name">BEST-CASE ELASTIC</span>
+                  <span class="preset-meta">L=1W, 3.0× · CHI: 91.3%</span>
+                </button>
+                <button class="btn-scenario-preset active" data-lt="3" data-cm="2.0">
+                  <span class="preset-name">NOVO BASELINE</span>
+                  <span class="preset-meta">L=3W, 2.0× · CHI: <span id="preset-baseline-chi">--.-</span>%</span>
+                </button>
+                <button class="btn-scenario-preset" data-lt="6" data-cm="1.5">
+                  <span class="preset-name">MODERATE STRESS</span>
+                  <span class="preset-meta">L=6W, 1.5× · CHI: 82.9%</span>
+                </button>
+                <button class="btn-scenario-preset" data-lt="12" data-cm="1.1">
+                  <span class="preset-name">WORST-CASE BOTTLENECK</span>
+                  <span class="preset-meta">L=12W, 1.1× · CHI: 69.4%</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Right: The Full 12x20 Sensitivity Matrix Heatmap -->
+            <div class="chi-matrix-panel">
+              <div class="chi-matrix-panel-header">
+                <div>
+                  <div class="chi-matrix-title">12×20 MULTI-PARAMETRIC SENSITIVITY MATRIX</div>
+                  <div class="chi-matrix-sub">Lead Time (Rows 1–12 Weeks) × Ceiling Buffer Multiplier (Columns 1.1×–3.0×) · Click any cell to simulate</div>
+                </div>
+                <div class="chi-matrix-legend">
+                  <span class="leg-item"><span class="leg-box leg-box--high"></span> ≥90% Exceptional</span>
+                  <span class="leg-item"><span class="leg-box leg-box--ok"></span> 85–89.9% Operational</span>
+                  <span class="leg-item"><span class="leg-box leg-box--warn"></span> 80–84.9% At Risk</span>
+                  <span class="leg-item"><span class="leg-box leg-box--crit"></span> &lt;80% Critical</span>
+                </div>
+              </div>
+
+              <div class="matrix-table-wrap">
+                <table class="chi-sensitivity-table" id="chi-matrix-table">
+                  <thead id="chi-matrix-thead">
+                    <!-- Populated dynamically: Col headers 1.1x to 3.0x -->
+                  </thead>
+                  <tbody id="chi-matrix-tbody">
+                    <!-- Populated dynamically: 12 rows x 20 cols -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
       </main>
     </div>
   </div>
@@ -793,7 +1104,7 @@
     <div class="drawer-header">
       <div class="drawer-header-left">
         <div class="drawer-title" id="detail-title">SIGNAL DETAIL</div>
-        <span class="drawer-mode-indicator" id="drawer-mode-indicator">[ 520PX COMPACT ]</span>
+        <span class="drawer-mode-indicator" id="drawer-mode-indicator">[ 720PX ANALYST WORKSPACE ]</span>
       </div>
       <div class="drawer-header-actions">
         <button class="btn-drawer-action" id="btn-toggle-fullscreen" title="Toggle Fullscreen Takeover (Key: F)">
@@ -840,17 +1151,17 @@
       </div>
 
       <!-- Email Format View Selector -->
-      <div class="email-view-tabs" style="display:flex;gap:6px;padding:8px 18px;background:#FAFAFA;border-bottom:1px solid #E5E7EB;">
-        <button id="btn-email-tab-html" class="btn-console-action" style="font-size:11px;font-weight:700;padding:4px 10px;background:#0072CE;color:#FFF;border-color:#0072CE;">
-          ✨ RICH AI EXECUTIVE VIEW
+      <div class="email-view-tabs">
+        <button id="btn-email-tab-html" class="btn-email-tab active">
+          [ AI ] RICH EXECUTIVE VIEW
         </button>
-        <button id="btn-email-tab-text" class="btn-console-action" style="font-size:11px;font-weight:600;padding:4px 10px;background:#FFF;color:#4B5563;border-color:#D1D5DB;">
-          📄 PLAIN TEXT / GxP DISPATCH
+        <button id="btn-email-tab-text" class="btn-email-tab">
+          [ GxP ] PLAIN TEXT DISPATCH
         </button>
       </div>
 
-      <div id="email-html-container" style="max-height:520px;overflow-y:auto;padding:12px;background:#F4F4F0;display:block;">
-        <iframe id="email-html-frame" style="width:100%;min-height:500px;border:none;background:#FFFFFF;box-shadow:0 1px 3px rgba(0,0,0,0.1);" title="Email HTML Preview"></iframe>
+      <div id="email-html-container" class="email-html-container" style="display:block;">
+        <iframe id="email-html-frame" class="email-html-frame" title="Email HTML Preview"></iframe>
       </div>
 
       <pre class="email-pre" id="email-text" style="display:none;"></pre>
@@ -859,7 +1170,7 @@
         <div class="modal-footer-left">
           <button class="btn-action btn-action--dispatch" id="btn-test-dispatch"
             title="Trigger instant email dispatch to planners">
-            <span>⚡ DISPATCH TO INBOXES NOW</span>
+            <span>[⟳] DISPATCH TO INBOXES NOW</span>
           </button>
           <span class="dispatch-toast" id="dispatch-toast" style="display:none"></span>
         </div>
@@ -879,9 +1190,9 @@
         <button class="drawer-close" id="btn-close-wow-diff">✕</button>
       </div>
       <div class="wow-diff-tabs">
-        <button class="wow-diff-tab active" data-tab="resolved">🟢 RESOLVED CRISES (3)</button>
-        <button class="wow-diff-tab" data-tab="new">🔴 NEWLY EMERGED (2)</button>
-        <button class="wow-diff-tab" data-tab="shifts">🟡 PRIORITY SHIFTS (2)</button>
+        <button class="wow-diff-tab active" data-tab="resolved">[OK] RESOLVED CRISES (3)</button>
+        <button class="wow-diff-tab" data-tab="new">[ ! ] NEWLY EMERGED (2)</button>
+        <button class="wow-diff-tab" data-tab="shifts">[~] PRIORITY SHIFTS (2)</button>
       </div>
       <div class="wow-diff-content" id="wow-diff-content">
         <!-- Rendered dynamically by briefing.js -->
@@ -914,8 +1225,8 @@
           <button class="btn-action" id="btn-deck-next">NEXT →</button>
           <span class="deck-keyboard-hint">Use ← / → arrow keys</span>
         </div>
-        <div style="display:flex;gap:8px">
-          <button class="btn-action" id="btn-deck-print">🖨️ PRINT SLIDES</button>
+        <div class="deck-footer-right">
+          <button class="btn-action" id="btn-deck-print">[⎙] PRINT SLIDES</button>
           <button class="btn-primary" id="btn-deck-close">CLOSE DECK</button>
         </div>
       </div>
@@ -924,7 +1235,7 @@
 
   <!-- ── CHI MATHEMATICAL EXPLAINABILITY MODAL (WHY SHOULD I TRUST THIS NUMBER?) ── -->
   <div id="modal-chi-explain" class="modal-wrap" style="display:none">
-    <div class="modal-card chi-explain-modal-card" style="max-width:860px;width:95%;">
+    <div class="modal-card chi-explain-modal-card">
       <div class="modal-header">
         <div class="modal-header-left">
           <span class="modal-title">WHY SHOULD I TRUST THIS NUMBER? · CHI MATHEMATICAL AUDIT</span>
@@ -932,12 +1243,12 @@
         </div>
         <button class="drawer-close" id="btn-close-chi-explain">✕</button>
       </div>
-      <div class="chi-explain-body" id="chi-explain-body" style="padding:20px;max-height:75vh;overflow-y:auto;">
+      <div class="chi-explain-body" id="chi-explain-body">
         <!-- Dynamically rendered by main.js -->
       </div>
       <div class="modal-footer">
         <div class="modal-footer-left">
-          <span style="font-size:11px;font-family:var(--font-mono);color:var(--ok-text)">✓ DETERMINISTIC FORMULA VERIFIED · 0 RANDOM DRIFT</span>
+          <span class="chi-explain-verified-note">[OK] DETERMINISTIC FORMULA VERIFIED · 0 RANDOM DRIFT</span>
         </div>
         <button class="btn-primary" id="btn-close-chi-explain-footer">CLOSE AUDIT BREAKDOWN</button>
       </div>

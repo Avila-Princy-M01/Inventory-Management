@@ -141,7 +141,7 @@ export function openDrawer(sig, approvedSignals) {
   const leadWks = sig.market_lead_time || (window.DATA && window.DATA.metadata && window.DATA.metadata.calendar_lead_time_weeks) || 3;
   const modeName = sig.market_mode || 'Sea Freight';
   const isLateForSea = Boolean(sig.is_late_for_sea);
-  const countryDisplayName = sig.market_name || sig.country || 'China';
+  const countryDisplayName = sig.market_name || sig.country || 'Country 013';
   const freightCallout = sig.freight_callout || `${countryDisplayName} breach at week ${sig.breach_week} — with ${leadWks}-week lead time, this is ALREADY TOO LATE for sea freight. Only air freight can save this.`;
 
   const transfer = sig.intermarket_transfer || {};
