@@ -769,11 +769,14 @@ if __name__ == "__main__":
     print(f"[server] Dashboard data : {DASHBOARD_DATA_PATH}")
     print(f"[server] Pipeline script: {PIPELINE_SCRIPT} (exists: {os.path.isfile(PIPELINE_SCRIPT)})")
     print(f"[server] Generate script: {GENERATE_SCRIPT} (exists: {os.path.isfile(GENERATE_SCRIPT)})")
-    print("[server] Listening on    http://127.0.0.1:8000")
+    bind_host = os.environ.get("CHM_BIND", "127.0.0.1")
+    bind_port = int(os.environ.get("CHM_PORT", "8000"))
+    if "--port" in sys.argv:
+        bind_port = int(sys.argv[sys.argv.index("--port") + 1])
+    print("[server] Listening on    http://" + bind_host + ":" + str(bind_port))
 
     # Bind to loopback only: binding 0.0.0.0 triggers a Windows Firewall prompt
     # on judge machines (demo-killer). Use the CHM_BIND env var to override.
-    bind_host = os.environ.get("CHM_BIND", "127.0.0.1")
-    app.run(host=bind_host, port=8000, debug=False, threaded=True, use_reloader=False)
+    app.run(host=bind_host, port=bind_port, debug=False, threaded=True, use_reloader=False)
 
 

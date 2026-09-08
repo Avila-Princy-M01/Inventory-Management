@@ -53,6 +53,8 @@ Modern pharmaceutical supply networks face severe friction when global ERP/OMP s
 - **CHI (86.8%) is a LEADING PREDICTIVE METRIC**: Measures forward-looking latent network stress *before* shelves run dry—penalizing inventory dropping below safety stock (DOH < SSD), unconfirmed upstream supplier orders, and impending lead-time cliffs.
 - **The 11.7% Gap**: Represents **latent operational vulnerability**—corridors that are fulfilling demand today, but will suffer physical stockouts in 3 to 6 weeks if lead-time cliffs are unmitigated.
 
+> **Benchmark values.** The figures above (CHI 86.8, OTIF 98.5/95.0, the 860/379 split) describe the bundled benchmark workbook and are recomputed from whatever data is loaded — the demo environment ships these exact numbers because the benchmark extract ships with the repository.
+
 ### 3. Empirical Baseline Comparison: Legacy SAP/OMP vs Corridor Monitor
 | Metric | Legacy SAP / OMP Baseline | Corridor Health Monitor | Quantifiable Improvement |
 |---|---|---|---|
@@ -82,7 +84,7 @@ Modern pharmaceutical supply networks face severe friction when global ERP/OMP s
 - **Live Telemetry Stepper**: Real-time progress ticker with live elapsed timer, stage progression, and timeout advisories for full 30MB processing.
 
 ### View 01 — Strategic Signal Console
-- **Real-Time KPI Banner**: Global CHI (86.8%), Active Crises, Capital at Risk (₹ Cr), and Contractual OTIF Fulfillment Rate (98.5% vs 95.0% target).
+- **Real-Time KPI Banner**: Global CHI (86.8% for the benchmark dataset), Active Crises, Capital at Risk (₹ Cr), and Contractual OTIF Fulfillment Rate (98.5% vs 95.0% target). All banner values recompute on every upload.
 - **Top 15 Ranked Exception Queue**: Ranked by PRS score with 5-key contract badges (`ACTIVE CRISIS`, `EMERGENCY EXPEDITE`, `STANDARD PO`, `EXCESS HOLDING`, `ADVISORY`).
 - **Interactive Trajectory Drawer**: 52-week stock vs safety floor trajectories, breach annotations, recovery horizons, explicit ROQ mathematical derivation, and upstream plant line contention analysis.
 - **Scenario Modeller Sandbox**: Live simulation varying lead times (1–12 weeks) and safety stock ceiling multipliers (1.1×–3.0×) with real-time CHI matrix recomputation.
