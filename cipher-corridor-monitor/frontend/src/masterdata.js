@@ -194,9 +194,9 @@ function getFilteredRecords() {
 }
 
 export function ratioStyle(r) {
-  if (r < 0.5) return { bg:'#FEF2F2', color:'#991B1B', border:'#FCA5A5' };
-  if (r <= 0.8) return { bg:'#FFFBEB', color:'#92400E', border:'#FCD34D' };
-  return { bg:'#F0FDF4', color:'#166534', border:'#86EFAC' };
+  if (r < 0.5) return { bg:'#FDEBEC', color:'#9F2F2D', border:'#F5A6A6' };
+  if (r <= 0.8) return { bg:'#FBF3DB', color:'#956400', border:'#FDE68A' };
+  return { bg:'#EDF3EC', color:'#346538', border:'#BBF7D0' };
 }
 export const getRatioStyle = ratioStyle;
 

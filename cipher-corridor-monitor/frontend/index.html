@@ -540,51 +540,51 @@
             </div>
           </div>
 
-          <!-- ── OPERATIONAL HORIZON & MARKET CONCENTRATION: WHERE TO LOOK NEXT ── -->
-          <div class="briefing-layout" id="briefing-core-charts-layout">
-            <div class="briefing-charts">
-              <div class="chart-card">
-                <div class="chart-card-label">REGIONAL CORRIDOR HEALTH INDEX</div>
-                <div class="chart-wrap"><canvas id="chart-regional-chi"></canvas></div>
-              </div>
-              <div class="chart-card">
-                <div class="chart-card-label">BRAND CORRIDOR HEALTH INDEX</div>
-                <div class="chart-wrap"><canvas id="chart-brand-chi"></canvas></div>
-              </div>
-            </div>
-            <aside class="briefing-meta">
-              <div class="table-card">
-                <div class="table-card-label">TOP 10 HIGH-EXPOSURE MARKETS</div>
-                <table class="dense-table" id="table-worst-countries">
-                  <thead>
-                    <tr>
-                      <th>COUNTRY</th>
-                      <th class="text-right">STOCKOUTS</th>
-                      <th class="text-right">SHARE %</th>
-                    </tr>
-                  </thead>
-                  <tbody id="tbody-worst-countries">
-                    <tr>
-                      <td colspan="3" class="empty-cell">Loading…</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </aside>
-          </div>
-
           <!-- ── COLLAPSIBLE METHODOLOGY, BENCHMARKS & REFERENCE (COLLAPSED BY DEFAULT FOR ANALYST) ── -->
-          <details class="methodology-disclosure" id="briefing-methodology-disclosure" open>
+          <details class="methodology-disclosure" id="briefing-methodology-disclosure">
             <summary class="methodology-disclosure-summary">
               <div class="methodology-summary-left">
                 <span class="methodology-disclosure-icon">▸</span>
                 <span class="methodology-summary-tag">[ BENCHMARKS &amp; METHODOLOGY ]</span>
-                <span class="methodology-summary-title">Baseline Comparison, OTIF Explainer, 4Q Trajectory, Pareto, Seasonality &amp; Formula</span>
+                <span class="methodology-summary-title">Where-to-Look Charts, Baseline Comparison, OTIF Explainer, 4Q Trajectory, Pareto, Seasonality &amp; Formula</span>
               </div>
               <span class="methodology-summary-badge">SECTION 6.3 / 6.10 ARCHIVE</span>
             </summary>
 
             <div class="methodology-disclosure-content">
+              <!-- ── OPERATIONAL HORIZON & MARKET CONCENTRATION: WHERE TO LOOK NEXT (demoted from analyst first paint) ── -->
+              <div class="briefing-layout" id="briefing-core-charts-layout">
+                <div class="briefing-charts">
+                  <div class="chart-card">
+                    <div class="chart-card-label">REGIONAL CORRIDOR HEALTH INDEX</div>
+                    <div class="chart-wrap"><canvas id="chart-regional-chi"></canvas></div>
+                  </div>
+                  <div class="chart-card">
+                    <div class="chart-card-label">BRAND CORRIDOR HEALTH INDEX</div>
+                    <div class="chart-wrap"><canvas id="chart-brand-chi"></canvas></div>
+                  </div>
+                </div>
+                <aside class="briefing-meta">
+                  <div class="table-card">
+                    <div class="table-card-label">TOP 10 HIGH-EXPOSURE MARKETS</div>
+                    <table class="dense-table" id="table-worst-countries">
+                      <thead>
+                        <tr>
+                          <th>COUNTRY</th>
+                          <th class="text-right">STOCKOUTS</th>
+                          <th class="text-right">SHARE %</th>
+                        </tr>
+                      </thead>
+                      <tbody id="tbody-worst-countries">
+                        <tr>
+                          <td colspan="3" class="empty-cell">Loading…</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </aside>
+              </div>
+
               <!-- Baseline Comparison -->
               <div class="baseline-comparison-card" id="baseline-comparison-card">
                 <div class="baseline-comp-header">

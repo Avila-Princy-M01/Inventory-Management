@@ -38,6 +38,17 @@ export function resetBriefingCharts() {
   chartsInitialised = false;
 }
 
+// Resize any live Chart.js canvases whose container became visible only after
+// initialisation (charts inside the collapsed methodology <details> initialise
+// with a 0-height container and need a resize once revealed).
+function resizeCharts() {
+  if (typeof Chart === 'undefined') return;
+  document.querySelectorAll('canvas').forEach(cv => {
+    const inst = Chart.getChart(cv);
+    if (inst) inst.resize();
+  });
+}
+
 export const MEETING_FORMATS = {
   'SOP_MONTHLY': {
     id: 'SOP_MONTHLY',
@@ -756,17 +767,25 @@ export function hydrateStaticSections(data) {
   // 5. Benchmark Grid & 4-Quarter Trajectory
   const benchGrid = ch.benchmarks || {};
   const targetVal = benchGrid.world_class_sla_target !== undefined ? benchGrid.world_class_sla_target : 95.0;
+  const opThreshDef = benchGrid.operational_threshold !== undefined ? benchGrid.operational_threshold : 85.0;
+  const critFloorDef = benchGrid.critical_floor !== undefined ? benchGrid.critical_floor : 80.0;
+  // Threshold tiles must reflect payload-defined SLA constants, not hardcoded text
+  const benchTargetValEl = document.getElementById('bench-target-val');
+  if (benchTargetValEl) benchTargetValEl.textContent = `${Number(targetVal).toFixed(1)}%`;
+  const benchOpThreshEl = document.getElementById('bench-op-thresh');
+  if (benchOpThreshEl) benchOpThreshEl.textContent = `${Number(opThreshDef).toFixed(1)}%`;
+  const benchCritFloorEl = document.getElementById('bench-crit-floor');
+  if (benchCritFloorEl) benchCritFloorEl.textContent = `< ${Number(critFloorDef).toFixed(1)}%`;
   const targetGapEl = document.getElementById('bench-target-gap');
   if (targetGapEl) {
     const gap = globalChi !== null ? Math.max(0, targetVal - globalChi).toFixed(1) : '--';
     targetGapEl.textContent = `Target gap: ${gap} pts`;
   }
-  const opThresh = benchGrid.operational_threshold !== undefined ? benchGrid.operational_threshold : 85.0;
   const opBufferEl = document.getElementById('bench-op-buffer');
   if (opBufferEl) {
     if (globalChi !== null) {
-      const buf = (globalChi - opThresh).toFixed(1);
-      const isOk = globalChi >= opThresh;
+      const buf = (globalChi - opThreshDef).toFixed(1);
+      const isOk = globalChi >= opThreshDef;
       const sign = buf >= 0 ? '+' : '';
       opBufferEl.textContent = `${sign}${buf} pts buffer (${isOk ? 'COMPLIANT' : 'AT RISK'})`;
       opBufferEl.style.color = isOk ? C.ok : C.crisis;
@@ -793,7 +812,7 @@ export function hydrateStaticSections(data) {
   if (qTrackRow && h4q.length > 0) {
     qTrackRow.innerHTML = h4q.map((q, idx) => {
       const isCurrent = idx === h4q.length - 1;
-      const okClass = q.chi >= opThresh ? 'benchmark-v--ok' : 'benchmark-v--crisis';
+      const okClass = q.chi >= opThreshDef ? 'benchmark-v--ok' : 'benchmark-v--crisis';
       return `
         <div class="quarter-step ${isCurrent ? 'quarter-step--current' : ''}">
           <span class="q-dot ${isCurrent ? 'q-dot--current' : ''}"></span>
@@ -842,7 +861,10 @@ export function hydrateStaticSections(data) {
 
 export function initBriefingCharts(data) {
   hydrateStaticSections(data);
-  if (chartsInitialised) return;
+  if (chartsInitialised) {
+    resizeCharts();
+    return;
+  }
   if (!data) return;
   chartsInitialised = true;
 
@@ -888,6 +910,13 @@ export function initBriefingCharts(data) {
 
   // Default to Analyst view for inventory analyst workflow
   setAudienceMode('analyst');
+
+  // Charts inside the collapsed methodology <details> need a resize when revealed
+  if (methodologyDisclosure) {
+    methodologyDisclosure.addEventListener('toggle', () => {
+      if (methodologyDisclosure.open) resizeCharts();
+    });
+  }
 
   // Wire Clickable Synthesis Cards
   const synthCol1 = document.getElementById('synth-col-1');
@@ -1005,7 +1034,7 @@ export function initBriefingCharts(data) {
     });
   }
 
-  // Chart 1: Regional CHI
+  // Chart 1: Regional CHI (inside methodology <details>; resize on reveal)
   const c1 = document.getElementById('chart-regional-chi');
   if (c1 && typeof Chart !== 'undefined') {
     const existing = Chart.getChart(c1);

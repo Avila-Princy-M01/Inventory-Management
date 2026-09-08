@@ -204,7 +204,7 @@ window._updateKPICHI = chiValue => {
   if (!el) return;
   const v = Number(chiValue) || 0;
   el.textContent = v.toFixed(1);
-  el.style.color = v >= 90 ? '#346538' : v >= 80 ? '#956400' : '#9F2F2D';
+  el.style.color = v >= 90 ? 'var(--status-ok-text)' : v >= 80 ? 'var(--status-warn-text)' : 'var(--status-crisis-text)';
 };
 
 // ── Dashboard Activation (called after Excel Ingestion / Pipeline) ─
@@ -229,9 +229,9 @@ export function activateDashboard(data) {
     const wk = (data && data.metadata && data.metadata.current_week) || 32;
     const dur = (data && data.metadata && data.metadata.pipeline_duration_seconds) || '1.8';
     pill.innerHTML = `● <strong>DATA AS OF W${wk}</strong> · REFRESHED IN ${dur}s`;
-    pill.style.color = '#15803D';
-    pill.style.background = '#F0FDF4';
-    pill.style.border = '1px solid #86EFAC';
+    pill.style.color = 'var(--status-ok-text)';
+    pill.style.background = 'var(--status-ok-bg)';
+    pill.style.border = '1px solid var(--border)';
     pill.title = `Source: SAP/OMP 52-Week Corridor Panel · Verified Current Data Horizon`;
   }
 
@@ -346,7 +346,7 @@ function updateKPI(data) {
   const cEl = document.getElementById('crises-value');
   if (cEl) {
     cEl.textContent = crises;
-    cEl.style.color = crises > 0 ? '#9F2F2D' : '#346538';
+    cEl.style.color = crises > 0 ? 'var(--status-crisis-text)' : 'var(--status-ok-text)';
   }
 
   const crisesSub = document.getElementById('crises-sub');
@@ -416,7 +416,7 @@ export function animateCHIDial(targetValue, dur = 1200) {
     const e = 1 - Math.pow(1 - p, 3); // ease-out cubic
     const v = +(e * target).toFixed(1);
     el.textContent = v.toFixed(1);
-    const color = v >= 90 ? '#346538' : v >= 80 ? '#956400' : '#9F2F2D';
+    const color = v >= 90 ? 'var(--status-ok-text)' : v >= 80 ? 'var(--status-warn-text)' : 'var(--status-crisis-text)';
     el.style.color = color;
 
     if (progressEl) {
@@ -428,7 +428,7 @@ export function animateCHIDial(targetValue, dur = 1200) {
     if (p < 1) requestAnimationFrame(tick);
     else {
       el.textContent = target.toFixed(1);
-      const finalColor = target >= 90 ? '#346538' : target >= 80 ? '#956400' : '#9F2F2D';
+      const finalColor = target >= 90 ? 'var(--status-ok-text)' : target >= 80 ? 'var(--status-warn-text)' : 'var(--status-crisis-text)';
       el.style.color = finalColor;
       if (progressEl) {
         const finalOffset = circumference * (1 - (target / 100));
@@ -445,9 +445,9 @@ function showError(msg) {
   const el = document.getElementById('app-error');
   if (!el) return;
   el.style.display = 'block';
-  el.style.border = '1px solid #E61919';
-  el.style.background = '#FDEBEC';
-  el.style.color = '#9F2F2D';
+  el.style.border = '1px solid var(--hazard-red)';
+  el.style.background = 'var(--status-crisis-bg)';
+  el.style.color = 'var(--status-crisis-text)';
   el.style.fontFamily = "'JetBrains Mono', monospace";
   el.innerHTML = `
     <div style="font-weight:700;margin-bottom:8px;font-size:12px;color:#9F2F2D">[ SYSTEM TELEMETRY ERROR · #E61919 ]</div>
@@ -527,22 +527,22 @@ function setupTriageToolbar() {
       // Wire Tab toggles
       if (tabHtml && tabText && htmlContainer && pre) {
         tabHtml.onclick = () => {
-          tabHtml.style.background = '#0072CE';
-          tabHtml.style.color = '#FFF';
-          tabHtml.style.borderColor = '#0072CE';
-          tabText.style.background = '#FFF';
-          tabText.style.color = '#4B5563';
-          tabText.style.borderColor = '#D1D5DB';
+          tabHtml.style.background = 'var(--ink)';
+          tabHtml.style.color = 'var(--surface)';
+          tabHtml.style.borderColor = 'var(--ink)';
+          tabText.style.background = 'var(--surface)';
+          tabText.style.color = 'var(--text-muted)';
+          tabText.style.borderColor = 'var(--border)';
           htmlContainer.style.display = 'block';
           pre.style.display = 'none';
         };
         tabText.onclick = () => {
-          tabText.style.background = '#0072CE';
-          tabText.style.color = '#FFF';
-          tabText.style.borderColor = '#0072CE';
-          tabHtml.style.background = '#FFF';
-          tabHtml.style.color = '#4B5563';
-          tabHtml.style.borderColor = '#D1D5DB';
+          tabText.style.background = 'var(--ink)';
+          tabText.style.color = 'var(--surface)';
+          tabText.style.borderColor = 'var(--ink)';
+          tabHtml.style.background = 'var(--surface)';
+          tabHtml.style.color = 'var(--text-muted)';
+          tabHtml.style.borderColor = 'var(--border)';
           pre.style.display = 'block';
           htmlContainer.style.display = 'none';
         };
