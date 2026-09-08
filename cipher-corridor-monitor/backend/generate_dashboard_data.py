@@ -1805,6 +1805,98 @@ def _build_email(chi, signals, worst10, executive, metadata, corridor_health=Non
         ]
         return "\n".join(lines)
 
+def _compute_top_n_hit_metrics(signals, panel, top_n):
+    """Ground-truth audit of the alerting layer (no claims, only measurements).
+
+    A. Early-warning capture: for every series that reaches a physical
+       stock-out (is_out), was there a corridor-floor breach BEFORE the
+       stock-out week, and how many weeks of warning did it give?
+    B. Queue precision: of the top-N PRS-ranked signals on the understock
+       side, how many actually mature into a physical stock-out inside the
+       action window (breach week .. breach week + lead time)? Compared
+       against the random-pick baseline (share of all series with any
+       stock-out).
+    """
+    empty = {
+        "early_warning": {}, "queue_precision": {},
+        "top_n": 0, "hits": 0, "hit_rate_pct": 0.0,
+        "random_baseline_pct": 0.0, "lift": 0.0, "per_signal": [],
+        "method": "unavailable",
+    }
+    try:
+        out_any = panel.groupby("row_id")["is_out"].any()
+        base_rate = round(float(out_any.mean()) * 100, 2)
+
+        # A) Early-warning capture over ALL stock-out series
+        first_out = panel.loc[panel["is_out"]].groupby("row_id")["week_seq"].min()
+        first_breach = panel.loc[panel["breach"]].groupby("row_id")["week_seq"].min()
+        common = first_out.index.intersection(first_breach.index)
+        warn = (first_out[common] - first_breach[common]).astype(int)
+        warned = warn[warn >= 0]
+        early_warning = {
+            "stockout_series": int(len(first_out)),
+            "warned_before_stockout": int((warn >= 0).sum()),
+            "capture_pct": round(100.0 * (warn >= 0).sum() / len(first_out), 1) if len(first_out) else 0.0,
+            "median_warning_weeks": int(warned.median()) if len(warned) else 0,
+            "p25_warning_weeks": int(warned.quantile(0.25)) if len(warned) else 0,
+            "share_warning_ge_2wks_pct": round(100.0 * (warned >= 2).mean(), 1) if len(warned) else 0.0,
+            "post_hoc_detections": int((warn < 0).sum()),
+            "method": "A series counts as warned when its first corridor-floor breach week precedes its first physical stock-out week. Warning horizon = stock-out week minus first breach week.",
+        }
+
+        # B) Top-N queue precision, split by action side
+        UNDERSTOCK_SIDE = {"ACTIVE CRISIS", "EMERGENCY EXPEDITE", "STANDARD PO"}
+        hits = 0
+        per_signal = []
+        under_n = 0
+        under_hits = 0
+        over_n = 0
+        for s in signals[:top_n]:
+            rid = s.get("row_id")
+            bw = int(s.get("breach_week") or 0)
+            lt = int(s.get("market_lead_time") or 0)
+            horizon_end = min(52, bw + max(lt, 1))
+            wk = panel.loc[panel["row_id"] == rid, ["week_seq", "is_out"]]
+            hit = bool(wk.loc[(wk["week_seq"] >= max(bw, 1)) & (wk["week_seq"] <= horizon_end), "is_out"].any())
+            is_under = s.get("action_type") in UNDERSTOCK_SIDE
+            if is_under:
+                under_n += 1
+                under_hits += int(hit)
+            else:
+                over_n += 1
+            hits += int(hit)
+            per_signal.append({
+                "rank": s.get("rank"), "row_id": rid,
+                "action_type": s.get("action_type"),
+                "breach_week": bw, "lead_time_weeks": lt,
+                "horizon_end_week": horizon_end, "hit": hit,
+            })
+        n = min(len(signals), top_n)
+        queue_precision = {
+            "understock_signals": under_n,
+            "understock_hits": under_hits,
+            "understock_hit_rate_pct": round(100.0 * under_hits / under_n, 1) if under_n else 0.0,
+            "overstock_signals_excluded": over_n,
+            "overstock_note": "EXCESS HOLDING / ADVISORY signals target overstock; a physical stock-out is not their expected failure mode, so they are excluded from the precision denominator.",
+            "random_baseline_pct": base_rate,
+            "lift": round((under_hits / under_n) / out_any.mean(), 2) if under_n and out_any.mean() > 0 else 0.0,
+            "method": "An understock-side signal counts as a hit when the series reaches a physical stock-out between its projected breach week and breach week + market lead time, without intervention.",
+        }
+        return {
+            "early_warning": early_warning,
+            "queue_precision": queue_precision,
+            "top_n": n,
+            "hits": hits,
+            "hit_rate_pct": round(hits / n * 100, 1) if n else 0.0,
+            "random_baseline_pct": base_rate,
+            "lift": round((hits / n) / out_any.mean(), 2) if n and out_any.mean() > 0 else 0.0,
+            "per_signal": per_signal,
+            "method": "Ground-truth measured from the input panel. No claimed precision.",
+        }
+    except Exception:
+        return empty
+
+
 def layer5_serialise(signals, corridor_health, executive, panel, perm_breaching_count=None):
     n_series = int(panel["row_id"].nunique())
     if perm_breaching_count is None:
@@ -1901,6 +1993,9 @@ def layer5_serialise(signals, corridor_health, executive, panel, perm_breaching_
     metadata["per_market_lead_times"] = ADMINISTRATIVE_LEAD_TIMES_BY_MARKET
     metadata["alert_workflow"] = alert_workflow
 
+    # ── Measured top-N precision (ground-truth vs random baseline) ──
+    signal_precision = _compute_top_n_hit_metrics(signals, panel, TOP_N_SIGNALS)
+
     out = {
         "metadata":                metadata,
         "administrative_settings": administrative_settings,
@@ -1910,6 +2005,7 @@ def layer5_serialise(signals, corridor_health, executive, panel, perm_breaching_
         "top_signals":             signals,
         "executive":               executive,
         "simulated_email":         email,
+        "signal_precision":        signal_precision,
         "chi_matrix":              chi_matrix,
         "chi_lookup_matrix":       chi_lookup_matrix,
     }

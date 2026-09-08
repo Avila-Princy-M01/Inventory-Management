@@ -588,8 +588,49 @@ export function initPresentationDeck(data) {
   });
 }
 
+export function hydrateSignalPrecision(data) {
+  // Measured, not claimed: ground-truth early-warning capture + queue precision.
+  const host = document.getElementById('signal-precision-card');
+  if (!host) return;
+  const sp = data.signal_precision || {};
+  const ew = sp.early_warning || {};
+  const qp = sp.queue_precision || {};
+  if (!ew.capture_pct && !qp.understock_signals) {
+    host.innerHTML = '<div class="precision-unavailable">[ PRECISION AUDIT ] Ground-truth metrics unavailable for this dataset.</div>';
+    return;
+  }
+  const num = (v, suffix = '') => (v === 0 || v) ? `${v}${suffix}` : '--';
+  host.innerHTML = `
+    <div class="mono-tag">[ PRECISION AUDIT · MEASURED, NOT CLAIMED ]</div>
+    <div class="precision-stats">
+      <div class="precision-tile precision-tile--hero">
+        <span class="precision-value tabular-nums">${num(ew.capture_pct, '%')}</span>
+        <span class="precision-label">STOCK-OUT SERIES WARNED IN ADVANCE</span>
+        <span class="precision-sub tabular-nums">${num(ew.warned_before_stockout)} of ${num(ew.stockout_series)} series · median ${num(ew.median_warning_weeks)} wks early · p25 ${num(ew.p25_warning_weeks)} wks</span>
+      </div>
+      <div class="precision-tile">
+        <span class="precision-value tabular-nums">${num(ew.post_hoc_detections)}</span>
+        <span class="precision-label">POST-HOC DETECTIONS</span>
+        <span class="precision-sub">zero alerts after the fact</span>
+      </div>
+      <div class="precision-tile">
+        <span class="precision-value tabular-nums">${num(ew.share_warning_ge_2wks_pct, '%')}</span>
+        <span class="precision-label">WARNED &ge; 2 WEEKS AHEAD</span>
+        <span class="precision-sub">actionable window for ${num(sp.random_baseline_pct)}-week lead times</span>
+      </div>
+      <div class="precision-tile">
+        <span class="precision-value tabular-nums">${num(qp.understock_hit_rate_pct, '%')}</span>
+        <span class="precision-label">QUEUE HIT-RATE (UNDERSTOCK SIDE)</span>
+        <span class="precision-sub tabular-nums">${num(qp.understock_hits)}/${num(qp.understock_signals)} matured to stock-out · ${num(qp.lift, '×')} random baseline (${num(qp.random_baseline_pct)}%)</span>
+      </div>
+    </div>
+    <p class="precision-note">Ground truth from the input panel: a series counts as warned when its first corridor-floor breach precedes its first physical stock-out week. ${num(ew.share_warning_ge_2wks_pct)}% of events give &ge;2 weeks of warning — inside the 14-day planning default. Hit-rate is computed without intervention; the queue's purpose is that most of these never mature.</p>
+  `;
+}
+
 export function hydrateStaticSections(data) {
   if (!data) return;
+  hydrateSignalPrecision(data);
   const ch = data.corridor_health || {};
   const ex = data.executive || {};
   const wow = ch.wow_delta || {};

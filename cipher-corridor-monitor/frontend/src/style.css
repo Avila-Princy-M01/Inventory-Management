@@ -6195,3 +6195,15 @@ th.col-audit { width: 16%; }
 th.col-metrics { width: 14%; }
 th.col-vector { width: 22%; }
 th.col-action { width: 18%; }
+
+/* ── Signal Precision Audit strip (methodology disclosure, data-driven) ── */
+.signal-precision-card { padding: 16px 20px; border-bottom: 1px solid var(--border); }
+.precision-unavailable { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); letter-spacing: 0.06em; }
+.precision-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+.precision-tile { background: var(--surface); padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
+.precision-tile--hero { background: var(--surface-subtle); }
+.precision-value { font-family: var(--font-mono); font-size: 26px; font-weight: 700; letter-spacing: -0.02em; }
+.precision-label { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: var(--text-muted); }
+.precision-sub { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); }
+.precision-note { font-size: 11px; line-height: 1.6; color: var(--text-muted); margin: 10px 0 0; }
+@media (max-width: 900px) { .precision-stats { grid-template-columns: repeat(2, 1fr); } }

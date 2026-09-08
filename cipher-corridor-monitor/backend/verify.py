@@ -406,6 +406,25 @@ except Exception as exc:
     fail(f"Could not validate administrative_settings: {exc}")
     failures.append(str(exc))
 
+# N. signal_precision: early-warning capture must be measurable and honest
+try:
+    sp = data["signal_precision"]
+    ew = sp["early_warning"]
+    qp = sp["queue_precision"]
+    assert_check(
+        ew["stockout_series"] > 0
+        and 0 <= ew["capture_pct"] <= 100
+        and ew["warned_before_stockout"] <= ew["stockout_series"]
+        and qp["understock_signals"] > 0
+        and 0 <= qp["understock_hit_rate_pct"] <= 100,
+        f"signal_precision: {ew['warned_before_stockout']}/{ew['stockout_series']} warned "
+        f"(median {ew['median_warning_weeks']}w), queue hit-rate {qp['understock_hit_rate_pct']}%",
+        "signal_precision values inconsistent",
+    )
+except (KeyError, TypeError) as exc:
+    fail(f"Could not read signal_precision: {exc}")
+    failures.append(str(exc))
+
 # ---------------------------------------------------------------------------
 # Summary
 # ---------------------------------------------------------------------------
