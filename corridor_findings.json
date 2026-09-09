@@ -157,7 +157,7 @@
     "max_weeks": 23
   },
   "shape": {
-    "source_file": "C:\\Users\\PC\\AppData\\Local\\Temp\\tmp4g3i4n8d.xlsx",
+    "source_file": "C:\\Users\\PC\\AppData\\Local\\Temp\\tmpjnfpejxw.xlsx",
     "sheet": "Export",
     "series": 5000,
     "weeks": 52,
@@ -508,7 +508,7 @@
   ],
   "is_synthetic": true,
   "_meta": {
-    "generated_utc": "2026-09-06 08:45:25Z",
+    "generated_utc": "2026-09-09 17:10:33Z",
     "pipeline": "corridor_pipeline.py",
     "pandas": "2.3.3",
     "numpy": "2.5.1",
