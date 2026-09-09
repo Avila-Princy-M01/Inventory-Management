@@ -378,12 +378,16 @@ def restore_benchmark():
             dst = os.path.join(BACKEND_DIR, fname)
             if os.path.isfile(src):
                 shutil.copy2(src, dst)
-        # Keep the root-level copies in sync as well
-        for fname in ["dashboard_data.json", "corridor_findings.json"]:
-            src = os.path.join(BACKEND_DIR, fname)
-            dst = os.path.join(PARENT_DIR, fname)
-            if os.path.isfile(src) and os.path.isdir(PARENT_DIR):
-                shutil.copy2(src, dst)
+        # Keep the root-level copies in sync as well (best-effort: the parent
+        # directory may be read-only in container deployments)
+        try:
+            for fname in ["dashboard_data.json", "corridor_findings.json"]:
+                src = os.path.join(BACKEND_DIR, fname)
+                dst = os.path.join(PARENT_DIR, fname)
+                if os.path.isfile(src) and os.path.isdir(PARENT_DIR):
+                    shutil.copy2(src, dst)
+        except Exception:
+            pass
     except Exception as exc:
         return jsonify({"error": "RESTORE_FAILED", "detail": str(exc)}), 500
     return jsonify({"success": True, "restored": SNAPSHOT_FILES}), 200
@@ -409,7 +413,10 @@ def load_demo():
                 for fname in ["dashboard_data.json", "corridor_findings.json"]:
                     dst = os.path.join(PARENT_DIR, fname)
                     if os.path.isdir(PARENT_DIR) and os.path.isfile(os.path.join(BACKEND_DIR, fname)):
-                        shutil.copy2(os.path.join(BACKEND_DIR, fname), dst)
+                        try:
+                            shutil.copy2(os.path.join(BACKEND_DIR, fname), dst)
+                        except Exception:
+                            pass
             with open(DASHBOARD_DATA_PATH, "r", encoding="utf-8") as fh:
                 payload = fh.read()
             return Response(payload, status=200, mimetype="application/json")

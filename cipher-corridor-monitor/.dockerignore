@@ -1,0 +1,14 @@
+.git
+.gitignore
+.env
+.env.*
+__pycache__/
+*.py[cod]
+backend/benchmark_snapshot/
+backend/gxp_audit_ledger.jsonl
+backend/episode_features.parquet
+backend/breach_episodes.parquet
+.kiro/
+.agents/
+*.md
+!README.md
