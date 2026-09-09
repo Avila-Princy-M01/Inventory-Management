@@ -21,6 +21,23 @@ For the most reliable evaluation without manual command typing:
 
 ---
 
+## 🌍 Public Demo URL (Cloudflare Tunnel)
+
+The app runs on this machine, but judges do **not** need to be on the same network — a free Cloudflare quick tunnel exposes it on a public HTTPS URL:
+
+- **Windows**: Double-click **`start_tunneled.bat`** (or run `bash start_tunneled.sh`).
+- Requires `cloudflared.exe` (auto-detected at `C:\Users\PC\bin\cloudflared.exe`, override with the `CLOUDFLARED` env var).
+
+**How it works:** the launcher starts the Flask server locally (if not already up), opens a quick tunnel, and prints a URL like `https://<random-words>.trycloudflare.com`. Share that URL with judges — uploads run through it end-to-end (a 29 MB workbook round-trips in ~90 s; the pipeline executes as a background job, so no proxy can cut it off).
+
+**Important notes:**
+- The quick-tunnel URL **changes on every launch** — re-run the launcher right before the demo and read the printed URL.
+- The link is live only while this machine is on and online.
+- Heavy rebuilds are dispatched asynchronously (`POST /upload` → `202 {job_id}` → poll `GET /upload/status/<id>`), which keeps every request far below public-proxy response limits.
+- Stop the tunnel any time: `taskkill //F //IM cloudflared.exe`.
+
+---
+
 ## Executive Overview & Core Value Proposition
 
 Modern pharmaceutical supply networks face severe friction when global ERP/OMP systems generate thousands of false stock-out alarms, diluting planner focus and triggering unnecessary, costly ocean-air freight overrides.

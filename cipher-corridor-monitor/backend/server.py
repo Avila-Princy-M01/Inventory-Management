@@ -14,6 +14,8 @@ import json
 import shutil
 import tempfile
 import subprocess
+import threading
+import uuid
 from datetime import datetime
 
 from flask import Flask, send_from_directory, jsonify, request, Response
@@ -135,7 +137,151 @@ def serve_dashboard_data():
     return send_from_directory(BACKEND_DIR, "dashboard_data.json")
 
 
-# ── Upload endpoint ────────────────────────────────────────────────────────────
+# ── Upload endpoint — asynchronous job model ──────────────────────────────
+# Heavy rebuilds (60s+) exceed response-time caps of public proxies (e.g.
+# Cloudflare terminates responses past 100s), so uploads run as background
+# jobs: POST /upload returns 202 {job_id} immediately and the client polls
+# GET /upload/status/<job_id> until the fresh payload is ready.
+
+UPLOAD_JOBS = {}
+UPLOAD_JOBS_LOCK = threading.Lock()
+
+
+def _run_upload_pipeline(job_id, tmp_path, pipeline_env):
+    """Background worker: rebuild the panel, regenerate the payload, publish status."""
+    try:
+        try:
+            result_pipeline = subprocess.run(
+                [sys.executable, PIPELINE_SCRIPT, "--rebuild"],
+                capture_output=True,
+                text=True,
+                cwd=BACKEND_DIR,
+                env=pipeline_env,
+                timeout=PIPELINE_TIMEOUT_SECONDS,
+            )
+        except subprocess.TimeoutExpired:
+            with UPLOAD_JOBS_LOCK:
+                UPLOAD_JOBS[job_id].update({
+                    "status": "error",
+                    "error": "PIPELINE_TIMEOUT",
+                    "detail": f"Pipeline exceeded {PIPELINE_TIMEOUT_SECONDS}s budget. The workbook may be malformed or too large for this prototype.",
+                })
+            return
+        except FileNotFoundError as exc:
+            with UPLOAD_JOBS_LOCK:
+                UPLOAD_JOBS[job_id].update({
+                    "status": "error",
+                    "error": "FILE_NOT_FOUND",
+                    "detail": f"Failed to execute pipeline script {PIPELINE_SCRIPT}: {exc}",
+                })
+            return
+
+        if result_pipeline.returncode != 0:
+            with UPLOAD_JOBS_LOCK:
+                UPLOAD_JOBS[job_id].update({
+                    "status": "error",
+                    "error": "PIPELINE_FAILURE",
+                    "detail": (result_pipeline.stderr or result_pipeline.stdout or "pipeline failed")[-4000:],
+                })
+            return
+
+        try:
+            result_generate = subprocess.run(
+                [sys.executable, GENERATE_SCRIPT],
+                capture_output=True,
+                text=True,
+                cwd=BACKEND_DIR,
+                env=pipeline_env,
+                timeout=PIPELINE_TIMEOUT_SECONDS,
+            )
+        except subprocess.TimeoutExpired:
+            with UPLOAD_JOBS_LOCK:
+                UPLOAD_JOBS[job_id].update({
+                    "status": "error",
+                    "error": "PIPELINE_TIMEOUT",
+                    "detail": f"Dashboard generation exceeded {PIPELINE_TIMEOUT_SECONDS}s budget.",
+                })
+            return
+        except FileNotFoundError as exc:
+            with UPLOAD_JOBS_LOCK:
+                UPLOAD_JOBS[job_id].update({
+                    "status": "error",
+                    "error": "FILE_NOT_FOUND",
+                    "detail": f"Failed to execute generator script {GENERATE_SCRIPT}: {exc}",
+                })
+            return
+
+        if result_generate.returncode != 0:
+            with UPLOAD_JOBS_LOCK:
+                UPLOAD_JOBS[job_id].update({
+                    "status": "error",
+                    "error": "PIPELINE_FAILURE",
+                    "detail": (result_generate.stderr or result_generate.stdout or "generation failed")[-4000:],
+                })
+            return
+
+        # Synchronize parquet & findings to the parent directory (best-effort).
+        try:
+            for fname in ["corridor_panel.parquet", "corridor_findings.json"]:
+                sf = os.path.join(BACKEND_DIR, fname)
+                df = os.path.join(PARENT_DIR, fname)
+                if os.path.isfile(sf) and os.path.isdir(PARENT_DIR) and sf != df:
+                    shutil.copy2(sf, df)
+        except Exception:
+            pass
+
+        # Read the fresh payload back so the exact served bytes are pinned.
+        try:
+            with open(DASHBOARD_DATA_PATH, "r", encoding="utf-8") as fh:
+                payload_text = fh.read()
+        except OSError as exc:
+            with UPLOAD_JOBS_LOCK:
+                UPLOAD_JOBS[job_id].update({
+                    "status": "error",
+                    "error": "PIPELINE_FAILURE",
+                    "detail": str(exc),
+                })
+            return
+
+        with UPLOAD_JOBS_LOCK:
+            UPLOAD_JOBS[job_id].update({
+                "status": "done",
+                "payload_text": payload_text,
+                "finished": datetime.utcnow().isoformat() + "Z",
+            })
+    finally:
+        # The worker owns the temp file now — always clean it up.
+        try:
+            os.unlink(tmp_path)
+        except OSError:
+            pass
+
+
+@app.route("/upload/status/<job_id>", methods=["GET"])
+def upload_status(job_id):
+    """Poll an async upload job. Terminal states: done (with payload) / error."""
+    with UPLOAD_JOBS_LOCK:
+        job = UPLOAD_JOBS.get(job_id)
+        if job is None:
+            return jsonify({"error": "UNKNOWN_JOB"}), 404
+        snapshot = dict(job)
+    if snapshot["status"] == "done":
+        payload_text = snapshot.pop("payload_text", "")
+        # Hand off the payload once, then prune the completed job from memory.
+        with UPLOAD_JOBS_LOCK:
+            UPLOAD_JOBS.pop(job_id, None)
+        resp = Response(payload_text, status=200, mimetype="application/json")
+        resp.headers["X-Upload-Job"] = job_id
+        return resp
+    return jsonify({
+        "job_id": job_id,
+        "status": snapshot["status"],
+        "error": snapshot.get("error"),
+        "detail": snapshot.get("detail"),
+        "started": snapshot.get("started"),
+    }), 200
+
+
 @app.route("/upload", methods=["POST"])
 def upload():
     """
@@ -146,13 +292,15 @@ def upload():
       2. Workbook must contain an 'Export' sheet → HTTP 422 INVALID_WORKBOOK
 
     On success:
-      - Save to a temp file
-      - Run corridor_pipeline.py --rebuild (subprocess)
-      - Run generate_dashboard_data.py (subprocess)
-      - Stream back the updated dashboard_data.json → HTTP 200
+      - Validate the workbook (extension + 'Export' sheet)
+      - Snapshot the current benchmark artifacts (restore safety)
+      - Dispatch corridor_pipeline.py --rebuild + generate_dashboard_data.py
+        as a background job → HTTP 202 {"job_id": ...}
+      - Client polls GET /upload/status/<job_id>; 'done' returns the fresh
+        dashboard_data.json (HTTP 200), 'error' returns the failure detail
 
-    On subprocess failure:
-      - Return HTTP 500 PIPELINE_FAILURE with stderr detail
+    Design note: rebuilds take 60s+, which exceeds public-proxy response caps
+    (e.g. Cloudflare 100s), so the pipeline must not run inside the request.
     """
     # ── 1. File presence check ─────────────────────────────────────────────
     if "file" not in request.files:
@@ -167,6 +315,7 @@ def upload():
 
     # ── 3. Save to a named temp file so pipeline can read it ───────────────
     tmp_fd, tmp_path = tempfile.mkstemp(suffix=".xlsx")
+    dispatched = False
     try:
         try:
             os.close(tmp_fd)
@@ -208,7 +357,9 @@ def upload():
         except Exception as snap_exc:
             print(f"[server] WARNING: benchmark snapshot failed: {snap_exc}", file=sys.stderr)
 
-        # ── 6. Run corridor_pipeline.py --rebuild ──────────────────────────
+        # ── 6. Validate resolved scripts, then dispatch the heavy rebuild to a
+        # background worker. The HTTP request returns immediately with a job id;
+        # the client polls GET /upload/status/<job_id> for completion.
         if not os.path.isfile(PIPELINE_SCRIPT):
             return jsonify(
                 {
@@ -216,40 +367,6 @@ def upload():
                     "detail": f"corridor_pipeline.py not found at resolved script path: {PIPELINE_SCRIPT}. Checked paths: {PIPELINE_CANDIDATES}",
                 }
             ), 500
-
-        try:
-            result_pipeline = subprocess.run(
-                [sys.executable, PIPELINE_SCRIPT, "--rebuild"],
-                capture_output=True,
-                text=True,
-                cwd=cwd,
-                env=pipeline_env,
-                timeout=PIPELINE_TIMEOUT_SECONDS,
-            )
-        except FileNotFoundError as exc:
-            return jsonify(
-                {
-                    "error": "FILE_NOT_FOUND",
-                    "detail": f"Failed to execute pipeline script {PIPELINE_SCRIPT}: {exc}",
-                }
-            ), 500
-        except subprocess.TimeoutExpired:
-            return jsonify(
-                {
-                    "error": "PIPELINE_TIMEOUT",
-                    "detail": f"Pipeline exceeded {PIPELINE_TIMEOUT_SECONDS}s budget. The workbook may be malformed or too large for this prototype.",
-                }
-            ), 500
-
-        if result_pipeline.returncode != 0:
-            return jsonify(
-                {
-                    "error": "PIPELINE_FAILURE",
-                    "detail": result_pipeline.stderr or result_pipeline.stdout,
-                }
-            ), 500
-
-        # ── 7. Run generate_dashboard_data.py ─────────────────────────────
         if not os.path.isfile(GENERATE_SCRIPT):
             return jsonify(
                 {
@@ -258,63 +375,25 @@ def upload():
                 }
             ), 500
 
-        try:
-            result_generate = subprocess.run(
-                [sys.executable, GENERATE_SCRIPT],
-                capture_output=True,
-                text=True,
-                cwd=cwd,
-                env=pipeline_env,
-                timeout=PIPELINE_TIMEOUT_SECONDS,
-            )
-        except FileNotFoundError as exc:
-            return jsonify(
-                {
-                    "error": "FILE_NOT_FOUND",
-                    "detail": f"Failed to execute generator script {GENERATE_SCRIPT}: {exc}",
-                }
-            ), 500
-        except subprocess.TimeoutExpired:
-            return jsonify(
-                {
-                    "error": "PIPELINE_TIMEOUT",
-                    "detail": f"Dashboard generation exceeded {PIPELINE_TIMEOUT_SECONDS}s budget.",
-                }
-            ), 500
-
-        if result_generate.returncode != 0:
-            return jsonify(
-                {
-                    "error": "PIPELINE_FAILURE",
-                    "detail": result_generate.stderr or result_generate.stdout,
-                }
-            ), 500
-
-        # ── 8. Synchronize parquet & findings to parent directory if applicable ──
-        try:
-            for fname in ["corridor_panel.parquet", "corridor_findings.json"]:
-                sf = os.path.join(BACKEND_DIR, fname)
-                df = os.path.join(PARENT_DIR, fname)
-                if os.path.isfile(sf) and os.path.isdir(PARENT_DIR) and sf != df:
-                    shutil.copy2(sf, df)
-        except Exception:
-            pass
-
-        # ── 9. Stream back the freshly generated dashboard_data.json ──────
-        try:
-            with open(DASHBOARD_DATA_PATH, "r", encoding="utf-8") as fh:
-                payload = fh.read()
-        except OSError as exc:
-            return jsonify({"error": "PIPELINE_FAILURE", "detail": str(exc)}), 500
-
-        return Response(payload, status=200, mimetype="application/json")
+        job_id = uuid.uuid4().hex[:12]
+        with UPLOAD_JOBS_LOCK:
+            UPLOAD_JOBS[job_id] = {"status": "running", "started": datetime.utcnow().isoformat() + "Z"}
+        worker = threading.Thread(
+            target=_run_upload_pipeline,
+            args=(job_id, tmp_path, pipeline_env),
+            daemon=True,
+        )
+        worker.start()
+        dispatched = True
+        return jsonify({"job_id": job_id, "status": "running"}), 202
 
     finally:
-        # Always clean up the temp file regardless of outcome.
-        try:
-            os.unlink(tmp_path)
-        except OSError:
-            pass
+        # Clean up the temp file unless a background worker now owns it.
+        if not dispatched:
+            try:
+                os.unlink(tmp_path)
+            except OSError:
+                pass
 
 
 # ── GxP audit persistence ─────────────────────────────────────────────────────

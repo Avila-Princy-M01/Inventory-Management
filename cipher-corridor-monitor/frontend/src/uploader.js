@@ -222,21 +222,28 @@ async function startUploadPipeline(file) {
   formData.append('file', file);
 
   const startTime = performance.now();
-  const uploadPromise = fetch('/upload', {
-    method: 'POST',
-    body: formData,
-  });
 
   try {
-    const res = await uploadPromise;
-    clearInterval(timerInterval);
+    // POST /upload returns 202 {job_id} immediately — the heavy rebuild runs as a
+    // background job so public proxies (e.g. Cloudflare's 100s response cap) never
+    // kill the connection mid-pipeline. Old synchronous server builds respond 200
+    // with the full payload directly; both are handled below.
+    const dispatchRes = await fetch('/upload', {
+      method: 'POST',
+      body: formData,
+    });
 
-    if (!res.ok) {
-      const errJson = await res.json().catch(() => ({}));
-      throw new Error(errJson.error || `HTTP ${res.status}`);
+    if (!dispatchRes.ok) {
+      const errJson = await dispatchRes.json().catch(() => ({}));
+      throw new Error(errJson.error || `HTTP ${dispatchRes.status}`);
     }
 
-    const payload = await res.json();
+    const dispatchBody = await dispatchRes.json();
+    const payload = dispatchBody.job_id
+      ? await pollUploadJob(dispatchBody.job_id)
+      : dispatchBody;
+
+    clearInterval(timerInterval);
     const durationSec = ((performance.now() - startTime) / 1000).toFixed(1);
     if (payload.metadata) {
       payload.metadata.pipeline_duration_seconds = durationSec;
@@ -268,6 +275,38 @@ async function startUploadPipeline(file) {
     if (btnRun) btnRun.disabled = false;
     if (btnDemo) btnDemo.disabled = false;
   }
+}
+
+/**
+ * Polls an async upload job (GET /upload/status/<id>) until the fresh payload
+ * arrives or the job fails. Network blips during polling are retried; only
+ * server-reported errors or the 8-minute deadline abort the wait.
+ */
+async function pollUploadJob(jobId) {
+  const deadline = Date.now() + 8 * 60 * 1000;
+  let first = true;
+  while (Date.now() < deadline) {
+    await new Promise(r => setTimeout(r, first ? 500 : 2000));
+    first = false;
+    let res;
+    try {
+      res = await fetch(`/upload/status/${jobId}`);
+    } catch (err) {
+      continue;
+    }
+    if (res.status === 404) throw new Error('UNKNOWN_JOB');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const body = await res.json();
+    if (body.job_id) {
+      if (body.status === 'error') {
+        const detail = body.detail ? ` — ${String(body.detail).slice(-160)}` : '';
+        throw new Error(`${body.error || 'PIPELINE_FAILURE'}${detail}`);
+      }
+      continue; // still running
+    }
+    return body; // terminal 'done' response carries the fresh dashboard payload
+  }
+  throw new Error('UPLOAD_TIMEOUT');
 }
 
 /**
