@@ -6,7 +6,7 @@
 
 ---
 
-## ⚡ 1-Click Launch (Recommended for Judges)
+## ⚡ 1-Click Launch (Recommended for Judges) aa
 
 For the most reliable evaluation without manual command typing:
 
@@ -211,3 +211,16 @@ The frontend features dedicated responsive breakpoints:
 ## 👥 Hackathon Team CIPHER
 - **Novo Nordisk GBS Hackathon 2026** — Supply Chain Analytics & Digital Innovation
 - Engineered in full compliance with Novo Nordisk GxP and 21 CFR Part 11 electronic records standards.
+
+---
+
+## 📋 Changelog
+
+| Date | Update |
+|------|--------|
+| 2026-09-10 | Stabilised briefing.js color constants; refreshed corridor analytical dataset cache |
+| 2026-09-10 | Added async upload jobs and public Cloudflare tunnel launch path |
+| 2026-09-10 | Containerised cloud deployment with portability fixes |
+| 2026-09-10 | Research-backed precision overhaul — maturation semantics, episode validation, CHI falsification test |
+
+> _Last updated: 2026-09-10 — CIPHER v1.0.0-hackathon_
