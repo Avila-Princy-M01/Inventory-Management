@@ -30,6 +30,28 @@ function formatFileSize(bytes) {
 }
 
 /**
+ * Updates the 'DATA INGESTION STATUS' panel in real time
+ */
+export function updateIngestionStatusCard(info = {}) {
+  const stateEl = document.getElementById('status-state-val');
+  const datasetEl = document.getElementById('status-dataset-val');
+  const recordsEl = document.getElementById('status-records-val');
+  const ingestedEl = document.getElementById('status-ingested-val');
+  const filenameEl = document.getElementById('status-filename-val');
+  const sourceEl = document.getElementById('status-source-val');
+
+  if (stateEl && info.state) {
+    stateEl.textContent = info.state;
+    if (info.stateClass) stateEl.className = info.stateClass;
+  }
+  if (datasetEl && info.dataset) datasetEl.textContent = info.dataset;
+  if (recordsEl && info.records) recordsEl.textContent = info.records;
+  if (ingestedEl && info.ingested) ingestedEl.textContent = info.ingested;
+  if (filenameEl && info.filename) filenameEl.textContent = info.filename;
+  if (sourceEl && info.source) sourceEl.textContent = info.source;
+}
+
+/**
  * Binds dropzone, file input, and action triggers
  */
 function bindIngestionEvents() {
@@ -125,6 +147,12 @@ export function handleFileSelected(file) {
     preview.style.display = 'flex';
   }
 
+  updateIngestionStatusCard({
+    state: '● STAGED FOR EXTRACTION',
+    filename: file.name,
+    source: `Uploaded .xlsx Workbook (${formatFileSize(file.size)})`,
+  });
+
   if (btnRun) {
     btnRun.disabled = false;
     btnRun.classList.add('btn-ready');
@@ -196,6 +224,12 @@ async function startUploadPipeline(file) {
   }
   if (elapsedEl) elapsedEl.textContent = '0';
 
+  updateIngestionStatusCard({
+    state: '● EXTRACTING & VECTORIZING...',
+    filename: file.name,
+    source: `Active Pipeline Job (${formatFileSize(file.size)})`,
+  });
+
   let timerInterval = null;
   let elapsedSec = 0;
 
@@ -253,6 +287,15 @@ async function startUploadPipeline(file) {
       setStepState(i, 'DONE [OK]', 'status-done');
     }
 
+    updateIngestionStatusCard({
+      state: '● LIVE & INGESTED',
+      dataset: 'SAP-OMP Corridor Panel',
+      records: `${Number(payload?.metadata?.total_raw_records || payload?.metadata?.total_evaluated_records || 260000).toLocaleString('en-IN')} SKU-Weeks`,
+      ingested: `Aug 2026 (W${payload?.metadata?.current_week || 32})`,
+      filename: file?.name || 'corridor_panel.xlsx',
+      source: `User Upload (${durationSec}s compute)`,
+    });
+
     await new Promise(r => setTimeout(r, 400));
 
     if (appShell) {
@@ -268,6 +311,10 @@ async function startUploadPipeline(file) {
     clearInterval(timerInterval);
     console.error('[uploader] Pipeline failure:', err);
     alert(`[ EXTRACTION FAILURE ]: ${err.message || 'Check server logs'}`);
+    updateIngestionStatusCard({
+      state: '● EXTRACTION FAILED',
+      source: 'Pipeline Exception'
+    });
     if (stepper) stepper.style.display = 'none';
   } finally {
     clearInterval(timerInterval);
@@ -325,6 +372,12 @@ async function startDemoPipeline() {
     stepper.style.display = 'block';
   }
 
+  updateIngestionStatusCard({
+    state: '● LOADING BENCHMARK...',
+    filename: 'Inventry_Corridor_Alert_Weekly_Aug2026_Jul2027.xlsx',
+    source: 'Benchmark Live Feed',
+  });
+
   const demoPromise = fetch('/load-demo')
     .then(r => r.ok ? r : fetch('/dashboard_data.json'))
     .catch(() => fetch('/dashboard_data.json'));
@@ -343,6 +396,15 @@ async function startDemoPipeline() {
     await animateStep(4, 500);
     await animateStep(5, 500);
 
+    updateIngestionStatusCard({
+      state: '● LIVE & INGESTED',
+      dataset: 'SAP-OMP Corridor Panel',
+      records: `${Number(payload?.metadata?.total_raw_records || payload?.metadata?.total_evaluated_records || 260000).toLocaleString('en-IN')} SKU-Weeks`,
+      ingested: `Aug 2026 (W${payload?.metadata?.current_week || 32})`,
+      filename: 'Inventry_Corridor_Alert_Weekly_Aug2026_Jul2027.xlsx',
+      source: 'Benchmark Live Feed',
+    });
+
     await new Promise(r => setTimeout(r, 400));
 
     if (appShell) {
@@ -357,6 +419,10 @@ async function startDemoPipeline() {
   } catch (err) {
     console.error('[uploader] Demo load failure:', err);
     alert(`[ EXTRACTION FAILURE ]: ${err.message}`);
+    updateIngestionStatusCard({
+      state: '● EXTRACTION FAILED',
+      source: 'Benchmark Error'
+    });
     if (stepper) stepper.style.display = 'none';
   } finally {
     isExtracting = false;

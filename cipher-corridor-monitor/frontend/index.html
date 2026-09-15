@@ -1418,60 +1418,173 @@
     .live-dot-kpi { color: #22d47a !important; }
     .live-system-ready { color: #22d47a !important; }
 
-    /* KPI banner — compact */
+    /* KPI banner — clean layout */
     .kpi-banner {
       display: grid !important;
-      grid-template-columns: repeat(4,1fr) !important;
-      gap: 4px !important;
+      grid-template-columns: repeat(4, 1fr) !important;
+      gap: 12px !important;
+      padding: 8px 16px !important;
       flex-shrink: 0 !important;
       position: static !important;
     }
     #kpi-banner { position: static !important; }
 
-    /* KPI tiles — dark glass, compact */
+    /* KPI tiles — side-by-side split layout: numbers on one side, text on the other */
     .kpi-tile {
-      background: rgba(255,255,255,0.07) !important;
-      border: 1px solid rgba(255,255,255,0.11) !important;
-      border-radius: 10px !important;
-      padding: 3px 6px !important;
-      max-height: 58px !important;
+      background: rgba(13, 23, 44, 0.85) !important;
+      border: 1px solid rgba(255, 255, 255, 0.10) !important;
+      border-radius: 8px !important;
+      padding: 8px 12px !important;
+      height: auto !important;
+      min-height: 64px !important;
+      max-height: none !important;
       overflow: hidden !important;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.25) !important;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3) !important;
+      backdrop-filter: blur(10px) !important;
+      -webkit-backdrop-filter: blur(10px) !important;
+      display: grid !important;
+      grid-template-columns: auto 1fr !important;
+      grid-template-rows: auto auto !important;
+      column-gap: 12px !important;
+      row-gap: 2px !important;
+      align-items: center !important;
+      box-sizing: border-box !important;
     }
-    .kpi-tile::before { background: linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent) !important; }
+    .kpi-tile::before { display: none !important; }
     .kpi-tile--divider { border-left: none !important; }
 
-    #kpi-chi    { background: linear-gradient(145deg,rgba(200,140,20,0.20),rgba(160,100,10,0.12)) !important; border-color: rgba(200,150,40,0.25) !important; }
-    #kpi-crises { background: linear-gradient(145deg,rgba(220,50,70,0.20),rgba(180,30,50,0.12)) !important; border-color: rgba(220,80,100,0.25) !important; }
-    #kpi-capital{ background: linear-gradient(145deg,rgba(37,84,224,0.22),rgba(20,60,180,0.14)) !important; border-color: rgba(80,140,255,0.25) !important; }
-    #kpi-otif   { background: linear-gradient(145deg,rgba(20,160,90,0.20),rgba(10,120,70,0.12)) !important; border-color: rgba(40,200,110,0.25) !important; }
+    #kpi-chi    { border-left: 3px solid #eab308 !important; }
+    #kpi-crises { border-left: 3px solid #ef4444 !important; }
+    #kpi-capital{ border-left: 3px solid #3b82f6 !important; }
+    #kpi-otif   { border-left: 3px solid #10b981 !important; }
 
-    .kpi-numeral       { color: #ffffff !important; font-size: 12px !important; font-weight: 700 !important; }
-    .kpi-numeral--mono { font-size: 10px !important; }
-    .kpi-numeral.crisis-num  { color: #ff6b7a !important; }
-    .kpi-numeral.kpi-healthy { color: #22d47a !important; }
-    .kpi-label { color: rgba(160,190,255,0.60) !important; font-size: 6.5px !important; margin-top: 1px !important; }
-    .kpi-sub   { display: none !important; }
-    .kpi-delta { font-size: 6px !important; padding: 0px 3px !important; border-radius: 2px !important; }
-    .kpi-delta--up   { color: #22d47a !important; background: rgba(34,212,122,0.15) !important; border: 1px solid rgba(34,212,122,0.20) !important; }
-    .kpi-delta--down { color: #ff6b7a !important; background: rgba(255,90,110,0.14) !important; border: 1px solid rgba(255,90,110,0.18) !important; }
+    /* Left column items: Icon & Numeral */
+    .kpi-tile .kpi-tile-icon {
+      grid-column: 1 !important;
+      grid-row: 1 !important;
+      width: 22px !important;
+      height: 22px !important;
+      border-radius: 4px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      margin: 0 !important;
+    }
+    .kpi-tile .kpi-tile-icon svg { width: 12px !important; height: 12px !important; }
+    .kpi-tile-icon--chi    { background: rgba(234, 179, 8, 0.15) !important; color: #fbbf24 !important; border: 1px solid rgba(234, 179, 8, 0.3) !important; }
+    .kpi-tile-icon--crises { background: rgba(239, 68, 68, 0.15) !important;  color: #f87171 !important; border: 1px solid rgba(239, 68, 68, 0.3) !important; }
+    .kpi-tile-icon--capital{ background: rgba(59, 130, 246, 0.15) !important;  color: #60a5fa !important; border: 1px solid rgba(59, 130, 246, 0.3) !important; }
+    .kpi-tile-icon--otif   { background: rgba(16, 185, 129, 0.15) !important;  color: #34d399 !important; border: 1px solid rgba(16, 185, 129, 0.3) !important; }
 
-    .chi-hero-layout  { gap: 4px !important; }
-    .chi-dial-wrapper { width: 20px !important; height: 20px !important; }
-    .chi-dial         { width: 20px !important; height: 20px !important; }
-    .chi-dial-track   { stroke: rgba(255,255,255,0.10) !important; }
-    .chi-dial-progress{ stroke: #4a7be8 !important; }
-    .chi-dial-badge   { display: none !important; }
-    .chi-unit         { color: rgba(160,190,255,0.60) !important; font-size: 7px !important; }
-    .chi-provenance-pill { display: none !important; }
+    .kpi-tile .kpi-numeral,
+    .kpi-tile output.kpi-numeral {
+      grid-column: 1 !important;
+      grid-row: 2 !important;
+      color: #ffffff !important;
+      font-size: 16px !important;
+      font-weight: 800 !important;
+      line-height: 1.1 !important;
+      margin: 0 !important;
+      display: flex !important;
+      align-items: baseline !important;
+      gap: 3px !important;
+    }
+    .kpi-tile .kpi-numeral--mono { font-size: 15px !important; }
+    .kpi-tile .kpi-numeral.crisis-num  { color: #f87171 !important; }
+    .kpi-tile .kpi-numeral.kpi-healthy { color: #34d399 !important; }
 
-    /* KPI tile icons */
-    .kpi-tile-icon { width: 14px !important; height: 14px !important; border-radius: 3px !important; margin-bottom: 1px !important; }
-    .kpi-tile-icon svg { width: 7px !important; height: 7px !important; }
-    .kpi-tile-icon--chi    { background: rgba(200,140,20,0.22) !important; color: #ffc542 !important; border-color: rgba(200,150,40,0.22) !important; }
-    .kpi-tile-icon--crises { background: rgba(220,50,70,0.20) !important;  color: #ff6b7a !important; border-color: rgba(220,80,100,0.20) !important; }
-    .kpi-tile-icon--capital{ background: rgba(37,84,224,0.22) !important;  color: #6b9eff !important; border-color: rgba(80,140,255,0.20) !important; }
-    .kpi-tile-icon--otif   { background: rgba(20,160,90,0.20) !important;  color: #22d47a !important; border-color: rgba(40,200,110,0.20) !important; }
+    /* Right column items: Label & Subtext */
+    .kpi-tile .kpi-label {
+      grid-column: 2 !important;
+      grid-row: 1 !important;
+      color: rgba(226, 232, 240, 0.85) !important;
+      font-size: 8.5px !important;
+      font-weight: 700 !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.05em !important;
+      margin: 0 !important;
+      line-height: 1.2 !important;
+    }
+    .kpi-tile .kpi-sub {
+      grid-column: 2 !important;
+      grid-row: 2 !important;
+      color: rgba(148, 163, 184, 0.8) !important;
+      font-size: 7.5px !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 4px !important;
+      flex-wrap: wrap !important;
+      margin: 0 !important;
+    }
+    .kpi-tile .kpi-delta {
+      font-size: 7px !important;
+      padding: 1px 4px !important;
+      border-radius: 3px !important;
+      font-weight: 700 !important;
+      display: inline-block !important;
+    }
+    .kpi-delta--up   { color: #34d399 !important; background: rgba(52, 211, 153, 0.15) !important; border: 1px solid rgba(52, 211, 153, 0.25) !important; }
+    .kpi-delta--down { color: #f87171 !important; background: rgba(248, 113, 113, 0.15) !important; border: 1px solid rgba(248, 113, 113, 0.25) !important; }
+
+    /* Special layout for CHI card with dial */
+    #kpi-chi {
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      gap: 10px !important;
+    }
+    #kpi-chi .kpi-tile-icon { display: none !important; }
+    #kpi-chi .chi-hero-layout {
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      gap: 10px !important;
+      width: 100% !important;
+    }
+    #kpi-chi .chi-dial-wrapper {
+      width: 34px !important;
+      height: 34px !important;
+      position: relative !important;
+      flex-shrink: 0 !important;
+    }
+    #kpi-chi .chi-dial { width: 34px !important; height: 34px !important; }
+    #kpi-chi .chi-dial-track { stroke: rgba(255, 255, 255, 0.12) !important; }
+    #kpi-chi .chi-dial-progress { stroke: #eab308 !important; }
+    #kpi-chi .chi-dial-badge {
+      display: block !important;
+      position: absolute !important;
+      bottom: -2px !important;
+      right: -2px !important;
+      font-size: 6px !important;
+      font-weight: 800 !important;
+      padding: 0.5px 2.5px !important;
+      border-radius: 2px !important;
+      background: #ca8a04 !important;
+      color: #fff !important;
+    }
+    #kpi-chi .chi-hero-telemetry {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 2px !important;
+      min-width: 0 !important;
+      flex: 1 !important;
+    }
+    #kpi-chi .chi-value-row {
+      display: flex !important;
+      align-items: baseline !important;
+      gap: 3px !important;
+    }
+    #kpi-chi .chi-unit { color: rgba(148, 163, 184, 0.85) !important; font-size: 11px !important; font-weight: 600 !important; }
+    #kpi-chi .chi-provenance-pill {
+      display: inline-block !important;
+      font-size: 6.5px !important;
+      padding: 0.5px 3.5px !important;
+      border-radius: 2px !important;
+      background: rgba(255, 255, 255, 0.10) !important;
+      color: rgba(255, 255, 255, 0.85) !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      margin-left: 2px !important;
+    }
 
     /* View content fills remaining space */
     .view-content {

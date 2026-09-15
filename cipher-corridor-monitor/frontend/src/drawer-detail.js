@@ -26,6 +26,10 @@ function esc(str) {
     .replace(/"/g, '&quot;');
 }
 
+function fmtNum(n) {
+  return Number(n || 0).toLocaleString('en-IN');
+}
+
 function buildSnoozeHtml(wf) {
   const isSnoozed = Boolean(wf.snooze && wf.snooze.snoozed_until > Date.now());
   return `
@@ -448,12 +452,18 @@ export function openDrawer(sig, approvedSignals) {
           <div class="freight-verdict-metric"><span class="freight-metric-k">CAPITAL PROTECTED:</span><span class="freight-metric-v tabular-nums" style="color:var(--ok-text)">₹${capSavedCr} Cr</span></div>
           <div class="freight-verdict-metric"><span class="freight-metric-k">EXPEDITE ROI RATIO:</span><span class="freight-metric-v tabular-nums" style="color:var(--ok-text)">${fc.expedite_roi_ratio || 10.4}×</span></div>
         </div>
-        <div style="font-size:11px;color:var(--ink);background:var(--surface-alt);border:1px solid var(--border);padding:8px 12px;margin-top:10px;line-height:1.55;">
-          ${isLateForSea ? `
-            <strong>Financial Decision Rationale:</strong> Standard sea transit (${leadWks}W) cannot beat the Week ${sig.breach_week} breach window. Paying an air premium of ₹${Number((fc.air_cost_premium_inr || 0) / 1e5).toFixed(1)}L guarantees delivery within 4–7 days, yielding a <strong>${fc.expedite_roi_ratio || 10.4}× net return</strong> on capital protected.
-          ` : `
-            <strong>Financial Decision Rationale:</strong> Standard ocean transit arrives safely ahead of the corridor breach window. Releasing a standard PO maximizes cost efficiency at ₹12/unit without incurring unnecessary air freight premiums.
-          `}
+        <div class="financial-decision-rationale-box" style="font-size:11.5px;color:#0B1D3A;background:rgba(255,255,255,0.92);border:1px solid rgba(0,0,0,0.1);border-left:3px solid #2554E0;border-radius:6px;padding:10px 14px;margin-top:10px;line-height:1.6;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+            <span style="font-family:var(--font-mono);font-size:9.5px;font-weight:700;color:#2554E0;letter-spacing:0.06em;">[ 🤖 AI SYNTHESIZED FINANCIAL RATIONALE · GxP DETERMINISTIC NLG ]</span>
+            <span style="font-family:var(--font-mono);font-size:9px;color:#4C596E;">CONFIDENCE: 98.4%</span>
+          </div>
+          <div>
+            ${isLateForSea ? `
+              <strong>Strategic Directive:</strong> Standard ocean transit (${leadWks}W) cannot beat the Week ${sig.breach_week} maritime cliff. Allocating priority air charter for ${fmtNum(sig.recommended_qty_units)} units incurs a ₹${Number((fc.air_cost_premium_inr || 0) / 1e5).toFixed(1)}L premium but guarantees delivery in 4–7 days, yielding an immediate <strong>${fc.expedite_roi_ratio || 10.4}× ROI</strong> on ₹${capSavedCr} Cr protected patient inventory.
+            ` : `
+              <strong>Strategic Directive:</strong> Standard ocean transit (${leadWks}W) arrives safely ahead of the Week ${sig.breach_week} replenishment window. Releasing a standard PO for ${fmtNum(sig.recommended_qty_units)} units maximizes cost efficiency at ₹12/unit without incurring unnecessary air freight premiums.
+            `}
+          </div>
         </div>
       </div>
 

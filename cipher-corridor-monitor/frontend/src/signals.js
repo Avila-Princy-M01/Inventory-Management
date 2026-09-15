@@ -87,64 +87,64 @@ export function renderSignalCards(signals, approvedSignals = {}) {
     const ltVal = sig.market_lead_time || 3;
     const isLateForSea = Boolean(sig.is_late_for_sea);
     const mktTag = isLateForSea
-      ? `<span class="card-mkt-cliff-tag" title="${esc(sig.freight_callout || 'Late for Sea Freight')}">[AIR ONLY · ${ltVal}W SEA LT]</span>`
+      ? `<span class="card-mkt-cliff-tag" title="${esc(sig.freight_callout || 'Late for Sea Freight')}">[AIR ONLY]</span>`
       : `<span class="card-mkt-lt-tag">LT: ${ltVal}W</span>`;
 
     const ownerTag = hasOwner
-      ? `<span class="card-owner-tag" title="Assigned Owner: ${esc(wf.owner)}">OWNER: ${esc(wf.owner.replace(/\s*\(.*?\)/, ''))}</span>`
+      ? `<span class="card-owner-tag" title="Assigned Owner: ${esc(wf.owner)}">[ASSIGNED]</span>`
       : '';
 
     const slaText = sla.hoursLeft !== undefined
-      ? `SLA: ${sla.hoursLeft}h ${sla.minsLeft}m`
-      : (sla.status === 'ACKNOWLEDGED' ? 'SLA: ASSIGNED' : 'SLA: ACTIVE');
+      ? `SLA: ${sla.hoursLeft}h`
+      : (sla.status === 'ACKNOWLEDGED' ? 'SLA: OK' : 'SLA: ACT');
     const slaTag = (sla.isCritical && !approved && !isSnoozed)
       ? `<span class="card-sla-badge ${sla.cls}" title="${esc(sla.label)}">[${slaText}]</span>`
       : '';
 
     const snoozeHtml = isSnoozed
       ? `<div class="card-snooze-pill">
-           <span class="snooze-text">[SNOOZED ${wf.snooze.weeks}W: ${esc(wf.snooze.reason)}]</span>
+           <span class="snooze-text">[SNOOZED ${wf.snooze.weeks}W]</span>
          </div>`
       : '';
 
     const cliffHtml = isLateForSea
       ? `<div class="card-cliff-alert">
-           <span class="cliff-alert-badge">[AIR FREIGHT ONLY]</span>
-           <span class="cliff-alert-text">Breach at W${sig.breach_week} &lt; ${ltVal}W sea transit window</span>
+           <span class="cliff-alert-badge">[AIR ONLY]</span>
+           <span class="cliff-alert-text">Breach W${sig.breach_week} &lt; ${ltVal}W</span>
          </div>`
       : '';
 
     const transfer = sig.intermarket_transfer || {};
     const transferHtml = (transfer.has_transfer && (isCrisis || badge.label === 'EMERGENCY EXPEDITE'))
       ? `<div class="card-transfer-pill">
-           <span class="transfer-pill-text">>>> TRANSFER ROUTE: <strong>${esc(transfer.donor_country)}</strong> → <strong>${esc(sig.country)}</strong> (${fmtNum(transfer.transfer_qty)} U)</span>
+           <span class="transfer-pill-text">>>> ROUTE: <strong>${esc(transfer.donor_country)}</strong> → <strong>${esc(sig.country)}</strong></span>
          </div>`
       : '';
 
     const constr = sig.constraints || {};
     const frozenTag = (constr.in_frozen_horizon && !approved)
-      ? `<span class="card-frozen-tag" title="Collision with 4-week frozen horizon. Standard PO impossible without emergency manufacturing waiver.">[FROZEN HORIZON · WAIVER REQ]</span>`
+      ? `<span class="card-frozen-tag" title="Collision with 4-week frozen horizon.">[FROZEN]</span>`
       : '';
 
     const cascadeSafeguard = (transfer.donor_cascade_safeguard || {});
     const cascadeTag = transfer.has_transfer
-      ? `<span class="card-cascade-tag" title="${esc(cascadeSafeguard.verification_text || 'Donor retains > 1.5× SSD')}">[ZERO CASCADE RISK]</span>`
+      ? `<span class="card-cascade-tag" title="${esc(cascadeSafeguard.verification_text || 'Donor retains > 1.5× SSD')}">[SAFE DONOR]</span>`
       : '';
 
     const staleParam = sig.stale_parameter || {};
     const isStale = Boolean(sig.is_stale_parameter || staleParam.is_stale);
     const staleTag = isStale
-      ? `<span class="card-stale-tag" title="Safety Stock Days unchanged for 52W while demand pattern shifted ${staleParam.demand_shift_pct > 0 ? '+' : ''}${staleParam.demand_shift_pct}%">[STALE SSD ${staleParam.demand_shift_pct > 0 ? '+' : ''}${Math.round(staleParam.demand_shift_pct)}%]</span>`
+      ? `<span class="card-stale-tag" title="Safety Stock Days unchanged for 52W while demand pattern shifted">[STALE SSD]</span>`
       : '';
 
     const isLaunch = Boolean(sig.is_cold_start);
     const launchTag = isLaunch
-      ? `<span class="card-launch-tag" title="New Product Launch: 52W rolling stats bypassed; 90-day pre-build buffer active">[COLD START]</span>`
+      ? `<span class="card-launch-tag" title="New Product Launch">[COLD START]</span>`
       : '';
 
     const lat = sig.predictive_latency || {};
     const latencyTag = (lat.is_arrival_late && !approved)
-      ? `<span class="card-latency-tag" title="${esc(lat.narrative)}">[DEFICIT +${lat.latency_gap_weeks}W]</span>`
+      ? `<span class="card-latency-tag" title="${esc(lat.narrative)}">[DEFICIT]</span>`
       : '';
 
     const rawBadgeText = (sig.wow_badge || '').replace(/[^A-Za-z0-9\s+-]/g, '').trim();
@@ -211,8 +211,11 @@ export function renderSignalCards(signals, approvedSignals = {}) {
       : (i <= 3 ? 'signal-card--mid' : 'signal-card--std');
 
     return `<div class="signal-card ${priorityClass} ${isCrisis ? 'signal-card--crisis' : ''} ${isSnoozed ? 'signal-card--snoozed' : ''}" style="--i:${i}; --index:${i};" data-rid="${sig.row_id}" data-index="${i}" tabindex="0">
-      <div class="card-row1">
-        <span class="card-rank tabular-nums">#${rank}</span>
+      <div class="card-top">
+        <div class="card-row1">
+          <span class="card-rank tabular-nums">#${rank}</span>
+          <span class="badge ${badge.cls}">${badge.label}</span>
+        </div>
         <div class="card-tags-cluster">
           ${ownerTag}
           ${slaTag}
@@ -223,50 +226,23 @@ export function renderSignalCards(signals, approvedSignals = {}) {
           ${launchTag}
           ${latencyTag}
           ${mktTag}
-          <span class="badge ${badge.cls}">${badge.label}</span>
         </div>
       </div>
-      <div class="card-identity">
-        <div class="card-brand">${esc(sig.brand)} · ${esc(sig.country)}</div>
-        <div class="card-country">${esc(sig.region)} · ${esc((sig.product_group || '').split('|')[1] || sig.mrp || '')}</div>
-      </div>
-      <div class="prs-row">
-        <div class="prs-track"><div class="prs-fill" style="width:${prs}%;background:${badge.borderColor}"></div></div>
-        <span class="prs-val tabular-nums">${prs.toFixed(1)}</span>
-      </div>
-      <div class="card-meta tabular-nums">
-        <span>BREACH <strong>WK ${sig.breach_week}</strong></span>
-        <span>REC QTY <strong>${sig.recommended_qty_units === 0 && (sig.action_type || '').includes('EXCESS') ? '0 (SURPLUS)' : fmtNum(sig.recommended_qty_units)}</strong></span>
-      </div>
-      <div class="card-glance-row tabular-nums">
-        <div class="glance-cap">
-          <span class="glance-k">CAPITAL AT RISK</span>
-          <span class="glance-v ${sig.capital_at_risk_inr === 0 ? 'text-ok' : 'text-crisis'}">${capAtRiskStr}</span>
+      <div class="card-mid">
+        <div class="card-identity">
+          <div class="card-brand">${esc(sig.brand)} · ${esc(sig.country)}</div>
+          <div class="card-country">${esc(sig.region)} · ${esc((sig.product_group || '').split('|')[1] || sig.mrp || '')}</div>
         </div>
-        <div class="glance-cert" title="Pipeline Supply Certainty Breakdown (Confirmed PO + In-Transit vs Total Pipeline)">
-          <div class="glance-cert-header">
-            <span class="glance-k">SUPPLY COMMIT</span>
-            <span class="glance-cert-num">${certPct}%</span>
-          </div>
-          <div class="glance-cert-track">
-            <div class="glance-cert-fill glance-cert-fill--conf" style="width:${Math.round(certPct * 0.65)}%;" title="Confirmed PO: ${Math.round(certPct * 0.65)}%"></div>
-            <div class="glance-cert-fill glance-cert-fill--transit" style="width:${Math.round(certPct * 0.35)}%;" title="In-Transit: ${Math.round(certPct * 0.35)}%"></div>
-            <div class="glance-cert-fill glance-cert-fill--unconf" style="width:${100 - certPct}%;" title="Unconfirmed Planned: ${100 - certPct}%"></div>
-          </div>
-          <div class="glance-cert-legend">
-            <span class="text-ok">● Conf ${Math.round(certPct * 0.65)}%</span>
-            <span class="text-muted">● Transit ${Math.round(certPct * 0.35)}%</span>
-            <span class="text-crisis">● Unconf ${100 - certPct}%</span>
-          </div>
+        <div class="prs-row">
+          <div class="prs-track"><div class="prs-fill" style="width:${prs}%;background:${badge.borderColor}"></div></div>
+          <span class="prs-val tabular-nums">${prs.toFixed(1)}</span>
         </div>
+        <div class="card-meta tabular-nums">
+          <span>BREACH <strong>WK ${sig.breach_week}</strong></span>
+          <span>REC QTY <strong>${sig.recommended_qty_units === 0 && (sig.action_type || '').includes('EXCESS') ? '0 (SURPLUS)' : fmtNum(sig.recommended_qty_units)}</strong></span>
+        </div>
+        ${patientRiskHtml}
       </div>
-      ${aiNarrativeHtml}
-      ${patientRiskHtml}
-      ${freightCompHtml}
-      ${snoozeHtml}
-      ${transferHtml}
-      ${cliffHtml}
-      ${warnHtml}
       ${actionArea}
     </div>`;
   }).join('');

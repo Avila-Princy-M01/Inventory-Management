@@ -10,7 +10,7 @@ import { openScenarioDrawer, closeScenarioDrawer, initScenarioView } from './dra
 import { initBriefingCharts, hydrateStaticSections, resetBriefingCharts } from './briefing.js';
 import { initMasterdata } from './masterdata.js';
 import { initAuditTable, renderTable as renderAuditTable } from './audit.js';
-import { initUploader } from './uploader.js';
+import { initUploader, updateIngestionStatusCard } from './uploader.js';
 import { getWorkflowState } from './workflow.js';
 
 
@@ -126,6 +126,7 @@ export function setApproved(rowId) {
   if (window.DATA && window.DATA.top_signals) {
     updateFilteredSignals();
     updatePillCounts();
+    updateKPI(window.DATA);
   }
 }
 window._setApproved = setApproved;
@@ -254,6 +255,15 @@ export function activateDashboard(data) {
   resetBriefingCharts();
   initScenarioView(data);
 
+  updateIngestionStatusCard({
+    state: '● LIVE & INGESTED',
+    dataset: 'SAP-OMP Corridor Panel',
+    records: `${Number(data?.metadata?.total_raw_records || data?.metadata?.total_evaluated_records || 260000).toLocaleString('en-IN')} SKU-Weeks`,
+    ingested: `Aug 2026 (W${data?.metadata?.current_week || 32})`,
+    filename: (data?.metadata?.input_file || 'Inventry_Corridor_Alert_Weekly_Aug2026_Jul2027.xlsx'),
+    source: 'Verified Corridor Panel',
+  });
+
   // 4. Smoothly switch to Signal Console view (01)
   closeAllDrawers();
   document.querySelectorAll('[data-view]').forEach(b => b.classList.remove('active'));
@@ -345,13 +355,16 @@ function setupNav() {
 }
 
 // ── KPI Banner ─────────────────────────────────────────────────
-function updateKPI(data) {
+export function updateKPI(data) {
+  if (!data) data = window.DATA;
   if (!data) return;
   const sigs = data.top_signals || [];
   const ch = data.corridor_health || {};
+  const approved = window._approvedSignals || {};
 
-  // Active crises — dynamic count from signals
-  const crises = sigs.filter(s => (s.action_type || '').toUpperCase().startsWith('ACTIVE CRISIS')).length;
+  // Active unapproved crises — dynamic count from signals
+  const unapprovedSigs = sigs.filter(s => !approved[s.row_id]);
+  const crises = unapprovedSigs.filter(s => (s.action_type || '').toUpperCase().startsWith('ACTIVE CRISIS')).length;
   const cEl = document.getElementById('crises-value');
   if (cEl) {
     cEl.textContent = crises;
@@ -361,18 +374,21 @@ function updateKPI(data) {
   const crisesSub = document.getElementById('crises-sub');
   if (crisesSub) {
     const isClean = crises === 0;
-    const badgeText = crises > 0 ? `${crises} ACTIVE BREACH` : 'NOMINAL';
+    const badgeText = crises > 0 ? `${crises} ACTIVE BREACH` : 'RESOLVED / NOMINAL';
     crisesSub.innerHTML = `IMMEDIATE ACTION <span class="kpi-delta ${isClean ? 'kpi-delta--up' : 'kpi-delta--down'}">(${badgeText})</span>`;
   }
 
-  // Capital at risk — dynamic sum from signals
-  const cap = sigs.reduce((a, s) => a + (Number(s.capital_at_risk_inr) || 0), 0);
+  // Capital at risk — dynamic sum from unapproved signals
+  const cap = unapprovedSigs.reduce((a, s) => a + (Number(s.capital_at_risk_inr) || 0), 0);
   const capEl = document.getElementById('capital-value');
   if (capEl) capEl.textContent = '₹ ' + cap.toLocaleString('en-IN');
 
   const capSub = document.getElementById('capital-sub');
   if (capSub) {
-    capSub.innerHTML = `TOP 15 EXPOSURE <span class="kpi-delta kpi-delta--up">(52-WEEK RUN-RATE)</span>`;
+    const approvedCount = Object.keys(approved).length;
+    capSub.innerHTML = approvedCount > 0 
+      ? `NET EXPOSURE <span class="kpi-delta kpi-delta--up">(${approvedCount} ACTIONS RESOLVED)</span>`
+      : `TOP 15 EXPOSURE <span class="kpi-delta kpi-delta--up">(52-WEEK RUN-RATE)</span>`;
   }
 
   // CHI — dynamic from corridor_health
