@@ -6216,3 +6216,2776 @@ th.col-action { width: 18%; }
 .precision-dec-bar { flex: 1; width: 100%; display: flex; align-items: flex-end; background: var(--surface-subtle); border: 1px solid var(--border); }
 .precision-dec-bar span { display: block; width: 100%; background: var(--ink); }
 .precision-dec-lbl { font-size: 9px; color: var(--text-muted); }
+
+
+/* ============================================================
+   KPI TILES — ABSOLUTE MINIMUM SIZE + FORCE DARK
+   ============================================================ */
+
+/* Maximum specificity to beat everything */
+html body div.main-col div.kpi-banner .kpi-tile,
+html body .kpi-banner .kpi-tile,
+.kpi-tile {
+  padding: 6px 10px !important;
+  border-radius: 8px !important;
+  min-height: 0 !important;
+  height: auto !important;
+  background: rgba(255,255,255,0.07) !important;
+  border: 1px solid rgba(255,255,255,0.11) !important;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.20) !important;
+}
+
+html body .kpi-banner #kpi-chi,
+#kpi-chi {
+  background: linear-gradient(135deg,rgba(200,140,20,0.22),rgba(160,100,10,0.13)) !important;
+  border-color: rgba(200,150,40,0.26) !important;
+}
+html body .kpi-banner #kpi-crises,
+#kpi-crises {
+  background: linear-gradient(135deg,rgba(220,50,70,0.22),rgba(180,30,50,0.13)) !important;
+  border-color: rgba(220,80,100,0.26) !important;
+}
+html body .kpi-banner #kpi-capital,
+#kpi-capital {
+  background: linear-gradient(135deg,rgba(37,84,224,0.24),rgba(20,60,180,0.14)) !important;
+  border-color: rgba(80,140,255,0.26) !important;
+}
+html body .kpi-banner #kpi-otif,
+#kpi-otif {
+  background: linear-gradient(135deg,rgba(20,160,90,0.22),rgba(10,120,70,0.13)) !important;
+  border-color: rgba(40,200,110,0.26) !important;
+}
+
+/* Icon circles — tiny */
+.kpi-tile .kpi-tile-icon {
+  width: 22px !important;
+  height: 22px !important;
+  border-radius: 5px !important;
+  margin-bottom: 3px !important;
+  flex-shrink: 0 !important;
+}
+.kpi-tile .kpi-tile-icon svg {
+  width: 11px !important;
+  height: 11px !important;
+}
+
+/* Numerals — small but readable */
+.kpi-tile .kpi-numeral,
+.kpi-tile output.kpi-numeral {
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  line-height: 1 !important;
+}
+.kpi-tile .kpi-numeral--mono  { font-size: 15px !important; }
+.kpi-tile .kpi-numeral.crisis-num  { color: #ff6b7a !important; }
+.kpi-tile .kpi-numeral.kpi-healthy { color: #22d47a !important; }
+.kpi-tile .kpi-numeral svg { width: 11px !important; height: 11px !important; }
+
+/* Labels */
+.kpi-tile .kpi-label {
+  font-size: 7.5px !important;
+  color: rgba(160,190,255,0.60) !important;
+  margin-top: 2px !important;
+  letter-spacing: 0.05em !important;
+}
+.kpi-tile .kpi-sub {
+  font-size: 7.5px !important;
+  color: rgba(130,165,240,0.50) !important;
+  margin-top: 2px !important;
+  gap: 3px !important;
+}
+.kpi-tile .kpi-delta {
+  font-size: 7px !important;
+  padding: 0px 4px !important;
+  border-radius: 3px !important;
+}
+.kpi-tile .kpi-delta--up   { color: #22d47a !important; background: rgba(34,212,122,0.14) !important; border: 1px solid rgba(34,212,122,0.18) !important; }
+.kpi-tile .kpi-delta--down { color: #ff6b7a !important; background: rgba(255,90,110,0.12) !important; border: 1px solid rgba(255,90,110,0.16) !important; }
+
+/* CHI dial — tiny */
+.kpi-tile .chi-dial-wrapper { width: 30px !important; height: 30px !important; flex-shrink: 0 !important; }
+.kpi-tile .chi-dial         { width: 30px !important; height: 30px !important; }
+.kpi-tile .chi-dial-track   { stroke: rgba(255,255,255,0.10) !important; }
+.kpi-tile .chi-dial-progress{ stroke: #4a7be8 !important; }
+.kpi-tile .chi-dial-badge   { background: #2554d4 !important; color: #fff !important; font-size: 6px !important; padding: 1px 2px !important; bottom: -3px !important; right: -4px !important; }
+.kpi-tile .chi-hero-layout  { gap: 6px !important; }
+.kpi-tile .chi-unit         { font-size: 9px !important; color: rgba(160,190,255,0.55) !important; }
+.kpi-tile .chi-value-row    { gap: 2px !important; }
+.kpi-tile .chi-provenance-pill { font-size: 6.5px !important; padding: 0px 4px !important; color: rgba(100,140,220,0.45) !important; border-color: rgba(80,120,220,0.16) !important; margin-left: 2px !important; }
+.kpi-tile .chi-hero-telemetry { min-width: 0 !important; }
+
+/* Banner gap */
+.kpi-banner {
+  gap: 5px !important;
+  flex-shrink: 0 !important;
+}
+
+
+/* ── KPI TILES: HALVED AGAIN ── */
+html body .kpi-banner .kpi-tile, .kpi-tile {
+  padding: 4px 7px !important;
+  border-radius: 6px !important;
+}
+.kpi-tile .kpi-tile-icon {
+  width: 16px !important; height: 16px !important;
+  border-radius: 4px !important; margin-bottom: 2px !important;
+}
+.kpi-tile .kpi-tile-icon svg { width: 8px !important; height: 8px !important; }
+.kpi-tile .kpi-numeral, .kpi-tile output.kpi-numeral {
+  font-size: 13px !important; line-height: 1 !important; color: #ffffff !important;
+}
+.kpi-tile .kpi-numeral--mono        { font-size: 12px !important; }
+.kpi-tile .kpi-numeral.crisis-num   { color: #ff6b7a !important; }
+.kpi-tile .kpi-numeral.kpi-healthy  { color: #22d47a !important; }
+.kpi-tile .kpi-numeral svg          { width: 9px !important; height: 9px !important; }
+.kpi-tile .kpi-label  { font-size: 7px !important; margin-top: 2px !important; color: rgba(160,190,255,0.58) !important; }
+.kpi-tile .kpi-sub    { font-size: 7px !important; margin-top: 2px !important; gap: 2px !important; }
+.kpi-tile .kpi-delta  { font-size: 6.5px !important; padding: 0px 3px !important; }
+.kpi-tile .chi-dial-wrapper { width: 24px !important; height: 24px !important; }
+.kpi-tile .chi-dial         { width: 24px !important; height: 24px !important; }
+.kpi-tile .chi-dial-badge   { font-size: 5.5px !important; padding: 0px 2px !important; bottom: -2px !important; right: -3px !important; }
+.kpi-tile .chi-hero-layout  { gap: 5px !important; }
+.kpi-tile .chi-unit         { font-size: 8px !important; }
+.kpi-tile .chi-provenance-pill { font-size: 6px !important; padding: 0px 3px !important; }
+.kpi-tile .kpi-numeral--chi, #kpi-chi .kpi-numeral { font-size: 13px !important; }
+.kpi-banner { gap: 5px !important; }
+
+
+/* ── KPI TILES: HALVED AGAIN × 2 + WIDTH/HEIGHT CONSTRAINED ── */
+.kpi-banner {
+  gap: 4px !important;
+  grid-template-columns: repeat(4,1fr) !important;
+}
+html body .kpi-banner .kpi-tile, .kpi-tile {
+  padding: 3px 5px !important;
+  border-radius: 5px !important;
+  max-height: 56px !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+.kpi-tile .kpi-tile-icon {
+  width: 12px !important; height: 12px !important;
+  border-radius: 3px !important; margin-bottom: 1px !important; flex-shrink: 0 !important;
+}
+.kpi-tile .kpi-tile-icon svg { width: 6px !important; height: 6px !important; }
+.kpi-tile .kpi-numeral, .kpi-tile output.kpi-numeral {
+  font-size: 11px !important; line-height: 1 !important; color: #fff !important; gap: 3px !important;
+}
+.kpi-tile .kpi-numeral--mono       { font-size: 10px !important; }
+.kpi-tile .kpi-numeral.crisis-num  { color: #ff6b7a !important; }
+.kpi-tile .kpi-numeral.kpi-healthy { color: #22d47a !important; }
+.kpi-tile .kpi-numeral svg         { width: 8px !important; height: 8px !important; }
+.kpi-tile .kpi-label { font-size: 6.5px !important; margin-top: 1px !important; letter-spacing: 0.04em !important; }
+.kpi-tile .kpi-sub   { font-size: 6.5px !important; margin-top: 1px !important; gap: 2px !important; flex-wrap: nowrap !important; }
+.kpi-tile .kpi-delta { font-size: 6px !important; padding: 0px 2px !important; border-radius: 2px !important; }
+/* CHI dial: hide to save space */
+.kpi-tile .chi-dial-wrapper { width: 20px !important; height: 20px !important; flex-shrink: 0 !important; }
+.kpi-tile .chi-dial         { width: 20px !important; height: 20px !important; }
+.kpi-tile .chi-dial-badge   { display: none !important; }
+.kpi-tile .chi-hero-layout  { gap: 4px !important; align-items: center !important; }
+.kpi-tile .chi-unit         { font-size: 7px !important; }
+.kpi-tile .chi-provenance-pill { display: none !important; }
+.kpi-tile .chi-hero-telemetry { min-width: 0 !important; }
+/* hide secondary sub-label rows to reduce height */
+.kpi-tile .kpi-sub { display: none !important; }
+
+
+/* ── CLEAN LAYOUT FIX ── */
+/* 2-column grid: ingest left, status right */
+.overview-main-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 255px !important;
+  gap: 10px !important;
+  align-items: start !important;
+  overflow: visible !important;
+  flex: none !important;
+}
+
+/* Left and right columns: natural height */
+.upload-container, .ingest-container {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  min-width: 0 !important;
+  overflow: visible !important;
+  height: auto !important;
+}
+
+.overview-side-panel {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  width: 100% !important;
+  overflow: visible !important;
+  align-self: start !important;
+  height: auto !important;
+}
+
+/* Cards: auto height, natural sizing */
+.ingest-card {
+  height: auto !important;
+  flex: none !important;
+  overflow: visible !important;
+}
+.status-panel-card {
+  height: auto !important;
+  flex: none !important;
+  overflow: visible !important;
+}
+
+/* Dropzone: fixed reasonable height */
+.ingest-dropzone {
+  flex: none !important;
+  min-height: 100px !important;
+  height: auto !important;
+}
+
+/* Main column scrolls, no clipping */
+div.main-col {
+  height: calc(100vh - 52px) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding-bottom: 20px !important;
+}
+
+/* View content: natural flow */
+main.view-content,
+.view-content {
+  flex: none !important;
+  overflow: visible !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+}
+
+.view-section.active,
+section#view-ingest.view-section.active {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  flex: none !important;
+  overflow: visible !important;
+}
+
+/* Capabilities: below ingest card, full width */
+.capabilities-section {
+  position: static !important;
+  flex-shrink: 0 !important;
+  width: 100% !important;
+}
+.capabilities-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4,1fr) !important;
+  gap: 6px !important;
+}
+
+
+/* ── CENTER CONTENT WITHIN MAIN COLUMN ── */
+main.view-content,
+.view-content {
+  max-width: 1100px !important;
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Hero also centered */
+.overview-hero {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Main grid fills max-width */
+.overview-main-grid {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+
+/* ── WIDER INGEST CARD, NARROWER STATUS PANEL ── */
+.overview-main-grid {
+  grid-template-columns: 1fr 220px !important;
+  gap: 10px !important;
+}
+
+/* Max width wider so ingest card stretches more */
+main.view-content,
+.view-content {
+  max-width: 1200px !important;
+}
+
+
+/* ── MEDICINE CAPSULE beside PHARMA INVENTORY heading ── */
+
+/* Make ingest-header-top relative so we can position the capsule */
+.ingest-card .ingest-header {
+  position: relative !important;
+}
+
+/* Capsule via ::after on the ingest-headline */
+.ingest-headline::after {
+  content: '' !important;
+  display: inline-block !important;
+  width: 52px !important;
+  height: 20px !important;
+  border-radius: 100px !important;
+  background: linear-gradient(120deg,
+    rgba(100,160,255,0.90) 0%,
+    rgba(70,110,240,0.85) 30%,
+    rgba(120,70,240,0.82) 60%,
+    rgba(160,90,255,0.78) 100%) !important;
+  border: 1px solid rgba(180,210,255,0.45) !important;
+  box-shadow:
+    inset 0 3px 8px rgba(255,255,255,0.32),
+    inset 0 -2px 6px rgba(40,30,180,0.40),
+    0 3px 12px rgba(80,100,220,0.35) !important;
+  margin-left: 12px !important;
+  vertical-align: middle !important;
+  position: relative !important;
+  top: -1px !important;
+  animation: capsulePulse 4s ease-in-out infinite !important;
+}
+
+/* White shine stripe on capsule */
+.ingest-headline::before {
+  content: '' !important;
+  display: inline-block !important;
+  width: 52px !important;
+  height: 6px !important;
+  border-radius: 100px !important;
+  background: linear-gradient(90deg,
+    transparent 5%,
+    rgba(255,255,255,0.45) 30%,
+    rgba(255,255,255,0.55) 50%,
+    rgba(255,255,255,0.35) 70%,
+    transparent 95%) !important;
+  position: absolute !important;
+  pointer-events: none !important;
+  opacity: 0 !important; /* shine handled by box-shadow on ::after */
+}
+
+@keyframes capsulePulse {
+  0%,100% { transform: translateY(0) rotate(-8deg); box-shadow: inset 0 3px 8px rgba(255,255,255,0.32), 0 3px 12px rgba(80,100,220,0.35); }
+  50%      { transform: translateY(-3px) rotate(-8deg); box-shadow: inset 0 3px 8px rgba(255,255,255,0.38), 0 6px 18px rgba(80,100,220,0.45); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ingest-headline::after { animation: none !important; }
+}
+
+
+/* ── COLOURED MEDICINE CAPSULES — right side of ingest card ── */
+
+/* Make ingest card relative so we can position capsules inside */
+.ingest-card {
+  position: relative !important;
+  overflow: visible !important;
+}
+
+/* Capsule container via a dedicated decorator */
+.ingest-card::after {
+  content: '' !important;
+  position: absolute !important;
+  right: -38px !important;
+  top: 20px !important;
+  width: 26px !important;
+  height: 210px !important;
+  pointer-events: none !important;
+  /* Stack 6 capsules as a repeating background pattern */
+  background:
+    /* Capsule 1 — red/coral */
+    radial-gradient(ellipse 12px 6px at 13px 10px,
+      rgba(255,80,80,0.0) 0%, rgba(255,80,80,0.0) 100%),
+    /* We'll use box-shadow trick via border trick — use ::before instead */
+    transparent !important;
+  display: block !important;
+}
+
+/* Use a wrapper approach: add capsules via multiple box-shadows on a tiny element */
+/* We'll attach them to ingest-header-top::after which is inside the card */
+.ingest-header-top {
+  position: relative !important;
+}
+
+.ingest-header-top::after {
+  content: '' !important;
+  position: absolute !important;
+  right: -44px !important;
+  top: 0 !important;
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 100px !important;
+  /* Capsule 1 — Red */
+  background: linear-gradient(135deg,
+    rgba(255,90,90,0.92) 0%,
+    rgba(220,50,50,0.88) 50%,
+    rgba(180,30,30,0.82) 100%) !important;
+  border: 1px solid rgba(255,150,150,0.40) !important;
+  box-shadow:
+    /* shine */
+    inset 0 3px 8px rgba(255,255,255,0.30),
+    /* glow */
+    0 2px 8px rgba(220,50,50,0.40),
+
+    /* Capsule 2 — Orange (offset Y=38px) */
+    0 38px 0 0 rgba(255,140,50,0.92),
+    0 38px 0 1px rgba(255,180,100,0.35),
+    inset 0 38px 0 -4px rgba(255,255,255,0.25),
+
+    /* Capsule 3 — Yellow (offset Y=76px) */
+    0 76px 0 0 rgba(240,210,40,0.90),
+    0 76px 0 1px rgba(255,230,100,0.35),
+
+    /* Capsule 4 — Green (offset Y=114px) */
+    0 114px 0 0 rgba(50,200,100,0.90),
+    0 114px 0 1px rgba(100,230,140,0.35),
+
+    /* Capsule 5 — Cyan/teal (offset Y=152px) */
+    0 152px 0 0 rgba(40,180,220,0.90),
+    0 152px 0 1px rgba(100,210,240,0.35),
+
+    /* Capsule 6 — Purple (offset Y=190px) */
+    0 190px 0 0 rgba(140,80,240,0.90),
+    0 190px 0 1px rgba(180,130,255,0.35) !important;
+
+  pointer-events: none !important;
+  z-index: 5 !important;
+  animation: capsStackFloat 6s ease-in-out infinite !important;
+}
+
+@keyframes capsStackFloat {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ingest-header-top::after { animation: none !important; }
+}
+
+
+/* ── FORCE 2-COLUMN GRID — ingest left, status panel right ── */
+div.overview-main-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 240px !important;
+  gap: 10px !important;
+  align-items: start !important;
+  width: 100% !important;
+  overflow: visible !important;
+}
+
+/* Left column */
+div#upload-container,
+div.upload-container,
+div.ingest-container {
+  grid-column: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  min-width: 0 !important;
+  overflow: visible !important;
+  height: auto !important;
+}
+
+/* Right column — force it to show */
+div.overview-side-panel {
+  grid-column: 2 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  overflow: visible !important;
+  height: auto !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Status card visible */
+div.status-panel-card {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  overflow: visible !important;
+  background: rgba(255,255,255,0.07) !important;
+  border: 1px solid rgba(255,255,255,0.12) !important;
+  border-radius: 12px !important;
+  padding: 12px 14px !important;
+  color: #fff !important;
+}
+
+/* Quote card visible */
+div.quote-info-card {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+
+
+
+/* ── ALL WHITE SECTIONS → LIGHTEST SKY BLUE ── */
+/* Signal cards, ingest card, status panel, briefing cards,
+   table cards, drawers, modals — every white surface */
+
+.signal-card,
+.ingest-card,
+.status-panel-card,
+.quote-info-card,
+.capability-card,
+.overview-hero,
+.focal-triage-hero,
+.ai-briefing-executive-card,
+.briefing-wow-card,
+.emergency-briefing-card,
+.emergency-chart-tile,
+.chart-card,
+.table-card,
+.param-audit-banner,
+.gxp-guide-box,
+.baseline-comparison-card,
+.chi-otif-explainer-card,
+.chi-benchmark-card,
+.benchmark-tile,
+.wow-grid-item,
+.chi-pillar-card,
+.chi-formula-hero-card,
+.chi-controls-panel,
+.chi-matrix-panel,
+.deck-content-card,
+.meeting-agenda-item,
+.console-hero-header,
+.analyst-scope-strip,
+.meeting-selector-bar,
+.extraction-stepper,
+.param-kpi-item,
+.callout-block,
+.ai-section-translation-box,
+.view-header,
+.cold-start-box,
+.stale-param-alert-box,
+.freight-comp-box,
+.transfer-corridor-box,
+.patient-impact-box,
+.latency-timeline-box,
+.drawer-decision-header,
+.workflow-snooze-form,
+.workflow-active-snooze,
+.workflow-comment-item,
+.focal-hero-content,
+.modal-card,
+.drawer,
+.card-ai-action-box,
+.more-filters-dropdown,
+.search-box-industrial,
+.segmented-control {
+  background: rgba(220, 238, 255, 0.92) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+}
+
+/* Signal card crisis keeps its red border but sky blue bg */
+.signal-card--crisis {
+  background: rgba(220, 238, 255, 0.88) !important;
+}
+
+/* Table alternating rows */
+.dense-table tbody tr:nth-child(even) td,
+.table-masterdata-modern tbody tr:nth-child(even) td,
+.full-table tbody tr:nth-child(even) td {
+  background: rgba(200, 228, 255, 0.50) !important;
+}
+
+/* Dropzone: slightly deeper sky blue */
+.ingest-dropzone {
+  background: rgba(190, 225, 255, 0.25) !important;
+}
+
+
+/* ── SIGNAL CARDS: collapse verbose AI directive text ── */
+
+/* Hide the long AI action box body text by default */
+.card-ai-action-box .card-ai-action-headline,
+.card-ai-action-box .card-ai-details {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transition: max-height 0.3s ease, opacity 0.2s ease !important;
+}
+
+/* Style the header row as a clickable button look */
+.card-ai-action-box .card-ai-action-header {
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 5px 8px !important;
+  border-radius: 6px !important;
+  background: rgba(37,84,224,0.14) !important;
+  border: 1px solid rgba(80,140,255,0.28) !important;
+  transition: background 0.15s !important;
+  user-select: none !important;
+}
+.card-ai-action-box .card-ai-action-header:hover {
+  background: rgba(37,84,224,0.24) !important;
+}
+
+/* Add "▶ DETAILS" indicator to header */
+.card-ai-action-box .card-ai-action-header::after {
+  content: '▶ DETAILS' !important;
+  font-family: var(--font-mono) !important;
+  font-size: 8px !important;
+  font-weight: 700 !important;
+  color: rgba(100,160,255,0.80) !important;
+  letter-spacing: 0.06em !important;
+  flex-shrink: 0 !important;
+}
+
+/* When card-ai-action-box has class 'ai-expanded', show content */
+.card-ai-action-box.ai-expanded .card-ai-action-header::after {
+  content: '▼ HIDE' !important;
+}
+.card-ai-action-box.ai-expanded .card-ai-action-headline,
+.card-ai-action-box.ai-expanded .card-ai-details {
+  max-height: 200px !important;
+  opacity: 1 !important;
+}
+
+/* Also collapse patient impact and freight callout by default */
+.card-patient-impact,
+.card-freight-callout,
+.card-cliff-alert,
+.card-transfer-pill,
+.card-snooze-pill {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transition: max-height 0.25s ease, opacity 0.2s ease !important;
+}
+.signal-card:hover .card-patient-impact,
+.signal-card:hover .card-freight-callout,
+.signal-card:hover .card-cliff-alert {
+  max-height: 60px !important;
+  opacity: 1 !important;
+}
+
+/* Supply warn: hide unless hovered */
+.supply-warn {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transition: max-height 0.2s ease, opacity 0.15s ease !important;
+}
+.signal-card:hover .supply-warn {
+  max-height: 40px !important;
+  opacity: 1 !important;
+}
+
+
+/* ── SIGNAL CARDS: compact size ── */
+.signal-card {
+  padding: 10px 12px !important;
+  gap: 6px !important;
+  min-height: 0 !important;
+  border-radius: 10px !important;
+}
+
+/* Rank number */
+.card-rank {
+  font-size: 18px !important;
+}
+
+/* Brand / country */
+.card-brand  { font-size: 11.5px !important; }
+.card-country{ font-size: 10px !important; }
+
+/* Badge tags */
+.badge {
+  font-size: 8px !important;
+  padding: 2px 5px !important;
+}
+.card-mkt-lt-tag,
+.card-mkt-cliff-tag,
+.card-owner-tag,
+.card-sla-badge,
+.card-frozen-tag,
+.card-cascade-tag,
+.card-stale-tag,
+.card-wow-tag,
+.card-launch-tag,
+.card-latency-tag {
+  font-size: 7.5px !important;
+  padding: 1px 5px !important;
+}
+
+/* PRS bar */
+.prs-row { gap: 5px !important; }
+.prs-track { height: 3px !important; }
+.prs-val { font-size: 9px !important; }
+
+/* Meta row */
+.card-meta { font-size: 9px !important; }
+
+/* Glance row */
+.glance-k { font-size: 8px !important; }
+.glance-v { font-size: 10px !important; }
+.glance-cert-num { font-size: 9px !important; }
+.glance-cert-track { height: 4px !important; }
+
+/* AI directive header */
+.card-ai-badge { font-size: 7.5px !important; padding: 2px 5px !important; }
+.card-ai-sub-tag { font-size: 7px !important; }
+
+/* Action buttons */
+.btn-po, .btn-detail {
+  padding: 5px 8px !important;
+  font-size: 9px !important;
+  border-radius: 5px !important;
+}
+
+/* Signal grid: 3 columns, tighter gap */
+.signal-grid {
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 8px !important;
+}
+
+
+/* ── SIGNAL CARDS: 4 per row, ultra compact ── */
+.signal-grid {
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 6px !important;
+}
+
+.signal-card {
+  padding: 8px 10px !important;
+  gap: 4px !important;
+  min-height: 0 !important;
+  border-radius: 8px !important;
+}
+
+.card-rank        { font-size: 14px !important; margin-right: 3px !important; }
+.card-brand       { font-size: 10.5px !important; }
+.card-country     { font-size: 9px !important; margin-top: 0 !important; }
+.card-identity    { gap: 1px !important; }
+
+.badge            { font-size: 7px !important; padding: 1px 4px !important; }
+.card-tags-cluster{ gap: 3px !important; flex-wrap: wrap !important; }
+
+.card-mkt-lt-tag,
+.card-mkt-cliff-tag,
+.card-owner-tag,
+.card-sla-badge,
+.card-frozen-tag,
+.card-cascade-tag,
+.card-stale-tag,
+.card-wow-tag,
+.card-launch-tag,
+.card-latency-tag { font-size: 7px !important; padding: 1px 4px !important; }
+
+.prs-row          { gap: 4px !important; }
+.prs-track        { height: 3px !important; }
+.prs-val          { font-size: 8.5px !important; min-width: 24px !important; }
+
+.card-meta        { font-size: 8.5px !important; }
+.glance-k         { font-size: 7.5px !important; }
+.glance-v         { font-size: 9.5px !important; }
+
+.card-ai-action-box .card-ai-action-header { padding: 4px 6px !important; }
+.card-ai-badge    { font-size: 7px !important; padding: 1px 4px !important; }
+
+.card-actions     { gap: 4px !important; margin-top: 4px !important; }
+.btn-po, .btn-detail { padding: 4px 7px !important; font-size: 8.5px !important; }
+
+
+/* ── SIGNAL CARDS: reduce height — hide non-essential rows ── */
+
+/* Hide glance row (capital at risk + supply commit bars) by default */
+.card-glance-row { display: none !important; }
+
+/* Hide AI directive box entirely by default (already behind button) */
+.card-ai-action-box { display: none !important; }
+/* Show on hover */
+.signal-card:hover .card-ai-action-box { display: block !important; }
+
+/* Hide supply warn by default (already done) */
+.supply-warn { display: none !important; }
+.signal-card:hover .supply-warn { display: block !important; max-height: 30px !important; opacity: 1 !important; }
+
+/* Tighter PRS row */
+.prs-row { margin: 2px 0 !important; }
+
+/* Tighter card meta */
+.card-meta { margin-top: 2px !important; }
+
+/* Action buttons row — tighter */
+.card-actions { margin-top: 3px !important; }
+
+/* Max height constraint */
+.signal-card {
+  max-height: 160px !important;
+  overflow: hidden !important;
+  transition: max-height 0.25s ease !important;
+}
+.signal-card:hover {
+  max-height: 500px !important;
+  overflow: visible !important;
+  z-index: 10 !important;
+  position: relative !important;
+}
+
+
+/* ── SIGNAL CARDS: tighter height fix ── */
+.signal-card {
+  max-height: 115px !important;
+  padding: 7px 9px !important;
+  gap: 3px !important;
+}
+.signal-card:hover { max-height: 480px !important; }
+
+/* Hide capital/supply commit glance row completely */
+.card-glance-row,
+.glance-cap,
+.glance-cert { display: none !important; }
+
+/* Hide the blank space below PRS */
+.card-ai-action-box { display: none !important; }
+.signal-card:hover .card-ai-action-box { display: block !important; }
+
+/* Compact card row 1 tags */
+.card-row1 { margin-bottom: 2px !important; }
+.card-tags-cluster { row-gap: 2px !important; }
+
+
+/* ── DARK TEXT ON LIGHT BLUE CARD BACKGROUNDS ── */
+
+/* Signal cards */
+.signal-card .card-brand,
+.signal-card .card-country,
+.signal-card .card-meta,
+.signal-card .card-meta strong,
+.signal-card .prs-val,
+.signal-card .glance-k,
+.signal-card .glance-v,
+.signal-card .card-ai-action-headline,
+.signal-card .card-ai-detail-row,
+.signal-card .card-approved,
+.signal-card .card-snooze-pill,
+.signal-card .step-desc,
+.signal-card .ai-bullet { color: #0B1D3A !important; }
+
+.signal-card .card-rank { color: rgba(11,29,58,0.35) !important; }
+.signal-card .card-country { color: #3A5070 !important; }
+
+/* Badge text — keep semantic colours but ensure readable */
+.signal-card .badge--po { color: #0B1D3A !important; }
+
+/* Action buttons */
+.signal-card .btn-po {
+  background: rgba(255,255,255,0.70) !important;
+  color: #0B1D3A !important;
+  border-color: rgba(11,29,58,0.20) !important;
+}
+.signal-card .btn-detail {
+  background: #1A3A8F !important;
+  color: #fff !important;
+}
+
+/* Ingest card text */
+.ingest-card .ingest-eyebrow { color: #2554d4 !important; }
+.ingest-card .ingest-headline { color: #0B1D3A !important; }
+.ingest-card .ingest-description { color: #2A4060 !important; }
+.ingest-card .ingest-security-line { color: #3A5070 !important; }
+.ingest-card .dropzone-primary { color: #0B1D3A !important; }
+.ingest-card .dropzone-secondary,
+.ingest-card .dropzone-format-hint { color: #3A5070 !important; }
+.ingest-card .sap-callout-text { color: #2A4060 !important; }
+.ingest-card .action-divider { color: #3A5070 !important; }
+.ingest-card .btn-info-pill { color: #2554d4 !important; background: rgba(255,255,255,0.80) !important; }
+
+/* Extract button on light bg */
+#btn-run-pipeline {
+  color: #0B1D3A !important;
+  background: rgba(255,255,255,0.75) !important;
+  border-color: rgba(37,84,224,0.35) !important;
+}
+#btn-run-pipeline:not(:disabled):hover { background: rgba(255,255,255,0.95) !important; }
+
+/* Status panel text */
+.status-panel-card .status-panel-title { color: #0B1D3A !important; }
+.status-panel-card .status-key { color: #3A5070 !important; }
+.status-panel-card .status-val { color: #0B1D3A !important; }
+
+/* Quote card */
+.quote-info-card .quote-text { color: #2A4060 !important; }
+.quote-info-card .quote-author { color: #3A5070 !important; }
+
+/* Capability cards */
+.capability-card .cap-title { color: #0B1D3A !important; }
+.capability-card .cap-desc  { color: #3A5070 !important; }
+
+/* Hero section text */
+.overview-hero .overview-hero-title   { color: #ffffff !important; }
+.overview-hero .overview-hero-eyebrow { color: rgba(220,235,255,0.80) !important; }
+.overview-hero .overview-hero-tagline { color: rgba(200,225,255,0.72) !important; }
+
+/* Live metrics bar */
+.live-metrics-bar { color: #0B1D3A !important; }
+.live-metrics-sub { color: #3A5070 !important; }
+.live-metrics-right { color: #3A5070 !important; }
+
+
+/* ── SIGNAL CARDS: hide verbose tag clusters, show on hover ── */
+
+/* Hide all the secondary tags by default */
+.card-owner-tag,
+.card-sla-badge,
+.card-frozen-tag,
+.card-cascade-tag,
+.card-stale-tag,
+.card-wow-tag,
+.card-launch-tag,
+.card-latency-tag,
+.card-mkt-lt-tag,
+.card-mkt-cliff-tag {
+  display: none !important;
+}
+
+/* Show them on card hover */
+.signal-card:hover .card-owner-tag,
+.signal-card:hover .card-sla-badge,
+.signal-card:hover .card-frozen-tag,
+.signal-card:hover .card-cascade-tag,
+.signal-card:hover .card-stale-tag,
+.signal-card:hover .card-wow-tag,
+.signal-card:hover .card-launch-tag,
+.signal-card:hover .card-latency-tag,
+.signal-card:hover .card-mkt-lt-tag,
+.signal-card:hover .card-mkt-cliff-tag {
+  display: inline-block !important;
+}
+
+/* Keep only the main action badge always visible */
+.card-tags-cluster .badge { display: inline-block !important; }
+
+
+/* ── DRAWER DETAIL: reduce content load ── */
+
+/* Hide the freight callout quote block by default */
+.decision-directive-quote {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transition: max-height 0.3s ease, opacity 0.2s ease !important;
+  cursor: pointer !important;
+}
+
+/* Show a collapsed hint instead */
+.decision-directive-quote::before {
+  content: '▶ Read freight callout' !important;
+  display: block !important;
+  font-family: var(--font-mono) !important;
+  font-size: 9px !important;
+  color: rgba(37,84,224,0.70) !important;
+  letter-spacing: 0.06em !important;
+  padding: 3px 0 !important;
+  opacity: 1 !important;
+}
+
+/* Decision metrics bar — compact, hide details */
+.decision-metrics-bar {
+  font-size: 10px !important;
+  padding: 4px 8px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  max-width: 100% !important;
+}
+
+/* Root cause bars — hide by default, show on hover of section */
+.rc-bar-row {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transition: max-height 0.25s ease, opacity 0.2s ease !important;
+}
+
+/* Show root cause when hovering the evidence pane */
+.tab-pane#pane-evidence:hover .rc-bar-row {
+  max-height: 40px !important;
+  opacity: 1 !important;
+}
+
+/* Causal diagnosis box — hidden by default */
+.rc-bar-row + div[style],
+#pane-evidence > div:nth-child(2) > div:last-child {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transition: max-height 0.3s ease, opacity 0.2s ease !important;
+}
+
+/* Supply certainty — hide track details, keep header */
+.glance-cert-track,
+.glance-cert-legend {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transition: max-height 0.2s ease, opacity 0.15s ease !important;
+}
+#pane-evidence:hover .glance-cert-track,
+#pane-evidence:hover .glance-cert-legend {
+  max-height: 30px !important;
+  opacity: 1 !important;
+}
+
+/* Latency timeline — compact, hide narrative by default */
+.latency-narrative-text {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transition: max-height 0.3s ease, opacity 0.2s ease !important;
+}
+.latency-timeline-box:hover .latency-narrative-text {
+  max-height: 80px !important;
+  opacity: 1 !important;
+}
+
+/* Stale param alert — collapsed by default */
+.stale-param-alert-box {
+  max-height: 32px !important;
+  overflow: hidden !important;
+  transition: max-height 0.3s ease !important;
+  cursor: pointer !important;
+}
+.stale-param-alert-box:hover {
+  max-height: 200px !important;
+}
+
+/* Cold start box — collapsed */
+.cold-start-box {
+  max-height: 34px !important;
+  overflow: hidden !important;
+  transition: max-height 0.3s ease !important;
+  cursor: pointer !important;
+}
+.cold-start-box:hover { max-height: 200px !important; }
+
+/* Freight comparison table — hide tbody, show on hover */
+.freight-comp-table tbody {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  display: none !important;
+  transition: all 0.25s ease !important;
+}
+.freight-comp-box:hover .freight-comp-table tbody {
+  display: table-row-group !important;
+}
+
+/* Freight verdict footer — hide by default */
+.freight-verdict-footer {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transition: max-height 0.2s ease, opacity 0.15s ease !important;
+}
+.freight-comp-box:hover .freight-verdict-footer {
+  max-height: 60px !important;
+  opacity: 1 !important;
+}
+
+/* Transfer visualizer — compact by default */
+.transfer-impact-grid {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transition: max-height 0.3s ease, opacity 0.2s ease !important;
+}
+.transfer-corridor-box:hover .transfer-impact-grid {
+  max-height: 200px !important;
+  opacity: 1 !important;
+}
+
+/* Patient impact grid details — hover to reveal */
+.patient-impact-grid {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transition: max-height 0.3s ease, opacity 0.2s ease !important;
+}
+.patient-impact-box:hover .patient-impact-grid {
+  max-height: 120px !important;
+  opacity: 1 !important;
+}
+
+/* Meeting governance dossier — collapsed */
+.meeting-gov-focus-quote,
+.meeting-agenda-grid {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transition: max-height 0.3s ease, opacity 0.2s ease !important;
+}
+.meeting-governance-dossier:hover .meeting-gov-focus-quote,
+.meeting-governance-dossier:hover .meeting-agenda-grid {
+  max-height: 400px !important;
+  opacity: 1 !important;
+}
+
+/* Drawer body: compact section labels */
+.detail-section-label {
+  font-size: 8.5px !important;
+  letter-spacing: 0.09em !important;
+  margin-bottom: 4px !important;
+  margin-top: 10px !important;
+}
+
+/* Drawer header: compact */
+.drawer-decision-header {
+  padding: 10px 14px !important;
+}
+.decision-headline {
+  font-size: 11px !important;
+  margin-bottom: 4px !important;
+}
+.decision-meta-row {
+  margin-bottom: 4px !important;
+}
+
+
+/* ── HEADER: reduce height ── */
+.app-header {
+  height: 44px !important;
+  min-height: 0 !important;
+  padding: 0 16px !important;
+}
+div.main-col {
+  margin-top: 44px !important;
+}
+.sidebar {
+  top: 44px !important;
+}
+
+/* ── MAIN PAGE TEXT: white on dark background ── */
+
+/* Ingest card — white text on dark glass */
+.ingest-card,
+.ingest-card .ingest-headline,
+.ingest-card .ingest-description,
+.ingest-card .ingest-eyebrow,
+.ingest-card .ingest-security-line,
+.ingest-card .dropzone-primary,
+.ingest-card .dropzone-secondary,
+.ingest-card .dropzone-format-hint,
+.ingest-card .sap-callout-text,
+.ingest-card .action-divider {
+  color: #ffffff !important;
+}
+.ingest-card .ingest-description,
+.ingest-card .ingest-security-line,
+.ingest-card .dropzone-secondary,
+.ingest-card .dropzone-format-hint,
+.ingest-card .sap-callout-text { color: rgba(200,220,255,0.80) !important; }
+.ingest-card .ingest-eyebrow { color: #93b8ff !important; }
+
+/* Status panel — white text */
+.status-panel-card .status-panel-title { color: #ffffff !important; }
+.status-panel-card .status-key { color: rgba(180,210,255,0.70) !important; }
+.status-panel-card .status-val { color: #ffffff !important; }
+
+/* Quote card */
+.quote-info-card .quote-text  { color: rgba(180,210,255,0.75) !important; }
+.quote-info-card .quote-author { color: rgba(130,170,240,0.60) !important; }
+
+/* Capability cards */
+.capability-card .cap-title { color: #ffffff !important; }
+.capability-card .cap-desc  { color: rgba(180,210,255,0.65) !important; }
+
+/* Live metrics bar */
+.live-metrics-bar { color: rgba(180,210,255,0.80) !important; }
+.live-metrics-sub { color: rgba(130,165,240,0.55) !important; }
+
+/* Override dark-text-on-blue rules for main page cards */
+.ingest-card { background: rgba(255,255,255,0.07) !important; }
+.status-panel-card { background: rgba(255,255,255,0.07) !important; }
+.capability-card { background: rgba(255,255,255,0.07) !important; }
+.quote-info-card { background: rgba(255,255,255,0.05) !important; }
+
+/* Extract & Run button */
+#btn-run-pipeline {
+  color: rgba(180,210,255,0.85) !important;
+  background: rgba(37,84,224,0.22) !important;
+  border-color: rgba(80,140,255,0.30) !important;
+}
+#btn-run-pipeline:not(:disabled):hover {
+  background: rgba(37,84,224,0.40) !important;
+  color: #ffffff !important;
+}
+#btn-run-pipeline:disabled {
+  color: rgba(120,155,220,0.35) !important;
+}
+
+
+/* ── DRAWER: reduce header height ── */
+.drawer-header {
+  padding: 10px 16px !important;
+  min-height: 0 !important;
+}
+.drawer-title { font-size: 13px !important; }
+.drawer-mode-indicator { font-size: 8.5px !important; }
+.drawer-tabs-bar { padding: 0 16px !important; }
+.drawer-tab-btn { padding: 6px 12px !important; font-size: 10px !important; }
+.drawer-body { padding: 12px 16px !important; }
+
+/* ── DRAWER CONTENT: collapse verbose text, click to expand ── */
+
+/* Trajectory chart description text — hidden, click label to show */
+.tab-pane#pane-evidence > div:first-child > div[style*="font-size:10.5px"],
+.tab-pane#pane-evidence > div:first-child > div[style*="font-size: 10.5px"] {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transition: max-height 0.25s ease, opacity 0.2s ease !important;
+}
+
+/* ROOT CAUSE ATTRIBUTION section — wrap with click-to-show */
+/* Hide the individual bars by default, label stays visible */
+.rc-bar-row {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transition: max-height 0.2s ease, opacity 0.15s ease !important;
+}
+
+/* Style section labels as clickable toggles */
+.detail-section-label {
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 4px 8px !important;
+  border-radius: 5px !important;
+  background: rgba(37,84,224,0.10) !important;
+  border: 1px solid rgba(80,140,255,0.20) !important;
+  font-size: 8.5px !important;
+  margin-bottom: 4px !important;
+  margin-top: 8px !important;
+  letter-spacing: 0.08em !important;
+  color: rgba(100,160,255,0.85) !important;
+  user-select: none !important;
+}
+.detail-section-label::after {
+  content: '▶' !important;
+  font-size: 8px !important;
+  color: rgba(100,160,255,0.60) !important;
+  transition: transform 0.2s ease !important;
+}
+
+/* When section is expanded — applied via JS toggle */
+.detail-section-label.is-open::after {
+  content: '▼' !important;
+}
+.detail-section-label.is-open + .rc-bar-row,
+.detail-section-label.is-open ~ .rc-bar-row {
+  max-height: 60px !important;
+  opacity: 1 !important;
+}
+
+/* Supply pipeline certainty — collapsed behind label */
+.rc-track { height: 4px !important; }
+.rc-fill  { height: 4px !important; }
+.rc-bar-header { font-size: 9px !important; }
+.rc-bar-label  { font-size: 8.5px !important; }
+.rc-bar-val    { font-size: 8.5px !important; }
+
+/* Causal diagnosis box — collapsed */
+.rc-bar-row + div {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transition: max-height 0.25s ease, opacity 0.2s ease !important;
+}
+.detail-section-label.is-open ~ .rc-bar-row + div {
+  max-height: 100px !important;
+  opacity: 1 !important;
+}
+
+/* Supply pipeline certainty section */
+.glance-cert-header { font-size: 9px !important; }
+.glance-cert-num    { font-size: 9px !important; }
+
+/* Latency timeline compact */
+.latency-timeline-box {
+  padding: 8px !important;
+}
+.latency-visual-track {
+  gap: 4px !important;
+  margin: 4px 0 !important;
+}
+.latency-step-wk  { font-size: 8px !important; }
+.latency-step-lbl { font-size: 7.5px !important; }
+.latency-narrative-text {
+  font-size: 10px !important;
+}
+
+/* Decision header compact */
+.drawer-decision-header { padding: 8px 12px !important; }
+.decision-headline { font-size: 10.5px !important; line-height: 1.35 !important; margin-bottom: 3px !important; }
+.decision-directive-quote { font-size: 10px !important; padding: 6px 10px !important; }
+.decision-metrics-bar { font-size: 9.5px !important; padding: 3px 6px !important; }
+
+
+/* ── RESTORE FULLSCREEN BUTTON IN DRAWER HEADER ── */
+.btn-drawer-action {
+  display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  padding: 5px 10px !important;
+  font-size: 10px !important;
+  border-radius: 6px !important;
+  background: rgba(255,255,255,0.08) !important;
+  border: 1px solid rgba(255,255,255,0.16) !important;
+  color: rgba(180,210,255,0.85) !important;
+  cursor: pointer !important;
+  gap: 5px !important;
+  align-items: center !important;
+  transition: background 0.15s ease !important;
+}
+.btn-drawer-action:hover {
+  background: rgba(37,84,224,0.22) !important;
+  color: #fff !important;
+  border-color: rgba(80,140,255,0.35) !important;
+}
+.drawer-header-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  visibility: visible !important;
+}
+/* Close button */
+.drawer-close {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+
+/* ── MON BRIEFING: simplify layout ── */
+
+/* AI synthesis card — compact header */
+.ai-briefing-executive-card {
+  padding: 12px 16px !important;
+}
+.ai-briefing-top-row {
+  margin-bottom: 8px !important;
+}
+.ai-briefing-tag  { font-size: 9.5px !important; }
+.ai-briefing-sub  { font-size: 9px !important; display: none !important; }
+
+/* 4 synthesis columns — hide body text by default, show on hover */
+.ai-briefing-col {
+  padding: 10px 12px !important;
+  cursor: pointer !important;
+}
+.ai-briefing-col-body {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  font-size: 11px !important;
+  transition: max-height 0.3s ease, opacity 0.2s ease !important;
+}
+.ai-briefing-col:hover .ai-briefing-col-body {
+  max-height: 200px !important;
+  opacity: 1 !important;
+}
+.ai-briefing-col-title {
+  font-size: 9px !important;
+  margin-bottom: 2px !important;
+}
+.synthesis-click-cue {
+  font-size: 8px !important;
+  margin-top: 4px !important;
+  opacity: 0 !important;
+  transition: opacity 0.2s ease !important;
+}
+.ai-briefing-col:hover .synthesis-click-cue { opacity: 1 !important; }
+
+/* Emergency briefing card — collapse body */
+.emergency-briefing-card { padding: 12px 16px !important; }
+.emergency-briefing-sub {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  font-size: 11px !important;
+  transition: max-height 0.25s ease, opacity 0.2s ease !important;
+}
+.emergency-briefing-card:hover .emergency-briefing-sub {
+  max-height: 60px !important;
+  opacity: 1 !important;
+}
+.emergency-briefing-heading { font-size: 14px !important; margin-bottom: 4px !important; }
+
+/* Emergency action plan — collapse step details */
+.emergency-action-plan-container { padding: 10px 12px !important; }
+.emergency-action-plan-title { font-size: 9.5px !important; }
+
+/* Step rows in emergency plan */
+.emergency-step-row,
+.emergency-action-step {
+  font-size: 11px !important;
+  padding: 6px 0 !important;
+}
+
+/* Charts — reduce height */
+.emergency-chart-wrap,
+.chart-wrap,
+.benchmark-chart-wrap { height: 160px !important; }
+.emergency-charts-grid { gap: 10px !important; margin-top: 10px !important; }
+.emergency-chart-tile { padding: 10px !important; }
+.emergency-chart-title { font-size: 9px !important; margin-bottom: 6px !important; }
+
+/* Emergency points grid — compact */
+.emergency-points-grid { gap: 8px !important; margin-top: 10px !important; }
+
+/* WoW card */
+.briefing-wow-card { padding: 12px 16px !important; }
+.wow-title { font-size: 13px !important; }
+.wow-quote {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transition: max-height 0.3s ease, opacity 0.2s ease !important;
+}
+.briefing-wow-card:hover .wow-quote {
+  max-height: 80px !important;
+  opacity: 1 !important;
+}
+.wow-grid { gap: 8px !important; margin-top: 8px !important; }
+.wow-grid-item { padding: 10px !important; }
+.wow-grid-k { font-size: 8.5px !important; }
+.wow-grid-v { font-size: 16px !important; }
+
+/* Analyst scope strip — compact */
+.analyst-scope-strip { padding: 8px 12px !important; }
+.scope-badge, .scope-date { font-size: 9.5px !important; }
+.scope-kpi-pill { font-size: 9px !important; padding: 3px 7px !important; }
+
+/* View header — compact */
+#view-briefing .view-header { padding: 12px 16px !important; }
+#view-briefing .view-title { font-size: 16px !important; }
+
+/* Methodology disclosure — more compact summary */
+.methodology-disclosure-summary { padding: 10px 14px !important; }
+.methodology-summary-title { font-size: 11.5px !important; }
+
+
+/* ── FIX "S" PROFILE BUTTON — always stays in header corner ── */
+.header-profile {
+  position: static !important;
+  transform: none !important;
+  flex-shrink: 0 !important;
+  margin-left: 4px !important;
+  align-self: center !important;
+}
+
+/* ── CHI PROOF & MATRIX: simplify content ── */
+
+/* Pillar cards — collapse body text, hover to reveal */
+.chi-pillar-card { padding: 12px 14px !important; }
+.chi-pillar-title { font-size: 11.5px !important; margin-bottom: 4px !important; }
+.chi-pillar-header { margin-bottom: 4px !important; }
+.chi-pillar-num { font-size: 9px !important; }
+.chi-pillar-tag { font-size: 8px !important; }
+
+.chi-pillar-body {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  font-size: 11px !important;
+  transition: max-height 0.3s ease, opacity 0.2s ease !important;
+}
+.chi-pillar-card:hover .chi-pillar-body {
+  max-height: 300px !important;
+  opacity: 1 !important;
+}
+
+/* Hover hint */
+.chi-pillar-card::after {
+  content: 'Hover to expand →' !important;
+  display: block !important;
+  font-family: var(--font-mono) !important;
+  font-size: 8px !important;
+  color: rgba(100,160,255,0.55) !important;
+  letter-spacing: 0.05em !important;
+  margin-top: 4px !important;
+  transition: opacity 0.2s ease !important;
+}
+.chi-pillar-card:hover::after { display: none !important; }
+
+/* Pillars grid — compact */
+.chi-pillars-grid { gap: 8px !important; margin-bottom: 10px !important; }
+
+/* Formula hero card — compact */
+.chi-formula-hero-card { padding: 12px 16px !important; }
+.chi-formula-tag { font-size: 8.5px !important; }
+.chi-formula-math { font-size: 14px !important; }
+.chi-formula-sub { font-size: 9px !important; }
+
+/* Sensitivity matrix — compact */
+.chi-matrix-panel { padding: 12px 14px !important; }
+.chi-matrix-title { font-size: 13px !important; }
+.chi-matrix-sub { font-size: 9.5px !important; }
+.chi-sensitivity-table th,
+.chi-sensitivity-table td { padding: 4px 3px !important; font-size: 8.5px !important; }
+
+/* Controls panel — compact */
+.chi-controls-panel { padding: 12px 14px !important; }
+.chi-panel-title { font-size: 9.5px !important; }
+
+/* Preset scenario buttons — compact */
+.btn-scenario-preset { padding: 6px 8px !important; }
+.preset-name { font-size: 9.5px !important; }
+.preset-meta { font-size: 8.5px !important; }
+
+/* Slider labels */
+.slider-label-text { font-size: 10px !important; }
+.slider-val-text { font-size: 10px !important; }
+.slider-hint { font-size: 8px !important; }
+
+/* View header */
+#view-scenario .view-header { padding: 10px 14px !important; }
+#view-scenario .view-title { font-size: 15px !important; }
+#view-scenario .view-subtitle { font-size: 10.5px !important; }
+
+
+/* ── FIX S LOGO CENTERING — override absolute positioning ── */
+.app-header {
+  position: fixed !important;
+  /* Use flex with space-between, tagline is a flex child not absolute */
+}
+
+.header-center-tagline {
+  position: static !important;
+  transform: none !important;
+  left: auto !important;
+  flex: 1 !important;
+  display: flex !important;
+  justify-content: center !important;
+  pointer-events: none !important;
+}
+
+/* S button always last, never moves */
+.header-profile {
+  position: static !important;
+  transform: none !important;
+  order: 999 !important;
+  flex-shrink: 0 !important;
+}
+
+/* Header meta: no wrap so S stays in line */
+.header-meta {
+  flex-wrap: nowrap !important;
+  overflow: hidden !important;
+}
+
+/* ── SECTION ICONS: clean monochrome SVG icons for each view ── */
+/* Add a section header icon strip at top of each view */
+
+/* Data Ingestion section indicator */
+#view-ingest .ingest-header-top::before {
+  content: '' !important;
+  display: none !important; /* already has eyebrow label */
+}
+
+/* View header icon badges */
+#view-signals  .console-hero-tag::before,
+#view-briefing .view-header::before,
+#view-masterdata .view-header::before,
+#view-audit .view-header::before,
+#view-scenario .view-header::before {
+  display: inline-block !important;
+  width: 18px !important; height: 18px !important;
+  background: rgba(37,84,224,0.15) !important;
+  border: 1px solid rgba(80,140,255,0.25) !important;
+  border-radius: 5px !important;
+  margin-right: 8px !important;
+  vertical-align: middle !important;
+  flex-shrink: 0 !important;
+}
+
+/* ── REDUCE VISUAL NOISE — hide secondary descriptive text ── */
+
+/* Hide long sub-descriptions that clutter each section */
+.console-hero-tag { font-size: 8.5px !important; }
+.console-main-subtitle {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transition: max-height 0.2s ease, opacity 0.15s ease !important;
+}
+.console-hero-header:hover .console-main-subtitle {
+  max-height: 40px !important;
+  opacity: 1 !important;
+}
+
+/* View subtitle — hide by default */
+.view-subtitle {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  font-size: 11px !important;
+  transition: max-height 0.2s ease, opacity 0.15s ease !important;
+}
+.view-header:hover .view-subtitle {
+  max-height: 36px !important;
+  opacity: 1 !important;
+}
+
+/* Master data sub-descriptions */
+.param-audit-quote {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transition: max-height 0.3s ease, opacity 0.2s ease !important;
+}
+.param-audit-banner:hover .param-audit-quote {
+  max-height: 80px !important;
+  opacity: 1 !important;
+}
+
+.ai-trans-body {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  font-size: 11px !important;
+  transition: max-height 0.3s ease, opacity 0.2s ease !important;
+}
+.ai-section-translation-box:hover .ai-trans-body {
+  max-height: 120px !important;
+  opacity: 1 !important;
+}
+
+/* GxP guide body */
+.gxp-guide-body {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  font-size: 11px !important;
+  transition: max-height 0.3s ease, opacity 0.2s ease !important;
+}
+.gxp-guide-box:hover .gxp-guide-body {
+  max-height: 120px !important;
+  opacity: 1 !important;
+}
+
+/* Reduce KPI sub text on master data */
+.param-kpi-sub {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transition: max-height 0.2s ease !important;
+}
+.param-kpi-item:hover .param-kpi-sub {
+  max-height: 30px !important;
+  opacity: 1 !important;
+}
+
+
+/* ============================================================
+   GLOBAL PROGRESSIVE DISCLOSURE — reduce text, reveal on hover
+   Nothing deleted. All content accessible.
+   ============================================================ */
+
+/* ── SHARED COLLAPSE UTILITY ── */
+.chm-collapse {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transition: max-height 0.28s ease, opacity 0.2s ease !important;
+}
+.chm-collapse-parent:hover .chm-collapse,
+.chm-collapse-parent:focus-within .chm-collapse {
+  max-height: 400px !important;
+  opacity: 1 !important;
+}
+
+/* ── DATA INGESTION PAGE ── */
+/* SAP callout full text */
+.sap-callout-text { font-size: 10px !important; }
+/* Ingest description shortened appearance */
+.ingest-description {
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  transition: all 0.25s ease !important;
+}
+.ingest-card:hover .ingest-description {
+  -webkit-line-clamp: unset !important;
+  overflow: visible !important;
+}
+
+/* ── SIGNAL CONSOLE ── */
+/* Focal hero narrative */
+.focal-hero-narrative {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transition: max-height 0.25s ease, opacity 0.2s ease !important;
+}
+.focal-triage-hero:hover .focal-hero-narrative {
+  max-height: 80px !important;
+  opacity: 1 !important;
+}
+.focal-hero-heading { font-size: 13px !important; }
+
+/* Signal card approved message — only on hover */
+.card-approved {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transition: max-height 0.2s ease, opacity 0.15s ease !important;
+}
+.signal-card:hover .card-approved {
+  max-height: 36px !important;
+  opacity: 1 !important;
+}
+
+/* ── DRAWER DETAIL ── */
+/* Tab pane body text — clamp long paragraphs */
+.tab-pane p, .tab-pane div[style*="line-height"] {
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  font-size: 11px !important;
+  transition: all 0.25s ease !important;
+}
+.tab-pane p:hover, .tab-pane div[style*="line-height"]:hover {
+  -webkit-line-clamp: unset !important;
+  overflow: visible !important;
+}
+/* Keep chart containers unaffected */
+.chart-container p, .chart-container div { -webkit-line-clamp: unset !important; overflow: visible !important; }
+
+/* Drawer body section spacings */
+.drawer-body > div { margin-bottom: 6px !important; }
+
+/* ROQ formula callout — collapse */
+.callout-body {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transition: max-height 0.25s ease, opacity 0.2s ease !important;
+}
+.callout-block:hover .callout-body {
+  max-height: 80px !important;
+  opacity: 1 !important;
+}
+.callout-block { cursor: default !important; }
+
+/* ── MON BRIEFING ── */
+/* AI briefing grid — one-line preview */
+.ai-briefing-col-body span {
+  display: -webkit-box !important;
+  -webkit-line-clamp: 1 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  font-size: 10.5px !important;
+  transition: all 0.25s ease !important;
+}
+.ai-briefing-col:hover .ai-briefing-col-body span {
+  -webkit-line-clamp: unset !important;
+  overflow: visible !important;
+}
+
+/* Emergency action steps — collapse body */
+.emergency-action-step .step-detail,
+.emergency-action-step p,
+.emergency-action-step li {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  font-size: 10.5px !important;
+  transition: max-height 0.25s ease, opacity 0.2s ease !important;
+}
+.emergency-action-step:hover .step-detail,
+.emergency-action-step:hover p,
+.emergency-action-step:hover li {
+  max-height: 80px !important;
+  opacity: 1 !important;
+}
+
+/* WoW diff items — clamp */
+.wow-quote {
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  transition: all 0.25s ease !important;
+}
+.briefing-wow-card:hover .wow-quote {
+  -webkit-line-clamp: unset !important;
+  overflow: visible !important;
+  max-height: none !important; /* override previous rule */
+  opacity: 1 !important;
+}
+.wow-grid-sub { display: none !important; }
+.wow-grid-item:hover .wow-grid-sub { display: block !important; }
+
+/* CHI explainer body */
+.chi-otif-body {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  font-size: 11px !important;
+  transition: max-height 0.3s ease, opacity 0.2s ease !important;
+}
+.chi-otif-explainer-card:hover .chi-otif-body {
+  max-height: 200px !important;
+  opacity: 1 !important;
+}
+
+/* Pareto description */
+.pareto-desc {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transition: max-height 0.2s ease, opacity 0.15s ease !important;
+}
+.chart-card:hover .pareto-desc {
+  max-height: 40px !important;
+  opacity: 1 !important;
+}
+
+/* Benchmark comparison table sub-text cells */
+.baseline-comp-sub {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transition: max-height 0.2s ease !important;
+}
+.baseline-comp-header:hover .baseline-comp-sub {
+  max-height: 30px !important;
+  opacity: 1 !important;
+}
+
+/* ── MASTER DATA ── */
+/* Table cell long text — truncate */
+.table-masterdata-modern td {
+  max-width: 180px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+.table-masterdata-modern tr:hover td {
+  white-space: normal !important;
+  overflow: visible !important;
+}
+
+/* Audit directives — collapse */
+.audit-directive, .financial-liberation-badge .fin-cap-tag {
+  font-size: 9px !important;
+}
+
+/* ── GxP AUDIT LOG ── */
+/* Table rows — clamp reason code */
+#table-audit td { 
+  max-width: 140px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-size: 10.5px !important;
+}
+#table-audit tr:hover td {
+  white-space: normal !important;
+  overflow: visible !important;
+  max-width: none !important;
+}
+
+/* ── CHI PROOF & MATRIX ── */
+/* Pillar list items */
+.chi-pillar-list {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transition: max-height 0.3s ease, opacity 0.2s ease !important;
+}
+.chi-pillar-card:hover .chi-pillar-list {
+  max-height: 200px !important;
+  opacity: 1 !important;
+}
+
+/* Formula sub */
+.chi-formula-sub {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transition: max-height 0.2s ease !important;
+}
+.chi-formula-hero-card:hover .chi-formula-sub {
+  max-height: 30px !important;
+  opacity: 1 !important;
+}
+
+/* Scenario preset descriptions */
+.preset-meta {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transition: max-height 0.18s ease, opacity 0.15s ease !important;
+}
+.btn-scenario-preset:hover .preset-meta {
+  max-height: 20px !important;
+  opacity: 1 !important;
+}
+
+/* ── DRAWERS / SCENARIO MODELLER ── */
+/* Market quote card text */
+.market-quote-text {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  font-size: 11px !important;
+  transition: max-height 0.25s ease, opacity 0.2s ease !important;
+}
+.market-quote-card:hover .market-quote-text {
+  max-height: 60px !important;
+  opacity: 1 !important;
+}
+
+/* Workflow comments — clamp */
+.workflow-comment-text {
+  display: -webkit-box !important;
+  -webkit-line-clamp: 1 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  font-size: 10.5px !important;
+  transition: all 0.2s ease !important;
+}
+.workflow-comment-item:hover .workflow-comment-text {
+  -webkit-line-clamp: unset !important;
+  overflow: visible !important;
+}
+
+/* ── UPLOAD ADVISORY BOX — clamp ── */
+.upload-advisory-box {
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  font-size: 10.5px !important;
+  transition: all 0.25s ease !important;
+}
+.upload-advisory-box:hover {
+  -webkit-line-clamp: unset !important;
+  overflow: visible !important;
+}
+
+
+/* ── FULLSCREEN: restore drawer button + add page fullscreen ── */
+
+/* Drawer fullscreen button — make it visible and styled */
+#btn-toggle-fullscreen,
+.btn-drawer-action {
+  display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* Drawer in fullscreen mode */
+.drawer.drawer--fullscreen,
+.drawer.fullscreen {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  height: 100vh !important;
+  top: 0 !important;
+  border-radius: 0 !important;
+  z-index: 9999 !important;
+}
+
+/* Page-level fullscreen button — floating bottom right */
+#chm-fullscreen-btn {
+  position: fixed !important;
+  bottom: 20px !important;
+  right: 20px !important;
+  z-index: 500 !important;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  background: rgba(37,84,224,0.85) !important;
+  color: #fff !important;
+  border: 1px solid rgba(100,150,255,0.40) !important;
+  box-shadow: 0 4px 16px rgba(37,84,224,0.40) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: transform 0.18s ease, box-shadow 0.18s ease !important;
+}
+#chm-fullscreen-btn:hover {
+  transform: scale(1.1) !important;
+  box-shadow: 0 6px 22px rgba(37,84,224,0.55) !important;
+}
+#chm-fullscreen-btn svg {
+  width: 18px !important;
+  height: 18px !important;
+  pointer-events: none !important;
+}
+
+
+/* ── DRAWER FULLSCREEN BUTTON — prominent and always visible ── */
+#btn-toggle-fullscreen {
+  display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  padding: 6px 12px !important;
+  border-radius: 7px !important;
+  background: rgba(37,84,224,0.18) !important;
+  border: 1px solid rgba(80,140,255,0.35) !important;
+  color: rgba(160,200,255,0.90) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  cursor: pointer !important;
+  gap: 5px !important;
+  align-items: center !important;
+  transition: background 0.15s ease, color 0.15s ease !important;
+}
+#btn-toggle-fullscreen:hover {
+  background: rgba(37,84,224,0.35) !important;
+  color: #ffffff !important;
+  border-color: rgba(100,160,255,0.55) !important;
+}
+
+/* Fullscreen icon inside button */
+.fs-icon { font-size: 14px !important; }
+.fs-label { font-size: 10px !important; }
+
+/* Drawer in fullscreen — expand to cover everything */
+#drawer-detail.drawer--fullscreen {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  height: 100vh !important;
+  top: 0 !important;
+  right: 0 !important;
+  border-radius: 0 !important;
+  z-index: 9999 !important;
+}
+
+/* In fullscreen: chart gets taller */
+#drawer-detail.drawer--fullscreen .chart-container {
+  height: 380px !important;
+}
+
+/* Drawer header actions always visible */
+.drawer-header-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  visibility: visible !important;
+  flex-shrink: 0 !important;
+}
+
+
+/* ── INGEST CARD: centered symmetric layout like reference ── */
+
+/* Card: center all content */
+.ingest-card {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+}
+
+/* Header top row: eyebrow left, security line right */
+.ingest-header-top {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 8px !important;
+  padding-bottom: 8px !important;
+  border-bottom: 1px solid rgba(255,255,255,0.10) !important;
+}
+
+/* Headline row: title left, how-this-works right */
+.ingest-header-row {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  gap: 12px !important;
+  margin-bottom: 8px !important;
+}
+
+/* Headline large */
+.ingest-headline {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+  margin: 0 !important;
+  color: #ffffff !important;
+}
+
+/* Description compact */
+.ingest-description {
+  font-size: 12px !important;
+  color: rgba(180,210,255,0.75) !important;
+  margin: 0 0 8px !important;
+  -webkit-line-clamp: unset !important;
+  overflow: visible !important;
+  display: block !important;
+}
+
+/* SAP callout pill */
+.sap-integration-callout {
+  margin-bottom: 10px !important;
+  display: inline-flex !important;
+}
+
+/* Dropzone: center content */
+.ingest-dropzone {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  padding: 20px 16px !important;
+  gap: 6px !important;
+}
+
+/* Action bar: Extract left, OR center, Benchmark right */
+.ingest-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  margin-top: 10px !important;
+  flex-wrap: nowrap !important;
+}
+
+#btn-run-pipeline {
+  flex: 1 !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 10px 16px !important;
+  background: rgba(37,84,224,0.80) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(80,140,255,0.50) !important;
+  border-radius: 8px !important;
+  font-size: 10.5px !important;
+}
+#btn-run-pipeline:not(:disabled):hover {
+  background: rgba(37,84,224,1.0) !important;
+}
+
+#btn-load-demo {
+  flex: 1 !important;
+  padding: 10px 14px !important;
+  font-size: 10px !important;
+  text-align: center !important;
+  justify-content: center !important;
+  border-radius: 8px !important;
+}
+
+.action-divider {
+  flex-shrink: 0 !important;
+  font-size: 10px !important;
+  color: rgba(120,155,220,0.50) !important;
+  padding: 0 4px !important;
+}
+
+
+/* ── INGEST CARD: exact reference layout ── */
+
+/* Header top: eyebrow LEFT, security RIGHT */
+.ingest-header-top {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  width: 100% !important;
+  margin-bottom: 10px !important;
+  padding-bottom: 8px !important;
+  border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+}
+
+/* Headline row: h2 LEFT, how-this-works RIGHT — same line */
+.ingest-header-row {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  gap: 16px !important;
+  width: 100% !important;
+  margin-bottom: 6px !important;
+  flex-wrap: nowrap !important;
+}
+
+.ingest-headline {
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  margin: 0 !important;
+  letter-spacing: -0.01em !important;
+  line-height: 1.2 !important;
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+/* How this works: right side of headline row */
+.how-it-works-popover {
+  flex-shrink: 0 !important;
+  position: relative !important;
+}
+
+.btn-info-pill {
+  white-space: nowrap !important;
+  cursor: pointer !important;
+}
+
+/* Description: full width below headline row */
+.ingest-card > .ingest-header > .ingest-description,
+.ingest-header .ingest-description,
+.ingest-description {
+  display: block !important;
+  width: 100% !important;
+  font-size: 12px !important;
+  color: rgba(180,210,255,0.75) !important;
+  margin: 0 0 10px !important;
+  -webkit-line-clamp: unset !important;
+  overflow: visible !important;
+  max-height: none !important;
+  opacity: 1 !important;
+}
+
+/* SAP callout below description */
+.sap-integration-callout {
+  display: inline-flex !important;
+  margin-bottom: 12px !important;
+}
+
+/* Capabilities: always show description */
+.capability-card .cap-desc {
+  max-height: none !important;
+  opacity: 1 !important;
+  display: block !important;
+  overflow: visible !important;
+  font-size: 10.5px !important;
+  color: rgba(160,200,255,0.65) !important;
+  margin-top: 2px !important;
+}
+
+/* Status panel rows: add icons via pseudo-elements */
+.status-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 5px 0 !important;
+  border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+  gap: 8px !important;
+}
+.status-key {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  color: rgba(160,190,255,0.65) !important;
+  font-size: 11px !important;
+}
+.status-val {
+  color: #ffffff !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   DEFINITIVE 2-COLUMN GRID — highest possible specificity
+   This MUST be the last rule in the file for .overview-main-grid
+   ══════════════════════════════════════════════════════════════ */
+html body div.main-col main.view-content section#view-ingest div.overview-main-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 245px !important;
+  gap: 12px !important;
+  align-items: start !important;
+  width: 100% !important;
+  overflow: visible !important;
+  box-sizing: border-box !important;
+}
+
+html body div.main-col main.view-content section#view-ingest div.upload-container {
+  grid-column: 1 !important;
+  min-width: 0 !important;
+}
+
+html body div.main-col main.view-content section#view-ingest div.overview-side-panel {
+  grid-column: 2 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+html body div.main-col main.view-content section#view-ingest div.status-panel-card {
+  display: flex !important;
+  flex-direction: column !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  background: rgba(255,255,255,0.07) !important;
+  border: 1px solid rgba(255,255,255,0.12) !important;
+  border-radius: 12px !important;
+  padding: 12px 14px !important;
+  color: #fff !important;
+}
+
+
+/* ── SINGLE COLUMN LAYOUT: everything stacks vertically ── */
+/* Ingest card, status panel, capabilities all one below another */
+
+html body div.main-col main.view-content section#view-ingest div.overview-main-grid {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  width: 100% !important;
+}
+
+html body div.main-col main.view-content section#view-ingest div.upload-container,
+html body div.main-col main.view-content section#view-ingest div.overview-side-panel {
+  grid-column: unset !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+html body div.main-col main.view-content section#view-ingest div.capabilities-section {
+  width: 100% !important;
+}
+
+
+/* ── KPI TILES: dark readable text on coloured backgrounds ── */
+.kpi-tile .kpi-numeral,
+.kpi-tile output.kpi-numeral {
+  color: #0B1D3A !important;
+}
+.kpi-tile .kpi-numeral.crisis-num   { color: #8B0000 !important; }
+.kpi-tile .kpi-numeral.kpi-healthy  { color: #0A4A1E !important; }
+.kpi-tile .kpi-label                { color: rgba(11,29,58,0.65) !important; }
+.kpi-tile .kpi-sub                  { color: rgba(11,29,58,0.55) !important; }
+.kpi-tile .chi-unit                 { color: rgba(11,29,58,0.55) !important; }
+.kpi-tile .chi-provenance-pill      { color: rgba(11,29,58,0.50) !important; border-color: rgba(11,29,58,0.15) !important; }
+.kpi-tile .kpi-delta--up            { color: #0A4A1E !important; background: rgba(10,74,30,0.12) !important; border-color: rgba(10,74,30,0.18) !important; }
+.kpi-tile .kpi-delta--down          { color: #7A0000 !important; background: rgba(122,0,0,0.10) !important; border-color: rgba(122,0,0,0.16) !important; }
+.kpi-tile .chi-dial-track           { stroke: rgba(11,29,58,0.15) !important; }
+.kpi-tile .chi-dial-progress        { stroke: #1A3A8F !important; }
+.kpi-tile .chi-dial-badge           { background: #1A3A8F !important; color: #fff !important; }
+
+
+/* ── KPI TILES: maximum contrast dark text ── */
+.kpi-tile .kpi-numeral,
+.kpi-tile output.kpi-numeral,
+#kpi-chi .kpi-numeral,
+#kpi-crises .kpi-numeral,
+#kpi-capital .kpi-numeral,
+#kpi-otif .kpi-numeral {
+  color: #000000 !important;
+  font-weight: 800 !important;
+  text-shadow: none !important;
+}
+#kpi-crises .kpi-numeral.crisis-num { color: #6B0000 !important; }
+#kpi-otif .kpi-numeral.kpi-healthy  { color: #003A10 !important; }
+
+.kpi-tile .kpi-label {
+  color: #1A1A2E !important;
+  font-weight: 700 !important;
+  font-size: 8px !important;
+}
+.kpi-tile .kpi-sub { color: #1A1A2E !important; font-weight: 600 !important; }
+.kpi-tile .chi-unit { color: #1A1A2E !important; font-weight: 700 !important; }
+.kpi-tile .chi-provenance-pill { color: #1A1A2E !important; border-color: rgba(0,0,0,0.20) !important; }
+.kpi-tile .kpi-delta--up   { color: #003A10 !important; background: rgba(0,80,20,0.15) !important; border-color: rgba(0,80,20,0.25) !important; font-weight: 800 !important; }
+.kpi-tile .kpi-delta--down { color: #6B0000 !important; background: rgba(107,0,0,0.12) !important; border-color: rgba(107,0,0,0.22) !important; font-weight: 800 !important; }
+
+/* ── BACKGROUND ANIMATIONS: enhanced flowing particles ── */
+
+/* Slow rotating gradient orbs */
+.bg-atmosphere::before {
+  content: '' !important;
+  position: absolute !important;
+  width: 600px !important;
+  height: 600px !important;
+  top: -200px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  background: conic-gradient(
+    from 0deg,
+    rgba(37,84,224,0.12),
+    rgba(100,60,240,0.10),
+    rgba(37,84,224,0.06),
+    rgba(60,100,255,0.12),
+    rgba(37,84,224,0.08)
+  ) !important;
+  border-radius: 50% !important;
+  filter: blur(60px) !important;
+  animation: bgRotate 20s linear infinite !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+}
+
+.bg-atmosphere::after {
+  content: '' !important;
+  position: absolute !important;
+  width: 800px !important;
+  height: 300px !important;
+  bottom: 10% !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(80,40,200,0.14) 20%,
+    rgba(255,160,80,0.12) 45%,
+    rgba(80,40,200,0.12) 70%,
+    transparent
+  ) !important;
+  border-radius: 50% !important;
+  filter: blur(40px) !important;
+  animation: waveFlow2 14s ease-in-out infinite !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+}
+
+@keyframes bgRotate {
+  from { transform: translateX(-50%) rotate(0deg); }
+  to   { transform: translateX(-50%) rotate(360deg); }
+}
+
+@keyframes waveFlow2 {
+  0%,100% { transform: translateX(-50%) scaleX(1) translateY(0); opacity: 0.7; }
+  50%     { transform: translateX(-48%) scaleX(1.08) translateY(-10px); opacity: 1; }
+}
+
+/* Floating light particles */
+.atm-blob-1 { animation: chm-bubble1 18s ease-in-out infinite, glowPulse 4s ease-in-out infinite !important; }
+.atm-blob-2 { animation: chm-bubble2 24s ease-in-out infinite, glowPulse 6s ease-in-out infinite 1s !important; }
+.atm-blob-3 { animation: chm-bubble3 20s ease-in-out infinite, glowPulse 5s ease-in-out infinite 2s !important; }
+
+@keyframes glowPulse {
+  0%,100% { opacity: 0.85; }
+  50%     { opacity: 1; filter: brightness(1.15); }
+}
+
+/* Capsules: enhanced glow animation */
+.atm-capsule-1 {
+  animation: chm-caps1 16s ease-in-out infinite, capGlow 5s ease-in-out infinite !important;
+}
+.atm-capsule-2 {
+  animation: chm-caps2 22s ease-in-out infinite, capGlow 7s ease-in-out infinite 2s !important;
+}
+
+@keyframes capGlow {
+  0%,100% { box-shadow: inset 0 8px 20px rgba(200,220,255,0.30), inset 0 -4px 10px rgba(40,30,180,0.40), 0 10px 40px rgba(60,80,220,0.35); }
+  50%     { box-shadow: inset 0 10px 24px rgba(220,240,255,0.45), inset 0 -6px 14px rgba(40,30,200,0.50), 0 16px 56px rgba(80,100,255,0.55); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-atmosphere::before,
+  .bg-atmosphere::after { animation: none !important; }
+  .atm-blob-1,.atm-blob-2,.atm-blob-3,
+  .atm-capsule-1,.atm-capsule-2 { animation: none !important; }
+}
+
+
+/* ── FOCAL TRIAGE HERO: dark readable text ── */
+.focal-triage-hero,
+.focal-hero-heading,
+.focal-hero-narrative,
+.focal-hero-subtext,
+.focal-hero-pill,
+.focal-hero-spec-tag {
+  color: #0B1D3A !important;
+}
+.focal-hero-heading  { font-weight: 700 !important; color: #000000 !important; }
+.focal-hero-narrative { color: #1A2A4A !important; }
+.focal-hero-spec-tag  { color: #3A5070 !important; }
+.focal-hero-subtext   { color: #3A5070 !important; }
+.focal-hero-pill {
+  background: rgba(11,29,58,0.12) !important;
+  color: #0B1D3A !important;
+  border-color: rgba(11,29,58,0.20) !important;
+}
+.focal-hero-exposure-badge {
+  color: #003A10 !important;
+  background: rgba(0,80,20,0.15) !important;
+  border-color: rgba(0,80,20,0.25) !important;
+}
+.btn-hero-authorize {
+  background: #0B1D3A !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+.btn-hero-authorize:hover {
+  background: #1A3A8F !important;
+}
+
+
+/* ── AI BRIEFING COLUMNS: always show body text, no hover needed ── */
+.ai-briefing-col-body {
+  max-height: none !important;
+  overflow: visible !important;
+  opacity: 1 !important;
+  font-size: 11.5px !important;
+  color: #0B1D3A !important;
+  display: block !important;
+}
+.ai-briefing-col-body span {
+  display: block !important;
+  -webkit-line-clamp: unset !important;
+  overflow: visible !important;
+  color: #0B1D3A !important;
+}
+.synthesis-click-cue {
+  opacity: 1 !important;
+  color: #1A3A8F !important;
+  font-size: 8.5px !important;
+}
+.ai-briefing-col-title {
+  color: #3A5070 !important;
+  font-size: 9px !important;
+  margin-bottom: 4px !important;
+}
+.ai-briefing-col-title--red   { color: #7A0000 !important; }
+.ai-briefing-col-title--green { color: #003A10 !important; }
+.ai-briefing-col-title--blue  { color: #1A3A8F !important; }
+
+
+/* ── DRAWER DECISION HEADER: dark text on light background ── */
+.drawer-decision-header { color: #0B1D3A !important; }
+.decision-sku-ident     { color: #0B1D3A !important; }
+.decision-headline      { color: #000000 !important; font-weight: 700 !important; }
+.decision-directive-quote { color: #1A2A4A !important; }
+.decision-metrics-bar   { color: #1A2A4A !important; }
+
+/* SLA chip — the grey box on the right */
+.decision-sla-chip {
+  background: rgba(11,29,58,0.10) !important;
+  color: #0B1D3A !important;
+  border: 1px solid rgba(11,29,58,0.20) !important;
+  font-size: 9px !important;
+  padding: 3px 9px !important;
+  border-radius: 4px !important;
+  font-family: var(--font-mono) !important;
+  font-weight: 700 !important;
+  white-space: nowrap !important;
+}
+.decision-sla-chip--urgent {
+  background: rgba(180,0,0,0.10) !important;
+  color: #7A0000 !important;
+  border-color: rgba(180,0,0,0.22) !important;
+}
+.decision-sla-chip--resolved {
+  background: rgba(0,80,20,0.10) !important;
+  color: #003A10 !important;
+  border-color: rgba(0,80,20,0.20) !important;
+}
+.decision-sla-chip--snoozed {
+  background: rgba(60,60,60,0.08) !important;
+  color: #333333 !important;
+  border-color: rgba(60,60,60,0.16) !important;
+}
+
+/* Drawer tab bar */
+.drawer-tabs-bar { background: rgba(220,235,255,0.5) !important; border-bottom: 1px solid rgba(11,29,58,0.12) !important; }
+.drawer-tab-btn  { color: #3A5070 !important; font-size: 10.5px !important; }
+.drawer-tab-btn.is-active { color: #0B1D3A !important; border-bottom-color: #1A3A8F !important; font-weight: 700 !important; }
+
+/* Decision meta row */
+.decision-meta-row { color: #0B1D3A !important; }
+.decision-meta-row .badge { /* keep existing badge colors */ }
+
+
+/* ── DRAWER FULLSCREEN BUTTON — highly visible ── */
+#btn-toggle-fullscreen {
+  display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  padding: 6px 14px !important;
+  border-radius: 7px !important;
+  background: #1A3A8F !important;
+  border: 1px solid rgba(100,150,255,0.40) !important;
+  color: #ffffff !important;
+  font-family: var(--font-mono) !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  cursor: pointer !important;
+  gap: 6px !important;
+  align-items: center !important;
+  box-shadow: 0 2px 10px rgba(26,58,143,0.35) !important;
+  transition: background 0.15s ease, transform 0.1s ease !important;
+}
+#btn-toggle-fullscreen:hover {
+  background: #2554d4 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 16px rgba(37,84,224,0.45) !important;
+}
+.fs-icon svg { width: 13px !important; height: 13px !important; stroke: #fff !important; }
+.fs-label { color: #ffffff !important; font-size: 10px !important; }
+
+/* Drawer in fullscreen — cover entire screen */
+#drawer-detail.drawer--fullscreen {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  height: 100vh !important;
+  top: 0 !important;
+  right: 0 !important;
+  border-radius: 0 !important;
+  z-index: 9999 !important;
+}
+/* Expand chart in fullscreen */
+#drawer-detail.drawer--fullscreen .chart-container {
+  height: 420px !important;
+}
+#drawer-detail.drawer--fullscreen .drawer-body {
+  padding: 20px 28px !important;
+}
+
+
+/* ── FULLSCREEN DRAWER: premium dark pharma design ── */
+
+/* Fullscreen drawer background */
+#drawer-detail.drawer--fullscreen {
+  background: linear-gradient(160deg, #060f22 0%, #0a1628 40%, #0d1f38 100%) !important;
+  color: #e8f0ff !important;
+}
+
+/* Header in fullscreen */
+#drawer-detail.drawer--fullscreen .drawer-header {
+  background: rgba(4,12,28,0.90) !important;
+  backdrop-filter: blur(20px) !important;
+  border-bottom: 1px solid rgba(60,100,220,0.25) !important;
+  padding: 14px 24px !important;
+}
+#drawer-detail.drawer--fullscreen .drawer-title { color: #ffffff !important; font-size: 15px !important; }
+#drawer-detail.drawer--fullscreen .drawer-mode-indicator { color: rgba(140,180,255,0.60) !important; }
+
+/* Decision header */
+#drawer-detail.drawer--fullscreen .drawer-decision-header {
+  background: rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(255,255,255,0.10) !important;
+  border-radius: 12px !important;
+  margin: 16px 24px 0 !important;
+  padding: 14px 18px !important;
+}
+#drawer-detail.drawer--fullscreen .decision-headline { color: #ffffff !important; font-size: 14px !important; }
+#drawer-detail.drawer--fullscreen .decision-directive-quote { color: rgba(200,220,255,0.80) !important; border-left-color: #4a7be8 !important; }
+#drawer-detail.drawer--fullscreen .decision-metrics-bar { color: rgba(160,200,255,0.80) !important; }
+#drawer-detail.drawer--fullscreen .decision-sla-chip {
+  background: rgba(37,84,224,0.18) !important;
+  color: #93b8ff !important;
+  border-color: rgba(80,140,255,0.30) !important;
+}
+
+/* Tab bar */
+#drawer-detail.drawer--fullscreen .drawer-tabs-bar {
+  background: rgba(4,12,28,0.80) !important;
+  border-bottom: 1px solid rgba(60,100,220,0.20) !important;
+  padding: 0 24px !important;
+  display: flex !important;
+  gap: 4px !important;
+}
+#drawer-detail.drawer--fullscreen .drawer-tab-btn {
+  color: rgba(140,180,255,0.65) !important;
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 2px solid transparent !important;
+  padding: 10px 16px !important;
+  font-size: 11px !important;
+  border-radius: 0 !important;
+  transition: color 0.15s, border-color 0.15s !important;
+}
+#drawer-detail.drawer--fullscreen .drawer-tab-btn:hover { color: #fff !important; }
+#drawer-detail.drawer--fullscreen .drawer-tab-btn.is-active {
+  color: #ffffff !important;
+  border-bottom-color: #4a7be8 !important;
+  font-weight: 700 !important;
+}
+
+/* Drawer body */
+#drawer-detail.drawer--fullscreen .drawer-body {
+  padding: 20px 28px !important;
+  background: transparent !important;
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+}
+
+/* Section labels in fullscreen */
+#drawer-detail.drawer--fullscreen .detail-section-label {
+  color: #6b9eff !important;
+  background: rgba(37,84,224,0.14) !important;
+  border-color: rgba(80,140,255,0.25) !important;
+}
+
+/* Chart container in fullscreen — taller */
+#drawer-detail.drawer--fullscreen .chart-container {
+  height: 360px !important;
+  background: rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(255,255,255,0.10) !important;
+  border-radius: 10px !important;
+  padding: 12px !important;
+}
+
+/* RC bars in fullscreen */
+#drawer-detail.drawer--fullscreen .rc-bar-header { color: rgba(160,200,255,0.80) !important; }
+#drawer-detail.drawer--fullscreen .rc-bar-label  { color: rgba(160,200,255,0.75) !important; }
+#drawer-detail.drawer--fullscreen .rc-bar-val    { color: #ffffff !important; }
+#drawer-detail.drawer--fullscreen .rc-track      { background: rgba(255,255,255,0.10) !important; }
+
+/* Status bar at bottom */
+#drawer-detail.drawer--fullscreen .drawer-status-bar {
+  background: rgba(4,12,28,0.95) !important;
+  border-top: 1px solid rgba(60,100,220,0.25) !important;
+  padding: 14px 28px !important;
+}
+#drawer-detail.drawer--fullscreen .decision-status-label { color: rgba(160,200,255,0.70) !important; }
+
+/* Action buttons in fullscreen */
+#drawer-detail.drawer--fullscreen #btn-execute-transfer,
+#drawer-detail.drawer--fullscreen #btn-approve {
+  border-radius: 8px !important;
+}
+
+/* KPI fact boxes in fullscreen */
+#drawer-detail.drawer--fullscreen .patient-stat-k { color: rgba(160,200,255,0.65) !important; }
+#drawer-detail.drawer--fullscreen .patient-stat-v { color: #ffffff !important; font-weight: 700 !important; }
+
+/* Tabs pane text */
+#drawer-detail.drawer--fullscreen .tab-pane { color: rgba(180,210,255,0.85) !important; }
+#drawer-detail.drawer--fullscreen .tab-pane p,
+#drawer-detail.drawer--fullscreen .tab-pane strong { color: #ffffff !important; }
+
+/* Latency timeline in fullscreen */
+#drawer-detail.drawer--fullscreen .latency-step-lbl { color: rgba(160,200,255,0.65) !important; }
+#drawer-detail.drawer--fullscreen .latency-step-wk  { color: #ffffff !important; font-weight: 700 !important; }
+#drawer-detail.drawer--fullscreen .latency-status-tag--cliff {
+  color: #ff6b7a !important;
+  background: rgba(255,80,100,0.14) !important;
+  border-color: rgba(255,80,100,0.25) !important;
+}
+#drawer-detail.drawer--fullscreen .latency-status-tag--ok {
+  color: #22d47a !important;
+  background: rgba(34,212,122,0.14) !important;
+}
+
+/* Freight table in fullscreen */
+#drawer-detail.drawer--fullscreen .freight-comp-table th { color: rgba(160,200,255,0.65) !important; background: rgba(255,255,255,0.05) !important; }
+#drawer-detail.drawer--fullscreen .freight-comp-table td { color: rgba(200,220,255,0.85) !important; border-color: rgba(255,255,255,0.08) !important; }
+
+/* Transfer visualizer */
+#drawer-detail.drawer--fullscreen .transfer-node-role   { color: rgba(140,180,255,0.60) !important; font-size: 9px !important; }
+#drawer-detail.drawer--fullscreen .transfer-node-market { color: #ffffff !important; font-weight: 700 !important; }
+#drawer-detail.drawer--fullscreen .transfer-node-sub    { color: rgba(160,200,255,0.65) !important; }
